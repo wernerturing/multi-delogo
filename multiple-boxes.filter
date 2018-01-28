@@ -1,0 +1,5 @@
+# Run with
+# ffmpeg -i IN.MP4 -filter_script:v multiple-boxes.filter -c:a copy OUT.MP4
+
+drawbox = enable='between(n, 0, 3596)'    : x=200:y=400:w=100:h=50:color=black,
+drawbox = enable='between(n, 3597, 6593)' : x=800:y=600:w=100:h=50:color=black
