@@ -1,6 +1,8 @@
 AC_INIT([multi-delogo], [1.0.0])
 AC_CONFIG_SRCDIR([src/gui/main.cpp])
 
+AC_CONFIG_MACRO_DIR([m4])
+
 AM_INIT_AUTOMAKE([foreign])
 
 AC_PROG_CXX
@@ -16,8 +18,14 @@ OPENCV_LIBS="-lopencv_videoio -lopencv_imgproc -lopencv_core"
 AC_SUBST([OPENCV_CFLAGS])
 AC_SUBST([OPENCV_LIBS])
 
+AX_BOOST_BASE([1.46])
+AX_BOOST_UNIT_TEST_FRAMEWORK
+AM_CONDITIONAL([RUN_TESTS], [test x$BOOST_UNIT_TEST_FRAMEWORK_LIB != x])
+
 AC_CONFIG_FILES([Makefile
                  src/Makefile
                  src/filter-generator/Makefile
-                 src/gui/Makefile])
+                 src/gui/Makefile
+                 test/Makefile
+                 test/filter-generator/Makefile])
 AC_OUTPUT

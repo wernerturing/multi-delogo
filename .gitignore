@@ -5,8 +5,10 @@
 # automake/autoconf stuff
 aclocal.m4
 autom4te.cache
+config.guess
 config.log
 config.status
+config.sub
 configure
 depcomp
 .deps
@@ -19,3 +21,9 @@ missing
 *.o
 src/filter-generator/libfilter-generator.a
 src/gui/multi-delogo
+
+# Test related output
+test-driver
+test/**/test-suite.log
+test/**/*.log
+test/**/*.trs
