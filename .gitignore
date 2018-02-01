@@ -17,4 +17,5 @@ missing
 
 # Compiler output
 *.o
+src/filter-generator/libfilter-generator.a
 src/gui/multi-delogo

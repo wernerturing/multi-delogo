@@ -1,1 +1,1 @@
-SUBDIRS = gui
+SUBDIRS = filter-generator gui
