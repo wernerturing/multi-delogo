@@ -1,5 +1,5 @@
 AC_INIT([multi-delogo], [1.0.0])
-AC_CONFIG_SRCDIR([src/main.cpp])
+AC_CONFIG_SRCDIR([src/gui/main.cpp])
 
 AM_INIT_AUTOMAKE([foreign])
 
@@ -16,5 +16,6 @@ AC_SUBST([OPENCV_CFLAGS])
 AC_SUBST([OPENCV_LIBS])
 
 AC_CONFIG_FILES([Makefile
-                 src/Makefile])
+                 src/Makefile
+                 src/gui/Makefile])
 AC_OUTPUT

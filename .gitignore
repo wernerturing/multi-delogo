@@ -17,4 +17,4 @@ missing
 
 # Compiler output
 *.o
-src/multi-delogo
+src/gui/multi-delogo
