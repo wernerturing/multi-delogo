@@ -14,3 +14,11 @@ BOOST_AUTO_TEST_CASE(test_save_str) {
 
   BOOST_CHECK_EQUAL(serialized, "none");
 }
+
+BOOST_AUTO_TEST_CASE(test_ffmpeg_str) {
+  fg::NullFilter filter;
+
+  std::string ffmpeg(filter.ffmpeg_str("<BETWEEN>"));
+
+  BOOST_CHECK_EQUAL(ffmpeg, "");
+}
