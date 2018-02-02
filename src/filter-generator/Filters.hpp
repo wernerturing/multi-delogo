@@ -8,6 +8,8 @@ namespace fg {
   class Filter
   {
   public:
+    virtual ~Filter();
+
     virtual std::string save_str() const = 0;
     virtual std::string ffmpeg_str(const std::string& between_expr) const = 0;
   };

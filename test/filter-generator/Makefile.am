@@ -3,6 +3,7 @@ AM_DEFAULT_SOURCE_EXT = .cpp
 check_PROGRAMS = TestNullFilter \
                  TestDelogoFilter \
                  TestDrawboxFilter \
+                 TestFilterList \
                  TestFilterGenerator
 
 TESTS = $(check_PROGRAMS)

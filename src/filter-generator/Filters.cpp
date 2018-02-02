@@ -6,6 +6,11 @@
 using namespace fg;
 
 
+Filter::~Filter()
+{
+}
+
+
 std::string NullFilter::save_str() const
 {
   return "none";

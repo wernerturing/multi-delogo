@@ -4,6 +4,9 @@
 #include <string>
 #include <ostream>
 
+#include "FilterList.hpp"
+
+
 namespace fg {
   class FilterData
   {
@@ -16,6 +19,7 @@ namespace fg {
     const static std::string HEADER_;
 
     std::string filename_;
+    FilterList filterlist_;
   };
 }
 
