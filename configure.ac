@@ -27,6 +27,7 @@ AM_CONDITIONAL([RUN_TESTS], [test x$BOOST_UNIT_TEST_FRAMEWORK_LIB != x])
 AC_CONFIG_FILES([Makefile
                  src/Makefile
                  src/filter-generator/Makefile
+                 src/opencv-frame-provider/Makefile
                  src/gui/Makefile
                  test/Makefile
                  test/filter-generator/Makefile])

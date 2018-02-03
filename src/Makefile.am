@@ -1,1 +1,1 @@
-SUBDIRS = filter-generator gui
+SUBDIRS = filter-generator opencv-frame-provider gui

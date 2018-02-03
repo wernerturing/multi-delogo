@@ -3,6 +3,8 @@
 
 #include <gtkmm.h>
 
+#include "common/FrameProvider.hpp"
+
 namespace mdl {
   class MovieWindow : public Gtk::ApplicationWindow
   {
@@ -10,6 +12,7 @@ namespace mdl {
     MovieWindow(const std::string& filename, int frame);
 
   private:
+    Glib::RefPtr<FrameProvider> frame_provider_;
     Gtk::ScrolledWindow scroll_;
     Gtk::Image image_;
   };
