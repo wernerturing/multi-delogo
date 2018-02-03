@@ -8,7 +8,7 @@ using namespace mdl;
 
 
 MovieWindow::MovieWindow(const std::string& filename, int frameNumber)
-  : Gtk::ApplicationWindow(), image_()
+  : Gtk::ApplicationWindow(), scroll_(), image_()
 {
   cv::VideoCapture video(filename);
   if (!video.isOpened()) {
@@ -35,5 +35,8 @@ MovieWindow::MovieWindow(const std::string& filename, int frameNumber)
                                               frame2->step);
   image_.set(pixbuf);
 
-  add(image_);
+  scroll_.add(image_);
+
+  set_default_size(600, 600);
+  add(scroll_);
 }

@@ -10,6 +10,7 @@ namespace mdl {
     MovieWindow(const std::string& filename, int frame);
 
   private:
+    Gtk::ScrolledWindow scroll_;
     Gtk::Image image_;
   };
 }
