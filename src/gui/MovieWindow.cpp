@@ -1,3 +1,5 @@
+#include <string>
+
 #include <gtkmm.h>
 
 #include "MovieWindow.hpp"
@@ -6,15 +8,73 @@
 using namespace mdl;
 
 
-MovieWindow::MovieWindow(const std::string& filename, int frame_number)
-  : Gtk::ApplicationWindow(), scroll_(), image_()
+MovieWindow::MovieWindow(const std::string& filename)
 {
   frame_provider_ = create_frame_provider(filename);
-  auto pixbuf = frame_provider_->get_frame(frame_number);
-  image_.set(pixbuf);
+
+  set_default_size(600, 600);
+
+  Gtk::Box* vbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 8));
+  vbox->pack_start(scroll_, true, true);
 
   scroll_.add(image_);
 
-  set_default_size(600, 600);
-  add(scroll_);
+  vbox->pack_start(*create_navigation_box(), false, false);
+
+  add(*vbox);
+
+  change_displayed_frame(1000);
+}
+
+
+Gtk::Box* MovieWindow::create_navigation_box()
+{
+  Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
+
+  txt_frame_number_.set_width_chars(6);
+  txt_frame_number_.set_text("1000");
+
+  Gtk::Button* btn_prev = Gtk::manage(new Gtk::Button("<"));
+  btn_prev->signal_clicked().connect(
+    sigc::bind<int>(
+      sigc::mem_fun(*this, &MovieWindow::on_single_step_frame),
+      -1));
+
+  Gtk::Button* btn_next = Gtk::manage(new Gtk::Button(">"));
+  btn_next->signal_clicked().connect(
+    sigc::bind<int>(
+      sigc::mem_fun(*this, &MovieWindow::on_single_step_frame),
+      1));
+
+  txt_frame_number_.signal_focus_out_event().connect(
+    sigc::mem_fun(*this, &MovieWindow::on_frame_number_input));
+
+  box->pack_start(*btn_prev, false, false);
+  box->pack_start(txt_frame_number_, false, false);
+  box->pack_start(*btn_next, false, false);
+
+  return box;
+}
+
+
+void MovieWindow::change_displayed_frame(int new_frame_number)
+{
+  auto pixbuf = frame_provider_->get_frame(new_frame_number);
+  image_.set(pixbuf);
+
+  frame_number_ = new_frame_number;
+  txt_frame_number_.set_text(std::to_string(frame_number_));
+}
+
+
+void MovieWindow::on_single_step_frame(int direction)
+{
+  change_displayed_frame(frame_number_ + direction);
+}
+
+
+bool MovieWindow::on_frame_number_input(GdkEventFocus*)
+{
+  change_displayed_frame(std::stoi(txt_frame_number_.get_text()));
+  return false;
 }

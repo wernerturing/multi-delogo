@@ -7,14 +7,12 @@ int main(int argc, char *argv[])
 {
   Gtk::Main gtk(argc, argv);
 
-  if (argc != 3) {
-    printf("usage: gtkshowframe <Video_Path> <Frame_Number>\n");
+  if (argc != 2) {
+    printf("usage: multi-delogo <Video_Path>\n");
     return -1;
   }
 
-  int frameNumber = atoi(argv[2]);
-
-  mdl::MovieWindow window(argv[1], frameNumber);
+  mdl::MovieWindow window(argv[1]);
 
   window.show_all();
   gtk.run(window);
