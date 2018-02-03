@@ -1,6 +1,9 @@
 bin_PROGRAMS = multi-delogo
 
-multi_delogo_SOURCES = main.cpp
+multi_delogo_SOURCES = main.cpp \
+                       MovieWindow.cpp
+
+noinst_HEADERS = MovieWindow.hpp
 
 multi_delogo_CPPFLAGS = $(GTKMM_CFLAGS) $(OPENCV_CFLAGS)
 
