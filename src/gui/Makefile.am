@@ -12,7 +12,10 @@ noinst_HEADERS = common/Exceptions.hpp \
                  MovieWindow.hpp
 
 
-multi_delogo_CPPFLAGS = $(GTKMM_CFLAGS)
+localedir = $(datadir)/locale
+
+multi_delogo_CPPFLAGS = -DLOCALEDIR=\"$(localedir)\" \
+                        $(GTKMM_CFLAGS)
 
 frame_provider_lib = ../opencv-frame-provider/libopencv-frame-provider.a $(OPENCV_LIBS)
 

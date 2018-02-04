@@ -1,4 +1,5 @@
 #include <gtkmm.h>
+#include <glibmm/i18n.h>
 
 #include "common/Exceptions.hpp"
 #include "common/FrameProvider.hpp"
@@ -39,7 +40,7 @@ void MultiDelogoApp::create_movie_window(const Glib::RefPtr<Gio::File>& file)
     MovieWindow* window = new MovieWindow(frame_provider);
     register_window(window);
   } catch (const VideoNotOpenedException& e) {
-    auto msg = Glib::ustring::compose("Could not open file %1", file->get_path());
+    auto msg = Glib::ustring::compose(_("Could not open file %1"), file->get_path());
     Gtk::MessageDialog dlg(msg, false, Gtk::MESSAGE_ERROR);
     dlg.run();
   }

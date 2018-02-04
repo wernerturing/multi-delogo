@@ -1,4 +1,5 @@
 #include <gtkmm.h>
+#include <glibmm/i18n.h>
 
 #include "common/Exceptions.hpp"
 #include "common/FrameProvider.hpp"
@@ -67,7 +68,7 @@ void MovieWindow::change_displayed_frame(int new_frame_number)
     txt_frame_number_.set_value(frame_number_);
   } catch (const FrameNotAvailableException& e) {
     Gtk::MessageDialog dlg(*this,
-                           "Could not get frame", false,
+                           _("Could not get frame"), false,
                            Gtk::MESSAGE_ERROR);
     txt_frame_number_.set_value(frame_number_);
     dlg.run();

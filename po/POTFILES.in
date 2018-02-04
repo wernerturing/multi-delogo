@@ -1,0 +1,4 @@
+src/gui/main.cpp
+src/gui/MultiDelogoApp.cpp
+src/gui/MovieWindow.cpp
+src/gui/NumericEntry.cpp
