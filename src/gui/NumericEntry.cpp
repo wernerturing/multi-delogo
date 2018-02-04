@@ -21,3 +21,22 @@ int NumericEntry::get_value() const
   return std::stoi(get_text());
 }
 
+
+void NumericEntry::on_insert_text(const Glib::ustring& text, int* position)
+{
+  if (contains_only_numbers(text)) {
+    Gtk::Entry::on_insert_text(text, position);
+  }
+}
+
+
+bool NumericEntry::contains_only_numbers(const Glib::ustring& text) const
+{
+  for (auto ch = text.begin(); ch != text.end(); ++ch) {
+    if (*ch < '0' || *ch > '9') {
+      return false;
+    }
+  }
+
+  return true;
+}

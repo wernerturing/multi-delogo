@@ -11,6 +11,12 @@ namespace mdl {
 
     void set_value(int text);
     int get_value() const;
+
+  protected:
+    virtual void on_insert_text(const Glib::ustring& text, int* position);
+
+  private:
+    bool contains_only_numbers(const Glib::ustring& text) const;
   };
 }
 
