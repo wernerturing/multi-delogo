@@ -2,16 +2,17 @@
 
 #include <gtkmm.h>
 
-#include "MovieWindow.hpp"
+#include "common/Exceptions.hpp"
 #include "common/FrameProvider.hpp"
+
+#include "MovieWindow.hpp"
 
 using namespace mdl;
 
 
-MovieWindow::MovieWindow(const std::string& filename)
+MovieWindow::MovieWindow(const Glib::RefPtr<FrameProvider>& frame_provider)
+  : frame_provider_(frame_provider)
 {
-  frame_provider_ = create_frame_provider(filename);
-
   set_default_size(600, 600);
 
   Gtk::Box* vbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 8));

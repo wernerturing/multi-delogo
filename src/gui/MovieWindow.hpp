@@ -9,7 +9,7 @@ namespace mdl {
   class MovieWindow : public Gtk::ApplicationWindow
   {
   public:
-    MovieWindow(const std::string& filename);
+    MovieWindow(const Glib::RefPtr<FrameProvider>& frame_provider);
 
   private:
     Glib::RefPtr<FrameProvider> frame_provider_;
