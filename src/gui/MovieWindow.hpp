@@ -33,6 +33,7 @@ namespace mdl {
     void on_jump_step_frame(int direction);
     void on_frame_number_activate();
     bool on_frame_number_input(GdkEventFocus*);
+    bool on_key_press(GdkEventKey* key_event);
   };
 }
 

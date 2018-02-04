@@ -25,6 +25,8 @@ MovieWindow::MovieWindow(const Glib::RefPtr<FrameProvider>& frame_provider)
 
   change_displayed_frame(1000);
   txt_jump_size_.set_value(500);
+
+  signal_key_press_event().connect(sigc::mem_fun(*this, &MovieWindow::on_key_press));
 }
 
 
@@ -121,5 +123,33 @@ void MovieWindow::on_frame_number_activate()
 bool MovieWindow::on_frame_number_input(GdkEventFocus*)
 {
   change_displayed_frame(txt_frame_number_.get_value());
+  return false;
+}
+
+
+bool MovieWindow::on_key_press(GdkEventKey* key_event)
+{
+  switch (key_event->keyval) {
+  case GDK_KEY_A:
+  case GDK_KEY_a:
+    on_jump_step_frame(-1);
+    return true;
+
+  case GDK_KEY_S:
+  case GDK_KEY_s:
+    on_single_step_frame(-1);
+    return true;
+
+  case GDK_KEY_D:
+  case GDK_KEY_d:
+    on_single_step_frame(1);
+    return true;
+
+  case GDK_KEY_F:
+  case GDK_KEY_f:
+    on_jump_step_frame(1);
+    return true;
+  }
+
   return false;
 }
