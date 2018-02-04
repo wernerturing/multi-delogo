@@ -5,6 +5,8 @@
 
 #include <opencv2/opencv.hpp>
 
+#include "gui/common/Exceptions.hpp"
+
 #include "OpenCVFrameProvider.hpp"
 
 using namespace mdl::opencv;
@@ -23,7 +25,9 @@ Glib::RefPtr<Gdk::Pixbuf> OpenCVFrameProvider::get_frame(int frame_number)
 
   cv::Mat bgr_frame;
   bool success = video_->read(bgr_frame);
-  // TODO: Check success, throw exception if frame cannot be read
+  if (!success) {
+    throw mdl::FrameNotAvailableException();
+  }
 
   cv::cvtColor(bgr_frame, frame_, CV_BGR2RGB);
   return Gdk::Pixbuf::create_from_data(frame_.data,

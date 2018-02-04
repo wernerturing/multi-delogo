@@ -19,6 +19,15 @@ namespace mdl {
       return "Failed to open video file";
     }
   };
+
+
+  class FrameNotAvailableException : public Exception
+  {
+  public:
+    virtual const char* what() const throw() {
+      return "Failed to get frame";
+    }
+  };
 }
 
 
