@@ -26,6 +26,7 @@ namespace mdl {
     void change_displayed_frame(int new_frame_number);
 
     void on_single_step_frame(int direction);
+    void on_frame_number_activate();
     bool on_frame_number_input(GdkEventFocus*);
   };
 }

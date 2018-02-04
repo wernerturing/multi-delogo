@@ -47,6 +47,8 @@ Gtk::Box* MovieWindow::create_navigation_box()
       sigc::mem_fun(*this, &MovieWindow::on_single_step_frame),
       1));
 
+  txt_frame_number_.signal_activate().connect(
+    sigc::mem_fun(*this, &MovieWindow::on_frame_number_activate));
   txt_frame_number_.signal_focus_out_event().connect(
     sigc::mem_fun(*this, &MovieWindow::on_frame_number_input));
 
@@ -79,6 +81,12 @@ void MovieWindow::change_displayed_frame(int new_frame_number)
 void MovieWindow::on_single_step_frame(int direction)
 {
   change_displayed_frame(frame_number_ + direction);
+}
+
+
+void MovieWindow::on_frame_number_activate()
+{
+  change_displayed_frame(std::stoi(txt_frame_number_.get_text()));
 }
 
 
