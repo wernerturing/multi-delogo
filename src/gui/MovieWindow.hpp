@@ -5,6 +5,9 @@
 
 #include "common/FrameProvider.hpp"
 
+#include "NumericEntry.hpp"
+
+
 namespace mdl {
   class MovieWindow : public Gtk::ApplicationWindow
   {
@@ -18,7 +21,7 @@ namespace mdl {
     Gtk::ScrolledWindow scroll_;
     Gtk::Image image_;
 
-    Gtk::Entry txt_frame_number_;
+    NumericEntry txt_frame_number_;
 
     Gtk::Box* create_navigation_box();
 

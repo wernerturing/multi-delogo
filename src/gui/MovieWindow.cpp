@@ -1,5 +1,3 @@
-#include <string>
-
 #include <gtkmm.h>
 
 #include "common/Exceptions.hpp"
@@ -33,7 +31,6 @@ Gtk::Box* MovieWindow::create_navigation_box()
   Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
 
   txt_frame_number_.set_width_chars(6);
-  txt_frame_number_.set_text("1000");
 
   Gtk::Button* btn_prev = Gtk::manage(new Gtk::Button("<"));
   btn_prev->signal_clicked().connect(
@@ -67,12 +64,12 @@ void MovieWindow::change_displayed_frame(int new_frame_number)
     image_.set(pixbuf);
 
     frame_number_ = new_frame_number;
-    txt_frame_number_.set_text(std::to_string(frame_number_));
+    txt_frame_number_.set_value(frame_number_);
   } catch (const FrameNotAvailableException& e) {
     Gtk::MessageDialog dlg(*this,
                            "Could not get frame", false,
                            Gtk::MESSAGE_ERROR);
-    txt_frame_number_.set_text(std::to_string(frame_number_));
+    txt_frame_number_.set_value(frame_number_);
     dlg.run();
   }
 }
@@ -86,12 +83,12 @@ void MovieWindow::on_single_step_frame(int direction)
 
 void MovieWindow::on_frame_number_activate()
 {
-  change_displayed_frame(std::stoi(txt_frame_number_.get_text()));
+  change_displayed_frame(txt_frame_number_.get_value());
 }
 
 
 bool MovieWindow::on_frame_number_input(GdkEventFocus*)
 {
-  change_displayed_frame(std::stoi(txt_frame_number_.get_text()));
+  change_displayed_frame(txt_frame_number_.get_value());
   return false;
 }
