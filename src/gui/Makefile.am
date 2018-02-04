@@ -1,11 +1,13 @@
 bin_PROGRAMS = multi-delogo
 
 multi_delogo_SOURCES = main.cpp \
+                       MultiDelogoApp.cpp \
                        NumericEntry.cpp \
                        MovieWindow.cpp
 
 noinst_HEADERS = common/Exceptions.hpp \
                  common/FrameProvider.hpp \
+                 MultiDelogoApp.hpp \
                  NumericEntry.hpp \
                  MovieWindow.hpp
 
