@@ -24,6 +24,7 @@ MovieWindow::MovieWindow(const Glib::RefPtr<FrameProvider>& frame_provider)
   add(*vbox);
 
   change_displayed_frame(1000);
+  txt_jump_size_.set_value(500);
 }
 
 
@@ -45,14 +46,37 @@ Gtk::Box* MovieWindow::create_navigation_box()
       sigc::mem_fun(*this, &MovieWindow::on_single_step_frame),
       1));
 
+  Gtk::Button* btn_prev_jump = Gtk::manage(new Gtk::Button("<<"));
+  btn_prev_jump->signal_clicked().connect(
+    sigc::bind<int>(
+      sigc::mem_fun(*this, &MovieWindow::on_jump_step_frame),
+      -1));
+
+  Gtk::Button* btn_next_jump = Gtk::manage(new Gtk::Button(">>"));
+  btn_next_jump->signal_clicked().connect(
+    sigc::bind<int>(
+      sigc::mem_fun(*this, &MovieWindow::on_jump_step_frame),
+      1));
+
   txt_frame_number_.signal_activate().connect(
     sigc::mem_fun(*this, &MovieWindow::on_frame_number_activate));
   txt_frame_number_.signal_focus_out_event().connect(
     sigc::mem_fun(*this, &MovieWindow::on_frame_number_input));
 
+  box->pack_start(*btn_prev_jump, false, false);
   box->pack_start(*btn_prev, false, false);
   box->pack_start(txt_frame_number_, false, false);
   box->pack_start(*btn_next, false, false);
+  box->pack_start(*btn_next_jump, false, false);
+
+  box->pack_start(*Gtk::manage(new Gtk::Label()), false, false, 16);
+
+  Gtk::Label* lbl_jump_size = Gtk::manage(new Gtk::Label(_("_Jump size:"), true));
+  lbl_jump_size->set_mnemonic_widget(txt_jump_size_);
+  box->pack_start(*lbl_jump_size, false, false);
+
+  txt_jump_size_.set_width_chars(6);
+  box->pack_start(txt_jump_size_, false, false);
 
   return box;
 }
@@ -79,6 +103,12 @@ void MovieWindow::change_displayed_frame(int new_frame_number)
 void MovieWindow::on_single_step_frame(int direction)
 {
   change_displayed_frame(frame_number_ + direction);
+}
+
+
+void MovieWindow::on_jump_step_frame(int direction)
+{
+  change_displayed_frame(frame_number_ + txt_jump_size_.get_value()*direction);
 }
 
 
