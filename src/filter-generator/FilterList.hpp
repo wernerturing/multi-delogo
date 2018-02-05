@@ -20,6 +20,8 @@ namespace fg {
     const_iterator begin() const;
     const_iterator end() const;
 
+    void save(std::ostream& out) const;
+
   private:
     std::map<int, Filter*> filters_;
   };

@@ -52,3 +52,22 @@ BOOST_AUTO_TEST_CASE(insert_should_replace_an_existing_filter) {
   BOOST_CHECK_EQUAL(it->first, 500);
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::DELOGO);
 }
+
+BOOST_AUTO_TEST_CASE(should_save_the_list) {
+  FilterList list;
+
+  list.insert(0, new DelogoFilter(1, 2, 3, 4));
+  list.insert(500, new DrawboxFilter(11, 22, 33, 44));
+  list.insert(1500, new NullFilter());
+  list.insert(1000, new DrawboxFilter(111, 222, 333, 444));
+
+  std::ostringstream out;
+  list.save(out);
+
+  std::string expected =
+    "0;delogo;1;2;3;4\n"
+    "500;drawbox;11;22;33;44\n"
+    "1000;drawbox;111;222;333;444\n"
+    "1500;none\n";
+  BOOST_CHECK_EQUAL(out.str(), expected);
+}

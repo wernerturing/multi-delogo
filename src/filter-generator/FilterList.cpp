@@ -40,3 +40,11 @@ FilterList::const_iterator FilterList::end() const
 {
   return filters_.end();
 }
+
+
+void FilterList::save(std::ostream& out) const
+{
+  for (auto& entry: filters_) {
+    out << entry.first << ';' << entry.second->save_str() << '\n';
+  }
+}
