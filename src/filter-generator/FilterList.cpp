@@ -18,7 +18,19 @@ void FilterList::insert(int start_frame, Filter* filter)
 }
 
 
-std::map<int, Filter*>::size_type FilterList::size() const
+FilterList::size_type FilterList::size() const
 {
   return filters_.size();
+}
+
+
+FilterList::const_iterator FilterList::begin() const
+{
+  return filters_.begin();
+}
+
+
+FilterList::const_iterator FilterList::end() const
+{
+  return filters_.end();
 }

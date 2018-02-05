@@ -10,10 +10,15 @@ namespace fg {
   class FilterList
   {
   public:
+    typedef std::map<int, Filter*>::size_type size_type;
+    typedef std::map<int, Filter*>::const_iterator const_iterator;
+
     ~FilterList();
 
     void insert(int start_frame, Filter* filter);
-    std::map<int, Filter*>::size_type size() const;
+    size_type size() const;
+    const_iterator begin() const;
+    const_iterator end() const;
 
   private:
     std::map<int, Filter*> filters_;
