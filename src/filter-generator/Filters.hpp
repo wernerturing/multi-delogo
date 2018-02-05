@@ -38,10 +38,6 @@ namespace fg {
   protected:
     RectangularFilter(int x, int y, int width, int height);
 
-  public:
-    virtual std::string save_str() const = 0;
-    virtual std::string ffmpeg_str(const std::string& between_expr) const = 0;
-
   protected:
     std::string rectangle_save_str() const;
     std::string rectangle_ffmpeg_str() const;
