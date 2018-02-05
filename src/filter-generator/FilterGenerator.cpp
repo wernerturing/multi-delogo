@@ -1,7 +1,7 @@
 #include <cstring>
 #include <string>
 
-#include "filter-generator.hpp"
+#include "FilterGenerator.hpp"
 
 using namespace fg;
 

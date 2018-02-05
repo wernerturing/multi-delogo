@@ -1,6 +1,6 @@
 #include <sstream>
 
-#include "filter-generator/filter-generator.hpp"
+#include "filter-generator/FilterGenerator.hpp"
 
 
 #define BOOST_TEST_MODULE filter generator
