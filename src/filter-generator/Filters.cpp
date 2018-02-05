@@ -11,6 +11,12 @@ Filter::~Filter()
 }
 
 
+FilterType NullFilter::type() const
+{
+  return FilterType::NO_OP;
+}
+
+
 std::string NullFilter::save_str() const
 {
   return "none";
@@ -57,6 +63,12 @@ DelogoFilter::DelogoFilter(int x, int y, int width, int height)
 }
 
 
+FilterType DelogoFilter::type() const
+{
+  return FilterType::DELOGO;
+}
+
+
 std::string DelogoFilter::save_str() const
 {
   std::string buf("delogo;");
@@ -77,6 +89,12 @@ std::string DelogoFilter::ffmpeg_str(const std::string& between_expr) const
 DrawboxFilter::DrawboxFilter(int x, int y, int width, int height)
   : RectangularFilter(x, y, width, height)
 {
+}
+
+
+FilterType DrawboxFilter::type() const
+{
+  return FilterType::DRAWBOX;
 }
 
 

@@ -8,6 +8,8 @@ using namespace fg;
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
+#include "TestHelpers.hpp"
+
 BOOST_AUTO_TEST_CASE(insert_should_keep_the_filters_ordered) {
   FilterList list;
 
@@ -21,8 +23,11 @@ BOOST_AUTO_TEST_CASE(insert_should_keep_the_filters_ordered) {
   BOOST_CHECK_EQUAL(list.size(), 3);
   auto it = list.begin();
   BOOST_CHECK_EQUAL(it->first, 0);
+  BOOST_CHECK_EQUAL(it->second->type(), FilterType::DELOGO);
   ++it;
   BOOST_CHECK_EQUAL(it->first, 400);
+  BOOST_CHECK_EQUAL(it->second->type(), FilterType::NO_OP);
   ++it;
   BOOST_CHECK_EQUAL(it->first, 1000);
+  BOOST_CHECK_EQUAL(it->second->type(), FilterType::DRAWBOX);
 }

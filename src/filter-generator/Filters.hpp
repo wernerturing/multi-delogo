@@ -5,11 +5,20 @@
 #include <ostream>
 
 namespace fg {
+  enum class FilterType
+  {
+    NO_OP,
+    DELOGO,
+    DRAWBOX
+  };
+
+
   class Filter
   {
   public:
     virtual ~Filter();
 
+    virtual FilterType type() const = 0;
     virtual std::string save_str() const = 0;
     virtual std::string ffmpeg_str(const std::string& between_expr) const = 0;
   };
@@ -18,6 +27,7 @@ namespace fg {
   class NullFilter : public Filter
   {
   public:
+    virtual FilterType type() const;
     virtual std::string save_str() const;
     virtual std::string ffmpeg_str(const std::string& between_expr) const;
   };
@@ -48,6 +58,8 @@ namespace fg {
   {
   public:
     DelogoFilter(int x, int y, int width, int height);
+
+    virtual FilterType type() const;
     virtual std::string save_str() const;
     virtual std::string ffmpeg_str(const std::string& between_expr) const;
   };
@@ -57,6 +69,8 @@ namespace fg {
   {
   public:
     DrawboxFilter(int x, int y, int width, int height);
+
+    virtual FilterType type() const;
     virtual std::string save_str() const;
     virtual std::string ffmpeg_str(const std::string& between_expr) const;
   };

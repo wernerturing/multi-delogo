@@ -7,6 +7,14 @@
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
+#include "TestHelpers.hpp"
+
+BOOST_AUTO_TEST_CASE(test_type) {
+  fg::DrawboxFilter filter(1, 2, 3, 4);
+
+  BOOST_CHECK_EQUAL(filter.type(), fg::FilterType::DRAWBOX);
+}
+
 BOOST_AUTO_TEST_CASE(test_save_str) {
   fg::DrawboxFilter filter(10, 15, 100, 20);
 

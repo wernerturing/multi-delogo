@@ -1,0 +1,6 @@
+#ifndef TEST_HELPERS_H
+#define TEST_HELPERS_H
+
+BOOST_TEST_DONT_PRINT_LOG_VALUE(fg::FilterType)
+
+#endif // TEST_HELPERS_H
