@@ -1,6 +1,6 @@
 #include <string>
 
-#include "filter-generator/Filters.hpp"
+#include "Filters.hpp"
 
 
 #define BOOST_TEST_MODULE null filter
