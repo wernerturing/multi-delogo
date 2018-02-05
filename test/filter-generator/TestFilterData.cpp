@@ -12,6 +12,7 @@ using namespace fg;
 
 BOOST_AUTO_TEST_CASE(test_save) {
   FilterData filters("/home/user/videos/test.mp4");
+  filters.set_jump_size(360);
   filters.filter_list().insert(0, new DelogoFilter(1, 2, 3, 4));
   filters.filter_list().insert(250, new DelogoFilter(9, 8, 7, 6));
 
@@ -21,6 +22,7 @@ BOOST_AUTO_TEST_CASE(test_save) {
   std::string expected =
     "MDLV1\n"
     "/home/user/videos/test.mp4\n"
+    "360\n"
     "0;delogo;1;2;3;4\n"
     "250;delogo;9;8;7;6\n";
   BOOST_CHECK_EQUAL(out.str(), expected);

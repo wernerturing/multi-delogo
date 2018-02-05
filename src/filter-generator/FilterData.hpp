@@ -13,6 +13,8 @@ namespace fg {
   public:
     FilterData(const std::string& filename);
 
+    void set_jump_size(int jump_size);
+
     FilterList& filter_list();
 
     void save(std::ostream& out) const;
@@ -21,6 +23,7 @@ namespace fg {
     const static std::string HEADER_;
 
     std::string filename_;
+    int jump_size_;
     FilterList filter_list_;
   };
 }
