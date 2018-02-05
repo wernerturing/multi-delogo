@@ -31,3 +31,24 @@ BOOST_AUTO_TEST_CASE(insert_should_keep_the_filters_ordered) {
   BOOST_CHECK_EQUAL(it->first, 1000);
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::DRAWBOX);
 }
+
+
+BOOST_AUTO_TEST_CASE(insert_should_replace_an_existing_filter) {
+  FilterList list;
+
+  NullFilter* filter1 = new NullFilter();
+  list.insert(0, filter1);
+  DrawboxFilter* filter2 = new DrawboxFilter(1, 2, 3, 4);
+  list.insert(500, filter2);
+
+  DelogoFilter* filter3 = new DelogoFilter(10, 15, 100, 20);
+  list.insert(500, filter3);
+
+  BOOST_CHECK_EQUAL(list.size(), 2);
+  auto it = list.begin();
+  BOOST_CHECK_EQUAL(it->first, 0);
+  BOOST_CHECK_EQUAL(it->second->type(), FilterType::NO_OP);
+  ++it;
+  BOOST_CHECK_EQUAL(it->first, 500);
+  BOOST_CHECK_EQUAL(it->second->type(), FilterType::DELOGO);
+}

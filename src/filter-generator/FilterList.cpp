@@ -14,6 +14,12 @@ FilterList::~FilterList()
 
 void FilterList::insert(int start_frame, Filter* filter)
 {
+  auto iter = filters_.find(start_frame);
+  if (iter != filters_.end()) {
+    delete iter->second;
+    filters_.erase(iter);
+  }
+
   filters_.insert(std::pair<int, Filter*>(start_frame, filter));
 }
 
