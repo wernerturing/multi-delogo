@@ -13,13 +13,15 @@ namespace fg {
   public:
     FilterData(const std::string& filename);
 
+    FilterList& filter_list();
+
     void save(std::ostream& out) const;
 
   private:
     const static std::string HEADER_;
 
     std::string filename_;
-    FilterList filterlist_;
+    FilterList filter_list_;
   };
 }
 

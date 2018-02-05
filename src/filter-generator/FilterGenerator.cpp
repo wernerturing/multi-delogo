@@ -2,6 +2,7 @@
 #include <string>
 
 #include "FilterGenerator.hpp"
+#include "FilterList.hpp"
 
 using namespace fg;
 
@@ -15,10 +16,17 @@ FilterData::FilterData(const std::string& filename)
 }
 
 
+FilterList& FilterData::filter_list()
+{
+  return filter_list_;
+}
+
+
 void FilterData::save(std::ostream& out) const
 {
-  out.write(HEADER_.c_str(), HEADER_.length());
-  out.write(filename_.c_str(), filename_.length());
-  out.put('\n');
+  out << HEADER_;
+  out << filename_ << '\n';
+
+  filter_list_.save(out);
 }
 
