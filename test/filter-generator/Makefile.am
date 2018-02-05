@@ -4,7 +4,7 @@ check_PROGRAMS = TestNullFilter \
                  TestDelogoFilter \
                  TestDrawboxFilter \
                  TestFilterList \
-                 TestFilterGenerator
+                 TestFilterData
 
 TESTS = $(check_PROGRAMS)
 

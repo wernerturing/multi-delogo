@@ -1,6 +1,6 @@
 #include <sstream>
 
-#include "FilterGenerator.hpp"
+#include "FilterData.hpp"
 #include "Filters.hpp"
 
 using namespace fg;
