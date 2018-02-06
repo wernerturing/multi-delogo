@@ -1,5 +1,5 @@
-#ifndef FILTER_LIST_H
-#define FILTER_LIST_H
+#ifndef FG_FILTER_LIST_H
+#define FG_FILTER_LIST_H
 
 #include <string>
 #include <map>
@@ -38,4 +38,4 @@ namespace fg {
   };
 }
 
-#endif // FILTER_LIST_H
+#endif // FG_FILTER_LIST_H

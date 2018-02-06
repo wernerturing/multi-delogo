@@ -1,5 +1,5 @@
-#ifndef EXCEPTIONS_H
-#define EXCEPTIONS_H
+#ifndef FG_EXCEPTIONS_H
+#define FG_EXCEPTIONS_H
 
 #include <exception>
 
@@ -21,4 +21,4 @@ namespace fg {
 }
 
 
-#endif // EXCEPTIONS_H
+#endif // FG_EXCEPTIONS_H

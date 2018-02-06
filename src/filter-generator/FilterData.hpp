@@ -1,5 +1,5 @@
-#ifndef FILTER_GENERATOR_H
-#define FILTER_GENERATOR_H
+#ifndef FG_FILTER_DATA_H
+#define FG_FILTER_DATA_H
 
 #include <string>
 #include <ostream>
@@ -28,4 +28,4 @@ namespace fg {
   };
 }
 
-#endif // FILTER_GENERATOR_H
+#endif // FG_FILTER_DATA_H

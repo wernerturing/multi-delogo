@@ -1,5 +1,5 @@
-#ifndef FILTERS_H
-#define FILTERS_H
+#ifndef FG_FILTERS_H
+#define FG_FILTERS_H
 
 #include <string>
 #include <ostream>
@@ -80,4 +80,4 @@ namespace fg {
   };
 }
 
-#endif // FILTERS_H
+#endif // FG_FILTERS_H
