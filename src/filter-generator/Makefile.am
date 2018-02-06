@@ -1,4 +1,5 @@
-noinst_HEADERS = Filters.hpp \
+noinst_HEADERS = Exceptions.hpp \
+                 Filters.hpp \
                  FilterList.hpp \
                  FilterData.hpp
 

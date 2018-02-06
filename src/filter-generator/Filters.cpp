@@ -2,12 +2,23 @@
 #include <string>
 
 #include "Filters.hpp"
+#include "Exceptions.hpp"
 
 using namespace fg;
 
 
 Filter::~Filter()
 {
+}
+
+
+NullFilter* NullFilter::load(const std::string& parameters)
+{
+  if (parameters != "") {
+    throw InvalidParametersException();
+  }
+
+  return new NullFilter();
 }
 
 
