@@ -1,1 +1,4 @@
+subdir = po
+top_builddir = ..
+
 MSGID_BUGS_ADDRESS = werner.turing@protonmail.com
