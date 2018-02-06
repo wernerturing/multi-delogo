@@ -21,7 +21,7 @@ BOOST_AUTO_TEST_CASE(test_save_str) {
 
   std::string serialized(filter.save_str());
 
-  BOOST_CHECK_EQUAL(serialized, "none");
+  BOOST_CHECK_EQUAL(serialized, "none;");
 }
 
 BOOST_AUTO_TEST_CASE(test_load)

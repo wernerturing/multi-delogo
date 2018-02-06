@@ -30,7 +30,7 @@ FilterType NullFilter::type() const
 
 std::string NullFilter::save_str() const
 {
-  return "none";
+  return "none;";
 }
 
 
