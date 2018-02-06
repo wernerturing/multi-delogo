@@ -17,6 +17,8 @@ namespace fg {
     ~FilterList();
 
     void insert(int start_frame, Filter* filter);
+    void remove(int start_frame);
+
     size_type size() const;
     const_iterator begin() const;
     const_iterator end() const;

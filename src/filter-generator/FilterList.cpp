@@ -17,13 +17,18 @@ FilterList::~FilterList()
 
 void FilterList::insert(int start_frame, Filter* filter)
 {
+  remove(start_frame);
+  filters_.insert(std::pair<int, Filter*>(start_frame, filter));
+}
+
+
+void FilterList::remove(int start_frame)
+{
   auto iter = filters_.find(start_frame);
   if (iter != filters_.end()) {
     delete iter->second;
     filters_.erase(iter);
   }
-
-  filters_.insert(std::pair<int, Filter*>(start_frame, filter));
 }
 
 

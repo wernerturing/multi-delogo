@@ -32,7 +32,6 @@ BOOST_AUTO_TEST_CASE(insert_should_keep_the_filters_ordered) {
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::DRAWBOX);
 }
 
-
 BOOST_AUTO_TEST_CASE(insert_should_replace_an_existing_filter) {
   FilterList list;
 
@@ -53,9 +52,43 @@ BOOST_AUTO_TEST_CASE(insert_should_replace_an_existing_filter) {
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::DELOGO);
 }
 
+BOOST_AUTO_TEST_CASE(remove_should_remove_an_item)
+{
+  FilterList list;
+  list.insert(400, new DelogoFilter(1, 2, 3, 4));
+  list.insert(200, new DrawboxFilter(11, 22, 33, 44));
+  list.insert(100, new NullFilter());
+
+  list.remove(200);
+
+  BOOST_CHECK_EQUAL(list.size(), 2);
+  auto it = list.begin();
+  BOOST_CHECK_EQUAL(it->first, 100);
+  BOOST_CHECK_EQUAL(it->second->type(), FilterType::NO_OP);
+  ++it;
+  BOOST_CHECK_EQUAL(it->first, 400);
+  BOOST_CHECK_EQUAL(it->second->type(), FilterType::DELOGO);
+}
+
+BOOST_AUTO_TEST_CASE(remove_should_do_nothing_if_item_does_not_exist)
+{
+  FilterList list;
+  list.insert(100, new NullFilter());
+  list.insert(200, new DrawboxFilter(11, 22, 33, 44));
+
+  list.remove(150);
+
+  BOOST_CHECK_EQUAL(list.size(), 2);
+  auto it = list.begin();
+  BOOST_CHECK_EQUAL(it->first, 100);
+  BOOST_CHECK_EQUAL(it->second->type(), FilterType::NO_OP);
+  ++it;
+  BOOST_CHECK_EQUAL(it->first, 200);
+  BOOST_CHECK_EQUAL(it->second->type(), FilterType::DRAWBOX);
+}
+
 BOOST_AUTO_TEST_CASE(should_save_the_list) {
   FilterList list;
-
   list.insert(0, new DelogoFilter(1, 2, 3, 4));
   list.insert(500, new DrawboxFilter(11, 22, 33, 44));
   list.insert(1500, new NullFilter());
@@ -74,7 +107,6 @@ BOOST_AUTO_TEST_CASE(should_save_the_list) {
 
 BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script) {
   FilterList list;
-
   list.insert(0, new DelogoFilter(10, 11, 12, 13));
   list.insert(500, new DrawboxFilter(20, 21, 22, 23));
   list.insert(1000, new NullFilter());
@@ -94,7 +126,6 @@ BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script) {
 
 BOOST_AUTO_TEST_CASE(should_discard_a_null_filter_at_the_end) {
   FilterList list;
-
   list.insert(0, new DelogoFilter(10, 11, 12, 13));
   list.insert(1000, new NullFilter());
 
