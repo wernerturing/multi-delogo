@@ -1,6 +1,7 @@
 #include <string>
 
 #include "Filters.hpp"
+#include "Exceptions.hpp"
 
 
 #define BOOST_TEST_MODULE drawbox filter
@@ -17,6 +18,35 @@ BOOST_AUTO_TEST_CASE(test_construction) {
   BOOST_CHECK_EQUAL(filter.y(), 2);
   BOOST_CHECK_EQUAL(filter.width(), 3);
   BOOST_CHECK_EQUAL(filter.height(), 4);
+}
+
+BOOST_AUTO_TEST_CASE(test_load)
+{
+  fg::DrawboxFilter* filter = fg::DrawboxFilter::load("50;60;100;80");
+
+  BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::DRAWBOX);
+  BOOST_CHECK_EQUAL(filter->x(), 50);
+  BOOST_CHECK_EQUAL(filter->y(), 60);
+  BOOST_CHECK_EQUAL(filter->width(), 100);
+  BOOST_CHECK_EQUAL(filter->height(), 80);
+}
+
+BOOST_AUTO_TEST_CASE(test_load_with_too_little_params)
+{
+  BOOST_CHECK_THROW(fg::DrawboxFilter::load("1;22"),
+                    fg::InvalidParametersException);
+}
+
+BOOST_AUTO_TEST_CASE(test_load_with_too_many_params)
+{
+  BOOST_CHECK_THROW(fg::DrawboxFilter::load("1;2;3;4;5;6"),
+                    fg::InvalidParametersException);
+}
+
+BOOST_AUTO_TEST_CASE(test_load_with_invalid_parameter)
+{
+  BOOST_CHECK_THROW(fg::DrawboxFilter::load("1;fd;2;4444"),
+                    fg::InvalidParametersException);
 }
 
 BOOST_AUTO_TEST_CASE(test_save_str) {

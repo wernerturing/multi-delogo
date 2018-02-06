@@ -137,7 +137,6 @@ DelogoFilter* DelogoFilter::load(const std::string& parameters)
   int x, y, width, height;
 
   load_rectangle(parameters, x, y, width, height);
-
   return new DelogoFilter(x, y, width, height);
 }
 
@@ -168,6 +167,15 @@ std::string DelogoFilter::ffmpeg_str(const std::string& between_expr) const
 DrawboxFilter::DrawboxFilter(int x, int y, int width, int height)
   : RectangularFilter(x, y, width, height)
 {
+}
+
+
+DrawboxFilter* DrawboxFilter::load(const std::string& parameters)
+{
+  int x, y, width, height;
+
+  load_rectangle(parameters, x, y, width, height);
+  return new DrawboxFilter(x, y, width, height);
 }
 
 

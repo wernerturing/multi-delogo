@@ -81,6 +81,8 @@ namespace fg {
   public:
     DrawboxFilter(int x, int y, int width, int height);
 
+    static DrawboxFilter* load(const std::string& parameters);
+
     virtual FilterType type() const;
     virtual std::string save_str() const;
     virtual std::string ffmpeg_str(const std::string& between_expr) const;
