@@ -10,6 +10,26 @@ namespace fg {
   };
 
 
+  class InvalidFilterException : public Exception
+  {
+  public:
+    virtual const char* what() const throw()
+    {
+        return "Invalid filter line";
+    }
+  };
+
+
+  class UnknownFilterException : public Exception
+  {
+  public:
+    virtual const char* what() const throw()
+    {
+        return "Unknown filter";
+    }
+  };
+
+
   class InvalidParametersException : public Exception
   {
   public:

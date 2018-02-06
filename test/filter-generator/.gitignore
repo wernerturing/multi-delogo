@@ -1,5 +1,6 @@
-TestNullFilter
 TestDelogoFilter
 TestDrawboxFilter
-TestFilterList
 TestFilterData
+TestFilterFactory
+TestFilterList
+TestNullFilter
