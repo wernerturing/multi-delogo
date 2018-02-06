@@ -9,10 +9,14 @@
 
 #include "TestHelpers.hpp"
 
-BOOST_AUTO_TEST_CASE(test_type) {
+BOOST_AUTO_TEST_CASE(test_construction) {
   fg::DrawboxFilter filter(1, 2, 3, 4);
 
   BOOST_CHECK_EQUAL(filter.type(), fg::FilterType::DRAWBOX);
+  BOOST_CHECK_EQUAL(filter.x(), 1);
+  BOOST_CHECK_EQUAL(filter.y(), 2);
+  BOOST_CHECK_EQUAL(filter.width(), 3);
+  BOOST_CHECK_EQUAL(filter.height(), 4);
 }
 
 BOOST_AUTO_TEST_CASE(test_save_str) {

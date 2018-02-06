@@ -35,6 +35,30 @@ RectangularFilter::RectangularFilter(int x, int y, int width, int height)
 }
 
 
+int RectangularFilter::x() const
+{
+  return x_;
+}
+
+
+int RectangularFilter::y() const
+{
+  return y_;
+}
+
+
+int RectangularFilter::width() const
+{
+  return width_;
+}
+
+
+int RectangularFilter::height() const
+{
+  return height_;
+}
+
+
 std::string RectangularFilter::rectangle_save_str() const
 {
   std::string buf;

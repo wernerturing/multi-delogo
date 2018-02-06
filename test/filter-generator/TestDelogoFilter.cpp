@@ -9,10 +9,14 @@
 
 #include "TestHelpers.hpp"
 
-BOOST_AUTO_TEST_CASE(test_type) {
-  fg::DelogoFilter filter(1, 2, 3, 4);
+BOOST_AUTO_TEST_CASE(test_construction) {
+  fg::DelogoFilter filter(90, 80, 70, 60);
 
   BOOST_CHECK_EQUAL(filter.type(), fg::FilterType::DELOGO);
+  BOOST_CHECK_EQUAL(filter.x(), 90);
+  BOOST_CHECK_EQUAL(filter.y(), 80);
+  BOOST_CHECK_EQUAL(filter.width(), 70);
+  BOOST_CHECK_EQUAL(filter.height(), 60);
 }
 
 BOOST_AUTO_TEST_CASE(test_save_str) {
