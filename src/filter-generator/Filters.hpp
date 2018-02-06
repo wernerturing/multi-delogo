@@ -2,6 +2,7 @@
 #define FG_FILTERS_H
 
 #include <string>
+#include <vector>
 #include <ostream>
 
 namespace fg {
@@ -47,6 +48,8 @@ namespace fg {
     int height() const;
 
   protected:
+    static void load_rectangle(const std::string& parameters,
+                               int& x, int& y, int& width, int& height);
     std::string rectangle_save_str() const;
     std::string rectangle_ffmpeg_str() const;
 
@@ -55,6 +58,8 @@ namespace fg {
     int y_;
     int width_;
     int height_;
+
+    static std::vector<std::string> split(const std::string& text, char sep);
   };
 
 
@@ -62,6 +67,8 @@ namespace fg {
   {
   public:
     DelogoFilter(int x, int y, int width, int height);
+
+    static DelogoFilter* load(const std::string& parameters);
 
     virtual FilterType type() const;
     virtual std::string save_str() const;

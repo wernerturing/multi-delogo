@@ -1,6 +1,7 @@
 #include <string>
 
 #include "Filters.hpp"
+#include "Exceptions.hpp"
 
 
 #define BOOST_TEST_MODULE delogo filter
@@ -17,6 +18,35 @@ BOOST_AUTO_TEST_CASE(test_construction) {
   BOOST_CHECK_EQUAL(filter.y(), 80);
   BOOST_CHECK_EQUAL(filter.width(), 70);
   BOOST_CHECK_EQUAL(filter.height(), 60);
+}
+
+BOOST_AUTO_TEST_CASE(test_load)
+{
+  fg::DelogoFilter* filter = fg::DelogoFilter::load("1;22;333;4444");
+
+  BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::DELOGO);
+  BOOST_CHECK_EQUAL(filter->x(), 1);
+  BOOST_CHECK_EQUAL(filter->y(), 22);
+  BOOST_CHECK_EQUAL(filter->width(), 333);
+  BOOST_CHECK_EQUAL(filter->height(), 4444);
+}
+
+BOOST_AUTO_TEST_CASE(test_load_with_too_little_params)
+{
+  BOOST_CHECK_THROW(fg::DelogoFilter::load("1;22;333"),
+                    fg::InvalidParametersException);
+}
+
+BOOST_AUTO_TEST_CASE(test_load_with_too_many_params)
+{
+  BOOST_CHECK_THROW(fg::DelogoFilter::load("1;22;333;4444;5555"),
+                    fg::InvalidParametersException);
+}
+
+BOOST_AUTO_TEST_CASE(test_load_with_invalid_parameter)
+{
+  BOOST_CHECK_THROW(fg::DelogoFilter::load("1;22;abc;4444"),
+                    fg::InvalidParametersException);
 }
 
 BOOST_AUTO_TEST_CASE(test_save_str) {
