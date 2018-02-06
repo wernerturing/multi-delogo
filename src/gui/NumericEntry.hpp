@@ -1,5 +1,5 @@
-#ifndef NUMERIC_ENTRY_H
-#define NUMERIC_ENTRY_H
+#ifndef MDL_NUMERIC_ENTRY_H
+#define MDL_NUMERIC_ENTRY_H
 
 #include <gtkmm.h>
 
@@ -20,4 +20,4 @@ namespace mdl {
   };
 }
 
-#endif // NUMERIC_ENTRY_H
+#endif // MDL_NUMERIC_ENTRY_H

@@ -1,5 +1,5 @@
-#ifndef FRAME_PROVIDER_H
-#define FRAME_PROVIDER_H
+#ifndef MDL_FRAME_PROVIDER_H
+#define MDL_FRAME_PROVIDER_H
 
 #include <string>
 
@@ -20,4 +20,4 @@ namespace mdl {
 }
 
 
-#endif // FRAME_PROVIDER_H
+#endif // MDL_FRAME_PROVIDER_H

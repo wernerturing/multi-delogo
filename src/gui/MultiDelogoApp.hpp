@@ -1,5 +1,5 @@
-#ifndef MULTI_DELOGO_APP_H
-#define MULTI_DELOGO_APP_H
+#ifndef MDL_MULTI_DELOGO_APP_H
+#define MDL_MULTI_DELOGO_APP_H
 
 #include <gtkmm.h>
 
@@ -26,4 +26,4 @@ namespace mdl {
   };
 }
 
-#endif // MULTI_DELOGO_APP_H
+#endif // MDL_MULTI_DELOGO_APP_H

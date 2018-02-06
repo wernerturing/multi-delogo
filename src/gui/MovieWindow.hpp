@@ -1,5 +1,5 @@
-#ifndef MOVIE_WINDOW_H
-#define MOVIE_WINDOW_H
+#ifndef MDL_MOVIE_WINDOW_H
+#define MDL_MOVIE_WINDOW_H
 
 #include <gtkmm.h>
 
@@ -37,4 +37,4 @@ namespace mdl {
   };
 }
 
-#endif // MOVIE_WINDOW_H
+#endif // MDL_MOVIE_WINDOW_H

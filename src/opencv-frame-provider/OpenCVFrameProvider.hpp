@@ -1,5 +1,5 @@
-#ifndef OPENCV_FRAME_PROVIDER_H
-#define OPENCV_FRAME_PROVIDER_H
+#ifndef MDL_OPENCV_OPENCV_FRAME_PROVIDER_H
+#define MDL_OPENCV_OPENCV_FRAME_PROVIDER_H
 
 #include <string>
 #include <memory>
@@ -27,4 +27,4 @@ namespace mdl { namespace opencv {
 } }
 
 
-#endif // OPENCV_FRAME_PROVIDER_H
+#endif // MDL_OPENCV_OPENCV_FRAME_PROVIDER_H

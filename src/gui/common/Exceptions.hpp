@@ -1,5 +1,5 @@
-#ifndef EXCEPTIONS_H
-#define EXCEPTIONS_H
+#ifndef MDL_EXCEPTIONS_H
+#define MDL_EXCEPTIONS_H
 
 #include <exception>
 
@@ -31,4 +31,4 @@ namespace mdl {
 }
 
 
-#endif // EXCEPTIONS_H
+#endif // MDL_EXCEPTIONS_H
