@@ -38,6 +38,16 @@ namespace fg {
         return "Invalid parameters for filter";
     }
   };
+
+
+  class InvalidFilterDataException : public Exception
+  {
+  public:
+    virtual const char* what() const throw()
+    {
+        return "Invalid filter data file";
+    }
+  };
 }
 
 
