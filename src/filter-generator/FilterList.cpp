@@ -1,7 +1,12 @@
 #include <string>
 #include <map>
+#include <istream>
+#include <ostream>
+#include <stdexcept>
 
+#include "Exceptions.hpp"
 #include "Filters.hpp"
+#include "FilterFactory.hpp"
 #include "FilterList.hpp"
 
 using namespace fg;
@@ -47,6 +52,33 @@ FilterList::const_iterator FilterList::begin() const
 FilterList::const_iterator FilterList::end() const
 {
   return filters_.end();
+}
+
+
+void FilterList::load(std::istream& in)
+{
+  std::string line;
+  while (std::getline(in, line)) {
+    load_line(line);
+  }
+}
+
+
+void FilterList::load_line(const std::string& line)
+{
+  auto pos = line.find_first_of(';');
+  if (pos == std::string::npos) {
+    throw InvalidFilterException();
+  }
+
+  try {
+    int start_frame = std::stoi(line.substr(0, pos));
+    Filter* filter = FilterFactory::load(line.substr(pos + 1));
+
+    insert(start_frame, filter);
+  } catch (std::invalid_argument& e) {
+    throw InvalidFilterException();
+  }
 }
 
 

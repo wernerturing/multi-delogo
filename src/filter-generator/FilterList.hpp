@@ -3,6 +3,8 @@
 
 #include <string>
 #include <map>
+#include <istream>
+#include <ostream>
 
 #include "Filters.hpp"
 
@@ -23,12 +25,15 @@ namespace fg {
     const_iterator begin() const;
     const_iterator end() const;
 
+    void load(std::istream& in);
     void save(std::ostream& out) const;
     void generate_ffmpeg_script(std::ostream& out) const;
 
 
   private:
     std::map<int, Filter*> filters_;
+
+    void load_line(const std::string& line);
 
     void generate_ffmpeg_script_intermediary_filters(std::ostream& out) const;
     void generate_ffmpeg_script_last_filter(std::ostream& out) const;
