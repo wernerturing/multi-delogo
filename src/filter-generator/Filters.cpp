@@ -1,6 +1,8 @@
 #include <string>
 #include <stdexcept>
 
+#include <boost/algorithm/string.hpp>
+
 #include "Filters.hpp"
 #include "Exceptions.hpp"
 
@@ -49,7 +51,8 @@ RectangularFilter::RectangularFilter(int x, int y, int width, int height)
 void RectangularFilter::load_rectangle(const std::string& parameters,
                                        int& x, int& y, int& width, int& height)
 {
-  std::vector<std::string> dimensions = split(parameters, ';');
+  std::vector<std::string> dimensions;
+  boost::split(dimensions, parameters, boost::is_any_of(";"));
   if (dimensions.size() != 4) {
     throw InvalidParametersException();
   }
@@ -62,21 +65,6 @@ void RectangularFilter::load_rectangle(const std::string& parameters,
   } catch (std::invalid_argument& e) {
     throw InvalidParametersException();
   }
-}
-
-
-std::vector<std::string> RectangularFilter::split(const std::string& text, char sep)
-{
-  std::vector<std::string> tokens;
-  std::size_t start = 0, end = 0;
-
-  while ((end = text.find(sep, start)) != std::string::npos) {
-    tokens.push_back(text.substr(start, end - start));
-    start = end + 1;
-  }
-  tokens.push_back(text.substr(start));
-
-  return tokens;
 }
 
 

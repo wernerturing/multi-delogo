@@ -58,8 +58,6 @@ namespace fg {
     int y_;
     int width_;
     int height_;
-
-    static std::vector<std::string> split(const std::string& text, char sep);
   };
 
 
