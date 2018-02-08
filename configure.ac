@@ -47,5 +47,6 @@ AC_CONFIG_FILES([Makefile
                  src/filter-generator/Makefile
                  src/gui/Makefile
                  test/Makefile
-                 test/filter-generator/Makefile])
+                 test/filter-generator/Makefile
+                 test/gui/Makefile])
 AC_OUTPUT

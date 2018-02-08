@@ -15,5 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 
-SUBDIRS = filter-generator \
-          gui
+AUTOMAKE_OPTIONS = subdir-objects
+
+AM_DEFAULT_SOURCE_EXT = .cpp
+
+check_PROGRAMS = TestFilterListModel
+
+TestFilterListModel_SOURCES = TestFilterListModel.cpp \
+                              ../../src/gui/FilterListModel.cpp
+
+TESTS = $(check_PROGRAMS)
+
+AM_CPPFLAGS = -I../../src -I../../src/gui $(GTKMM_CFLAGS)
+LDADD =  ../../src/filter-generator/libfilter-generator.a \
+         $(GTKMM_LIBS) \
+         $(BOOST_UNIT_TEST_FRAMEWORK_LIB)
