@@ -20,7 +20,8 @@ OPENCV_LIBS="-lopencv_videoio -lopencv_imgproc -lopencv_core"
 AC_SUBST([OPENCV_CFLAGS])
 AC_SUBST([OPENCV_LIBS])
 
-AX_BOOST_BASE([1.46])
+AX_BOOST_BASE([1.46], [], [
+  AC_MSG_ERROR([boost library could not be found])])
 AX_BOOST_UNIT_TEST_FRAMEWORK
 AM_CONDITIONAL([RUN_TESTS], [test x$BOOST_UNIT_TEST_FRAMEWORK_LIB != x])
 
