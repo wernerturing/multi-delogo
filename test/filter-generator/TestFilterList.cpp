@@ -37,6 +37,7 @@ BOOST_AUTO_TEST_CASE(insert_should_keep_the_filters_ordered)
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::DRAWBOX);
 }
 
+
 BOOST_AUTO_TEST_CASE(insert_should_replace_an_existing_filter)
 {
   FilterList list;
@@ -58,6 +59,7 @@ BOOST_AUTO_TEST_CASE(insert_should_replace_an_existing_filter)
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::DELOGO);
 }
 
+
 BOOST_AUTO_TEST_CASE(remove_should_remove_an_item)
 {
   FilterList list;
@@ -76,6 +78,7 @@ BOOST_AUTO_TEST_CASE(remove_should_remove_an_item)
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::DELOGO);
 }
 
+
 BOOST_AUTO_TEST_CASE(remove_should_do_nothing_if_item_does_not_exist)
 {
   FilterList list;
@@ -92,6 +95,29 @@ BOOST_AUTO_TEST_CASE(remove_should_do_nothing_if_item_does_not_exist)
   BOOST_CHECK_EQUAL(it->first, 200);
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::DRAWBOX);
 }
+
+
+BOOST_AUTO_TEST_CASE(get_by_frame_returning_an_item)
+{
+  FilterList list;
+  list.insert(100, new NullFilter());
+
+  auto maybe = list.get_by_start_frame(100);
+  BOOST_CHECK(maybe);
+  BOOST_CHECK_EQUAL(maybe->first, 100);
+  BOOST_CHECK_EQUAL(maybe->second->type(), FilterType::NO_OP);
+}
+
+
+BOOST_AUTO_TEST_CASE(get_by_frame_returning_none)
+{
+  FilterList list;
+  list.insert(100, new NullFilter());
+
+  auto maybe = list.get_by_start_frame(200);
+  BOOST_CHECK(maybe == false);
+}
+
 
 BOOST_AUTO_TEST_CASE(should_load_a_list)
 {
@@ -115,6 +141,7 @@ BOOST_AUTO_TEST_CASE(should_load_a_list)
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::DELOGO);
 }
 
+
 BOOST_AUTO_TEST_CASE(should_fail_for_line_without_frame_and_filter)
 {
   std::istringstream in("none\n");
@@ -122,6 +149,7 @@ BOOST_AUTO_TEST_CASE(should_fail_for_line_without_frame_and_filter)
   FilterList list;
   BOOST_CHECK_THROW(list.load(in), fg::InvalidFilterException);
 }
+
 
 BOOST_AUTO_TEST_CASE(should_fail_if_frame_is_not_numeric)
 {
@@ -133,6 +161,7 @@ BOOST_AUTO_TEST_CASE(should_fail_if_frame_is_not_numeric)
   BOOST_CHECK_THROW(list.load(in), fg::InvalidFilterException);
 }
 
+
 BOOST_AUTO_TEST_CASE(should_fail_for_invalid_filter)
 {
   std::istringstream in("100;delogo;1;2\n");
@@ -140,6 +169,7 @@ BOOST_AUTO_TEST_CASE(should_fail_for_invalid_filter)
   FilterList list;
   BOOST_CHECK_THROW(list.load(in), fg::InvalidParametersException);
 }
+
 
 BOOST_AUTO_TEST_CASE(should_save_the_list)
 {
@@ -160,6 +190,7 @@ BOOST_AUTO_TEST_CASE(should_save_the_list)
   BOOST_CHECK_EQUAL(out.str(), expected);
 }
 
+
 BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
 {
   FilterList list;
@@ -179,6 +210,7 @@ BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
     "drawbox=enable='gte(n,2000):x=40:y=41:w=42:h=43:c=black:t=fill\n";
   BOOST_CHECK_EQUAL(out.str(), expected);
 }
+
 
 BOOST_AUTO_TEST_CASE(should_discard_a_null_filter_at_the_end)
 {

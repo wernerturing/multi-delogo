@@ -4,6 +4,8 @@
 #include <ostream>
 #include <stdexcept>
 
+#include <boost/optional.hpp>
+
 #include "Exceptions.hpp"
 #include "Filters.hpp"
 #include "FilterFactory.hpp"
@@ -52,6 +54,17 @@ FilterList::const_iterator FilterList::begin() const
 FilterList::const_iterator FilterList::end() const
 {
   return filters_.end();
+}
+
+
+FilterList::maybe_type FilterList::get_by_start_frame(int start_frame)
+{
+  auto iter = filters_.find(start_frame);
+  if (iter == filters_.end()) {
+    return boost::none;
+  }
+
+  return boost::make_optional(*iter);
 }
 
 

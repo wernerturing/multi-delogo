@@ -6,6 +6,8 @@
 #include <istream>
 #include <ostream>
 
+#include <boost/optional.hpp>
+
 #include "Filters.hpp"
 
 
@@ -13,6 +15,8 @@ namespace fg {
   class FilterList
   {
   public:
+    typedef std::map<int, Filter*>::value_type value_type;
+    typedef boost::optional<value_type> maybe_type;
     typedef std::map<int, Filter*>::size_type size_type;
     typedef std::map<int, Filter*>::const_iterator const_iterator;
 
@@ -22,8 +26,10 @@ namespace fg {
     void remove(int start_frame);
 
     size_type size() const;
+
     const_iterator begin() const;
     const_iterator end() const;
+    maybe_type get_by_start_frame(int start_frame);
 
     void load(std::istream& in);
     void save(std::ostream& out) const;
