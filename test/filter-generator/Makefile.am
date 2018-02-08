@@ -1,10 +1,14 @@
 AM_DEFAULT_SOURCE_EXT = .cpp
 
-check_PROGRAMS = TestFilterGenerator
+check_PROGRAMS = TestNullFilter \
+                 TestDelogoFilter \
+                 TestDrawboxFilter \
+                 TestFilterFactory \
+                 TestFilterList \
+                 TestFilterData
 
 TESTS = $(check_PROGRAMS)
 
-AM_CPPFLAGS = -I../../src
-AM_LDFLAGS = -L../../src/filter-generator
-LDADD = -lfilter-generator $(BOOST_UNIT_TEST_FRAMEWORK_LIB)
-
+AM_CPPFLAGS = -I../../src/filter-generator
+LDADD = ../../src/filter-generator/libfilter-generator.a \
+        $(BOOST_UNIT_TEST_FRAMEWORK_LIB)
