@@ -133,7 +133,7 @@ BOOST_AUTO_TEST_CASE(get_by_frame_returning_none)
   list.insert(100, new NullFilter());
 
   auto maybe = list.get_by_start_frame(200);
-  BOOST_CHECK(maybe == false);
+  BOOST_CHECK(!maybe);
 }
 
 
@@ -163,13 +163,13 @@ BOOST_AUTO_TEST_CASE(get_by_position_returning_none)
   list.insert(100, new NullFilter());
 
   auto maybe1 = list.get_by_position(1);
-  BOOST_CHECK(maybe1 == false);
+  BOOST_CHECK(!maybe1);
 
   auto maybe2 = list.get_by_position(2);
-  BOOST_CHECK(maybe2 == false);
+  BOOST_CHECK(!maybe2);
 
   auto maybe20 = list.get_by_position(20);
-  BOOST_CHECK(maybe20 == false);
+  BOOST_CHECK(!maybe20);
 }
 
 
@@ -178,10 +178,10 @@ BOOST_AUTO_TEST_CASE(get_by_position_on_empty_list)
   FilterList list;
 
   auto maybe0 = list.get_by_position(0);
-  BOOST_CHECK(maybe0 == false);
+  BOOST_CHECK(!maybe0);
 
   auto maybe2 = list.get_by_position(2);
-  BOOST_CHECK(maybe2 == false);
+  BOOST_CHECK(!maybe2);
 }
 
 
