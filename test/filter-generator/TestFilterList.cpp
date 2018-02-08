@@ -119,6 +119,54 @@ BOOST_AUTO_TEST_CASE(get_by_frame_returning_none)
 }
 
 
+BOOST_AUTO_TEST_CASE(get_by_position_returning_an_item)
+{
+  FilterList list;
+  list.insert(0, new DelogoFilter(1, 2, 3, 4));
+  list.insert(200, new DrawboxFilter(11, 22, 33, 44));
+  list.insert(100, new NullFilter());
+  list.insert(400, new DelogoFilter(99, 88, 77, 66));
+
+  auto maybe0 = list.get_by_position(0);
+  BOOST_CHECK(maybe0);
+  BOOST_CHECK_EQUAL(maybe0->first, 0);
+  BOOST_CHECK_EQUAL(maybe0->second->type(), FilterType::DELOGO);
+
+  auto maybe2 = list.get_by_position(2);
+  BOOST_CHECK(maybe2);
+  BOOST_CHECK_EQUAL(maybe2->first, 200);
+  BOOST_CHECK_EQUAL(maybe2->second->type(), FilterType::DRAWBOX);
+}
+
+
+BOOST_AUTO_TEST_CASE(get_by_position_returning_none)
+{
+  FilterList list;
+  list.insert(100, new NullFilter());
+
+  auto maybe1 = list.get_by_position(1);
+  BOOST_CHECK(maybe1 == false);
+
+  auto maybe2 = list.get_by_position(2);
+  BOOST_CHECK(maybe2 == false);
+
+  auto maybe20 = list.get_by_position(20);
+  BOOST_CHECK(maybe20 == false);
+}
+
+
+BOOST_AUTO_TEST_CASE(get_by_position_on_empty_list)
+{
+  FilterList list;
+
+  auto maybe0 = list.get_by_position(0);
+  BOOST_CHECK(maybe0 == false);
+
+  auto maybe2 = list.get_by_position(2);
+  BOOST_CHECK(maybe2 == false);
+}
+
+
 BOOST_AUTO_TEST_CASE(should_load_a_list)
 {
   std::istringstream in(

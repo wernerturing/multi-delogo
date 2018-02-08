@@ -32,7 +32,7 @@ void FilterList::insert(int start_frame, Filter* filter)
 void FilterList::remove(int start_frame)
 {
   auto iter = filters_.find(start_frame);
-  if (iter != filters_.end()) {
+  if (iter != end()) {
     delete iter->second;
     filters_.erase(iter);
   }
@@ -60,11 +60,26 @@ FilterList::const_iterator FilterList::end() const
 FilterList::maybe_type FilterList::get_by_start_frame(int start_frame)
 {
   auto iter = filters_.find(start_frame);
-  if (iter == filters_.end()) {
+  if (iter == end()) {
     return boost::none;
   }
 
   return boost::make_optional(*iter);
+}
+
+
+FilterList::maybe_type FilterList::get_by_position(size_type position)
+{
+  const_iterator i;
+  for (i = begin(); position > 0 && i != end(); --position) {
+    ++i;
+  }
+
+  if (i != end()) {
+    return boost::make_optional(*i);
+  } else {
+    return boost::none;
+  }
 }
 
 
@@ -116,11 +131,11 @@ void FilterList::generate_ffmpeg_script(std::ostream& out) const
 
 void FilterList::generate_ffmpeg_script_intermediary_filters(std::ostream& out) const
 {
-  const_iterator i = filters_.begin();
+  const_iterator i = begin();
 
   while (true) {
     auto& current = *i++;
-    if (i == filters_.end()) {
+    if (i == end()) {
       break;
     }
 
@@ -137,7 +152,7 @@ void FilterList::generate_ffmpeg_script_intermediary_filters(std::ostream& out) 
 
 void FilterList::generate_ffmpeg_script_last_filter(std::ostream& out) const
 {
-  auto& last = *--filters_.end();
+  auto& last = *--end();
   std::string frame_expr = get_frame_expression(last.first);
   std::string ffmpeg_str = last.second->ffmpeg_str(frame_expr);
   if (ffmpeg_str != "") {
