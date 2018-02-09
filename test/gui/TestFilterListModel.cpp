@@ -18,6 +18,7 @@
  */
 #include <gtkmm.h>
 
+#include "filter-generator/Filters.hpp"
 #include "filter-generator/FilterList.hpp"
 
 #include "FilterListModel.hpp"
@@ -39,19 +40,36 @@ public:
 BOOST_GLOBAL_FIXTURE(GtkInitialization);
 
 
+class FilterModelFixture
+{
+public:
+  FilterModelFixture()
+  {
+    fg::FilterList list;
+    model = mdl::FilterListModel::create(list);
+  }
+
+  Glib::RefPtr<mdl::FilterListModel> model;
+};
+BOOST_FIXTURE_TEST_SUITE(filterlist_model, FilterModelFixture)
+
+
 BOOST_AUTO_TEST_CASE(test_get_flags)
 {
-  fg::FilterList list;
-  auto model = mdl::FilterListModel::create(list);
-
   BOOST_CHECK_EQUAL(model->get_flags(), Gtk::TREE_MODEL_LIST_ONLY);
 }
 
 
 BOOST_AUTO_TEST_CASE(test_get_n_columns)
 {
-  fg::FilterList list;
-  auto model = mdl::FilterListModel::create(list);
-
   BOOST_CHECK_EQUAL(model->get_n_columns(), 2);
 }
+
+
+BOOST_AUTO_TEST_CASE(test_get_column_type)
+{
+  BOOST_CHECK_EQUAL(model->get_column_type(0), Glib::Value<int>::value_type());
+  BOOST_CHECK_EQUAL(model->get_column_type(1), Glib::Value<fg::Filter*>::value_type());
+}
+
+BOOST_AUTO_TEST_SUITE_END()

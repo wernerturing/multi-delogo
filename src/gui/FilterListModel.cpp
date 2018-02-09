@@ -21,6 +21,7 @@
 #include <gtkmm/treepath.h>
 #include <gtkmm/treemodel.h>
 
+#include "filter-generator/Filters.hpp"
 #include "filter-generator/FilterList.hpp"
 
 #include "FilterListModel.hpp"
@@ -61,7 +62,13 @@ int FilterListModel::get_n_columns_vfunc() const
 
 GType FilterListModel::get_column_type_vfunc(int index) const
 {
-  throw "not implemented";
+  if (index == 0) {
+    return Glib::Value<int>::value_type();
+  } else if (index == 1) {
+    return Glib::Value<fg::Filter*>::value_type();
+  } else {
+    return 0;
+  }
 }
 
 
