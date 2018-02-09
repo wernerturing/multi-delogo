@@ -31,6 +31,7 @@ config.sub
 configure
 depcomp
 .deps
+.dirstamp
 install-sh
 Makefile
 Makefile.in

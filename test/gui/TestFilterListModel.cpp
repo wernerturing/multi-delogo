@@ -27,13 +27,31 @@
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
+
+class GtkInitialization
+{
+public:
+  GtkInitialization()
+  {
+    Gtk::Main();
+  }
+};
+BOOST_GLOBAL_FIXTURE(GtkInitialization);
+
+
 BOOST_AUTO_TEST_CASE(test_get_flags)
 {
-  Gtk::Main();
-
   fg::FilterList list;
-
   auto model = mdl::FilterListModel::create(list);
 
   BOOST_CHECK_EQUAL(model->get_flags(), Gtk::TREE_MODEL_LIST_ONLY);
+}
+
+
+BOOST_AUTO_TEST_CASE(test_get_n_columns)
+{
+  fg::FilterList list;
+  auto model = mdl::FilterListModel::create(list);
+
+  BOOST_CHECK_EQUAL(model->get_n_columns(), 2);
 }

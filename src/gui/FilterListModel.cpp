@@ -55,7 +55,7 @@ Gtk::TreeModelFlags FilterListModel::get_flags_vfunc() const
 
 int FilterListModel::get_n_columns_vfunc() const
 {
-  throw "not implemented";
+  return 2;
 }
 
 
