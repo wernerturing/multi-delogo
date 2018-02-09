@@ -81,7 +81,20 @@ void FilterListModel::get_value_vfunc(const TreeModel::const_iterator& iter, int
 
 bool FilterListModel::iter_next_vfunc(const iterator& iter, iterator& iter_next) const
 {
-  throw std::runtime_error("iter_next_vfunc not implemented");
+  iter_next = iterator();
+
+  if (!check_iter_validity(iter)) {
+    return false;
+  }
+
+  unsigned int next = GPOINTER_TO_INT(iter.gobj()->user_data) + 1;
+  if (next > filter_list_.size() - 1) {
+    return false;
+  }
+
+  iter_next.set_stamp(stamp_);
+  iter_next.gobj()->user_data = GINT_TO_POINTER(next);
+  return true;
 }
 
 
@@ -123,7 +136,8 @@ bool FilterListModel::iter_nth_root_child_vfunc(int n, iterator& iter) const
 
 bool FilterListModel::iter_parent_vfunc(const iterator& child, iterator& iter) const
 {
-  throw std::runtime_error("iter_parent_vfunc not implemented");
+  iter = iterator();
+  return false;
 }
 
 Gtk::TreeModel::Path FilterListModel::get_path_vfunc(const const_iterator& iter) const

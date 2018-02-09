@@ -97,4 +97,15 @@ BOOST_AUTO_TEST_CASE(test_conversion_iter_and_path)
   BOOST_CHECK_EQUAL(path2_out, path2_in);
 }
 
+
+BOOST_AUTO_TEST_CASE(test_iteration)
+{
+  auto children = model->children();
+  auto iter = children.begin();
+  ++iter;
+  ++iter;
+  ++iter;
+  BOOST_CHECK_EQUAL(iter, children.end());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
