@@ -83,4 +83,18 @@ BOOST_AUTO_TEST_CASE(test_get_childen)
   BOOST_CHECK_EQUAL(children.size(), 3);
 }
 
+
+BOOST_AUTO_TEST_CASE(test_conversion_iter_and_path)
+{
+  auto iter = model->get_iter("1");
+  auto path = model->get_path(iter);
+  BOOST_CHECK_EQUAL(path.to_string(), "1");
+
+  Gtk::TreeModel::Path path2_in;
+  path2_in.push_back(2);
+  auto iter2 = model->get_iter(path2_in);
+  auto path2_out = model->get_path(iter2);
+  BOOST_CHECK_EQUAL(path2_out, path2_in);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

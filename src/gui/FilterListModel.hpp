@@ -57,6 +57,9 @@ namespace mdl {
 
   private:
     fg::FilterList& filter_list_;
+    int stamp_;
+
+    bool check_iter_validity(const const_iterator& iter) const;
   };
 }
 

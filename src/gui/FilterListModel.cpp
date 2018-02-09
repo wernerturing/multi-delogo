@@ -33,6 +33,7 @@ FilterListModel::FilterListModel(fg::FilterList& filter_list)
   : Glib::ObjectBase(typeid(FilterListModel))
   , Glib::Object()
   , filter_list_(filter_list)
+  , stamp_(1)
 {
 }
 
@@ -127,11 +128,32 @@ bool FilterListModel::iter_parent_vfunc(const iterator& child, iterator& iter) c
 
 Gtk::TreeModel::Path FilterListModel::get_path_vfunc(const const_iterator& iter) const
 {
-  throw std::runtime_error("get_path_vfunc not implemented");
+  Path p;
+
+  if (check_iter_validity(iter)) {
+    p.push_back(GPOINTER_TO_INT(iter.gobj()->user_data));
+  }
+
+  return p;
 }
 
 
 bool FilterListModel::get_iter_vfunc(const Path& path, iterator& iter) const
 {
-  throw std::runtime_error("get_iter_vfunc not implemented");
+  iter = iterator();
+
+  auto size = path.size();
+  if (size != 1) {
+    return false;
+  }
+
+  iter.set_stamp(stamp_);
+  iter.gobj()->user_data = GINT_TO_POINTER(path[0]);
+  return true;
+}
+
+
+bool FilterListModel::check_iter_validity(const const_iterator& iter) const
+{
+  return stamp_ == iter.get_stamp();
 }
