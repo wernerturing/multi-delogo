@@ -100,19 +100,19 @@ bool FilterListModel::iter_next_vfunc(const iterator& iter, iterator& iter_next)
 
 bool FilterListModel::iter_children_vfunc(const iterator& parent, iterator& iter) const
 {
-  throw std::runtime_error("iter_children_vfunc not implemented");
+  return iter_nth_child_vfunc(parent, 0, iter);
 }
 
 
 bool FilterListModel::iter_has_child_vfunc(const const_iterator& iter) const
 {
-  throw std::runtime_error("iter_has_child_vfunc not implemented");
+  return false;
 }
 
 
 int FilterListModel::iter_n_children_vfunc(const const_iterator& iter) const
 {
-  throw std::runtime_error("iter_n_children_vfunc not implemented");
+  return 0;
 }
 
 
@@ -124,13 +124,22 @@ int FilterListModel::iter_n_root_children_vfunc() const
 
 bool FilterListModel::iter_nth_child_vfunc(const iterator& parent, int n, iterator& iter) const
 {
-  throw std::runtime_error("iter_nth_child_vfunc not implemented");
+  iter = iterator();
+  return false;
 }
 
 
 bool FilterListModel::iter_nth_root_child_vfunc(int n, iterator& iter) const
 {
-  throw std::runtime_error("iter_nth_root_child_vfunc not implemented");
+  iter = iterator();
+
+  if ((unsigned) n > filter_list_.size() - 1) {
+    return false;
+  }
+
+  iter.set_stamp(stamp_);
+  iter.gobj()->user_data = GINT_TO_POINTER(n);
+  return true;
 }
 
 

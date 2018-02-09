@@ -79,8 +79,11 @@ BOOST_AUTO_TEST_CASE(test_get_column_type)
 
 BOOST_AUTO_TEST_CASE(test_get_childen)
 {
-  auto children = model->children();
-  BOOST_CHECK_EQUAL(children.size(), 3);
+  Gtk::TreeNodeChildren root_children = model->children();
+  BOOST_CHECK_EQUAL(root_children.size(), 3);
+
+  Gtk::TreeRow first_row = root_children[0];
+  BOOST_CHECK_EQUAL(first_row.children().size(), 0);
 }
 
 
