@@ -46,6 +46,10 @@ public:
   FilterModelFixture()
   {
     fg::FilterList list;
+    list.insert(0, new fg::DelogoFilter(0, 0, 0, 0));
+    list.insert(200, new fg::DrawboxFilter(2, 2, 2, 2));
+    list.insert(100, new fg::NullFilter());
+
     model = mdl::FilterListModel::create(list);
   }
 
@@ -70,6 +74,13 @@ BOOST_AUTO_TEST_CASE(test_get_column_type)
 {
   BOOST_CHECK_EQUAL(model->get_column_type(0), Glib::Value<int>::value_type());
   BOOST_CHECK_EQUAL(model->get_column_type(1), Glib::Value<fg::Filter*>::value_type());
+}
+
+
+BOOST_AUTO_TEST_CASE(test_get_childen)
+{
+  auto children = model->children();
+  BOOST_CHECK_EQUAL(children.size(), 3);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

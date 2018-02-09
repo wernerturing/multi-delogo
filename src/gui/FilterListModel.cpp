@@ -74,64 +74,64 @@ GType FilterListModel::get_column_type_vfunc(int index) const
 
 void FilterListModel::get_value_vfunc(const TreeModel::const_iterator& iter, int column, Glib::ValueBase& value) const
 {
-  throw "not implemented";
+  throw std::runtime_error("get_value_vfunc not implemented");
 }
 
 
 bool FilterListModel::iter_next_vfunc(const iterator& iter, iterator& iter_next) const
 {
-  throw "not implemented";
+  throw std::runtime_error("iter_next_vfunc not implemented");
 }
 
 
 bool FilterListModel::iter_children_vfunc(const iterator& parent, iterator& iter) const
 {
-  throw "not implemented";
+  throw std::runtime_error("iter_children_vfunc not implemented");
 }
 
 
 bool FilterListModel::iter_has_child_vfunc(const const_iterator& iter) const
 {
-  throw "not implemented";
+  throw std::runtime_error("iter_has_child_vfunc not implemented");
 }
 
 
 int FilterListModel::iter_n_children_vfunc(const const_iterator& iter) const
 {
-  throw "not implemented";
+  throw std::runtime_error("iter_n_children_vfunc not implemented");
 }
 
 
 int FilterListModel::iter_n_root_children_vfunc() const
 {
-  throw "not implemented";
+  return filter_list_.size();
 }
 
 
 bool FilterListModel::iter_nth_child_vfunc(const iterator& parent, int n, iterator& iter) const
 {
-  throw "not implemented";
+  throw std::runtime_error("iter_nth_child_vfunc not implemented");
 }
 
 
 bool FilterListModel::iter_nth_root_child_vfunc(int n, iterator& iter) const
 {
-  throw "not implemented";
+  throw std::runtime_error("iter_nth_root_child_vfunc not implemented");
 }
 
 
 bool FilterListModel::iter_parent_vfunc(const iterator& child, iterator& iter) const
 {
-  throw "not implemented";
+  throw std::runtime_error("iter_parent_vfunc not implemented");
 }
 
 Gtk::TreeModel::Path FilterListModel::get_path_vfunc(const const_iterator& iter) const
 {
-  throw "not implemented";
+  throw std::runtime_error("get_path_vfunc not implemented");
 }
 
 
 bool FilterListModel::get_iter_vfunc(const Path& path, iterator& iter) const
 {
-  throw "not implemented";
+  throw std::runtime_error("get_iter_vfunc not implemented");
 }
