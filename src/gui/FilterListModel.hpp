@@ -21,11 +21,23 @@
 
 #include <glibmm/object.h>
 #include <gtkmm/treemodel.h>
+#include <gtkmm/treemodelcolumn.h>
 
+#include "filter-generator/Filters.hpp"
 #include "filter-generator/FilterList.hpp"
 
 
 namespace mdl {
+  class FilterListColumns : public Gtk::TreeModel::ColumnRecord
+  {
+  public:
+    Gtk::TreeModelColumn<int> start_frame;
+    Gtk::TreeModelColumn<fg::Filter*> filter;
+
+    FilterListColumns();
+  };
+
+
   class FilterListModel : public Gtk::TreeModel, public Glib::Object
   {
   protected:
@@ -34,6 +46,8 @@ namespace mdl {
 
   public:
     static Glib::RefPtr<FilterListModel> create(fg::FilterList& filter_list);
+
+    static FilterListColumns columns;
 
   protected:
     Gtk::TreeModelFlags get_flags_vfunc() const override;

@@ -30,7 +30,7 @@ using namespace fg;
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
-#include "TestHelpers.hpp"
+#include "../TestHelpers.hpp"
 
 BOOST_AUTO_TEST_CASE(insert_should_keep_the_filters_ordered)
 {

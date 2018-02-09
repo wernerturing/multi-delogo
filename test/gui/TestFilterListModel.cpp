@@ -28,6 +28,8 @@
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
+#include "../TestHelpers.hpp"
+
 
 class GtkInitialization
 {
@@ -45,7 +47,6 @@ class FilterModelFixture
 public:
   FilterModelFixture()
   {
-    fg::FilterList list;
     list.insert(0, new fg::DelogoFilter(0, 0, 0, 0));
     list.insert(200, new fg::DrawboxFilter(2, 2, 2, 2));
     list.insert(100, new fg::NullFilter());
@@ -53,6 +54,7 @@ public:
     model = mdl::FilterListModel::create(list);
   }
 
+  fg::FilterList list;
   Glib::RefPtr<mdl::FilterListModel> model;
 };
 BOOST_FIXTURE_TEST_SUITE(filterlist_model, FilterModelFixture)
@@ -103,10 +105,26 @@ BOOST_AUTO_TEST_CASE(test_conversion_iter_and_path)
 
 BOOST_AUTO_TEST_CASE(test_iteration)
 {
-  auto children = model->children();
+  Gtk::TreeNodeChildren children = model->children();
   auto iter = children.begin();
+
+  auto row0 = *iter;
+  BOOST_CHECK_EQUAL(row0[model->columns.start_frame], 0);
+  fg::Filter* filter0 = row0[model->columns.filter];
+  BOOST_CHECK_EQUAL(filter0->type(), fg::FilterType::DELOGO);
+
   ++iter;
+  auto row1 = *iter;
+  BOOST_CHECK_EQUAL(row1[model->columns.start_frame], 100);
+  fg::Filter* filter1 = row1[model->columns.filter];
+  BOOST_CHECK_EQUAL(filter1->type(), fg::FilterType::NO_OP);
+
   ++iter;
+  auto row2 = *iter;
+  BOOST_CHECK_EQUAL(row2.get_value(model->columns.start_frame), 200);
+  fg::Filter* filter2 = row2.get_value(model->columns.filter);
+  BOOST_CHECK_EQUAL(filter2->type(), fg::FilterType::DRAWBOX);
+
   ++iter;
   BOOST_CHECK_EQUAL(iter, children.end());
 }

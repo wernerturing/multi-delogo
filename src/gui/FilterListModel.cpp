@@ -29,6 +29,16 @@
 using namespace mdl;
 
 
+FilterListColumns::FilterListColumns()
+{
+  add(start_frame);
+  add(filter);
+}
+
+
+FilterListColumns FilterListModel::columns;
+
+
 FilterListModel::FilterListModel(fg::FilterList& filter_list)
   : Glib::ObjectBase(typeid(FilterListModel))
   , Glib::Object()
@@ -75,7 +85,24 @@ GType FilterListModel::get_column_type_vfunc(int index) const
 
 void FilterListModel::get_value_vfunc(const TreeModel::const_iterator& iter, int column, Glib::ValueBase& value) const
 {
-  throw std::runtime_error("get_value_vfunc not implemented");
+  if (!check_iter_validity(iter)
+      || (unsigned) column > columns.size() - 1) {
+    return;
+  }
+
+  int pos = GPOINTER_TO_INT(iter.gobj()->user_data);
+  fg::FilterList::maybe_type filter = filter_list_.get_by_position(pos);
+  if (!filter) {
+    return;
+  }
+
+  if (column == columns.start_frame.index()) {
+    g_value_init(value.gobj(), columns.start_frame.type());
+    g_value_set_int(value.gobj(), filter->first);
+  } else if (column == columns.filter.index()) {
+    g_value_init(value.gobj(), columns.filter.type());
+    g_value_set_pointer(value.gobj(), filter->second);
+  }
 }
 
 
