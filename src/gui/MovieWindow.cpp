@@ -105,7 +105,7 @@ Gtk::Box* MovieWindow::create_navigation_box()
 void MovieWindow::change_displayed_frame(int new_frame_number)
 {
   try {
-    auto pixbuf = frame_provider_->get_frame(new_frame_number);
+    auto pixbuf = frame_provider_->get_frame(new_frame_number - 1);
     image_.set(pixbuf);
 
     frame_number_ = new_frame_number;
