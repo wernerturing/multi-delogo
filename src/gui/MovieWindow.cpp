@@ -89,6 +89,9 @@ Gtk::Box* MovieWindow::create_navigation_box()
   box->pack_start(*btn_prev_jump, false, false);
   box->pack_start(*btn_prev, false, false);
   box->pack_start(txt_frame_number_, false, false);
+  box->pack_start(*Gtk::manage(
+    new Gtk::Label(Glib::ustring::compose("/ %1", number_of_frames_))),
+    false, false);
   box->pack_start(*btn_next, false, false);
   box->pack_start(*btn_next_jump, false, false);
 
