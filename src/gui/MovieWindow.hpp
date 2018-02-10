@@ -34,6 +34,7 @@ namespace mdl {
 
   private:
     Glib::RefPtr<FrameProvider> frame_provider_;
+    int number_of_frames_;
     int frame_number_;
 
     Gtk::ScrolledWindow scroll_;

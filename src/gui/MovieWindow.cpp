@@ -16,6 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <boost/algorithm/clamp.hpp>
+
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
 
@@ -29,6 +31,7 @@ using namespace mdl;
 
 MovieWindow::MovieWindow(const Glib::RefPtr<FrameProvider>& frame_provider)
   : frame_provider_(frame_provider)
+  , number_of_frames_(frame_provider->get_number_of_frames())
 {
   set_default_size(600, 600);
 
@@ -105,6 +108,8 @@ Gtk::Box* MovieWindow::create_navigation_box()
 void MovieWindow::change_displayed_frame(int new_frame_number)
 {
   try {
+    new_frame_number = boost::algorithm::clamp(new_frame_number, 1, number_of_frames_);
+
     auto pixbuf = frame_provider_->get_frame(new_frame_number - 1);
     image_.set(pixbuf);
 
