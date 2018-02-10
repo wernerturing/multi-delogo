@@ -54,3 +54,9 @@ Glib::RefPtr<Gdk::Pixbuf> OpenCVFrameProvider::get_frame(int frame_number)
                                        frame_.cols, frame_.rows,
                                        frame_.step);
 }
+
+
+int OpenCVFrameProvider::get_number_of_frames()
+{
+  return video_->get(CV_CAP_PROP_FRAME_COUNT);
+}
