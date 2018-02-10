@@ -1,6 +1,22 @@
 # multi-delogo messages in Portuguese (Brazilian)
-# Copyright (C) 2018 Werner Turing
-# This file is distributed under the same license as the multi-delogo package.
+#
+# Copyright (C) 2018 Werner Turing <werner.turing@protonmail.com>
+#
+# This file is part of multi-delogo.
+#
+# multi-delogo is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# multi-delogo is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
+# multi-delogo messages in Portuguese (Brazilian)
 #
 #, fuzzy
 msgid ""
@@ -8,7 +24,7 @@ msgstr ""
 "Project-Id-Version: multi-delogo\n"
 "Report-Msgid-Bugs-To: werner.turing@protonmail.com\n"
 "POT-Creation-Date: 2018-02-04 13:35-0200\n"
-"PO-Revision-Date: 2018-02-04 13:36-0200\n"
+"PO-Revision-Date: 2018-02-10 11:46-0200\n"
 "Last-Translator: Werner Turing <werner.turing@protonmail.com>\n"
 "Language-Team: Werner Turing <werner.turing@protonmail.com>\n"
 "Language: pt_BR\n"
