@@ -49,6 +49,12 @@ namespace mdl {
     static Glib::RefPtr<SelectionRect> create(gdouble x=0.0, gdouble y=0.0, gdouble width=0.0, gdouble height=0.0);
 
   private:
+    bool drag_;
+    gdouble start_x_;
+    gdouble start_y_;
+    gdouble drag_x_;
+    gdouble drag_y_;
+
     bool on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
     bool on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
     bool on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventMotion* event);

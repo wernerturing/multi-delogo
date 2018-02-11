@@ -70,20 +70,47 @@ Glib::RefPtr<SelectionRect> SelectionRect::create(gdouble x, gdouble y, gdouble 
 
 bool SelectionRect::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event)
 {
-  printf("btn press\n");
-  return false;
+  if (event->button != 1) {
+    return false;
+  }
+
+  drag_ = true;
+  start_x_ = item->property_x();
+  start_y_ = item->property_y();
+  drag_x_ = event->x;
+  drag_y_ = event->y;
+
+  item->get_canvas()->pointer_grab(item,
+                                   Gdk::POINTER_MOTION_MASK | Gdk::POINTER_MOTION_HINT_MASK | Gdk::BUTTON_RELEASE_MASK,
+                                   event->time);
+
+  return true;
 }
 
 
 bool SelectionRect::on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event)
 {
-  printf("btn release\n");
-  return false;
+  if (!drag_) {
+    return false;
+  }
+
+  drag_ = false;
+  item->get_canvas()->pointer_ungrab(item, event->time);
+
+  return true;
 }
 
 
 bool SelectionRect::on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventMotion* event)
 {
-  printf("motion notify\n");
-  return false;
+  if (!drag_) {
+    return false;
+  }
+
+  gdouble rel_x = event->x - drag_x_;
+  gdouble rel_y = event->y - drag_y_;
+  item->property_x() = start_x_ + rel_x;
+  item->property_y() = start_y_ + rel_y;
+
+  return true;
 }
