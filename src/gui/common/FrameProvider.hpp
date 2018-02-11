@@ -16,17 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <libintl.h>
+#ifndef MDL_FRAME_PROVIDER_H
+#define MDL_FRAME_PROVIDER_H
 
-#include "MultiDelogoApp.hpp"
+#include <string>
+
+#include <glibmm/objectbase.h>
+#include <glibmm/refptr.h>
+#include <gdkmm/pixbuf.h>
 
 
-int main(int argc, char *argv[])
-{
-  bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
-  bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-  textdomain(GETTEXT_PACKAGE);
+namespace mdl {
+  class FrameProvider : public Glib::ObjectBase
+  {
+  public:
+    virtual Glib::RefPtr<Gdk::Pixbuf> get_frame(int frame_number) = 0;
 
-  auto app = mdl::MultiDelogoApp::create();
-  return app->run(argc, argv);
+    virtual int get_number_of_frames() = 0;
+  };
+
+
+  Glib::RefPtr<FrameProvider> create_frame_provider(const std::string& movie_filename);
 }
+
+
+#endif // MDL_FRAME_PROVIDER_H

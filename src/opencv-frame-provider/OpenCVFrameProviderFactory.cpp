@@ -16,17 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <libintl.h>
+#include <string>
+#include <memory>
 
-#include "MultiDelogoApp.hpp"
+#include <glibmm/refptr.h>
+
+#include <opencv2/opencv.hpp>
+
+#include "gui/common/Exceptions.hpp"
+#include "gui/common/FrameProvider.hpp"
+
+#include "OpenCVFrameProvider.hpp"
 
 
-int main(int argc, char *argv[])
+Glib::RefPtr<mdl::FrameProvider> mdl::create_frame_provider(const std::string& movie_filename)
 {
-  bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
-  bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-  textdomain(GETTEXT_PACKAGE);
+  std::unique_ptr<cv::VideoCapture> video(new cv::VideoCapture(movie_filename));
+  if (!video->isOpened()) {
+    throw mdl::VideoNotOpenedException();
+  }
 
-  auto app = mdl::MultiDelogoApp::create();
-  return app->run(argc, argv);
+  return Glib::RefPtr<mdl::FrameProvider>(new mdl::opencv::OpenCVFrameProvider(std::move(video)));
 }

@@ -16,17 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <libintl.h>
+#ifndef MDL_NUMERIC_ENTRY_H
+#define MDL_NUMERIC_ENTRY_H
 
-#include "MultiDelogoApp.hpp"
+#include <gtkmm.h>
 
 
-int main(int argc, char *argv[])
-{
-  bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
-  bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-  textdomain(GETTEXT_PACKAGE);
+namespace mdl {
+  class NumericEntry : public Gtk::Entry
+  {
+  public:
+    NumericEntry();
 
-  auto app = mdl::MultiDelogoApp::create();
-  return app->run(argc, argv);
+    void set_value(int text);
+    int get_value() const;
+
+  protected:
+    void on_insert_text(const Glib::ustring& text, int* position) override;
+
+  private:
+    bool contains_only_numbers(const Glib::ustring& text) const;
+  };
 }
+
+#endif // MDL_NUMERIC_ENTRY_H

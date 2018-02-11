@@ -16,17 +16,37 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <libintl.h>
+#ifndef MDL_EXCEPTIONS_H
+#define MDL_EXCEPTIONS_H
 
-#include "MultiDelogoApp.hpp"
+#include <exception>
 
 
-int main(int argc, char *argv[])
-{
-  bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
-  bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-  textdomain(GETTEXT_PACKAGE);
+namespace mdl {
+  class Exception : public std::exception
+  {
+  public:
+    virtual const char* what() const throw() = 0;
+  };
 
-  auto app = mdl::MultiDelogoApp::create();
-  return app->run(argc, argv);
+
+  class VideoNotOpenedException : public Exception
+  {
+  public:
+    virtual const char* what() const throw() {
+      return "Failed to open video file";
+    }
+  };
+
+
+  class FrameNotAvailableException : public Exception
+  {
+  public:
+    virtual const char* what() const throw() {
+      return "Failed to get frame";
+    }
+  };
 }
+
+
+#endif // MDL_EXCEPTIONS_H

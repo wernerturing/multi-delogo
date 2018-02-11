@@ -26,6 +26,7 @@ autom4te.cache
 compile
 config.guess
 config.log
+config.rpath
 config.status
 config.sub
 configure
@@ -36,9 +37,19 @@ Makefile
 Makefile.in
 missing
 
+# intltool
+m4/intltool.m4
+po/Makefile.in.in
+po/Makefile.in
+po/multi-delogo.pot
+po/POTFILES
+po/stamp-it
+po/*.gmo
+
 # Compiler output
 *.o
 src/filter-generator/libfilter-generator.a
+src/opencv-frame-provider/libopencv-frame-provider.a
 src/gui/multi-delogo
 
 # Test related output

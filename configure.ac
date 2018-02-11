@@ -42,10 +42,21 @@ AX_BOOST_BASE([1.46], [], [
 AX_BOOST_UNIT_TEST_FRAMEWORK
 AM_CONDITIONAL([RUN_TESTS], [test x$BOOST_UNIT_TEST_FRAMEWORK_LIB != x])
 
+IT_PROG_INTLTOOL([0.35.0])
+GETTEXT_PACKAGE=multi-delogo
+AC_SUBST([GETTEXT_PACKAGE])
+AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"],
+                   [The domain to use with gettext])
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.17])
+
+
 AC_CONFIG_FILES([Makefile
                  src/Makefile
                  src/filter-generator/Makefile
+                 src/opencv-frame-provider/Makefile
                  src/gui/Makefile
                  test/Makefile
-                 test/filter-generator/Makefile])
+                 test/filter-generator/Makefile
+                 po/Makefile.in])
 AC_OUTPUT

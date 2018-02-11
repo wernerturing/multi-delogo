@@ -1,0 +1,42 @@
+# multi-delogo messages in Portuguese (Brazilian)
+#
+# Copyright (C) 2018 Werner Turing <werner.turing@protonmail.com>
+#
+# This file is part of multi-delogo.
+#
+# multi-delogo is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# multi-delogo is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
+# multi-delogo messages in Portuguese (Brazilian)
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: multi-delogo\n"
+"Report-Msgid-Bugs-To: werner.turing@protonmail.com\n"
+"POT-Creation-Date: 2018-02-04 13:35-0200\n"
+"PO-Revision-Date: 2018-02-10 11:46-0200\n"
+"Last-Translator: Werner Turing <werner.turing@protonmail.com>\n"
+"Language-Team: Werner Turing <werner.turing@protonmail.com>\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../src/gui/MultiDelogoApp.cpp:43
+msgid "Could not open file %1"
+msgstr "Não foi possível abrir o arquivo %1"
+
+#: ../src/gui/MovieWindow.cpp:70
+msgid "Could not get frame"
+msgstr "Não foi possível obter o frame"

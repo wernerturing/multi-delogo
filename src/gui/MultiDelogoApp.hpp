@@ -16,17 +16,32 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <libintl.h>
+#ifndef MDL_MULTI_DELOGO_APP_H
+#define MDL_MULTI_DELOGO_APP_H
 
-#include "MultiDelogoApp.hpp"
+#include <gtkmm.h>
 
 
-int main(int argc, char *argv[])
-{
-  bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
-  bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-  textdomain(GETTEXT_PACKAGE);
+namespace mdl {
+  class MultiDelogoApp : public Gtk::Application
+  {
+  protected:
+    MultiDelogoApp();
 
-  auto app = mdl::MultiDelogoApp::create();
-  return app->run(argc, argv);
+  public:
+    static Glib::RefPtr<MultiDelogoApp> create();
+
+  protected:
+    void on_activate();
+    void on_open(const Gio::Application::type_vec_files& files,
+                 const Glib::ustring& hint);
+
+  private:
+    void create_movie_window(const Glib::RefPtr<Gio::File>& file);
+    void register_window(Gtk::ApplicationWindow* window);
+
+    void on_hide_window(Gtk::ApplicationWindow* window);
+  };
 }
+
+#endif // MDL_MULTI_DELOGO_APP_H

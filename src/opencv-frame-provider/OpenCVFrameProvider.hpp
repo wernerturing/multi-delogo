@@ -16,17 +16,34 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <libintl.h>
+#ifndef MDL_OPENCV_OPENCV_FRAME_PROVIDER_H
+#define MDL_OPENCV_OPENCV_FRAME_PROVIDER_H
 
-#include "MultiDelogoApp.hpp"
+#include <string>
+#include <memory>
+
+#include <glibmm/objectbase.h>
+#include <glibmm/refptr.h>
+#include <gdkmm/pixbuf.h>
+
+#include "gui/common/FrameProvider.hpp"
 
 
-int main(int argc, char *argv[])
-{
-  bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
-  bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-  textdomain(GETTEXT_PACKAGE);
+namespace mdl { namespace opencv {
+  class OpenCVFrameProvider : public FrameProvider
+  {
+  public:
+    OpenCVFrameProvider(std::unique_ptr<cv::VideoCapture> video);
 
-  auto app = mdl::MultiDelogoApp::create();
-  return app->run(argc, argv);
-}
+    Glib::RefPtr<Gdk::Pixbuf> get_frame(int frame_number) override;
+    int get_number_of_frames() override;
+
+  private:
+    std::unique_ptr<cv::VideoCapture> video_;
+    // We must keep a copy of the image data, since Gdk::Pixbuf does not make a copy of the data
+    cv::Mat frame_;
+  };
+} }
+
+
+#endif // MDL_OPENCV_OPENCV_FRAME_PROVIDER_H
