@@ -36,6 +36,9 @@ namespace mdl { namespace opencv {
     OpenCVFrameProvider(std::unique_ptr<cv::VideoCapture> video);
 
     Glib::RefPtr<Gdk::Pixbuf> get_frame(int frame_number) override;
+
+    int get_frame_width() override;
+    int get_frame_height() override;
     int get_number_of_frames() override;
 
   private:

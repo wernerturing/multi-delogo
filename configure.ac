@@ -31,6 +31,10 @@ PKG_CHECK_MODULES([GTKMM], [gtkmm-3.0 >= 3.4])
 AC_SUBST([GTKMM_CFLAGS])
 AC_SUBST([GTKMM_LIBS])
 
+PKG_CHECK_MODULES([GOOCANVASMM], [goocanvasmm-2.0])
+AC_SUBST([GOOCANVASMM_CFLAGS])
+AC_SUBST([GOOCANVASMM_LIBS])
+
 PKG_CHECK_MODULES([OPENCV], [opencv >= 3.0])
 dnl pkg-config brings all the libs, so override it with only the needed ones
 OPENCV_LIBS="-lopencv_videoio -lopencv_imgproc -lopencv_core"

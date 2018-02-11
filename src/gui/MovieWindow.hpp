@@ -38,7 +38,7 @@ namespace mdl {
     int number_of_frames_;
     int frame_number_;
 
-    FrameView image_;
+    FrameView frame_view_;
 
     NumericEntry txt_frame_number_;
     NumericEntry txt_jump_size_;

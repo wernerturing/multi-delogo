@@ -20,18 +20,20 @@
 #define MDL_FRAME_VIEW_H
 
 #include <gtkmm.h>
+#include <goocanvasmm.h>
 
 
 namespace mdl {
   class FrameView : public Gtk::ScrolledWindow
   {
   public:
-    FrameView();
+    FrameView(int width, int height);
 
-    void set(Glib::RefPtr<Gdk::Pixbuf> pixbuf);
+    void set_image(Glib::RefPtr<Gdk::Pixbuf> pixbuf);
 
   private:
-    Gtk::Image image_;
+    Goocanvas::Canvas canvas_;
+    Glib::RefPtr<Goocanvas::ImageModel> image_;
   };
 }
 

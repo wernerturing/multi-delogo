@@ -17,20 +17,30 @@
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <gtkmm.h>
+#include <goocanvasmm.h>
 
 #include "FrameView.hpp"
 
 using namespace mdl;
 
 
-FrameView::FrameView()
+FrameView::FrameView(int width, int height)
   : Gtk::ScrolledWindow()
 {
-  add(image_);
+  canvas_.set_bounds(0, 0, width, height);
+
+  auto root = Goocanvas::GroupModel::create();
+
+  image_ = Goocanvas::ImageModel::create(0, 0);
+  root->add_child(image_);
+
+  canvas_.set_root_item_model(root);
+
+  add(canvas_);
 }
 
 
-void FrameView::set(Glib::RefPtr<Gdk::Pixbuf> pixbuf)
+void FrameView::set_image(Glib::RefPtr<Gdk::Pixbuf> pixbuf)
 {
-  image_.set(pixbuf);
+  image_->property_pixbuf().set_value(pixbuf);
 }
