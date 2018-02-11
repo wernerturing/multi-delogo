@@ -73,10 +73,12 @@ namespace mdl {
     gdouble drag_y_;
 
     Glib::RefPtr<Gdk::Cursor> move_cursor_;
+    Glib::RefPtr<Gdk::Cursor> resize_br_cursor_;
 
 
-    Point to_inside_coordinates(Point point);
-    DragMode get_drag_mode_for_point(Point point);
+    Point to_inside_coordinates(const Point& point);
+    DragMode get_drag_mode_for_point(const Point& point);
+    Glib::RefPtr<Gdk::Cursor> get_cursor(DragMode mode);
 
     bool on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
     bool on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);

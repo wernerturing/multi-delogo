@@ -67,6 +67,7 @@ SelectionRect::SelectionRect(gdouble x, gdouble y, gdouble width, gdouble height
   signal_leave_notify_event().connect(sigc::mem_fun(*this, &SelectionRect::on_leave_notify));
 
   move_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), Gdk::FLEUR);
+  resize_br_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), Gdk::BOTTOM_RIGHT_CORNER);
 }
 
 
@@ -76,13 +77,13 @@ Glib::RefPtr<SelectionRect> SelectionRect::create(gdouble x, gdouble y, gdouble 
 }
 
 
-Point SelectionRect::to_inside_coordinates(Point point)
+Point SelectionRect::to_inside_coordinates(const Point& point)
 {
   return {.x = point.x - property_x(), .y = point.y - property_y()};
 }
 
 
-DragMode SelectionRect::get_drag_mode_for_point(Point point)
+DragMode SelectionRect::get_drag_mode_for_point(const Point& point)
 {
   if (point.x >= property_width() - RESIZE_MARGIN_
       && point.y >= property_height() - RESIZE_MARGIN_) {
@@ -90,6 +91,21 @@ DragMode SelectionRect::get_drag_mode_for_point(Point point)
   }
 
   return DragMode::MOVE;
+}
+
+
+Glib::RefPtr<Gdk::Cursor> SelectionRect::get_cursor(DragMode mode)
+{
+  switch (mode) {
+  case DragMode::MOVE:
+    return move_cursor_;
+
+  case DragMode::RESIZE_BR:
+    return resize_br_cursor_;
+
+  default:
+    return Glib::RefPtr<Gdk::Cursor>();
+  }
 }
 
 
@@ -128,9 +144,11 @@ bool SelectionRect::on_button_release(const Glib::RefPtr<Goocanvas::Item>& item,
 
 bool SelectionRect::on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventMotion* event)
 {
-  item->get_canvas()->get_window()->set_cursor(move_cursor_);
-
   if (drag_mode_ == DragMode::NONE) {
+    Point inside_c = to_inside_coordinates({.x = event->x, .y = event->y});
+    DragMode mode = get_drag_mode_for_point(inside_c);
+    item->get_canvas()->get_window()->set_cursor(get_cursor(mode));
+
     return false;
   }
 
