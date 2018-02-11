@@ -59,6 +59,10 @@ SelectionRect::SelectionRect(gdouble x, gdouble y, gdouble width, gdouble height
   signal_button_press_event().connect(sigc::mem_fun(*this, &SelectionRect::on_button_press));
   signal_button_release_event().connect(sigc::mem_fun(*this, &SelectionRect::on_button_release));
   signal_motion_notify_event().connect(sigc::mem_fun(*this, &SelectionRect::on_motion_notify));
+
+  signal_leave_notify_event().connect(sigc::mem_fun(*this, &SelectionRect::on_leave_notify));
+
+  move_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), Gdk::FLEUR);
 }
 
 
@@ -103,6 +107,8 @@ bool SelectionRect::on_button_release(const Glib::RefPtr<Goocanvas::Item>& item,
 
 bool SelectionRect::on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventMotion* event)
 {
+  item->get_canvas()->get_window()->set_cursor(move_cursor_);
+
   if (!drag_) {
     return false;
   }
@@ -113,4 +119,11 @@ bool SelectionRect::on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, 
   item->property_y() = start_y_ + rel_y;
 
   return true;
+}
+
+
+bool SelectionRect::on_leave_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventCrossing* event)
+{
+  item->get_canvas()->get_window()->set_cursor();
+  return false;
 }

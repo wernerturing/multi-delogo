@@ -55,10 +55,13 @@ namespace mdl {
     gdouble drag_x_;
     gdouble drag_y_;
 
+    Glib::RefPtr<Gdk::Cursor> move_cursor_;
+
     bool on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
     bool on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
     bool on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventMotion* event);
 
+    bool on_leave_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventCrossing* event);
   };
 }
 
