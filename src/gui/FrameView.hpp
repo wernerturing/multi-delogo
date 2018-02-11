@@ -24,6 +24,8 @@
 
 
 namespace mdl {
+  class SelectionRect;
+
   class FrameView : public Gtk::ScrolledWindow
   {
   public:
@@ -33,8 +35,24 @@ namespace mdl {
 
   private:
     Goocanvas::Canvas canvas_;
-    Glib::RefPtr<Goocanvas::ImageModel> image_;
-    Glib::RefPtr<Goocanvas::RectModel> rect_;
+    Glib::RefPtr<Goocanvas::Image> image_;
+    Glib::RefPtr<SelectionRect> rect_;
+  };
+
+
+  class SelectionRect : public Goocanvas::Rect
+  {
+  protected:
+    SelectionRect(gdouble x, gdouble y, gdouble width, gdouble height);
+
+  public:
+    static Glib::RefPtr<SelectionRect> create(gdouble x=0.0, gdouble y=0.0, gdouble width=0.0, gdouble height=0.0);
+
+  private:
+    bool on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
+    bool on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
+    bool on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventMotion* event);
+
   };
 }
 

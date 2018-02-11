@@ -28,19 +28,15 @@ FrameView::FrameView(int width, int height)
   : Gtk::ScrolledWindow()
 {
   canvas_.set_bounds(0, 0, width, height);
+  canvas_.property_integer_layout() = true;
 
-  auto root = Goocanvas::GroupModel::create();
+  auto root = canvas_.get_root_item();
 
-  image_ = Goocanvas::ImageModel::create(0, 0);
+  image_ = Goocanvas::Image::create(0, 0);
   root->add_child(image_);
 
-  rect_ = Goocanvas::RectModel::create(100, 50, 150, 40);
-  rect_->property_line_width().set_value(1);
-  GooCanvasLineDash* dashed = goo_canvas_line_dash_new(2, 5.0, 5.0);
-  rect_->property_line_dash().set_value(Goocanvas::LineDash(dashed, false));
+  rect_ = SelectionRect::create(100, 50, 150, 30);
   root->add_child(rect_);
-
-  canvas_.set_root_item_model(root);
 
   add(canvas_);
 }
@@ -48,5 +44,46 @@ FrameView::FrameView(int width, int height)
 
 void FrameView::set_image(Glib::RefPtr<Gdk::Pixbuf> pixbuf)
 {
-  image_->property_pixbuf().set_value(pixbuf);
+  image_->property_pixbuf() = pixbuf;
+}
+
+
+SelectionRect::SelectionRect(gdouble x, gdouble y, gdouble width, gdouble height)
+  : Goocanvas::Rect(x, y, width, height)
+{
+  property_line_width() = 1;
+  property_fill_color() = "black";
+  GooCanvasLineDash* dashed = goo_canvas_line_dash_new(2, 5.0, 5.0);
+  property_line_dash() = Goocanvas::LineDash(dashed, false);
+
+  signal_button_press_event().connect(sigc::mem_fun(*this, &SelectionRect::on_button_press));
+  signal_button_release_event().connect(sigc::mem_fun(*this, &SelectionRect::on_button_release));
+  signal_motion_notify_event().connect(sigc::mem_fun(*this, &SelectionRect::on_motion_notify));
+}
+
+
+Glib::RefPtr<SelectionRect> SelectionRect::create(gdouble x, gdouble y, gdouble width, gdouble height)
+{
+  return Glib::RefPtr<SelectionRect>(new SelectionRect(x, y, width, height));
+}
+
+
+bool SelectionRect::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event)
+{
+  printf("btn press\n");
+  return false;
+}
+
+
+bool SelectionRect::on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event)
+{
+  printf("btn release\n");
+  return false;
+}
+
+
+bool SelectionRect::on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventMotion* event)
+{
+  printf("motion notify\n");
+  return false;
 }
