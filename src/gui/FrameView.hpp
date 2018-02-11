@@ -23,10 +23,15 @@
 
 
 namespace mdl {
-  class FrameView : public Gtk::Image
+  class FrameView : public Gtk::ScrolledWindow
   {
   public:
     FrameView();
+
+    void set(Glib::RefPtr<Gdk::Pixbuf> pixbuf);
+
+  private:
+    Gtk::Image image_;
   };
 }
 

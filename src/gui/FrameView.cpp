@@ -24,6 +24,13 @@ using namespace mdl;
 
 
 FrameView::FrameView()
-  : Gtk::Image()
+  : Gtk::ScrolledWindow()
 {
+  add(image_);
+}
+
+
+void FrameView::set(Glib::RefPtr<Gdk::Pixbuf> pixbuf)
+{
+  image_.set(pixbuf);
 }

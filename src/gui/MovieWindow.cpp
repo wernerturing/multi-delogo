@@ -36,9 +36,7 @@ MovieWindow::MovieWindow(const Glib::RefPtr<FrameProvider>& frame_provider)
   set_default_size(600, 600);
 
   Gtk::Box* vbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 8));
-  vbox->pack_start(scroll_, true, true);
-
-  scroll_.add(image_);
+  vbox->pack_start(image_, true, true);
 
   vbox->pack_start(*create_navigation_box(), false, false);
 

@@ -38,7 +38,6 @@ namespace mdl {
     int number_of_frames_;
     int frame_number_;
 
-    Gtk::ScrolledWindow scroll_;
     FrameView image_;
 
     NumericEntry txt_frame_number_;
