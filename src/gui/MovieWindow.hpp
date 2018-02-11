@@ -24,6 +24,7 @@
 #include "common/FrameProvider.hpp"
 
 #include "NumericEntry.hpp"
+#include "FrameView.hpp"
 
 
 namespace mdl {
@@ -38,7 +39,7 @@ namespace mdl {
     int frame_number_;
 
     Gtk::ScrolledWindow scroll_;
-    Gtk::Image image_;
+    FrameView image_;
 
     NumericEntry txt_frame_number_;
     NumericEntry txt_jump_size_;
