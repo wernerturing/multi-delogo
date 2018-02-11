@@ -50,6 +50,11 @@ public:
   {
     return rect->drag_mode_;
   }
+
+  Point to_inside_coordinates(Glib::RefPtr<SelectionRect>& rect, Point point)
+  {
+    return rect->to_inside_coordinates(point);
+  }
 };
 }
 BOOST_FIXTURE_TEST_SUITE(SelectionRect, mdl::SelectionRectTestFixture);
@@ -57,9 +62,20 @@ BOOST_FIXTURE_TEST_SUITE(SelectionRect, mdl::SelectionRectTestFixture);
 
 BOOST_AUTO_TEST_CASE(starts_with_no_drag_mode)
 {
-  auto rect = mdl::SelectionRect::create(10, 15, 100, 50);
+  auto rect = mdl::SelectionRect::create();
 
   BOOST_CHECK_EQUAL(get_drag_mode(rect), DragMode::NONE);
+}
+
+
+BOOST_AUTO_TEST_CASE(conversion_to_coordinates_inside_item,
+                     * boost::unit_test_framework::tolerance(0.00001))
+{
+  auto rect = mdl::SelectionRect::create(10, 15, 100, 50);
+
+  Point ret = to_inside_coordinates(rect, {.x = 21, .y = 23});
+  BOOST_CHECK_EQUAL(ret.x, 11.0);
+  BOOST_CHECK_EQUAL(ret.y, 8.0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

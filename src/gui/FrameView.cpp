@@ -73,6 +73,12 @@ Glib::RefPtr<SelectionRect> SelectionRect::create(gdouble x, gdouble y, gdouble 
 }
 
 
+Point SelectionRect::to_inside_coordinates(Point point)
+{
+  return {.x = point.x - property_x(), .y = point.y - property_y()};
+}
+
+
 bool SelectionRect::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event)
 {
   if (event->button != 1) {

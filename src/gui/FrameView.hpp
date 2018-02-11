@@ -47,6 +47,13 @@ namespace mdl {
   };
 
 
+  struct Point
+  {
+    gdouble x;
+    gdouble y;
+  };
+
+
   class SelectionRect : public Goocanvas::Rect
   {
   protected:
@@ -63,6 +70,9 @@ namespace mdl {
     gdouble drag_y_;
 
     Glib::RefPtr<Gdk::Cursor> move_cursor_;
+
+
+    Point to_inside_coordinates(Point point);
 
     bool on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
     bool on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
