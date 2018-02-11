@@ -55,6 +55,11 @@ public:
   {
     return rect->to_inside_coordinates(point);
   }
+
+  DragMode get_drag_mode_for_point(Glib::RefPtr<SelectionRect>& rect, Point point)
+  {
+    return rect->get_drag_mode_for_point(point);
+  }
 };
 }
 BOOST_FIXTURE_TEST_SUITE(SelectionRect, mdl::SelectionRectTestFixture);
@@ -76,6 +81,26 @@ BOOST_AUTO_TEST_CASE(conversion_to_coordinates_inside_item,
   Point ret = to_inside_coordinates(rect, {.x = 21, .y = 23});
   BOOST_CHECK_EQUAL(ret.x, 11.0);
   BOOST_CHECK_EQUAL(ret.y, 8.0);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_return_resize_br_for_the_bottom_right_10x10_square)
+{
+  auto rect = mdl::SelectionRect::create(10, 15, 100, 50);
+
+  BOOST_CHECK_EQUAL(get_drag_mode_for_point(rect, {.x = 90, .y = 40}),
+                    DragMode::RESIZE_BR);
+  BOOST_CHECK_EQUAL(get_drag_mode_for_point(rect, {.x = 100, .y = 50}),
+                    DragMode::RESIZE_BR);
+  BOOST_CHECK_EQUAL(get_drag_mode_for_point(rect, {.x = 95, .y = 43}),
+                    DragMode::RESIZE_BR);
+
+  BOOST_CHECK_EQUAL(get_drag_mode_for_point(rect, {.x = 89, .y = 43}),
+                    DragMode::MOVE);
+  BOOST_CHECK_EQUAL(get_drag_mode_for_point(rect, {.x = 97, .y = 39}),
+                    DragMode::MOVE);
+  BOOST_CHECK_EQUAL(get_drag_mode_for_point(rect, {.x = 12, .y = 21}),
+                    DragMode::MOVE);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

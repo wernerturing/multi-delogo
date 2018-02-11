@@ -43,7 +43,8 @@ namespace mdl {
   enum class DragMode
   {
     NONE,
-    MOVE
+    MOVE,
+    RESIZE_BR,
   };
 
 
@@ -63,6 +64,8 @@ namespace mdl {
     static Glib::RefPtr<SelectionRect> create(gdouble x=0.0, gdouble y=0.0, gdouble width=0.0, gdouble height=0.0);
 
   private:
+    const static gdouble RESIZE_MARGIN_;
+
     DragMode drag_mode_;
     gdouble start_x_;
     gdouble start_y_;
@@ -73,6 +76,7 @@ namespace mdl {
 
 
     Point to_inside_coordinates(Point point);
+    DragMode get_drag_mode_for_point(Point point);
 
     bool on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
     bool on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);

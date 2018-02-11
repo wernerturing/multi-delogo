@@ -24,6 +24,9 @@
 using namespace mdl;
 
 
+const gdouble SelectionRect::RESIZE_MARGIN_ = 10;
+
+
 FrameView::FrameView(int width, int height)
   : Gtk::ScrolledWindow()
 {
@@ -76,6 +79,17 @@ Glib::RefPtr<SelectionRect> SelectionRect::create(gdouble x, gdouble y, gdouble 
 Point SelectionRect::to_inside_coordinates(Point point)
 {
   return {.x = point.x - property_x(), .y = point.y - property_y()};
+}
+
+
+DragMode SelectionRect::get_drag_mode_for_point(Point point)
+{
+  if (point.x >= property_width() - RESIZE_MARGIN_
+      && point.y >= property_height() - RESIZE_MARGIN_) {
+    return DragMode::RESIZE_BR;
+  }
+
+  return DragMode::MOVE;
 }
 
 
