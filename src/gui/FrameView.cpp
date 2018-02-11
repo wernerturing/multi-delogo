@@ -52,7 +52,7 @@ SelectionRect::SelectionRect(gdouble x, gdouble y, gdouble width, gdouble height
   : Goocanvas::Rect(x, y, width, height)
 {
   property_line_width() = 1;
-  property_fill_color() = "black";
+  property_fill_color_rgba() = 0x00000060;
   GooCanvasLineDash* dashed = goo_canvas_line_dash_new(2, 5.0, 5.0);
   property_line_dash() = Goocanvas::LineDash(dashed, false);
 
