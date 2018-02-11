@@ -34,6 +34,12 @@ FrameView::FrameView(int width, int height)
   image_ = Goocanvas::ImageModel::create(0, 0);
   root->add_child(image_);
 
+  rect_ = Goocanvas::RectModel::create(100, 50, 150, 40);
+  rect_->property_line_width().set_value(1);
+  GooCanvasLineDash* dashed = goo_canvas_line_dash_new(2, 5.0, 5.0);
+  rect_->property_line_dash().set_value(Goocanvas::LineDash(dashed, false));
+  root->add_child(rect_);
+
   canvas_.set_root_item_model(root);
 
   add(canvas_);

@@ -34,6 +34,7 @@ namespace mdl {
   private:
     Goocanvas::Canvas canvas_;
     Glib::RefPtr<Goocanvas::ImageModel> image_;
+    Glib::RefPtr<Goocanvas::RectModel> rect_;
   };
 }
 
