@@ -15,46 +15,21 @@
 # You should have received a copy of the GNU General Public License
 # along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 
-# Editor backup files
-*~
-\#*
-.#*
+AUTOMAKE_OPTIONS = subdir-objects
 
-# automake/autoconf stuff
-aclocal.m4
-autom4te.cache
-compile
-config.guess
-config.log
-config.rpath
-config.status
-config.sub
-configure
-depcomp
-.deps
-.dirstamp
-install-sh
-Makefile
-Makefile.in
-missing
+AM_DEFAULT_SOURCE_EXT = .cpp
 
-# intltool
-m4/intltool.m4
-po/Makefile.in.in
-po/Makefile.in
-po/multi-delogo.pot
-po/POTFILES
-po/stamp-it
-po/*.gmo
+AM_CPPFLAGS = -I../../src -I../../src/gui $(GTKMM_CFLAGS)
+LDADD =  ../../src/filter-generator/libfilter-generator.a \
+         $(GTKMM_LIBS) \
+         $(BOOST_UNIT_TEST_FRAMEWORK_LIB)
 
-# Compiler output
-*.o
-src/filter-generator/libfilter-generator.a
-src/opencv-frame-provider/libopencv-frame-provider.a
-src/gui/multi-delogo
 
-# Test related output
-test-driver
-test/**/test-suite.log
-test/**/*.log
-test/**/*.trs
+check_PROGRAMS = TestSelectionRect
+
+TestSelectionRect_SOURCES = TestSelectionRect.cpp \
+                            ../../src/gui/FrameView.cpp
+TestSelectionRect_CPPFLAGS = $(AM_CPPFLAGS) $(GOOCANVASMM_CFLAGS)
+TestSelectionRect_LDADD = $(LDADD) $(GOOCANVASMM_LIBS)
+
+TESTS = $(check_PROGRAMS)

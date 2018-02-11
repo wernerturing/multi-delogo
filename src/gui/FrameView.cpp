@@ -50,6 +50,7 @@ void FrameView::set_image(Glib::RefPtr<Gdk::Pixbuf> pixbuf)
 
 SelectionRect::SelectionRect(gdouble x, gdouble y, gdouble width, gdouble height)
   : Goocanvas::Rect(x, y, width, height)
+  , drag_mode_(DragMode::NONE)
 {
   property_line_width() = 1;
   property_fill_color_rgba() = 0x00000060;
@@ -78,7 +79,7 @@ bool SelectionRect::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, G
     return false;
   }
 
-  drag_ = true;
+  drag_mode_ = DragMode::MOVE;
   start_x_ = item->property_x();
   start_y_ = item->property_y();
   drag_x_ = event->x;
@@ -94,11 +95,11 @@ bool SelectionRect::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, G
 
 bool SelectionRect::on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event)
 {
-  if (!drag_) {
+  if (drag_mode_ == DragMode::NONE) {
     return false;
   }
 
-  drag_ = false;
+  drag_mode_ = DragMode::NONE;
   item->get_canvas()->pointer_ungrab(item, event->time);
 
   return true;
@@ -109,7 +110,7 @@ bool SelectionRect::on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, 
 {
   item->get_canvas()->get_window()->set_cursor(move_cursor_);
 
-  if (!drag_) {
+  if (drag_mode_ == DragMode::NONE) {
     return false;
   }
 

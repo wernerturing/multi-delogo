@@ -40,6 +40,13 @@ namespace mdl {
   };
 
 
+  enum class DragMode
+  {
+    NONE,
+    MOVE
+  };
+
+
   class SelectionRect : public Goocanvas::Rect
   {
   protected:
@@ -49,7 +56,7 @@ namespace mdl {
     static Glib::RefPtr<SelectionRect> create(gdouble x=0.0, gdouble y=0.0, gdouble width=0.0, gdouble height=0.0);
 
   private:
-    bool drag_;
+    DragMode drag_mode_;
     gdouble start_x_;
     gdouble start_y_;
     gdouble drag_x_;
@@ -62,6 +69,9 @@ namespace mdl {
     bool on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventMotion* event);
 
     bool on_leave_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventCrossing* event);
+
+
+    friend class SelectionRectTestFixture;
   };
 }
 
