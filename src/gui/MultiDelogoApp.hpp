@@ -37,6 +37,8 @@ namespace mdl {
                  const Glib::ustring& hint);
 
   private:
+    const static std::string EXTENSION_;
+
     void create_movie_window(const Glib::RefPtr<Gio::File>& file);
     void register_window(Gtk::ApplicationWindow* window);
 

@@ -31,9 +31,11 @@
 using namespace mdl;
 
 
-MovieWindow::MovieWindow(std::unique_ptr<fg::FilterData> filter_data,
+MovieWindow::MovieWindow(const std::string& project_file,
+                         std::unique_ptr<fg::FilterData> filter_data,
                          const Glib::RefPtr<FrameProvider>& frame_provider)
-  : filter_data_(std::move(filter_data))
+  : project_file_(project_file)
+  , filter_data_(std::move(filter_data))
   , frame_provider_(frame_provider)
   , number_of_frames_(frame_provider->get_number_of_frames())
   , frame_view_(frame_provider->get_frame_width(), frame_provider->get_frame_height())

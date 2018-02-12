@@ -35,6 +35,9 @@
 using namespace mdl;
 
 
+const std::string MultiDelogoApp::EXTENSION_ = "mdl";
+
+
 MultiDelogoApp::MultiDelogoApp()
   : Gtk::Application("wt.multi-delogo", Gio::APPLICATION_HANDLES_OPEN) {
 }
@@ -71,14 +74,18 @@ void MultiDelogoApp::create_movie_window(const Glib::RefPtr<Gio::File>& gfile)
     return;
   }
 
+  std::string project_file;
   std::unique_ptr<fg::FilterData> filter_data(new fg::FilterData());
   try {
     filter_data->load(file_stream);
+    project_file = file;
   } catch (fg::InvalidFilterDataException& e) {
     file_stream.close();
 
     filter_data = std::unique_ptr<fg::FilterData>(new fg::FilterData());
     filter_data->set_movie_file(file);
+
+    project_file = file + "." + EXTENSION_;
   } catch (fg::Exception& e) {
     auto msg = Glib::ustring::compose(_("Invalid data in file %1"), file);
     Gtk::MessageDialog dlg(msg, false, Gtk::MESSAGE_ERROR);
@@ -89,7 +96,9 @@ void MultiDelogoApp::create_movie_window(const Glib::RefPtr<Gio::File>& gfile)
 
   try {
     auto frame_provider = create_frame_provider(filter_data->movie_file());
-    MovieWindow* window = new MovieWindow(std::move(filter_data), frame_provider);
+    MovieWindow* window = new MovieWindow(project_file,
+                                          std::move(filter_data),
+                                          frame_provider);
     register_window(window);
   } catch (const VideoNotOpenedException& e) {
     auto msg = Glib::ustring::compose(_("File %1 not recognized as video or multi-delogo data"), filter_data->movie_file());
