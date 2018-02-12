@@ -149,6 +149,11 @@ Rectangle SelectionRect::get_new_coordinates(Point drag_point)
     ret.y = start_coordinates_.y + rel_y;
     break;
 
+  case DragMode::RESIZE_BR:
+    ret.width = start_coordinates_.width + rel_x;
+    ret.height = start_coordinates_.height + rel_y;
+    break;
+
   default:
     break; // Do nothing
   }
@@ -163,10 +168,10 @@ bool SelectionRect::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, G
     return false;
   }
 
-  drag_mode_ = DragMode::MOVE;
   start_coordinates_ = get_coordinates();
   drag_start_.x = event->x;
   drag_start_.y = event->y;
+  drag_mode_ = get_drag_mode_for_point(to_inside_coordinates(drag_start_));
 
   item->get_canvas()->pointer_grab(item,
                                    Gdk::POINTER_MOTION_MASK | Gdk::POINTER_MOTION_HINT_MASK | Gdk::BUTTON_RELEASE_MASK,

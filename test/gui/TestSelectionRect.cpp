@@ -127,4 +127,17 @@ BOOST_AUTO_TEST_CASE(should_calculate_new_position_for_move,
   BOOST_CHECK_EQUAL(ret.height, 50.0);
 }
 
+
+BOOST_AUTO_TEST_CASE(should_calculate_new_position_for_resize_br,
+                     * boost::unit_test_framework::tolerance(0.00001))
+{
+  start_drag(DragMode::RESIZE_BR, {.x = 104, .y = 57});
+
+  Rectangle ret = get_new_coordinates({.x = 100, .y = 79});
+  BOOST_CHECK_EQUAL(ret.x, 10.0);
+  BOOST_CHECK_EQUAL(ret.y, 15.0);
+  BOOST_CHECK_EQUAL(ret.width, 96.0);
+  BOOST_CHECK_EQUAL(ret.height, 72.0);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
