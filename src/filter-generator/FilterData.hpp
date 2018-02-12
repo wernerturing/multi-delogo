@@ -31,7 +31,6 @@ namespace fg {
   {
   public:
     FilterData();
-    FilterData(const std::string& movie_file);
 
     void set_movie_file(const std::string& movie_file);
     void set_jump_size(int jump_size);

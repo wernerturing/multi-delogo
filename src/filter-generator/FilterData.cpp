@@ -36,13 +36,6 @@ FilterData::FilterData()
 }
 
 
-FilterData::FilterData(const std::string& movie_file)
-  : movie_file_(movie_file)
-  , jump_size_(500)
-{
-}
-
-
 void FilterData::set_movie_file(const std::string& movie_file)
 {
   movie_file_ = movie_file;
