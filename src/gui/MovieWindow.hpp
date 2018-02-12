@@ -59,6 +59,8 @@ namespace mdl {
     void on_frame_number_activate();
     bool on_frame_number_input(GdkEventFocus*);
     bool on_key_press(GdkEventKey* key_event);
+
+    void on_zoom(int increment);
   };
 }
 

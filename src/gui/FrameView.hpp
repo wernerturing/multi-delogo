@@ -50,6 +50,8 @@ namespace mdl {
 
     void set_image(Glib::RefPtr<Gdk::Pixbuf> pixbuf);
 
+    void set_zoom(int level);
+
   private:
     Goocanvas::Canvas canvas_;
     Glib::RefPtr<Goocanvas::Image> image_;

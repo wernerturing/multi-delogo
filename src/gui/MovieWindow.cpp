@@ -127,6 +127,15 @@ Gtk::Box* MovieWindow::create_zoom_box()
   btn_zoom_in_.set_sensitive(false);
   box->pack_start(btn_zoom_in_, false, false);
 
+  btn_zoom_out_.signal_clicked().connect(
+    sigc::bind<int>(
+      sigc::mem_fun(*this, &MovieWindow::on_zoom),
+      -10));
+  btn_zoom_in_.signal_clicked().connect(
+    sigc::bind<int>(
+      sigc::mem_fun(*this, &MovieWindow::on_zoom),
+      10));
+
   return box;
 }
 
@@ -201,4 +210,17 @@ bool MovieWindow::on_key_press(GdkEventKey* key_event)
   }
 
   return false;
+}
+
+
+void MovieWindow::on_zoom(int increment)
+{
+  zoom_ += increment;
+
+  btn_zoom_out_.set_sensitive(zoom_ > 10);
+  btn_zoom_in_.set_sensitive(zoom_ < 100);
+
+  lbl_zoom_.set_text(Glib::ustring::compose("%1%%", zoom_));
+
+  frame_view_.set_zoom(zoom_);
 }
