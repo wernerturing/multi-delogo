@@ -29,6 +29,7 @@ const gdouble SelectionRect::RESIZE_MARGIN_ = 10;
 
 FrameView::FrameView(int width, int height)
   : Gtk::ScrolledWindow()
+  , drag_(false)
 {
   canvas_.set_bounds(0, 0, width, height);
   canvas_.property_integer_layout() = true;
@@ -36,10 +37,17 @@ FrameView::FrameView(int width, int height)
   auto root = canvas_.get_root_item();
 
   image_ = Goocanvas::Image::create(0, 0);
+  image_->signal_button_press_event().connect(sigc::mem_fun(*this, &FrameView::on_button_press));
+  image_->signal_button_release_event().connect(sigc::mem_fun(*this, &FrameView::on_button_release));
+  image_->signal_motion_notify_event().connect(sigc::mem_fun(*this, &FrameView::on_motion_notify));
   root->add_child(image_);
 
   rect_ = SelectionRect::create(100, 50, 150, 30);
+  rect_->enable_drag_and_drop();
   root->add_child(rect_);
+
+  temp_rect_ = SelectionRect::create();
+  root->add_child(temp_rect_);
 
   add(canvas_);
 }
@@ -51,15 +59,72 @@ void FrameView::set_image(Glib::RefPtr<Gdk::Pixbuf> pixbuf)
 }
 
 
+bool FrameView::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event)
+{
+  if (event->button != 1) {
+    return false;
+  }
+
+  drag_ = true;
+  temp_rect_->set_coordinates({.x = event->x, .y = event->y,
+                               .width = 1, .height = 1});
+  temp_rect_->property_visibility() = Goocanvas::ITEM_VISIBLE;
+  drag_start_.x = event->x;
+  drag_start_.y = event->y;
+
+  item->get_canvas()->pointer_grab(item,
+                                   Gdk::POINTER_MOTION_MASK | Gdk::POINTER_MOTION_HINT_MASK | Gdk::BUTTON_RELEASE_MASK,
+                                   event->time);
+
+  return true;
+}
+
+
+bool FrameView::on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event)
+{
+  if (!drag_) {
+    return false;
+  }
+
+  drag_ = false;
+  item->get_canvas()->pointer_ungrab(item, event->time);
+
+  rect_->set_coordinates(temp_rect_->get_coordinates());
+  rect_->property_visibility() = Goocanvas::ITEM_VISIBLE;
+  temp_rect_->property_visibility() = Goocanvas::ITEM_HIDDEN;
+
+  return true;
+}
+
+
+bool FrameView::on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventMotion* event)
+{
+  if (!drag_) {
+    return false;
+  }
+
+  temp_rect_->set_coordinates({.x = drag_start_.x, .y = drag_start_.y,
+                               .width = event->x - drag_start_.x,
+                               .height = event->y - drag_start_.y});
+  return true;
+}
+
+
 SelectionRect::SelectionRect(gdouble x, gdouble y, gdouble width, gdouble height)
   : Goocanvas::Rect(x, y, width, height)
   , drag_mode_(DragMode::NONE)
 {
+  property_visibility() = Goocanvas::ITEM_HIDDEN;
+
   property_line_width() = 1;
   property_fill_color_rgba() = 0x00000060;
   GooCanvasLineDash* dashed = goo_canvas_line_dash_new(2, 5.0, 5.0);
   property_line_dash() = Goocanvas::LineDash(dashed, false);
+}
 
+
+void SelectionRect::enable_drag_and_drop()
+{
   signal_button_press_event().connect(sigc::mem_fun(*this, &SelectionRect::on_button_press));
   signal_button_release_event().connect(sigc::mem_fun(*this, &SelectionRect::on_button_release));
   signal_motion_notify_event().connect(sigc::mem_fun(*this, &SelectionRect::on_motion_notify));

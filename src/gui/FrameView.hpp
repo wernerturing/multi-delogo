@@ -26,27 +26,6 @@
 namespace mdl {
   class SelectionRect;
 
-  class FrameView : public Gtk::ScrolledWindow
-  {
-  public:
-    FrameView(int width, int height);
-
-    void set_image(Glib::RefPtr<Gdk::Pixbuf> pixbuf);
-
-  private:
-    Goocanvas::Canvas canvas_;
-    Glib::RefPtr<Goocanvas::Image> image_;
-    Glib::RefPtr<SelectionRect> rect_;
-  };
-
-
-  enum class DragMode
-  {
-    NONE,
-    MOVE,
-    RESIZE_BR,
-  };
-
 
   struct Point
   {
@@ -64,6 +43,37 @@ namespace mdl {
   };
 
 
+  class FrameView : public Gtk::ScrolledWindow
+  {
+  public:
+    FrameView(int width, int height);
+
+    void set_image(Glib::RefPtr<Gdk::Pixbuf> pixbuf);
+
+  private:
+    Goocanvas::Canvas canvas_;
+    Glib::RefPtr<Goocanvas::Image> image_;
+    Glib::RefPtr<SelectionRect> rect_;
+    Glib::RefPtr<SelectionRect> temp_rect_;
+
+    bool drag_;
+    Point drag_start_;
+
+
+    bool on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
+    bool on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
+    bool on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventMotion* event);
+  };
+
+
+  enum class DragMode
+  {
+    NONE,
+    MOVE,
+    RESIZE_BR,
+  };
+
+
   class SelectionRect : public Goocanvas::Rect
   {
   protected:
@@ -71,6 +81,8 @@ namespace mdl {
 
   public:
     static Glib::RefPtr<SelectionRect> create(gdouble x=0.0, gdouble y=0.0, gdouble width=0.0, gdouble height=0.0);
+    void enable_drag_and_drop();
+
     Rectangle get_coordinates();
     void set_coordinates(Rectangle coordinates);
 
