@@ -16,8 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <cerrno>
+#include <string>
+#include <fstream>
+
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
+
+#include "filter-generator/FilterData.hpp"
+#include "filter-generator/Exceptions.hpp"
 
 #include "common/Exceptions.hpp"
 #include "common/FrameProvider.hpp"
@@ -51,16 +58,45 @@ void MultiDelogoApp::on_open(const Gio::Application::type_vec_files& files,
 }
 
 
-void MultiDelogoApp::create_movie_window(const Glib::RefPtr<Gio::File>& file)
+void MultiDelogoApp::create_movie_window(const Glib::RefPtr<Gio::File>& gfile)
 {
-  try {
-    auto frame_provider = create_frame_provider(file->get_path());
-    MovieWindow* window = new MovieWindow(frame_provider);
-    register_window(window);
-  } catch (const VideoNotOpenedException& e) {
-    auto msg = Glib::ustring::compose(_("Could not open file %1"), file->get_path());
+  auto file = gfile->get_path();
+
+  std::ifstream file_stream(file);
+  if (!file_stream.is_open()) {
+    auto msg = Glib::ustring::compose(_("Could not open file %1: %2"),
+                                      file, Glib::strerror(errno));
     Gtk::MessageDialog dlg(msg, false, Gtk::MESSAGE_ERROR);
     dlg.run();
+    return;
+  }
+
+  std::unique_ptr<fg::FilterData> filter_data(new fg::FilterData());
+  try {
+    filter_data->load(file_stream);
+  } catch (fg::InvalidFilterDataException& e) {
+    file_stream.close();
+
+    filter_data = std::unique_ptr<fg::FilterData>(new fg::FilterData());
+    filter_data->set_movie_file(file);
+  } catch (fg::Exception& e) {
+    auto msg = Glib::ustring::compose(_("Invalid data in file %1"), file);
+    Gtk::MessageDialog dlg(msg, false, Gtk::MESSAGE_ERROR);
+    dlg.run();
+
+    return;
+  }
+
+  try {
+    auto frame_provider = create_frame_provider(filter_data->movie_file());
+    MovieWindow* window = new MovieWindow(std::move(filter_data), frame_provider);
+    register_window(window);
+  } catch (const VideoNotOpenedException& e) {
+    auto msg = Glib::ustring::compose(_("File %1 not recognized as video or multi-delogo data"), filter_data->movie_file());
+    Gtk::MessageDialog dlg(msg, false, Gtk::MESSAGE_ERROR);
+    dlg.run();
+
+    return;
   }
 }
 

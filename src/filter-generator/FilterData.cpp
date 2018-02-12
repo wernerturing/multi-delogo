@@ -31,6 +31,7 @@ const std::string FilterData::HEADER_ = "MDLV1";
 
 
 FilterData::FilterData()
+  : jump_size_(500)
 {
 }
 
@@ -39,6 +40,12 @@ FilterData::FilterData(const std::string& movie_file)
   : movie_file_(movie_file)
   , jump_size_(500)
 {
+}
+
+
+void FilterData::set_movie_file(const std::string& movie_file)
+{
+  movie_file_ = movie_file;
 }
 
 void FilterData::set_jump_size(int jump_size)

@@ -34,11 +34,13 @@ noinst_HEADERS = common/Exceptions.hpp \
 localedir = $(datadir)/locale
 
 multi_delogo_CPPFLAGS = -DLOCALEDIR=\"$(localedir)\" \
+                        -I.. \
                         $(GTKMM_CFLAGS) \
                         $(GOOCANVASMM_CFLAGS)
 
 frame_provider_lib = ../opencv-frame-provider/libopencv-frame-provider.a $(OPENCV_LIBS)
 
-multi_delogo_LDADD = $(frame_provider_lib) \
+multi_delogo_LDADD = ../filter-generator/libfilter-generator.a \
+                     $(frame_provider_lib) \
                      $(GTKMM_LIBS) \
                      $(GOOCANVASMM_LIBS)

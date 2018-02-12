@@ -16,6 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <memory>
+
 #include <boost/algorithm/clamp.hpp>
 
 #include <gtkmm.h>
@@ -29,8 +31,10 @@
 using namespace mdl;
 
 
-MovieWindow::MovieWindow(const Glib::RefPtr<FrameProvider>& frame_provider)
-  : frame_provider_(frame_provider)
+MovieWindow::MovieWindow(std::unique_ptr<fg::FilterData> filter_data,
+                         const Glib::RefPtr<FrameProvider>& frame_provider)
+  : filter_data_(std::move(filter_data))
+  , frame_provider_(frame_provider)
   , number_of_frames_(frame_provider->get_number_of_frames())
   , frame_view_(frame_provider->get_frame_width(), frame_provider->get_frame_height())
   , zoom_(100)

@@ -19,9 +19,12 @@
 #ifndef MDL_MOVIE_WINDOW_H
 #define MDL_MOVIE_WINDOW_H
 
+#include <memory>
+
 #include <gtkmm.h>
 
 #include "common/FrameProvider.hpp"
+#include "filter-generator/FilterData.hpp"
 
 #include "NumericEntry.hpp"
 #include "FrameView.hpp"
@@ -31,9 +34,12 @@ namespace mdl {
   class MovieWindow : public Gtk::ApplicationWindow
   {
   public:
-    MovieWindow(const Glib::RefPtr<FrameProvider>& frame_provider);
+    MovieWindow(std::unique_ptr<fg::FilterData> filter_data,
+                const Glib::RefPtr<FrameProvider>& frame_provider);
 
   private:
+    std::unique_ptr<fg::FilterData> filter_data_;
+
     Glib::RefPtr<FrameProvider> frame_provider_;
     int number_of_frames_;
     int frame_number_;
