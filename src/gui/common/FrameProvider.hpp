@@ -32,6 +32,8 @@ namespace mdl {
   public:
     virtual Glib::RefPtr<Gdk::Pixbuf> get_frame(int frame_number) = 0;
 
+    virtual int get_frame_width() = 0;
+    virtual int get_frame_height() = 0;
     virtual int get_number_of_frames() = 0;
   };
 

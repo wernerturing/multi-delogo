@@ -32,13 +32,12 @@ using namespace mdl;
 MovieWindow::MovieWindow(const Glib::RefPtr<FrameProvider>& frame_provider)
   : frame_provider_(frame_provider)
   , number_of_frames_(frame_provider->get_number_of_frames())
+  , frame_view_(frame_provider->get_frame_width(), frame_provider->get_frame_height())
 {
   set_default_size(600, 600);
 
   Gtk::Box* vbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 8));
-  vbox->pack_start(scroll_, true, true);
-
-  scroll_.add(image_);
+  vbox->pack_start(frame_view_, true, true);
 
   vbox->pack_start(*create_navigation_box(), false, false);
 
@@ -114,7 +113,7 @@ void MovieWindow::change_displayed_frame(int new_frame_number)
     new_frame_number = boost::algorithm::clamp(new_frame_number, 1, number_of_frames_);
 
     auto pixbuf = frame_provider_->get_frame(new_frame_number - 1);
-    image_.set(pixbuf);
+    frame_view_.set_image(pixbuf);
 
     frame_number_ = new_frame_number;
     txt_frame_number_.set_value(frame_number_);
