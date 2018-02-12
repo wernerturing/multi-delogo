@@ -55,6 +55,15 @@ namespace mdl {
   };
 
 
+  struct Rectangle
+  {
+    gdouble x;
+    gdouble y;
+    gdouble width;
+    gdouble height;
+  };
+
+
   class SelectionRect : public Goocanvas::Rect
   {
   protected:
@@ -62,15 +71,15 @@ namespace mdl {
 
   public:
     static Glib::RefPtr<SelectionRect> create(gdouble x=0.0, gdouble y=0.0, gdouble width=0.0, gdouble height=0.0);
+    Rectangle get_coordinates();
+    void set_coordinates(Rectangle coordinates);
 
   private:
     const static gdouble RESIZE_MARGIN_;
 
     DragMode drag_mode_;
-    gdouble start_x_;
-    gdouble start_y_;
-    gdouble drag_x_;
-    gdouble drag_y_;
+    Rectangle start_coordinates_;
+    Point drag_start_;
 
     Glib::RefPtr<Gdk::Cursor> move_cursor_;
     Glib::RefPtr<Gdk::Cursor> resize_br_cursor_;
@@ -79,6 +88,9 @@ namespace mdl {
     Point to_inside_coordinates(const Point& point);
     DragMode get_drag_mode_for_point(const Point& point);
     Glib::RefPtr<Gdk::Cursor> get_cursor(DragMode mode);
+
+    void start_drag(DragMode mode, Point start);
+    Rectangle get_new_coordinates(Point drag_point);
 
     bool on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
     bool on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);

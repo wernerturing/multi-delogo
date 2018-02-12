@@ -77,6 +77,26 @@ Glib::RefPtr<SelectionRect> SelectionRect::create(gdouble x, gdouble y, gdouble 
 }
 
 
+Rectangle SelectionRect::get_coordinates()
+{
+  Rectangle ret;
+  ret.x = property_x();
+  ret.y = property_y();
+  ret.width = property_width();
+  ret.height = property_height();
+  return ret;
+}
+
+
+void SelectionRect::set_coordinates(Rectangle coordinates)
+{
+  property_x() = coordinates.x;
+  property_y() = coordinates.y;
+  property_width() = coordinates.width;
+  property_height() = coordinates.height;
+}
+
+
 Point SelectionRect::to_inside_coordinates(const Point& point)
 {
   return {.x = point.x - property_x(), .y = point.y - property_y()};
@@ -109,6 +129,34 @@ Glib::RefPtr<Gdk::Cursor> SelectionRect::get_cursor(DragMode mode)
 }
 
 
+void SelectionRect::start_drag(DragMode mode, Point start)
+{
+  drag_mode_ = mode;
+  start_coordinates_ = get_coordinates();
+  drag_start_ = start;
+}
+
+
+Rectangle SelectionRect::get_new_coordinates(Point drag_point)
+{
+  Rectangle ret = start_coordinates_;
+  gdouble rel_x = drag_point.x - drag_start_.x;
+  gdouble rel_y = drag_point.y - drag_start_.y;
+
+  switch (drag_mode_) {
+  case DragMode::MOVE:
+    ret.x = start_coordinates_.x + rel_x;
+    ret.y = start_coordinates_.y + rel_y;
+    break;
+
+  default:
+    break; // Do nothing
+  }
+
+  return ret;
+}
+
+
 bool SelectionRect::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event)
 {
   if (event->button != 1) {
@@ -116,13 +164,13 @@ bool SelectionRect::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, G
   }
 
   drag_mode_ = DragMode::MOVE;
-  start_x_ = item->property_x();
-  start_y_ = item->property_y();
-  drag_x_ = event->x;
-  drag_y_ = event->y;
+  start_coordinates_ = get_coordinates();
+  drag_start_.x = event->x;
+  drag_start_.y = event->y;
 
   item->get_canvas()->pointer_grab(item,
                                    Gdk::POINTER_MOTION_MASK | Gdk::POINTER_MOTION_HINT_MASK | Gdk::BUTTON_RELEASE_MASK,
+                                   get_cursor(drag_mode_),
                                    event->time);
 
   return true;
@@ -152,10 +200,7 @@ bool SelectionRect::on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, 
     return false;
   }
 
-  gdouble rel_x = event->x - drag_x_;
-  gdouble rel_y = event->y - drag_y_;
-  item->property_x() = start_x_ + rel_x;
-  item->property_y() = start_y_ + rel_y;
+  set_coordinates(get_new_coordinates({.x = event->x, .y = event->y}));
 
   return true;
 }
