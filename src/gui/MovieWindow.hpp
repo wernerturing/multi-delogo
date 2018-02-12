@@ -43,8 +43,14 @@ namespace mdl {
     NumericEntry txt_frame_number_;
     NumericEntry txt_jump_size_;
 
+    int zoom_;
+    Gtk::Label lbl_zoom_;
+    Gtk::Button btn_zoom_out_;
+    Gtk::Button btn_zoom_in_;
+
 
     Gtk::Box* create_navigation_box();
+    Gtk::Box* create_zoom_box();
 
     void change_displayed_frame(int new_frame_number);
 

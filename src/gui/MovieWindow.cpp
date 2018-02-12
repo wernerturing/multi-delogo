@@ -33,13 +33,20 @@ MovieWindow::MovieWindow(const Glib::RefPtr<FrameProvider>& frame_provider)
   : frame_provider_(frame_provider)
   , number_of_frames_(frame_provider->get_number_of_frames())
   , frame_view_(frame_provider->get_frame_width(), frame_provider->get_frame_height())
+  , zoom_(100)
+  , lbl_zoom_("100%")
 {
-  set_default_size(600, 600);
+  set_default_size(900, 600);
 
   Gtk::Box* vbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 8));
   vbox->pack_start(frame_view_, true, true);
 
-  vbox->pack_start(*create_navigation_box(), false, false);
+  Gtk::Box* bottom_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
+  bottom_box->pack_start(*create_navigation_box(), false, false);
+  bottom_box->pack_start(*Gtk::manage(new Gtk::Label()), true, true, 8);
+  bottom_box->pack_start(*create_zoom_box(), false, false);
+
+  vbox->pack_start(*bottom_box, false, false);
 
   add(*vbox);
 
@@ -102,6 +109,23 @@ Gtk::Box* MovieWindow::create_navigation_box()
 
   txt_jump_size_.set_width_chars(6);
   box->pack_start(txt_jump_size_, false, false);
+
+  return box;
+}
+
+
+Gtk::Box* MovieWindow::create_zoom_box()
+{
+  Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
+
+  btn_zoom_out_.set_image_from_icon_name("zoom-out");
+  box->pack_start(btn_zoom_out_, false, false);
+
+  box->pack_start(lbl_zoom_);
+
+  btn_zoom_in_.set_image_from_icon_name("zoom-in");
+  btn_zoom_in_.set_sensitive(false);
+  box->pack_start(btn_zoom_in_, false, false);
 
   return box;
 }
