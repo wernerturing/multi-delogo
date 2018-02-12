@@ -59,6 +59,12 @@ void FrameView::set_image(Glib::RefPtr<Gdk::Pixbuf> pixbuf)
 }
 
 
+void FrameView::set_zoom(int level)
+{
+  canvas_.set_scale(level / 100.0);
+}
+
+
 bool FrameView::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event)
 {
   if (event->button != 1) {
