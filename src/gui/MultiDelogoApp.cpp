@@ -194,7 +194,10 @@ void MultiDelogoApp::select_and_open_file(const std::string& title,
   dlg.add_filter(filter);
   dlg.add_filter(filter_all);
 
-  if (dlg.run() == Gtk::RESPONSE_OK) {
+  int response = dlg.run();
+  dlg.hide();
+
+  if (response == Gtk::RESPONSE_OK) {
     create_movie_window(dlg.get_file());
   }
 }
