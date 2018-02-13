@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <cstring>
 #include <string>
 #include <istream>
 #include <ostream>
@@ -67,11 +68,12 @@ FilterList& FilterData::filter_list()
 
 void FilterData::load(std::istream& in)
 {
-  std::string header;
-  std::getline(in, header);
-  if (header != HEADER_) {
+  char header[HEADER_.size()];
+  in.read(header, HEADER_.size());
+  if (memcmp(header, HEADER_.c_str(), HEADER_.size()) != 0) {
     throw InvalidFilterDataException();
   }
+  in.read(header, 1); // skip new line
 
   std::getline(in, movie_file_);
 
