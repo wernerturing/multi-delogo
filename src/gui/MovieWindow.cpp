@@ -44,6 +44,8 @@ MovieWindow::MovieWindow(const std::string& project_file,
   , lbl_zoom_("100%")
 {
   set_default_size(900, 600);
+  set_title(Glib::ustring::compose("multi-delogo: %1",
+                                   Glib::path_get_basename(project_file)));
 
   Gtk::Box* vbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 8));
 
