@@ -27,6 +27,7 @@
 #include "common/FrameProvider.hpp"
 
 #include "MovieWindow.hpp"
+#include "MultiDelogoApp.hpp"
 
 using namespace mdl;
 
@@ -57,7 +58,7 @@ MovieWindow::MovieWindow(const std::string& project_file,
   add(*vbox);
 
   change_displayed_frame(1000);
-  txt_jump_size_.set_value(500);
+  txt_jump_size_.set_value(filter_data_->jump_size());
 
   signal_key_press_event().connect(sigc::mem_fun(*this, &MovieWindow::on_key_press));
 }
@@ -229,4 +230,27 @@ void MovieWindow::on_zoom(int increment)
   lbl_zoom_.set_text(Glib::ustring::compose("%1%%", zoom_));
 
   frame_view_.set_zoom(zoom_);
+}
+
+
+void MovieWindow::on_hide()
+{
+  filter_data_->set_jump_size(txt_jump_size_.get_value());
+  get_application()->save_project(project_file_, filter_data_.get());
+}
+
+
+Glib::RefPtr<MultiDelogoApp> MovieWindow::get_application()
+{
+  Glib::RefPtr<MultiDelogoApp> app
+    = Glib::RefPtr<MultiDelogoApp>::cast_dynamic(ApplicationWindow::get_application());
+  return app;
+}
+
+
+Glib::RefPtr<const MultiDelogoApp> MovieWindow::get_application() const
+{
+  Glib::RefPtr<const MultiDelogoApp> app
+    = Glib::RefPtr<const MultiDelogoApp>::cast_dynamic(ApplicationWindow::get_application());
+  return app;
 }

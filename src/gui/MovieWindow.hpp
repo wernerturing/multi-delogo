@@ -32,12 +32,18 @@
 
 
 namespace mdl {
+  class MultiDelogoApp;
+
   class MovieWindow : public Gtk::ApplicationWindow
   {
   public:
     MovieWindow(const std::string& project_file,
                 std::unique_ptr<fg::FilterData> filter_data,
                 const Glib::RefPtr<FrameProvider>& frame_provider);
+
+  protected:
+    Glib::RefPtr<MultiDelogoApp> get_application();
+    Glib::RefPtr<const MultiDelogoApp> get_application() const;
 
   private:
     std::string project_file_;
@@ -71,6 +77,8 @@ namespace mdl {
     bool on_key_press(GdkEventKey* key_event);
 
     void on_zoom(int increment);
+
+    void on_hide() override;
   };
 }
 

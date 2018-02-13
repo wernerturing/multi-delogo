@@ -21,6 +21,8 @@
 
 #include <gtkmm.h>
 
+#include "filter-generator/FilterData.hpp"
+
 
 namespace mdl {
   class MultiDelogoApp : public Gtk::Application
@@ -30,6 +32,8 @@ namespace mdl {
 
   public:
     static Glib::RefPtr<MultiDelogoApp> create();
+
+    void save_project(const std::string& project_file, fg::FilterData* filter_data);
 
   protected:
     void on_activate();

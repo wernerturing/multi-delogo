@@ -125,3 +125,18 @@ void MultiDelogoApp::register_window(Gtk::ApplicationWindow* window) {
 void MultiDelogoApp::on_hide_window(Gtk::ApplicationWindow* window) {
   delete window;
 }
+
+
+void MultiDelogoApp::save_project(const std::string& project_file, fg::FilterData* filter_data)
+{
+  std::ofstream file_stream(project_file);
+  if (!file_stream.is_open()) {
+    auto msg = Glib::ustring::compose(_("Could not open file %1: %2"),
+                                      project_file, Glib::strerror(errno));
+    Gtk::MessageDialog dlg(msg, false, Gtk::MESSAGE_ERROR);
+    dlg.run();
+    return;
+  }
+
+  filter_data->save(file_stream);
+}
