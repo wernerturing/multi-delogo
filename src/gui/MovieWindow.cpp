@@ -64,29 +64,34 @@ Gtk::Box* MovieWindow::create_navigation_box()
   txt_frame_number_.set_width_chars(6);
 
   Gtk::Button* btn_prev = Gtk::manage(new Gtk::Button("<"));
+  btn_prev->set_tooltip_text(_("Move back one frame (s)"));
   btn_prev->signal_clicked().connect(
     sigc::bind<int>(
       sigc::mem_fun(*this, &MovieWindow::on_single_step_frame),
       -1));
 
   Gtk::Button* btn_next = Gtk::manage(new Gtk::Button(">"));
+  btn_next->set_tooltip_text(_("Move forward one frame (d)"));
   btn_next->signal_clicked().connect(
     sigc::bind<int>(
       sigc::mem_fun(*this, &MovieWindow::on_single_step_frame),
       1));
 
   Gtk::Button* btn_prev_jump = Gtk::manage(new Gtk::Button("<<"));
+  btn_prev_jump->set_tooltip_text(_("Move back the number of frames specified in \"jump size\" (a)"));
   btn_prev_jump->signal_clicked().connect(
     sigc::bind<int>(
       sigc::mem_fun(*this, &MovieWindow::on_jump_step_frame),
       -1));
 
   Gtk::Button* btn_next_jump = Gtk::manage(new Gtk::Button(">>"));
+  btn_next_jump->set_tooltip_text(_("Move forward the number of frames specified in \"jump size\" (f)"));
   btn_next_jump->signal_clicked().connect(
     sigc::bind<int>(
       sigc::mem_fun(*this, &MovieWindow::on_jump_step_frame),
       1));
 
+  txt_frame_number_.set_tooltip_text(_("Current frame number"));
   txt_frame_number_.signal_activate().connect(
     sigc::mem_fun(*this, &MovieWindow::on_frame_number_activate));
   txt_frame_number_.signal_focus_out_event().connect(
@@ -108,6 +113,7 @@ Gtk::Box* MovieWindow::create_navigation_box()
   box->pack_start(*lbl_jump_size, false, false);
 
   txt_jump_size_.set_width_chars(6);
+  txt_jump_size_.set_tooltip_text(_("Number of frames to jump when using << and >> buttons"));
   box->pack_start(txt_jump_size_, false, false);
 
   return box;
@@ -119,11 +125,13 @@ Gtk::Box* MovieWindow::create_zoom_box()
   Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
 
   btn_zoom_out_.set_image_from_icon_name("zoom-out");
+  btn_zoom_out_.set_tooltip_text(_("Make image smaller"));
   box->pack_start(btn_zoom_out_, false, false);
 
   box->pack_start(lbl_zoom_);
 
   btn_zoom_in_.set_image_from_icon_name("zoom-in");
+  btn_zoom_in_.set_tooltip_text(_("Make image larger"));
   btn_zoom_in_.set_sensitive(false);
   box->pack_start(btn_zoom_in_, false, false);
 
