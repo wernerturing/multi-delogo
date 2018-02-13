@@ -30,6 +30,7 @@
 #include "common/FrameProvider.hpp"
 
 #include "MultiDelogoApp.hpp"
+#include "InitialWindow.hpp"
 #include "MovieWindow.hpp"
 
 using namespace mdl;
@@ -56,7 +57,8 @@ Glib::RefPtr<MultiDelogoApp> MultiDelogoApp::create()
 
 void MultiDelogoApp::on_activate()
 {
-  printf("For now, provide a movie file as argument.\n");
+  InitialWindow* window = new InitialWindow();
+  register_window(window);
 }
 
 

@@ -21,14 +21,16 @@ multi_delogo_SOURCES = main.cpp \
                        MultiDelogoApp.cpp \
                        NumericEntry.cpp \
                        FrameView.cpp \
-                       MovieWindow.cpp
+                       MovieWindow.cpp \
+                       InitialWindow.cpp
 
 noinst_HEADERS = common/Exceptions.hpp \
                  common/FrameProvider.hpp \
                  MultiDelogoApp.hpp \
                  NumericEntry.hpp \
                  FrameView.hpp \
-                 MovieWindow.hpp
+                 MovieWindow.hpp \
+                 InitialWindow.hpp
 
 
 localedir = $(datadir)/locale
