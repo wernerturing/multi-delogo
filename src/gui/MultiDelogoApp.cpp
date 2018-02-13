@@ -35,26 +35,32 @@
 using namespace mdl;
 
 
+const std::string MultiDelogoApp::ACTION_OPEN = "app.open";
 const std::string MultiDelogoApp::EXTENSION_ = "mdl";
 
 
 MultiDelogoApp::MultiDelogoApp()
-  : Gtk::Application("wt.multi-delogo", Gio::APPLICATION_HANDLES_OPEN) {
+  : Gtk::Application("wt.multi-delogo", Gio::APPLICATION_HANDLES_OPEN)
+{
+  add_action("open", sigc::mem_fun(*this, &MultiDelogoApp::open_project));
 }
 
 
-Glib::RefPtr<MultiDelogoApp> MultiDelogoApp::create() {
+Glib::RefPtr<MultiDelogoApp> MultiDelogoApp::create()
+{
   return Glib::RefPtr<MultiDelogoApp>(new MultiDelogoApp());
 }
 
 
-void MultiDelogoApp::on_activate() {
+void MultiDelogoApp::on_activate()
+{
   printf("For now, provide a movie file as argument.\n");
 }
 
 
 void MultiDelogoApp::on_open(const Gio::Application::type_vec_files& files,
-                             const Glib::ustring& hint) {
+                             const Glib::ustring& hint)
+{
   for (Glib::RefPtr<Gio::File> file: files) {
     create_movie_window(file);
   }
@@ -110,7 +116,8 @@ void MultiDelogoApp::create_movie_window(const Glib::RefPtr<Gio::File>& gfile)
 }
 
 
-void MultiDelogoApp::register_window(Gtk::ApplicationWindow* window) {
+void MultiDelogoApp::register_window(Gtk::ApplicationWindow* window)
+{
   window->signal_hide().connect(
     sigc::bind<Gtk::ApplicationWindow*>(
       sigc::mem_fun(*this, &MultiDelogoApp::on_hide_window),
@@ -122,7 +129,8 @@ void MultiDelogoApp::register_window(Gtk::ApplicationWindow* window) {
 }
 
 
-void MultiDelogoApp::on_hide_window(Gtk::ApplicationWindow* window) {
+void MultiDelogoApp::on_hide_window(Gtk::ApplicationWindow* window)
+{
   delete window;
 }
 
@@ -140,3 +148,27 @@ void MultiDelogoApp::save_project(const std::string& project_file, fg::FilterDat
 
   filter_data->save(file_stream);
 }
+
+
+void MultiDelogoApp::open_project()
+{
+  Gtk::FileChooserDialog dlg(_("Open project"));
+  dlg.add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL);
+  dlg.add_button(_("_Open"), Gtk::RESPONSE_OK);
+
+  auto filter_mdl = Gtk::FileFilter::create();
+  filter_mdl->set_name(_("Project files"));
+  filter_mdl->add_pattern(Glib::ustring::compose("*.%1", EXTENSION_));
+
+  auto filter_all = Gtk::FileFilter::create();
+  filter_all->set_name(_("All files"));
+  filter_all->add_pattern("*");
+
+  dlg.add_filter(filter_mdl);
+  dlg.add_filter(filter_all);
+
+  if (dlg.run() == Gtk::RESPONSE_OK) {
+    create_movie_window(dlg.get_file());
+  }
+}
+

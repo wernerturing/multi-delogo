@@ -35,6 +35,8 @@ namespace mdl {
 
     void save_project(const std::string& project_file, fg::FilterData* filter_data);
 
+    const static std::string ACTION_OPEN;
+
   protected:
     void on_activate();
     void on_open(const Gio::Application::type_vec_files& files,
@@ -45,6 +47,8 @@ namespace mdl {
 
     void create_movie_window(const Glib::RefPtr<Gio::File>& file);
     void register_window(Gtk::ApplicationWindow* window);
+
+    void open_project();
 
     void on_hide_window(Gtk::ApplicationWindow* window);
   };
