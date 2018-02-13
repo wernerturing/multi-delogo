@@ -35,6 +35,7 @@ namespace mdl {
 
     void save_project(const std::string& project_file, fg::FilterData* filter_data);
 
+    const static std::string ACTION_NEW;
     const static std::string ACTION_OPEN;
 
   protected:
@@ -48,7 +49,10 @@ namespace mdl {
     void create_movie_window(const Glib::RefPtr<Gio::File>& file);
     void register_window(Gtk::ApplicationWindow* window);
 
+    void new_project();
     void open_project();
+    void select_and_open_file(const std::string& title,
+                              const Glib::RefPtr<Gtk::FileFilter>& filter);
 
     void on_hide_window(Gtk::ApplicationWindow* window);
   };

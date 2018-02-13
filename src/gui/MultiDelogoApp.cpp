@@ -35,6 +35,7 @@
 using namespace mdl;
 
 
+const std::string MultiDelogoApp::ACTION_NEW = "app.new";
 const std::string MultiDelogoApp::ACTION_OPEN = "app.open";
 const std::string MultiDelogoApp::EXTENSION_ = "mdl";
 
@@ -42,6 +43,7 @@ const std::string MultiDelogoApp::EXTENSION_ = "mdl";
 MultiDelogoApp::MultiDelogoApp()
   : Gtk::Application("wt.multi-delogo", Gio::APPLICATION_HANDLES_OPEN)
 {
+  add_action("new", sigc::mem_fun(*this, &MultiDelogoApp::new_project));
   add_action("open", sigc::mem_fun(*this, &MultiDelogoApp::open_project));
 }
 
@@ -150,25 +152,41 @@ void MultiDelogoApp::save_project(const std::string& project_file, fg::FilterDat
 }
 
 
+void MultiDelogoApp::new_project()
+{
+  auto filter_movies = Gtk::FileFilter::create();
+  filter_movies->set_name(_("Movies"));
+  filter_movies->add_mime_type("video/*");
+
+  select_and_open_file(_("Select video file"), filter_movies);
+}
+
+
 void MultiDelogoApp::open_project()
 {
-  Gtk::FileChooserDialog dlg(_("Open project"));
-  dlg.add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL);
-  dlg.add_button(_("_Open"), Gtk::RESPONSE_OK);
-
   auto filter_mdl = Gtk::FileFilter::create();
   filter_mdl->set_name(_("Project files"));
   filter_mdl->add_pattern(Glib::ustring::compose("*.%1", EXTENSION_));
+
+  select_and_open_file(_("Open project"), filter_mdl);
+}
+
+
+void MultiDelogoApp::select_and_open_file(const std::string& title,
+                                          const Glib::RefPtr<Gtk::FileFilter>& filter)
+{
+  Gtk::FileChooserDialog dlg(title);
+  dlg.add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL);
+  dlg.add_button(_("_Open"), Gtk::RESPONSE_OK);
 
   auto filter_all = Gtk::FileFilter::create();
   filter_all->set_name(_("All files"));
   filter_all->add_pattern("*");
 
-  dlg.add_filter(filter_mdl);
+  dlg.add_filter(filter);
   dlg.add_filter(filter_all);
 
   if (dlg.run() == Gtk::RESPONSE_OK) {
     create_movie_window(dlg.get_file());
   }
 }
-

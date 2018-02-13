@@ -71,6 +71,11 @@ MovieWindow::MovieWindow(const std::string& project_file,
 
 Gtk::Toolbar* MovieWindow::create_toolbar()
 {
+  Gtk::ToolButton* btn_new = Gtk::manage(new Gtk::ToolButton());
+  btn_new->set_tooltip_text(_("Create a new project"));
+  btn_new->set_icon_name("document-new");
+  gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_new->gobj()), MultiDelogoApp::ACTION_NEW.c_str());
+
   Gtk::ToolButton* btn_open = Gtk::manage(new Gtk::ToolButton());
   btn_open->set_tooltip_text(_("Open an existing project"));
   btn_open->set_icon_name("document-open");
@@ -83,6 +88,7 @@ Gtk::Toolbar* MovieWindow::create_toolbar()
   gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_save->gobj()), "win.save");
 
   Gtk::Toolbar* toolbar = Gtk::manage(new Gtk::Toolbar());
+  toolbar->append(*btn_new);
   toolbar->append(*btn_open);
   toolbar->append(*btn_save);
   return toolbar;
