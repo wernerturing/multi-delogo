@@ -43,6 +43,7 @@ const std::string MultiDelogoApp::EXTENSION_ = "mdl";
 
 MultiDelogoApp::MultiDelogoApp()
   : Gtk::Application("wt.multi-delogo", Gio::APPLICATION_HANDLES_OPEN)
+  , initial_window_(nullptr)
 {
   add_action("new", sigc::mem_fun(*this, &MultiDelogoApp::new_project));
   add_action("open", sigc::mem_fun(*this, &MultiDelogoApp::open_project));
@@ -57,8 +58,8 @@ Glib::RefPtr<MultiDelogoApp> MultiDelogoApp::create()
 
 void MultiDelogoApp::on_activate()
 {
-  InitialWindow* window = new InitialWindow();
-  register_window(window);
+  initial_window_ = new InitialWindow();
+  register_window(initial_window_);
 }
 
 
@@ -122,6 +123,11 @@ void MultiDelogoApp::create_movie_window(const Glib::RefPtr<Gio::File>& gfile)
 
 void MultiDelogoApp::register_window(Gtk::ApplicationWindow* window)
 {
+  if (window != initial_window_ && initial_window_) {
+    initial_window_->hide();
+    initial_window_ = nullptr; // Will be deleted in on_hide_window
+  }
+
   window->signal_hide().connect(
     sigc::bind<Gtk::ApplicationWindow*>(
       sigc::mem_fun(*this, &MultiDelogoApp::on_hide_window),
