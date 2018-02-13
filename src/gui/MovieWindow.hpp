@@ -65,6 +65,7 @@ namespace mdl {
     Gtk::Button btn_zoom_in_;
 
 
+    Gtk::Toolbar* create_toolbar();
     Gtk::Box* create_navigation_box();
     Gtk::Box* create_zoom_box();
 
@@ -77,6 +78,8 @@ namespace mdl {
     bool on_key_press(GdkEventKey* key_event);
 
     void on_zoom(int increment);
+
+    void on_save();
 
     void on_hide() override;
   };

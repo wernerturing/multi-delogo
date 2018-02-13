@@ -46,6 +46,9 @@ MovieWindow::MovieWindow(const std::string& project_file,
   set_default_size(900, 600);
 
   Gtk::Box* vbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 8));
+
+  vbox->pack_start(*create_toolbar(), false, false);
+
   vbox->pack_start(frame_view_, true, true);
 
   Gtk::Box* bottom_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
@@ -61,6 +64,20 @@ MovieWindow::MovieWindow(const std::string& project_file,
   txt_jump_size_.set_value(filter_data_->jump_size());
 
   signal_key_press_event().connect(sigc::mem_fun(*this, &MovieWindow::on_key_press));
+}
+
+
+Gtk::Toolbar* MovieWindow::create_toolbar()
+{
+  add_action("save", sigc::mem_fun(*this, &MovieWindow::on_save));
+  Gtk::ToolButton* btn_save = Gtk::manage(new Gtk::ToolButton());
+  btn_save->set_tooltip_text(_("Save current project"));
+  btn_save->set_icon_name("document-save");
+  gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_save->gobj()), "win.save");
+
+  Gtk::Toolbar* toolbar = Gtk::manage(new Gtk::Toolbar());
+  toolbar->append(*btn_save);
+  return toolbar;
 }
 
 
@@ -233,10 +250,16 @@ void MovieWindow::on_zoom(int increment)
 }
 
 
-void MovieWindow::on_hide()
+void MovieWindow::on_save()
 {
   filter_data_->set_jump_size(txt_jump_size_.get_value());
   get_application()->save_project(project_file_, filter_data_.get());
+}
+
+
+void MovieWindow::on_hide()
+{
+  on_save();
 }
 
 
