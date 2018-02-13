@@ -16,6 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <memory>
+
 #include <boost/algorithm/clamp.hpp>
 
 #include <gtkmm.h>
@@ -25,20 +27,30 @@
 #include "common/FrameProvider.hpp"
 
 #include "MovieWindow.hpp"
+#include "MultiDelogoApp.hpp"
 
 using namespace mdl;
 
 
-MovieWindow::MovieWindow(const Glib::RefPtr<FrameProvider>& frame_provider)
-  : frame_provider_(frame_provider)
+MovieWindow::MovieWindow(const std::string& project_file,
+                         std::unique_ptr<fg::FilterData> filter_data,
+                         const Glib::RefPtr<FrameProvider>& frame_provider)
+  : project_file_(project_file)
+  , filter_data_(std::move(filter_data))
+  , frame_provider_(frame_provider)
   , number_of_frames_(frame_provider->get_number_of_frames())
   , frame_view_(frame_provider->get_frame_width(), frame_provider->get_frame_height())
   , zoom_(100)
   , lbl_zoom_("100%")
 {
   set_default_size(900, 600);
+  set_title(Glib::ustring::compose("multi-delogo: %1",
+                                   Glib::path_get_basename(project_file)));
 
   Gtk::Box* vbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 8));
+
+  vbox->pack_start(*create_toolbar(), false, false);
+
   vbox->pack_start(frame_view_, true, true);
 
   Gtk::Box* bottom_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
@@ -51,9 +63,35 @@ MovieWindow::MovieWindow(const Glib::RefPtr<FrameProvider>& frame_provider)
   add(*vbox);
 
   change_displayed_frame(1000);
-  txt_jump_size_.set_value(500);
+  txt_jump_size_.set_value(filter_data_->jump_size());
 
   signal_key_press_event().connect(sigc::mem_fun(*this, &MovieWindow::on_key_press));
+}
+
+
+Gtk::Toolbar* MovieWindow::create_toolbar()
+{
+  Gtk::ToolButton* btn_new = Gtk::manage(new Gtk::ToolButton());
+  btn_new->set_tooltip_text(_("Create a new project"));
+  btn_new->set_icon_name("document-new");
+  gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_new->gobj()), MultiDelogoApp::ACTION_NEW.c_str());
+
+  Gtk::ToolButton* btn_open = Gtk::manage(new Gtk::ToolButton());
+  btn_open->set_tooltip_text(_("Open an existing project"));
+  btn_open->set_icon_name("document-open");
+  gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_open->gobj()), MultiDelogoApp::ACTION_OPEN.c_str());
+
+  add_action("save", sigc::mem_fun(*this, &MovieWindow::on_save));
+  Gtk::ToolButton* btn_save = Gtk::manage(new Gtk::ToolButton());
+  btn_save->set_tooltip_text(_("Save current project"));
+  btn_save->set_icon_name("document-save");
+  gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_save->gobj()), "win.save");
+
+  Gtk::Toolbar* toolbar = Gtk::manage(new Gtk::Toolbar());
+  toolbar->append(*btn_new);
+  toolbar->append(*btn_open);
+  toolbar->append(*btn_save);
+  return toolbar;
 }
 
 
@@ -231,4 +269,33 @@ void MovieWindow::on_zoom(int increment)
   lbl_zoom_.set_text(Glib::ustring::compose("%1%%", zoom_));
 
   frame_view_.set_zoom(zoom_);
+}
+
+
+void MovieWindow::on_save()
+{
+  filter_data_->set_jump_size(txt_jump_size_.get_value());
+  get_application()->save_project(project_file_, filter_data_.get());
+}
+
+
+void MovieWindow::on_hide()
+{
+  on_save();
+}
+
+
+Glib::RefPtr<MultiDelogoApp> MovieWindow::get_application()
+{
+  Glib::RefPtr<MultiDelogoApp> app
+    = Glib::RefPtr<MultiDelogoApp>::cast_dynamic(ApplicationWindow::get_application());
+  return app;
+}
+
+
+Glib::RefPtr<const MultiDelogoApp> MovieWindow::get_application() const
+{
+  Glib::RefPtr<const MultiDelogoApp> app
+    = Glib::RefPtr<const MultiDelogoApp>::cast_dynamic(ApplicationWindow::get_application());
+  return app;
 }

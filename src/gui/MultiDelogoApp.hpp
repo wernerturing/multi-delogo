@@ -21,6 +21,8 @@
 
 #include <gtkmm.h>
 
+#include "filter-generator/FilterData.hpp"
+
 
 namespace mdl {
   class MultiDelogoApp : public Gtk::Application
@@ -31,14 +33,28 @@ namespace mdl {
   public:
     static Glib::RefPtr<MultiDelogoApp> create();
 
+    void save_project(const std::string& project_file, fg::FilterData* filter_data);
+
+    const static std::string ACTION_NEW;
+    const static std::string ACTION_OPEN;
+
   protected:
     void on_activate();
     void on_open(const Gio::Application::type_vec_files& files,
                  const Glib::ustring& hint);
 
   private:
+    const static std::string EXTENSION_;
+
+    Gtk::ApplicationWindow* initial_window_;
+
     void create_movie_window(const Glib::RefPtr<Gio::File>& file);
     void register_window(Gtk::ApplicationWindow* window);
+
+    void new_project();
+    void open_project();
+    void select_and_open_file(const std::string& title,
+                              const Glib::RefPtr<Gtk::FileFilter>& filter);
 
     void on_hide_window(Gtk::ApplicationWindow* window);
   };

@@ -19,21 +19,37 @@
 #ifndef MDL_MOVIE_WINDOW_H
 #define MDL_MOVIE_WINDOW_H
 
+#include <string>
+#include <memory>
+
 #include <gtkmm.h>
 
 #include "common/FrameProvider.hpp"
+#include "filter-generator/FilterData.hpp"
 
 #include "NumericEntry.hpp"
 #include "FrameView.hpp"
 
 
 namespace mdl {
+  class MultiDelogoApp;
+
   class MovieWindow : public Gtk::ApplicationWindow
   {
   public:
-    MovieWindow(const Glib::RefPtr<FrameProvider>& frame_provider);
+    MovieWindow(const std::string& project_file,
+                std::unique_ptr<fg::FilterData> filter_data,
+                const Glib::RefPtr<FrameProvider>& frame_provider);
+
+  protected:
+    Glib::RefPtr<MultiDelogoApp> get_application();
+    Glib::RefPtr<const MultiDelogoApp> get_application() const;
 
   private:
+    std::string project_file_;
+
+    std::unique_ptr<fg::FilterData> filter_data_;
+
     Glib::RefPtr<FrameProvider> frame_provider_;
     int number_of_frames_;
     int frame_number_;
@@ -49,6 +65,7 @@ namespace mdl {
     Gtk::Button btn_zoom_in_;
 
 
+    Gtk::Toolbar* create_toolbar();
     Gtk::Box* create_navigation_box();
     Gtk::Box* create_zoom_box();
 
@@ -61,6 +78,10 @@ namespace mdl {
     bool on_key_press(GdkEventKey* key_event);
 
     void on_zoom(int increment);
+
+    void on_save();
+
+    void on_hide() override;
   };
 }
 

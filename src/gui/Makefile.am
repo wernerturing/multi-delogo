@@ -21,24 +21,28 @@ multi_delogo_SOURCES = main.cpp \
                        MultiDelogoApp.cpp \
                        NumericEntry.cpp \
                        FrameView.cpp \
-                       MovieWindow.cpp
+                       MovieWindow.cpp \
+                       InitialWindow.cpp
 
 noinst_HEADERS = common/Exceptions.hpp \
                  common/FrameProvider.hpp \
                  MultiDelogoApp.hpp \
                  NumericEntry.hpp \
                  FrameView.hpp \
-                 MovieWindow.hpp
+                 MovieWindow.hpp \
+                 InitialWindow.hpp
 
 
 localedir = $(datadir)/locale
 
 multi_delogo_CPPFLAGS = -DLOCALEDIR=\"$(localedir)\" \
+                        -I.. \
                         $(GTKMM_CFLAGS) \
                         $(GOOCANVASMM_CFLAGS)
 
 frame_provider_lib = ../opencv-frame-provider/libopencv-frame-provider.a $(OPENCV_LIBS)
 
-multi_delogo_LDADD = $(frame_provider_lib) \
+multi_delogo_LDADD = ../filter-generator/libfilter-generator.a \
+                     $(frame_provider_lib) \
                      $(GTKMM_LIBS) \
                      $(GOOCANVASMM_LIBS)

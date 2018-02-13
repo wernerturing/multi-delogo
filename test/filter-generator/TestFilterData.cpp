@@ -131,7 +131,8 @@ BOOST_AUTO_TEST_CASE(should_fail_if_some_filter_is_invalid)
 
 BOOST_AUTO_TEST_CASE(test_save)
 {
-  FilterData filters("/home/user/videos/test.mp4");
+  FilterData filters;
+  filters.set_movie_file("/home/user/videos/test.mp4");
   filters.set_jump_size(360);
   filters.filter_list().insert(0, new DelogoFilter(1, 2, 3, 4));
   filters.filter_list().insert(250, new DelogoFilter(9, 8, 7, 6));

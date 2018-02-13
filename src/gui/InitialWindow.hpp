@@ -16,39 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FG_FILTER_DATA_H
-#define FG_FILTER_DATA_H
+#ifndef MDL_INITIAL_WINDOW_H
+#define MDL_INITIAL_WINDOW_H
 
-#include <string>
-#include <istream>
-#include <ostream>
-
-#include "FilterList.hpp"
+#include <gtkmm.h>
 
 
-namespace fg {
-  class FilterData
+namespace mdl {
+  class InitialWindow : public Gtk::ApplicationWindow
   {
   public:
-    FilterData();
-
-    void set_movie_file(const std::string& movie_file);
-    void set_jump_size(int jump_size);
-
-    std::string movie_file() const;
-    int jump_size() const;
-    FilterList& filter_list();
-
-    void load(std::istream& in);
-    void save(std::ostream& out) const;
-
-  private:
-    const static std::string HEADER_;
-
-    std::string movie_file_;
-    int jump_size_;
-    FilterList filter_list_;
+    InitialWindow();
   };
 }
 
-#endif // FG_FILTER_DATA_H
+#endif // MDL_INITIAL_WINDOW_H
