@@ -19,6 +19,8 @@
 #ifndef MDL_FILTER_LIST_MODEL_H
 #define MDL_FILTER_LIST_MODEL_H
 
+#include <exception>
+
 #include <glibmm/object.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treemodelcolumn.h>
@@ -28,6 +30,16 @@
 
 
 namespace mdl {
+  class DuplicateRowException : public std::exception
+  {
+  public:
+    const char* what() const throw() override
+    {
+      return "Duplicate row";
+    }
+  };
+
+
   class FilterListColumns : public Gtk::TreeModel::ColumnRecord
   {
   public:

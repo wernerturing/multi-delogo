@@ -61,6 +61,10 @@ Glib::RefPtr<FilterListModel> FilterListModel::create(fg::FilterList& filter_lis
 
 void FilterListModel::insert(int start_frame, fg::Filter* filter)
 {
+  if (filter_list_.get_by_start_frame(start_frame)) {
+    throw DuplicateRowException();
+  }
+
   filter_list_.insert(start_frame, filter);
   ++stamp_;
 

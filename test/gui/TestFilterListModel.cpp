@@ -171,4 +171,13 @@ BOOST_AUTO_TEST_CASE(test_insert)
   BOOST_CHECK_EQUAL(inserted_row[model->columns.start_frame], 150);
 }
 
+
+BOOST_AUTO_TEST_CASE(test_insert_for_row_that_already_exists)
+{
+  BOOST_CHECK_THROW(model->insert(100, new fg::DelogoFilter(10, 20, 30, 40)),
+                    mdl::DuplicateRowException);
+
+  BOOST_CHECK_EQUAL(list.get_by_start_frame(100)->second->type(), fg::FilterType::NO_OP);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
