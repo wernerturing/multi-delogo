@@ -89,6 +89,22 @@ BOOST_AUTO_TEST_CASE(test_get_childen)
 }
 
 
+BOOST_AUTO_TEST_CASE(test_get_nth_child)
+{
+  Gtk::TreeNodeChildren root_children = model->children();
+  Gtk::TreeRow row = root_children[2];
+  BOOST_CHECK_EQUAL(row[model->columns.start_frame], 200);
+}
+
+
+BOOST_AUTO_TEST_CASE(test_get_parent)
+{
+  Gtk::TreeRow row = model->children()[2];
+  Gtk::TreeIter iter_parent = row.parent();
+  BOOST_CHECK(!iter_parent);
+}
+
+
 BOOST_AUTO_TEST_CASE(test_conversion_iter_and_path)
 {
   auto iter = model->get_iter("1");
