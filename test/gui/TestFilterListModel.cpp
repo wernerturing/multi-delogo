@@ -55,15 +55,23 @@ public:
   }
 
 
-  void test_insert_signal_callback(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter)
+  void test_inserted_signal_callback(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter)
   {
     saved_iter = iter;
   }
+
+
+  void test_deleted_signal_callback(const Gtk::TreeModel::Path& path)
+  {
+    saved_path = path;
+  }
+
 
   fg::FilterList list;
   Glib::RefPtr<mdl::FilterListModel> model;
 
   Gtk::TreeModel::iterator saved_iter;
+  Gtk::TreeModel::Path saved_path;
 };
 BOOST_FIXTURE_TEST_SUITE(filterlist_model, FilterModelFixture)
 
@@ -156,7 +164,7 @@ BOOST_AUTO_TEST_CASE(test_iteration)
 
 BOOST_AUTO_TEST_CASE(test_insert)
 {
-  model->signal_row_inserted().connect(sigc::mem_fun(*this, &FilterModelFixture::test_insert_signal_callback));
+  model->signal_row_inserted().connect(sigc::mem_fun(*this, &FilterModelFixture::test_inserted_signal_callback));
 
   auto iter_from_before_insert = model->children().begin();
   model->insert(150, new fg::DelogoFilter(10, 20, 30, 40));
@@ -178,6 +186,25 @@ BOOST_AUTO_TEST_CASE(test_insert_for_row_that_already_exists)
                     mdl::DuplicateRowException);
 
   BOOST_CHECK_EQUAL(list.get_by_start_frame(100)->second->type(), fg::FilterType::NO_OP);
+}
+
+
+BOOST_AUTO_TEST_CASE(test_delete_row)
+{
+  model->signal_row_deleted().connect(sigc::mem_fun(*this, &FilterModelFixture::test_deleted_signal_callback));
+
+  auto iter_before = model->children()[1];
+  auto path_before = model->get_path(iter_before);
+  model->remove(iter_before);
+  auto iter_after = model->children().begin();
+
+  BOOST_CHECK_EQUAL(list.size(), 2);
+  BOOST_CHECK_EQUAL(list.get_by_position(0)->first, 0);
+  BOOST_CHECK_EQUAL(list.get_by_position(1)->first, 200);
+
+  BOOST_CHECK_EQUAL(saved_path, path_before);
+  BOOST_CHECK_NE(iter_before.get_stamp(),
+                 iter_after.get_stamp()); // iters become invalid
 }
 
 BOOST_AUTO_TEST_SUITE_END()

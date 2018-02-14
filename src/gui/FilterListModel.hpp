@@ -60,6 +60,7 @@ namespace mdl {
     static Glib::RefPtr<FilterListModel> create(fg::FilterList& filter_list);
 
     void insert(int start_frame, fg::Filter* filter);
+    void remove(const iterator& iter);
 
     static FilterListColumns columns;
 
@@ -69,7 +70,7 @@ namespace mdl {
     int get_n_columns_vfunc() const override;
     GType get_column_type_vfunc(int index) const override;
 
-    void get_value_vfunc(const TreeModel::const_iterator& iter, int column, Glib::ValueBase& value) const override;
+    void get_value_vfunc(const const_iterator& iter, int column, Glib::ValueBase& value) const override;
 
     bool iter_next_vfunc(const iterator& iter, iterator& iter_next) const override;
     bool iter_children_vfunc(const iterator& parent, iterator& iter) const override;

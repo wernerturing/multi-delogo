@@ -75,6 +75,25 @@ void FilterListModel::insert(int start_frame, fg::Filter* filter)
 }
 
 
+void FilterListModel::remove(const iterator& iter)
+{
+  if (!check_iter_validity(iter)) {
+    return;
+  }
+
+  int pos = GPOINTER_TO_INT(iter.gobj()->user_data);
+  fg::FilterList::maybe_type filter = filter_list_.get_by_position(pos);
+  if (!pos) {
+    return;
+  }
+
+  auto path = get_path(iter);
+  filter_list_.remove(filter->first);
+  ++stamp_;
+  row_deleted(path);
+}
+
+
 Gtk::TreeModelFlags FilterListModel::get_flags_vfunc() const
 {
   return Gtk::TREE_MODEL_LIST_ONLY;
@@ -99,7 +118,7 @@ GType FilterListModel::get_column_type_vfunc(int index) const
 }
 
 
-void FilterListModel::get_value_vfunc(const TreeModel::const_iterator& iter, int column, Glib::ValueBase& value) const
+void FilterListModel::get_value_vfunc(const const_iterator& iter, int column, Glib::ValueBase& value) const
 {
   if (!check_iter_validity(iter)
       || (unsigned) column > columns.size() - 1) {
