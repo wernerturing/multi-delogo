@@ -185,6 +185,28 @@ BOOST_AUTO_TEST_CASE(get_by_position_on_empty_list)
 }
 
 
+BOOST_AUTO_TEST_CASE(get_position_for_existing_item)
+{
+  FilterList list;
+  list.insert(0, new NullFilter());
+  list.insert(400, new NullFilter());
+  list.insert(250, new NullFilter());
+
+  BOOST_CHECK_EQUAL(list.get_position(0), 0);
+  BOOST_CHECK_EQUAL(list.get_position(250), 1);
+  BOOST_CHECK_EQUAL(list.get_position(400), 2);
+}
+
+
+BOOST_AUTO_TEST_CASE(get_position_for_non_existing)
+{
+  FilterList list;
+  list.insert(200, new NullFilter());
+
+  BOOST_CHECK_EQUAL(list.get_position(100), -1);
+}
+
+
 BOOST_AUTO_TEST_CASE(should_load_a_list)
 {
   std::istringstream in(
