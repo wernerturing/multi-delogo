@@ -47,6 +47,8 @@ namespace mdl {
   public:
     static Glib::RefPtr<FilterListModel> create(fg::FilterList& filter_list);
 
+    void insert(int start_frame, fg::Filter* filter);
+
     static FilterListColumns columns;
 
   protected:

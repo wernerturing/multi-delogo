@@ -59,6 +59,18 @@ Glib::RefPtr<FilterListModel> FilterListModel::create(fg::FilterList& filter_lis
 }
 
 
+void FilterListModel::insert(int start_frame, fg::Filter* filter)
+{
+  filter_list_.insert(start_frame, filter);
+  ++stamp_;
+
+  int pos = filter_list_.get_position(start_frame);
+  Path path;
+  path.push_back(pos);
+  row_inserted(path, get_iter(path));
+}
+
+
 Gtk::TreeModelFlags FilterListModel::get_flags_vfunc() const
 {
   return Gtk::TREE_MODEL_LIST_ONLY;
