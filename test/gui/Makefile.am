@@ -25,7 +25,11 @@ LDADD =  ../../src/filter-generator/libfilter-generator.a \
          $(BOOST_UNIT_TEST_FRAMEWORK_LIB)
 
 
-check_PROGRAMS = TestSelectionRect
+check_PROGRAMS = TestFilterListModel \
+                 TestSelectionRect
+
+TestFilterListModel_SOURCES = TestFilterListModel.cpp \
+                              ../../src/gui/FilterListModel.cpp
 
 TestSelectionRect_SOURCES = TestSelectionRect.cpp \
                             ../../src/gui/FrameView.cpp

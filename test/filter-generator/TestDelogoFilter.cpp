@@ -26,7 +26,7 @@
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
-#include "TestHelpers.hpp"
+#include "../TestHelpers.hpp"
 
 BOOST_AUTO_TEST_CASE(test_construction) {
   fg::DelogoFilter filter(90, 80, 70, 60);

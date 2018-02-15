@@ -29,7 +29,7 @@ using namespace fg;
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
-#include "TestHelpers.hpp"
+#include "../TestHelpers.hpp"
 
 BOOST_AUTO_TEST_CASE(load_should_fail_if_header_is_invalid)
 {

@@ -101,6 +101,20 @@ FilterList::maybe_type FilterList::get_by_position(size_type position)
 }
 
 
+int FilterList::get_position(int start_frame)
+{
+  int pos = 0;
+  for (auto& entry: filters_) {
+    if (entry.first == start_frame) {
+      return pos;
+    }
+    ++pos;
+  }
+
+  return -1;
+}
+
+
 void FilterList::load(std::istream& in)
 {
   std::string line;

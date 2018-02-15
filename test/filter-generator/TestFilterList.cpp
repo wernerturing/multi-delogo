@@ -30,7 +30,7 @@ using namespace fg;
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
-#include "TestHelpers.hpp"
+#include "../TestHelpers.hpp"
 
 BOOST_AUTO_TEST_CASE(insert_should_keep_the_filters_ordered)
 {
@@ -182,6 +182,28 @@ BOOST_AUTO_TEST_CASE(get_by_position_on_empty_list)
 
   auto maybe2 = list.get_by_position(2);
   BOOST_CHECK(!maybe2);
+}
+
+
+BOOST_AUTO_TEST_CASE(get_position_for_existing_item)
+{
+  FilterList list;
+  list.insert(0, new NullFilter());
+  list.insert(400, new NullFilter());
+  list.insert(250, new NullFilter());
+
+  BOOST_CHECK_EQUAL(list.get_position(0), 0);
+  BOOST_CHECK_EQUAL(list.get_position(250), 1);
+  BOOST_CHECK_EQUAL(list.get_position(400), 2);
+}
+
+
+BOOST_AUTO_TEST_CASE(get_position_for_non_existing)
+{
+  FilterList list;
+  list.insert(200, new NullFilter());
+
+  BOOST_CHECK_EQUAL(list.get_position(100), -1);
 }
 
 
