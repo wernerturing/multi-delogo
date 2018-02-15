@@ -23,8 +23,11 @@
 
 #include "common/FrameProvider.hpp"
 
+#include "filter-generator/FilterData.hpp"
+
 #include "MovieWindow.hpp"
 #include "FrameNavigator.hpp"
+#include "FilterList.hpp"
 #include "MultiDelogoApp.hpp"
 
 using namespace mdl;
@@ -42,10 +45,15 @@ MovieWindow::MovieWindow(const std::string& project_file,
                                    Glib::path_get_basename(project_file)));
 
   Gtk::Box* vbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 8));
-
   vbox->pack_start(*create_toolbar(), false, false);
 
-  vbox->pack_start(frame_navigator_, true, true);
+  Gtk::Box* hbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
+  FilterList* filters = Gtk::manage(new FilterList(filter_data_->filter_list()));
+  hbox->pack_start(*filters, true, true);
+
+  hbox->pack_start(frame_navigator_, true, true);
+
+  vbox->pack_start(*hbox, true, true);
 
   add(*vbox);
 

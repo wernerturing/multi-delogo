@@ -22,6 +22,8 @@ multi_delogo_SOURCES = main.cpp \
                        NumericEntry.cpp \
                        FrameView.cpp \
                        FrameNavigator.cpp \
+                       FilterListModel.cpp \
+                       FilterList.cpp \
                        MovieWindow.cpp \
                        InitialWindow.cpp
 
@@ -31,6 +33,8 @@ noinst_HEADERS = common/Exceptions.hpp \
                  NumericEntry.hpp \
                  FrameView.hpp \
                  FrameNavigator.hpp \
+                 FilterListModel.hpp \
+                 FilterList.hpp \
                  MovieWindow.hpp \
                  InitialWindow.hpp
 
