@@ -89,6 +89,9 @@ namespace mdl {
     fg::FilterList& filter_list_;
     int stamp_;
 
+    int get_position(const iterator& iter) const;
+    fg::FilterList::maybe_type get_filter_by_iter(const iterator& iter) const;
+    iterator create_iter(int position) const;
     bool check_iter_validity(const const_iterator& iter) const;
   };
 }

@@ -83,9 +83,8 @@ void FilterListModel::remove(const iterator& iter)
     return;
   }
 
-  int pos = GPOINTER_TO_INT(iter.gobj()->user_data);
-  fg::FilterList::maybe_type filter = filter_list_.get_by_position(pos);
-  if (!pos) {
+  fg::FilterList::maybe_type filter = get_filter_by_iter(iter);
+  if (!filter) {
     return;
   }
 
@@ -128,13 +127,12 @@ bool FilterListModel::iter_next_vfunc(const iterator& iter, iterator& iter_next)
     return false;
   }
 
-  unsigned int next = GPOINTER_TO_INT(iter.gobj()->user_data) + 1;
+  unsigned int next = get_position(iter) + 1;
   if (next > filter_list_.size() - 1) {
     return false;
   }
 
-  iter_next.set_stamp(stamp_);
-  iter_next.gobj()->user_data = GINT_TO_POINTER(next);
+  iter_next = create_iter(next);
   return true;
 }
 
@@ -178,8 +176,7 @@ bool FilterListModel::iter_nth_root_child_vfunc(int n, iterator& iter) const
     return false;
   }
 
-  iter.set_stamp(stamp_);
-  iter.gobj()->user_data = GINT_TO_POINTER(n);
+  iter = create_iter(n);
   return true;
 }
 
@@ -195,7 +192,7 @@ Gtk::TreeModel::Path FilterListModel::get_path_vfunc(const const_iterator& iter)
   Path p;
 
   if (check_iter_validity(iter)) {
-    p.push_back(GPOINTER_TO_INT(iter.gobj()->user_data));
+    p.push_back(get_position(iter));
   }
 
   return p;
@@ -211,8 +208,7 @@ bool FilterListModel::get_iter_vfunc(const Path& path, iterator& iter) const
     return false;
   }
 
-  iter.set_stamp(stamp_);
-  iter.gobj()->user_data = GINT_TO_POINTER(path[0]);
+  iter = create_iter(path[0]);
   return true;
 }
 
@@ -224,8 +220,7 @@ void FilterListModel::get_value_vfunc(const const_iterator& iter, int column, Gl
     return;
   }
 
-  int pos = GPOINTER_TO_INT(iter.gobj()->user_data);
-  fg::FilterList::maybe_type filter = filter_list_.get_by_position(pos);
+  fg::FilterList::maybe_type filter = get_filter_by_iter(iter);
   if (!filter) {
     return;
   }
@@ -254,8 +249,7 @@ void FilterListModel::set_value_impl(const iterator& iter, int column, const Gli
     Glib::Value<fg::Filter*> filter_value;
     filter_value.init(value.gobj());
 
-    int pos = GPOINTER_TO_INT(iter.gobj()->user_data);
-    fg::FilterList::maybe_type filter = filter_list_.get_by_position(pos);
+    fg::FilterList::maybe_type filter = get_filter_by_iter(iter);
     if (!filter) {
       return;
     }
@@ -264,6 +258,28 @@ void FilterListModel::set_value_impl(const iterator& iter, int column, const Gli
 
     row_changed(get_path(iter), iter);
   }
+}
+
+
+int FilterListModel::get_position(const iterator& iter) const
+{
+  return GPOINTER_TO_INT(iter.gobj()->user_data);
+}
+
+
+fg::FilterList::maybe_type FilterListModel::get_filter_by_iter(const iterator& iter) const
+{
+  int pos = get_position(iter);
+  return filter_list_.get_by_position(pos);
+}
+
+
+FilterListModel::iterator FilterListModel::create_iter(int position) const
+{
+  iterator iter;
+  iter.set_stamp(stamp_);
+  iter.gobj()->user_data = GINT_TO_POINTER(position);
+  return iter;
 }
 
 
