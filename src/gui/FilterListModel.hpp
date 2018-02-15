@@ -30,16 +30,6 @@
 
 
 namespace mdl {
-  class DuplicateRowException : public std::exception
-  {
-  public:
-    const char* what() const throw() override
-    {
-      return "Duplicate row";
-    }
-  };
-
-
   class FilterListColumns : public Gtk::TreeModel::ColumnRecord
   {
   public:

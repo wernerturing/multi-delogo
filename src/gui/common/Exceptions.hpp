@@ -33,7 +33,8 @@ namespace mdl {
   class VideoNotOpenedException : public Exception
   {
   public:
-    virtual const char* what() const throw() {
+    const char* what() const throw() override
+    {
       return "Failed to open video file";
     }
   };
@@ -42,8 +43,19 @@ namespace mdl {
   class FrameNotAvailableException : public Exception
   {
   public:
-    virtual const char* what() const throw() {
+    const char* what() const throw() override
+    {
       return "Failed to get frame";
+    }
+  };
+
+
+  class DuplicateRowException : public Exception
+  {
+  public:
+    const char* what() const throw() override
+    {
+      return "Duplicate row";
     }
   };
 }

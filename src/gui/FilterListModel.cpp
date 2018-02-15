@@ -26,6 +26,8 @@
 #include "filter-generator/Filters.hpp"
 #include "filter-generator/FilterList.hpp"
 
+#include "common/Exceptions.hpp"
+
 #include "FilterListModel.hpp"
 
 using namespace mdl;
