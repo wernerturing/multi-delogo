@@ -144,10 +144,9 @@ Gtk::Box* MovieWindow::create_navigation_box()
   box->pack_start(*btn_next, false, false);
   box->pack_start(*btn_next_jump, false, false);
 
-  box->pack_start(*Gtk::manage(new Gtk::Label()), false, false, 16);
-
   Gtk::Label* lbl_jump_size = Gtk::manage(new Gtk::Label(_("_Jump size:"), true));
   lbl_jump_size->set_mnemonic_widget(txt_jump_size_);
+  lbl_jump_size->set_margin_start(32);
   box->pack_start(*lbl_jump_size, false, false);
 
   txt_jump_size_.set_width_chars(6);
