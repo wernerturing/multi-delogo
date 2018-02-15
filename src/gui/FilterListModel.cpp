@@ -130,7 +130,7 @@ bool FilterListModel::iter_next_vfunc(const iterator& iter, iterator& iter_next)
   }
 
   unsigned int next = get_position(iter) + 1;
-  if (next > filter_list_.size() - 1) {
+  if (next + 1 > filter_list_.size()) {
     return false;
   }
 
@@ -174,7 +174,7 @@ bool FilterListModel::iter_nth_root_child_vfunc(int n, iterator& iter) const
 {
   iter = iterator();
 
-  if ((unsigned) n > filter_list_.size() - 1) {
+  if ((unsigned) n + 1 > filter_list_.size()) {
     return false;
   }
 
@@ -210,7 +210,12 @@ bool FilterListModel::get_iter_vfunc(const Path& path, iterator& iter) const
     return false;
   }
 
-  iter = create_iter(path[0]);
+  unsigned int pos = path[0];
+  if (pos + 1 > filter_list_.size()) {
+    return false;
+  }
+
+  iter = create_iter(pos);
   return true;
 }
 

@@ -137,6 +137,33 @@ BOOST_AUTO_TEST_CASE(test_conversion_iter_and_path)
 }
 
 
+BOOST_AUTO_TEST_CASE(get_iter_should_fail_for_non_existing_rows)
+{
+  auto iter = model->get_iter("10");
+  BOOST_CHECK(!iter);
+}
+
+
+BOOST_AUTO_TEST_CASE(get_iter_should_fail_for_empty_model)
+{
+  fg::FilterList empty_list;
+  Glib::RefPtr<mdl::FilterListModel> empty_model = mdl::FilterListModel::create(empty_list);
+
+  auto iter = empty_model->get_iter("0");
+  BOOST_CHECK(!iter);
+}
+
+
+BOOST_AUTO_TEST_CASE(get_iter_should_fail_for_invalid_path)
+{
+  Gtk::TreeModel::Path path;
+  path.push_back(0);
+  path.push_back(2);
+  auto iter = model->get_iter(path);
+  BOOST_CHECK(!iter);
+}
+
+
 BOOST_AUTO_TEST_CASE(test_iteration)
 {
   Gtk::TreeNodeChildren children = model->children();
