@@ -62,7 +62,7 @@ MovieWindow::MovieWindow(const std::string& project_file,
 
   add(*vbox);
 
-  change_displayed_frame(1000);
+  change_displayed_frame(1);
   txt_jump_size_.set_value(filter_data_->jump_size());
 
   signal_key_press_event().connect(sigc::mem_fun(*this, &MovieWindow::on_key_press));
