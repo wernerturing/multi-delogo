@@ -70,8 +70,6 @@ namespace mdl {
     int get_n_columns_vfunc() const override;
     GType get_column_type_vfunc(int index) const override;
 
-    void get_value_vfunc(const const_iterator& iter, int column, Glib::ValueBase& value) const override;
-
     bool iter_next_vfunc(const iterator& iter, iterator& iter_next) const override;
     bool iter_children_vfunc(const iterator& parent, iterator& iter) const override;
     bool iter_has_child_vfunc(const const_iterator& iter) const override;
@@ -83,6 +81,9 @@ namespace mdl {
 
     Path get_path_vfunc(const const_iterator& iter) const override;
     bool get_iter_vfunc(const Path& path, iterator& iter) const override;
+
+    void get_value_vfunc(const const_iterator& iter, int column, Glib::ValueBase& value) const override;
+    void set_value_impl(const iterator& iter, int column, const Glib::ValueBase& value) override;
 
   private:
     fg::FilterList& filter_list_;

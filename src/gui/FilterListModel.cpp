@@ -16,6 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <stdexcept>
+
 #include <glibmm/objectbase.h>
 #include <glibmm/object.h>
 #include <gtkmm/treepath.h>
@@ -118,29 +120,6 @@ GType FilterListModel::get_column_type_vfunc(int index) const
 }
 
 
-void FilterListModel::get_value_vfunc(const const_iterator& iter, int column, Glib::ValueBase& value) const
-{
-  if (!check_iter_validity(iter)
-      || (unsigned) column > columns.size() - 1) {
-    return;
-  }
-
-  int pos = GPOINTER_TO_INT(iter.gobj()->user_data);
-  fg::FilterList::maybe_type filter = filter_list_.get_by_position(pos);
-  if (!filter) {
-    return;
-  }
-
-  if (column == columns.start_frame.index()) {
-    g_value_init(value.gobj(), columns.start_frame.type());
-    g_value_set_int(value.gobj(), filter->first);
-  } else if (column == columns.filter.index()) {
-    g_value_init(value.gobj(), columns.filter.type());
-    g_value_set_pointer(value.gobj(), filter->second);
-  }
-}
-
-
 bool FilterListModel::iter_next_vfunc(const iterator& iter, iterator& iter_next) const
 {
   iter_next = iterator();
@@ -235,6 +214,56 @@ bool FilterListModel::get_iter_vfunc(const Path& path, iterator& iter) const
   iter.set_stamp(stamp_);
   iter.gobj()->user_data = GINT_TO_POINTER(path[0]);
   return true;
+}
+
+
+void FilterListModel::get_value_vfunc(const const_iterator& iter, int column, Glib::ValueBase& value) const
+{
+  if (!check_iter_validity(iter)
+      || (unsigned) column > columns.size() - 1) {
+    return;
+  }
+
+  int pos = GPOINTER_TO_INT(iter.gobj()->user_data);
+  fg::FilterList::maybe_type filter = filter_list_.get_by_position(pos);
+  if (!filter) {
+    return;
+  }
+
+  if (column == columns.start_frame.index()) {
+    g_value_init(value.gobj(), columns.start_frame.type());
+    g_value_set_int(value.gobj(), filter->first);
+  } else if (column == columns.filter.index()) {
+    g_value_init(value.gobj(), columns.filter.type());
+    g_value_set_pointer(value.gobj(), filter->second);
+  }
+}
+
+
+void FilterListModel::set_value_impl(const iterator& iter, int column, const Glib::ValueBase& value)
+{
+  if (!check_iter_validity(iter)
+      || (unsigned) column > columns.size() - 1
+      || !g_value_type_compatible(G_VALUE_TYPE(value.gobj()), get_column_type(column))) {
+    return;
+  }
+
+  if (column == columns.start_frame.index()) {
+    throw std::invalid_argument("Impossible to change start frame");
+  } else if (column == columns.filter.index()) {
+    Glib::Value<fg::Filter*> filter_value;
+    filter_value.init(value.gobj());
+
+    int pos = GPOINTER_TO_INT(iter.gobj()->user_data);
+    fg::FilterList::maybe_type filter = filter_list_.get_by_position(pos);
+    if (!filter) {
+      return;
+    }
+
+    filter_list_.insert(filter->first, filter_value.get());
+
+    row_changed(get_path(iter), iter);
+  }
 }
 
 

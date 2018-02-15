@@ -55,7 +55,7 @@ public:
   }
 
 
-  void test_inserted_signal_callback(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter)
+  void test_inserted_or_changed_signal_callback(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter)
   {
     saved_iter = iter;
   }
@@ -164,7 +164,7 @@ BOOST_AUTO_TEST_CASE(test_iteration)
 
 BOOST_AUTO_TEST_CASE(test_insert)
 {
-  model->signal_row_inserted().connect(sigc::mem_fun(*this, &FilterModelFixture::test_inserted_signal_callback));
+  model->signal_row_inserted().connect(sigc::mem_fun(*this, &FilterModelFixture::test_inserted_or_changed_signal_callback));
 
   auto iter_from_before_insert = model->children().begin();
   model->insert(150, new fg::DelogoFilter(10, 20, 30, 40));
@@ -205,6 +205,36 @@ BOOST_AUTO_TEST_CASE(test_delete_row)
   BOOST_CHECK_EQUAL(saved_path, path_before);
   BOOST_CHECK_NE(iter_before.get_stamp(),
                  iter_after.get_stamp()); // iters become invalid
+}
+
+
+BOOST_AUTO_TEST_CASE(should_not_allow_changing_start_frame)
+{
+  auto iter = model->children()[1];
+  auto row = *iter;
+
+  BOOST_CHECK_THROW(row[model->columns.start_frame] = 500, std::invalid_argument);
+}
+
+BOOST_AUTO_TEST_CASE(should_allow_changing_the_filter)
+{
+  model->signal_row_changed().connect(sigc::mem_fun(*this, &FilterModelFixture::test_inserted_or_changed_signal_callback));
+
+  auto iter_before = model->children()[1];
+  auto row = *iter_before;
+
+  fg::Filter* new_filter = new fg::DrawboxFilter(10, 10, 10, 10);
+  row[model->columns.filter] = new_filter;
+  auto iter_after = model->children()[1];
+
+  BOOST_CHECK_EQUAL(list.size(), 3);
+  BOOST_CHECK_EQUAL(list.get_by_start_frame(100)->second->type(), fg::FilterType::DRAWBOX);
+  BOOST_CHECK_EQUAL(iter_before.get_stamp(),
+                    iter_after.get_stamp()); // iters remain valid
+
+  auto changed_row = *saved_iter;
+  fg::Filter* changed_filter = changed_row[model->columns.filter];
+  BOOST_CHECK_EQUAL(changed_filter, new_filter);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
