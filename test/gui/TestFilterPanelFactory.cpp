@@ -62,3 +62,29 @@ BOOST_AUTO_TEST_CASE(filter_panel_null_should_return_a_null_filter)
   fg::Filter* created_filter = panel->get_filter();
   BOOST_CHECK_EQUAL(created_filter->type(), fg::FilterType::NO_OP);
 }
+
+
+BOOST_AUTO_TEST_CASE(should_create_a_panel_for_delogo_filter)
+{
+  fg::DelogoFilter filter(1, 2, 3, 4);
+  FilterPanel* panel = FilterPanelFactory::create(&filter);
+  FilterPanelDelogo* downcasted = dynamic_cast<FilterPanelDelogo*>(panel);
+
+  BOOST_CHECK(downcasted != nullptr);
+}
+
+
+BOOST_AUTO_TEST_CASE(filter_panel_delogo_should_return_a_delogo_filter)
+{
+  fg::DelogoFilter filter(1, 2, 3, 4);
+  FilterPanel* panel = FilterPanelFactory::create(&filter);
+
+  fg::Filter* created_filter = panel->get_filter();
+  BOOST_REQUIRE_EQUAL(created_filter->type(), fg::FilterType::DELOGO);
+
+  fg::DelogoFilter* delogo = dynamic_cast<fg::DelogoFilter*>(created_filter);
+  BOOST_CHECK_EQUAL(delogo->x(), 1);
+  BOOST_CHECK_EQUAL(delogo->y(), 2);
+  BOOST_CHECK_EQUAL(delogo->width(), 3);
+  BOOST_CHECK_EQUAL(delogo->height(), 4);
+}

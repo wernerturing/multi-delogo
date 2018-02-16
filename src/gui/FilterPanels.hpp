@@ -34,6 +34,32 @@ namespace mdl {
 
     fg::Filter* get_filter() const override;
   };
+
+
+  class FilterPanelRectangular : public FilterPanel
+  {
+  protected:
+    FilterPanelRectangular(fg::RectangularFilter* filter);
+
+    Gtk::SpinButton txt_x_;
+    Gtk::SpinButton txt_y_;
+    Gtk::SpinButton txt_width_;
+    Gtk::SpinButton txt_height_;
+
+  private:
+    Glib::RefPtr<Gtk::Adjustment> create_adjustment(int start_value, int max);
+    void add_widget(Gtk::Grid& grid, Gtk::Widget& widget,
+                    const Glib::ustring& label, int row);
+  };
+
+
+  class FilterPanelDelogo : public FilterPanelRectangular
+  {
+  public:
+    FilterPanelDelogo(fg::DelogoFilter* filter);
+
+    fg::Filter* get_filter() const override;
+  };
 }
 
 #endif // MDL_FILTER_PANELS_H
