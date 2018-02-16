@@ -39,7 +39,13 @@ namespace mdl {
   class FilterPanelFactory
   {
   public:
-    static FilterPanel* create(fg::Filter* filter);
+    FilterPanelFactory(int frame_width, int frame_height);
+
+    FilterPanel* create(fg::Filter* filter);
+
+  private:
+    int frame_width_;
+    int frame_height_;
   };
 }
 

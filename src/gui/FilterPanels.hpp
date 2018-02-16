@@ -39,7 +39,8 @@ namespace mdl {
   class FilterPanelRectangular : public FilterPanel
   {
   protected:
-    FilterPanelRectangular(fg::RectangularFilter* filter);
+    FilterPanelRectangular(fg::RectangularFilter* filter,
+                           int frame_width, int frame_height);
 
     Gtk::SpinButton txt_x_;
     Gtk::SpinButton txt_y_;
@@ -56,7 +57,8 @@ namespace mdl {
   class FilterPanelDelogo : public FilterPanelRectangular
   {
   public:
-    FilterPanelDelogo(fg::DelogoFilter* filter);
+    FilterPanelDelogo(fg::DelogoFilter* filter,
+                      int frame_width, int frame_height);
 
     fg::Filter* get_filter() const override;
   };
@@ -65,7 +67,8 @@ namespace mdl {
   class FilterPanelDrawbox : public FilterPanelRectangular
   {
   public:
-    FilterPanelDrawbox(fg::DrawboxFilter* filter);
+    FilterPanelDrawbox(fg::DrawboxFilter* filter,
+                       int frame_width, int frame_height);
 
     fg::Filter* get_filter() const override;
   };

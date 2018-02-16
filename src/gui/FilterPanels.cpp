@@ -37,12 +37,13 @@ fg::Filter* FilterPanelNull::get_filter() const
 }
 
 
-FilterPanelRectangular::FilterPanelRectangular(fg::RectangularFilter* filter)
+FilterPanelRectangular::FilterPanelRectangular(fg::RectangularFilter* filter,
+                                               int frame_width, int frame_height)
 {
-  txt_x_.configure(create_adjustment(filter->x(), 1000), 10, 0);
-  txt_y_.configure(create_adjustment(filter->y(), 1000), 10, 0);
-  txt_width_.configure(create_adjustment(filter->width(), 1000), 10, 0);
-  txt_height_.configure(create_adjustment(filter->height(), 1000), 10, 0);
+  txt_x_.configure(create_adjustment(filter->x(), frame_width - 1), 10, 0);
+  txt_y_.configure(create_adjustment(filter->y(), frame_height - 1), 10, 0);
+  txt_width_.configure(create_adjustment(filter->width(), frame_width), 10, 0);
+  txt_height_.configure(create_adjustment(filter->height(), frame_height), 10, 0);
 
   Gtk::Grid* grid = Gtk::manage(new Gtk::Grid());
   grid->set_row_spacing(6);
@@ -74,8 +75,9 @@ void FilterPanelRectangular::add_widget(Gtk::Grid& grid, Gtk::Widget& widget,
 }
 
 
-FilterPanelDelogo::FilterPanelDelogo(fg::DelogoFilter* filter)
-  : FilterPanelRectangular(filter)
+FilterPanelDelogo::FilterPanelDelogo(fg::DelogoFilter* filter,
+                                     int frame_width, int frame_height)
+  : FilterPanelRectangular(filter, frame_width, frame_height)
 {
 }
 
@@ -89,8 +91,9 @@ fg::Filter* FilterPanelDelogo::get_filter() const
 }
 
 
-FilterPanelDrawbox::FilterPanelDrawbox(fg::DrawboxFilter* filter)
-  : FilterPanelRectangular(filter)
+FilterPanelDrawbox::FilterPanelDrawbox(fg::DrawboxFilter* filter,
+                                       int frame_width, int frame_height)
+  : FilterPanelRectangular(filter, frame_width, frame_height)
 {
 }
 

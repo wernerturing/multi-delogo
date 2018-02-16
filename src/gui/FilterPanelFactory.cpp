@@ -36,6 +36,13 @@ FilterPanel::~FilterPanel()
 }
 
 
+FilterPanelFactory::FilterPanelFactory(int frame_width, int frame_height)
+  : frame_width_(frame_width)
+  , frame_height_(frame_height)
+{
+}
+
+
 FilterPanel* FilterPanelFactory::create(fg::Filter* filter)
 {
   switch (filter->type()) {
@@ -43,10 +50,12 @@ FilterPanel* FilterPanelFactory::create(fg::Filter* filter)
     return new FilterPanelNull();
 
   case fg::FilterType::DELOGO:
-    return new FilterPanelDelogo(dynamic_cast<fg::DelogoFilter*>(filter));
+    return new FilterPanelDelogo(dynamic_cast<fg::DelogoFilter*>(filter),
+                                 frame_width_, frame_height_);
 
   case fg::FilterType::DRAWBOX:
-    return new FilterPanelDrawbox(dynamic_cast<fg::DrawboxFilter*>(filter));
+    return new FilterPanelDrawbox(dynamic_cast<fg::DrawboxFilter*>(filter),
+                                  frame_width_, frame_height_);
 
   default:
     return nullptr;
