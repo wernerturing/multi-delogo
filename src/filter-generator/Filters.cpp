@@ -48,6 +48,12 @@ FilterType NullFilter::type() const
 }
 
 
+std::string NullFilter::name() const
+{
+  return "none";
+}
+
+
 std::string NullFilter::save_str() const
 {
   return "none;";
@@ -153,6 +159,12 @@ FilterType DelogoFilter::type() const
 }
 
 
+std::string DelogoFilter::name() const
+{
+  return "delogo";
+}
+
+
 std::string DelogoFilter::save_str() const
 {
   std::string buf("delogo;");
@@ -188,6 +200,12 @@ DrawboxFilter* DrawboxFilter::load(const std::string& parameters)
 FilterType DrawboxFilter::type() const
 {
   return FilterType::DRAWBOX;
+}
+
+
+std::string DrawboxFilter::name() const
+{
+  return "drawbox";
 }
 
 
