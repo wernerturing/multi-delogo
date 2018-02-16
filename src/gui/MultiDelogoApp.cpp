@@ -171,7 +171,8 @@ void MultiDelogoApp::on_hide_window(Gtk::ApplicationWindow* window)
 }
 
 
-void MultiDelogoApp::save_project(const std::string& project_file, fg::FilterData* filter_data)
+void MultiDelogoApp::save_project(const std::string& project_file,
+                                  const fg::FilterData& filter_data)
 {
   std::ofstream file_stream(project_file);
   if (!file_stream.is_open()) {
@@ -182,7 +183,7 @@ void MultiDelogoApp::save_project(const std::string& project_file, fg::FilterDat
     return;
   }
 
-  filter_data->save(file_stream);
+  filter_data.save(file_stream);
 }
 
 

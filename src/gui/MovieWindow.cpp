@@ -274,7 +274,7 @@ void MovieWindow::on_zoom(int increment)
 void MovieWindow::on_save()
 {
   filter_data_->set_jump_size(txt_jump_size_.get_value());
-  get_application()->save_project(project_file_, filter_data_.get());
+  get_application()->save_project(project_file_, *filter_data_);
 }
 
 

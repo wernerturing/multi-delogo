@@ -37,7 +37,8 @@ namespace mdl {
   public:
     static Glib::RefPtr<MultiDelogoApp> create();
 
-    void save_project(const std::string& project_file, fg::FilterData* filter_data);
+    void save_project(const std::string& project_file,
+                      const fg::FilterData& filter_data);
 
     const static std::string ACTION_NEW;
     const static std::string ACTION_OPEN;
