@@ -45,6 +45,9 @@ FilterPanel* FilterPanelFactory::create(fg::Filter* filter)
   case fg::FilterType::DELOGO:
     return new FilterPanelDelogo(dynamic_cast<fg::DelogoFilter*>(filter));
 
+  case fg::FilterType::DRAWBOX:
+    return new FilterPanelDrawbox(dynamic_cast<fg::DrawboxFilter*>(filter));
+
   default:
     return nullptr;
   }

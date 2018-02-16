@@ -60,6 +60,15 @@ namespace mdl {
 
     fg::Filter* get_filter() const override;
   };
+
+
+  class FilterPanelDrawbox : public FilterPanelRectangular
+  {
+  public:
+    FilterPanelDrawbox(fg::DrawboxFilter* filter);
+
+    fg::Filter* get_filter() const override;
+  };
 }
 
 #endif // MDL_FILTER_PANELS_H

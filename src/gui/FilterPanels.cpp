@@ -87,3 +87,18 @@ fg::Filter* FilterPanelDelogo::get_filter() const
                               txt_width_.get_value_as_int(),
                               txt_height_.get_value_as_int());
 }
+
+
+FilterPanelDrawbox::FilterPanelDrawbox(fg::DrawboxFilter* filter)
+  : FilterPanelRectangular(filter)
+{
+}
+
+
+fg::Filter* FilterPanelDrawbox::get_filter() const
+{
+  return new fg::DrawboxFilter(txt_x_.get_value_as_int(),
+                               txt_y_.get_value_as_int(),
+                               txt_width_.get_value_as_int(),
+                               txt_height_.get_value_as_int());
+}
