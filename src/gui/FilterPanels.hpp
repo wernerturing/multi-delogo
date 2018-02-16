@@ -31,6 +31,8 @@ namespace mdl {
   {
   public:
     FilterPanelNull();
+
+    fg::Filter* get_filter() const override;
   };
 }
 

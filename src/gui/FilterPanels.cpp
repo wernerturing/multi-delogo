@@ -29,3 +29,9 @@ using namespace mdl;
 FilterPanelNull::FilterPanelNull()
 {
 }
+
+
+fg::Filter* FilterPanelNull::get_filter() const
+{
+  return new fg::NullFilter();
+}

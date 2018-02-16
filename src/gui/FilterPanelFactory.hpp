@@ -30,6 +30,9 @@ namespace mdl {
   protected:
     FilterPanel();
     virtual ~FilterPanel();
+
+  public:
+    virtual fg::Filter* get_filter() const = 0;
   };
 
 

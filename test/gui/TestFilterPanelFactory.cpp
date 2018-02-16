@@ -30,6 +30,8 @@ using namespace mdl;
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
+#include "../TestHelpers.hpp"
+
 
 class GtkInitialization
 {
@@ -49,4 +51,14 @@ BOOST_AUTO_TEST_CASE(should_create_a_panel_for_null_filter)
   FilterPanelNull* downcasted = dynamic_cast<FilterPanelNull*>(panel);
 
   BOOST_CHECK(downcasted != nullptr);
+}
+
+
+BOOST_AUTO_TEST_CASE(filter_panel_null_should_return_a_null_filter)
+{
+  fg::NullFilter filter;
+  FilterPanel* panel = FilterPanelFactory::create(&filter);
+
+  fg::Filter* created_filter = panel->get_filter();
+  BOOST_CHECK_EQUAL(created_filter->type(), fg::FilterType::NO_OP);
 }
