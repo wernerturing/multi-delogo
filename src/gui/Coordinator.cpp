@@ -16,37 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef MDL_FILTER_LIST_H
-#define MDL_FILTER_LIST_H
-
-#include <memory>
-
 #include <gtkmm.h>
+#include <glibmm/i18n.h>
 
-#include "FilterListModel.hpp"
+#include "Coordinator.hpp"
+#include "FilterList.hpp"
+#include "FrameNavigator.hpp"
 
-#include "filter-generator/FilterList.hpp"
+using namespace mdl;
 
 
-namespace mdl {
-  class FilterList : public Gtk::Box
-  {
-  public:
-    FilterList(fg::FilterList& filter_list);
-
-    typedef sigc::signal<void, int> type_signal_selection_changed;
-    type_signal_selection_changed signal_selection_changed();
-
-  protected:
-    type_signal_selection_changed signal_selection_changed_;
-
-  private:
-    Glib::RefPtr<FilterListModel> model_;
-    Gtk::TreeView view_;
-    Glib::RefPtr<Gtk::TreeView::Selection> selection_;
-
-    void on_selection_changed();
-  };
+Coordinator::Coordinator(FilterList& filter_list, FrameNavigator& frame_navigator)
+  : filter_list_(filter_list)
+  , frame_navigator_(frame_navigator)
+{
+  filter_list_.signal_selection_changed().connect(sigc::mem_fun(*this, &Coordinator::on_filter_selected));
 }
 
-#endif // MDL_FILTER_LIST_H
+
+void Coordinator::on_filter_selected(int start_frame)
+{
+  printf("filter starting at %d selected\n", start_frame);
+  frame_navigator_.change_displayed_frame(start_frame);
+}

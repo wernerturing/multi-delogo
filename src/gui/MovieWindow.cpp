@@ -26,8 +26,9 @@
 #include "filter-generator/FilterData.hpp"
 
 #include "MovieWindow.hpp"
-#include "FrameNavigator.hpp"
 #include "FilterList.hpp"
+#include "FrameNavigator.hpp"
+#include "Coordinator.hpp"
 #include "MultiDelogoApp.hpp"
 
 using namespace mdl;
@@ -38,7 +39,9 @@ MovieWindow::MovieWindow(const std::string& project_file,
                          const Glib::RefPtr<FrameProvider>& frame_provider)
   : project_file_(project_file)
   , filter_data_(std::move(filter_data))
+  , filter_list_(filter_data_->filter_list())
   , frame_navigator_(*this, frame_provider)
+  , coordinator_(filter_list_, frame_navigator_)
 {
   set_default_size(1000, 600);
   set_title(Glib::ustring::compose("multi-delogo: %1",
@@ -48,9 +51,7 @@ MovieWindow::MovieWindow(const std::string& project_file,
   vbox->pack_start(*create_toolbar(), false, false);
 
   Gtk::Box* hbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
-  FilterList* filters = Gtk::manage(new FilterList(filter_data_->filter_list()));
-  hbox->pack_start(*filters, true, true);
-
+  hbox->pack_start(filter_list_, true, true);
   hbox->pack_start(frame_navigator_, true, true);
 
   vbox->pack_start(*hbox, true, true);

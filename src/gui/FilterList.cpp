@@ -41,4 +41,21 @@ FilterList::FilterList(fg::FilterList& filter_list)
   scroll->add(view_);
 
   pack_start(*scroll, false, false);
+
+  selection_ = view_.get_selection();
+  selection_->signal_changed().connect(sigc::mem_fun(*this, &FilterList::on_selection_changed));
+}
+
+
+FilterList::type_signal_selection_changed FilterList::signal_selection_changed()
+{
+  return signal_selection_changed_;
+}
+
+
+void FilterList::on_selection_changed()
+{
+  auto iter = selection_->get_selected();
+  auto row = *iter;
+  signal_selection_changed_.emit(row[model_->columns.start_frame]);
 }

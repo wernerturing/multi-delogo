@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 
+src/gui/Coordinator.cpp
 src/gui/FilterList.cpp
 src/gui/FrameNavigator.cpp
 src/gui/FrameView.cpp

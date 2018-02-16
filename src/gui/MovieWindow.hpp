@@ -27,7 +27,9 @@
 #include "common/FrameProvider.hpp"
 #include "filter-generator/FilterData.hpp"
 
+#include "FilterList.hpp"
 #include "FrameNavigator.hpp"
+#include "Coordinator.hpp"
 
 
 namespace mdl {
@@ -48,7 +50,9 @@ namespace mdl {
     std::string project_file_;
     std::unique_ptr<fg::FilterData> filter_data_;
 
+    FilterList filter_list_;
     FrameNavigator frame_navigator_;
+    Coordinator coordinator_;
 
 
     Gtk::Toolbar* create_toolbar();

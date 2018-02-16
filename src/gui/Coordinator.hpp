@@ -16,37 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef MDL_FILTER_LIST_H
-#define MDL_FILTER_LIST_H
-
-#include <memory>
+#ifndef MDL_COORDINATOR_H
+#define MDL_COORDINATOR_H
 
 #include <gtkmm.h>
 
-#include "FilterListModel.hpp"
-
-#include "filter-generator/FilterList.hpp"
+#include "FilterList.hpp"
+#include "FrameNavigator.hpp"
 
 
 namespace mdl {
-  class FilterList : public Gtk::Box
+  class Coordinator
   {
   public:
-    FilterList(fg::FilterList& filter_list);
-
-    typedef sigc::signal<void, int> type_signal_selection_changed;
-    type_signal_selection_changed signal_selection_changed();
-
-  protected:
-    type_signal_selection_changed signal_selection_changed_;
+    Coordinator(FilterList& filter_list, FrameNavigator& frame_navigator);
 
   private:
-    Glib::RefPtr<FilterListModel> model_;
-    Gtk::TreeView view_;
-    Glib::RefPtr<Gtk::TreeView::Selection> selection_;
+    FilterList& filter_list_;
+    FrameNavigator& frame_navigator_;
 
-    void on_selection_changed();
+    void on_filter_selected(int start_frame);
   };
 }
 
-#endif // MDL_FILTER_LIST_H
+#endif // MDL_COORDINATOR_H

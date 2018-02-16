@@ -36,6 +36,7 @@ namespace mdl {
 
     void single_step_frame(int direction);
     void jump_step_frame(int direction);
+    void change_displayed_frame(int new_frame_number);
 
     int get_jump_size() const;
     void set_jump_size(int jump_size);
@@ -60,8 +61,6 @@ namespace mdl {
 
     Gtk::Box* create_navigation_box();
     Gtk::Box* create_zoom_box();
-
-    void change_displayed_frame(int new_frame_number);
 
     void on_frame_number_activate();
     bool on_frame_number_input(GdkEventFocus*);
