@@ -23,6 +23,8 @@ multi_delogo_SOURCES = main.cpp \
                        FrameView.cpp \
                        FrameNavigator.cpp \
                        FilterListModel.cpp \
+                       FilterPanels.cpp \
+                       FilterPanelFactory.cpp \
                        FilterList.cpp \
                        Coordinator.cpp \
                        MovieWindow.cpp \
@@ -35,6 +37,8 @@ noinst_HEADERS = common/Exceptions.hpp \
                  FrameView.hpp \
                  FrameNavigator.hpp \
                  FilterListModel.hpp \
+                 FilterPanels.hpp \
+                 FilterPanelFactory.hpp \
                  FilterList.hpp \
                  Coordinator.hpp \
                  MovieWindow.hpp \
