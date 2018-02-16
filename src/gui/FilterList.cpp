@@ -35,6 +35,7 @@ FilterList::FilterList(fg::FilterList& filter_list)
   , view_(model_)
 {
   view_.append_column(_("Start frame"), model_->columns.start_frame);
+  view_.append_column(_("Filter"), model_->columns.filter_name);
 
   Gtk::ScrolledWindow* scroll = Gtk::manage(new Gtk::ScrolledWindow());
   scroll->add(view_);

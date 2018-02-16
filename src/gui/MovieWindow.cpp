@@ -40,7 +40,7 @@ MovieWindow::MovieWindow(const std::string& project_file,
   , filter_data_(std::move(filter_data))
   , frame_navigator_(*this, frame_provider)
 {
-  set_default_size(900, 600);
+  set_default_size(1000, 600);
   set_title(Glib::ustring::compose("multi-delogo: %1",
                                    Glib::path_get_basename(project_file)));
 
