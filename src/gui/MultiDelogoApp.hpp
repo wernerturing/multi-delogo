@@ -21,10 +21,14 @@
 
 #include <gtkmm.h>
 
+#include <boost/optional.hpp>
+
 #include "filter-generator/FilterData.hpp"
 
 
 namespace mdl {
+  typedef boost::optional<Glib::RefPtr<Gio::File>> maybe_file;
+
   class MultiDelogoApp : public Gtk::Application
   {
   protected:
@@ -53,8 +57,12 @@ namespace mdl {
 
     void new_project();
     void open_project();
-    void select_and_open_file(const std::string& title,
-                              const Glib::RefPtr<Gtk::FileFilter>& filter);
+    bool select_new_movie_file_if_necessary(fg::FilterData& filter_data);
+
+    maybe_file select_movie_file();
+    maybe_file select_project_file();
+    maybe_file select_file_for_open(const std::string& title,
+                                    const Glib::RefPtr<Gtk::FileFilter>& filter);
 
     void on_hide_window(Gtk::ApplicationWindow* window);
   };
