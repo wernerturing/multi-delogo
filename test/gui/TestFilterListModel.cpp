@@ -49,9 +49,9 @@ class FilterModelFixture
 public:
   FilterModelFixture()
   {
-    list.insert(0, new fg::DelogoFilter(0, 0, 0, 0));
-    list.insert(200, new fg::DrawboxFilter(2, 2, 2, 2));
-    list.insert(100, new fg::NullFilter());
+    list.insert(1, new fg::DelogoFilter(0, 0, 0, 0));
+    list.insert(201, new fg::DrawboxFilter(2, 2, 2, 2));
+    list.insert(101, new fg::NullFilter());
 
     model = mdl::FilterListModel::create(list);
   }
@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_CASE(test_get_nth_child)
 {
   Gtk::TreeNodeChildren root_children = model->children();
   Gtk::TreeRow row = root_children[2];
-  BOOST_CHECK_EQUAL(row[model->columns.start_frame], 200);
+  BOOST_CHECK_EQUAL(row[model->columns.start_frame], 201);
 }
 
 
@@ -143,19 +143,19 @@ BOOST_AUTO_TEST_CASE(test_iteration)
   auto iter = children.begin();
 
   auto row0 = *iter;
-  BOOST_CHECK_EQUAL(row0[model->columns.start_frame], 0);
+  BOOST_CHECK_EQUAL(row0[model->columns.start_frame], 1);
   fg::Filter* filter0 = row0[model->columns.filter];
   BOOST_CHECK_EQUAL(filter0->type(), fg::FilterType::DELOGO);
 
   ++iter;
   auto row1 = *iter;
-  BOOST_CHECK_EQUAL(row1[model->columns.start_frame], 100);
+  BOOST_CHECK_EQUAL(row1[model->columns.start_frame], 101);
   fg::Filter* filter1 = row1[model->columns.filter];
   BOOST_CHECK_EQUAL(filter1->type(), fg::FilterType::NO_OP);
 
   ++iter;
   auto row2 = *iter;
-  BOOST_CHECK_EQUAL(row2.get_value(model->columns.start_frame), 200);
+  BOOST_CHECK_EQUAL(row2.get_value(model->columns.start_frame), 201);
   fg::Filter* filter2 = row2.get_value(model->columns.filter);
   BOOST_CHECK_EQUAL(filter2->type(), fg::FilterType::DRAWBOX);
 
@@ -169,25 +169,25 @@ BOOST_AUTO_TEST_CASE(test_insert)
   model->signal_row_inserted().connect(sigc::mem_fun(*this, &FilterModelFixture::test_inserted_or_changed_signal_callback));
 
   auto iter_from_before_insert = model->children().begin();
-  model->insert(150, new fg::DelogoFilter(10, 20, 30, 40));
+  model->insert(151, new fg::DelogoFilter(10, 20, 30, 40));
   auto iter_from_after_insert = model->children().begin();
 
   BOOST_CHECK_EQUAL(list.size(), 4);
-  BOOST_CHECK_EQUAL(list.get_by_position(2)->first, 150);
+  BOOST_CHECK_EQUAL(list.get_by_position(2)->first, 151);
   BOOST_CHECK_NE(iter_from_before_insert.get_stamp(),
                  iter_from_after_insert.get_stamp()); // iters become invalid
 
   auto inserted_row = *saved_iter;
-  BOOST_CHECK_EQUAL(inserted_row[model->columns.start_frame], 150);
+  BOOST_CHECK_EQUAL(inserted_row[model->columns.start_frame], 151);
 }
 
 
 BOOST_AUTO_TEST_CASE(test_insert_for_row_that_already_exists)
 {
-  BOOST_CHECK_THROW(model->insert(100, new fg::DelogoFilter(10, 20, 30, 40)),
+  BOOST_CHECK_THROW(model->insert(101, new fg::DelogoFilter(10, 20, 30, 40)),
                     mdl::DuplicateRowException);
 
-  BOOST_CHECK_EQUAL(list.get_by_start_frame(100)->second->type(), fg::FilterType::NO_OP);
+  BOOST_CHECK_EQUAL(list.get_by_start_frame(101)->second->type(), fg::FilterType::NO_OP);
 }
 
 
@@ -201,8 +201,8 @@ BOOST_AUTO_TEST_CASE(test_delete_row)
   auto iter_after = model->children().begin();
 
   BOOST_CHECK_EQUAL(list.size(), 2);
-  BOOST_CHECK_EQUAL(list.get_by_position(0)->first, 0);
-  BOOST_CHECK_EQUAL(list.get_by_position(1)->first, 200);
+  BOOST_CHECK_EQUAL(list.get_by_position(0)->first, 1);
+  BOOST_CHECK_EQUAL(list.get_by_position(1)->first, 201);
 
   BOOST_CHECK_EQUAL(saved_path, path_before);
   BOOST_CHECK_NE(iter_before.get_stamp(),
@@ -215,7 +215,7 @@ BOOST_AUTO_TEST_CASE(should_not_allow_changing_start_frame)
   auto iter = model->children()[1];
   auto row = *iter;
 
-  BOOST_CHECK_THROW(row[model->columns.start_frame] = 500, std::invalid_argument);
+  BOOST_CHECK_THROW(row[model->columns.start_frame] = 501, std::invalid_argument);
 }
 
 BOOST_AUTO_TEST_CASE(should_allow_changing_the_filter)
@@ -230,7 +230,7 @@ BOOST_AUTO_TEST_CASE(should_allow_changing_the_filter)
   auto iter_after = model->children()[1];
 
   BOOST_CHECK_EQUAL(list.size(), 3);
-  BOOST_CHECK_EQUAL(list.get_by_start_frame(100)->second->type(), fg::FilterType::DRAWBOX);
+  BOOST_CHECK_EQUAL(list.get_by_start_frame(101)->second->type(), fg::FilterType::DRAWBOX);
   BOOST_CHECK_EQUAL(iter_before.get_stamp(),
                     iter_after.get_stamp()); // iters remain valid
 

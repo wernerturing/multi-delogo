@@ -37,21 +37,21 @@ BOOST_AUTO_TEST_CASE(insert_should_keep_the_filters_ordered)
   FilterList list;
 
   DelogoFilter* filter1 = new DelogoFilter(10, 15, 100, 20);
-  list.insert(0, filter1);
+  list.insert(1, filter1);
   DrawboxFilter* filter2 = new DrawboxFilter(1, 2, 3, 4);
-  list.insert(1000, filter2);
+  list.insert(1001, filter2);
   NullFilter* filter3 = new NullFilter();
-  list.insert(400, filter3);
+  list.insert(401, filter3);
 
   BOOST_CHECK_EQUAL(list.size(), 3);
   auto it = list.begin();
-  BOOST_CHECK_EQUAL(it->first, 0);
+  BOOST_CHECK_EQUAL(it->first, 1);
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::DELOGO);
   ++it;
-  BOOST_CHECK_EQUAL(it->first, 400);
+  BOOST_CHECK_EQUAL(it->first, 401);
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::NO_OP);
   ++it;
-  BOOST_CHECK_EQUAL(it->first, 1000);
+  BOOST_CHECK_EQUAL(it->first, 1001);
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::DRAWBOX);
 }
 
@@ -61,19 +61,19 @@ BOOST_AUTO_TEST_CASE(insert_should_replace_an_existing_filter)
   FilterList list;
 
   NullFilter* filter1 = new NullFilter();
-  list.insert(0, filter1);
+  list.insert(1, filter1);
   DrawboxFilter* filter2 = new DrawboxFilter(1, 2, 3, 4);
-  list.insert(500, filter2);
+  list.insert(501, filter2);
 
   DelogoFilter* filter3 = new DelogoFilter(10, 15, 100, 20);
-  list.insert(500, filter3);
+  list.insert(501, filter3);
 
   BOOST_CHECK_EQUAL(list.size(), 2);
   auto it = list.begin();
-  BOOST_CHECK_EQUAL(it->first, 0);
+  BOOST_CHECK_EQUAL(it->first, 1);
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::NO_OP);
   ++it;
-  BOOST_CHECK_EQUAL(it->first, 500);
+  BOOST_CHECK_EQUAL(it->first, 501);
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::DELOGO);
 }
 
@@ -81,18 +81,18 @@ BOOST_AUTO_TEST_CASE(insert_should_replace_an_existing_filter)
 BOOST_AUTO_TEST_CASE(remove_should_remove_an_item)
 {
   FilterList list;
-  list.insert(400, new DelogoFilter(1, 2, 3, 4));
-  list.insert(200, new DrawboxFilter(11, 22, 33, 44));
-  list.insert(100, new NullFilter());
+  list.insert(401, new DelogoFilter(1, 2, 3, 4));
+  list.insert(201, new DrawboxFilter(11, 22, 33, 44));
+  list.insert(101, new NullFilter());
 
-  list.remove(200);
+  list.remove(201);
 
   BOOST_CHECK_EQUAL(list.size(), 2);
   auto it = list.begin();
-  BOOST_CHECK_EQUAL(it->first, 100);
+  BOOST_CHECK_EQUAL(it->first, 101);
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::NO_OP);
   ++it;
-  BOOST_CHECK_EQUAL(it->first, 400);
+  BOOST_CHECK_EQUAL(it->first, 401);
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::DELOGO);
 }
 
@@ -100,17 +100,17 @@ BOOST_AUTO_TEST_CASE(remove_should_remove_an_item)
 BOOST_AUTO_TEST_CASE(remove_should_do_nothing_if_item_does_not_exist)
 {
   FilterList list;
-  list.insert(100, new NullFilter());
-  list.insert(200, new DrawboxFilter(11, 22, 33, 44));
+  list.insert(101, new NullFilter());
+  list.insert(201, new DrawboxFilter(11, 22, 33, 44));
 
-  list.remove(150);
+  list.remove(151);
 
   BOOST_CHECK_EQUAL(list.size(), 2);
   auto it = list.begin();
-  BOOST_CHECK_EQUAL(it->first, 100);
+  BOOST_CHECK_EQUAL(it->first, 101);
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::NO_OP);
   ++it;
-  BOOST_CHECK_EQUAL(it->first, 200);
+  BOOST_CHECK_EQUAL(it->first, 201);
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::DRAWBOX);
 }
 
@@ -118,11 +118,11 @@ BOOST_AUTO_TEST_CASE(remove_should_do_nothing_if_item_does_not_exist)
 BOOST_AUTO_TEST_CASE(get_by_frame_returning_an_item)
 {
   FilterList list;
-  list.insert(100, new NullFilter());
+  list.insert(101, new NullFilter());
 
-  auto maybe = list.get_by_start_frame(100);
+  auto maybe = list.get_by_start_frame(101);
   BOOST_CHECK(maybe);
-  BOOST_CHECK_EQUAL(maybe->first, 100);
+  BOOST_CHECK_EQUAL(maybe->first, 101);
   BOOST_CHECK_EQUAL(maybe->second->type(), FilterType::NO_OP);
 }
 
@@ -130,9 +130,9 @@ BOOST_AUTO_TEST_CASE(get_by_frame_returning_an_item)
 BOOST_AUTO_TEST_CASE(get_by_frame_returning_none)
 {
   FilterList list;
-  list.insert(100, new NullFilter());
+  list.insert(101, new NullFilter());
 
-  auto maybe = list.get_by_start_frame(200);
+  auto maybe = list.get_by_start_frame(201);
   BOOST_CHECK(!maybe);
 }
 
@@ -140,19 +140,19 @@ BOOST_AUTO_TEST_CASE(get_by_frame_returning_none)
 BOOST_AUTO_TEST_CASE(get_by_position_returning_an_item)
 {
   FilterList list;
-  list.insert(0, new DelogoFilter(1, 2, 3, 4));
-  list.insert(200, new DrawboxFilter(11, 22, 33, 44));
-  list.insert(100, new NullFilter());
-  list.insert(400, new DelogoFilter(99, 88, 77, 66));
+  list.insert(1, new DelogoFilter(1, 2, 3, 4));
+  list.insert(201, new DrawboxFilter(11, 22, 33, 44));
+  list.insert(101, new NullFilter());
+  list.insert(401, new DelogoFilter(99, 88, 77, 66));
 
   auto maybe0 = list.get_by_position(0);
   BOOST_CHECK(maybe0);
-  BOOST_CHECK_EQUAL(maybe0->first, 0);
+  BOOST_CHECK_EQUAL(maybe0->first, 1);
   BOOST_CHECK_EQUAL(maybe0->second->type(), FilterType::DELOGO);
 
   auto maybe2 = list.get_by_position(2);
   BOOST_CHECK(maybe2);
-  BOOST_CHECK_EQUAL(maybe2->first, 200);
+  BOOST_CHECK_EQUAL(maybe2->first, 201);
   BOOST_CHECK_EQUAL(maybe2->second->type(), FilterType::DRAWBOX);
 }
 
@@ -160,7 +160,7 @@ BOOST_AUTO_TEST_CASE(get_by_position_returning_an_item)
 BOOST_AUTO_TEST_CASE(get_by_position_returning_none)
 {
   FilterList list;
-  list.insert(100, new NullFilter());
+  list.insert(101, new NullFilter());
 
   auto maybe1 = list.get_by_position(1);
   BOOST_CHECK(!maybe1);
@@ -188,20 +188,20 @@ BOOST_AUTO_TEST_CASE(get_by_position_on_empty_list)
 BOOST_AUTO_TEST_CASE(get_position_for_existing_item)
 {
   FilterList list;
-  list.insert(0, new NullFilter());
-  list.insert(400, new NullFilter());
-  list.insert(250, new NullFilter());
+  list.insert(1, new NullFilter());
+  list.insert(401, new NullFilter());
+  list.insert(251, new NullFilter());
 
-  BOOST_CHECK_EQUAL(list.get_position(0), 0);
-  BOOST_CHECK_EQUAL(list.get_position(250), 1);
-  BOOST_CHECK_EQUAL(list.get_position(400), 2);
+  BOOST_CHECK_EQUAL(list.get_position(1), 0);
+  BOOST_CHECK_EQUAL(list.get_position(251), 1);
+  BOOST_CHECK_EQUAL(list.get_position(401), 2);
 }
 
 
 BOOST_AUTO_TEST_CASE(get_position_for_non_existing)
 {
   FilterList list;
-  list.insert(200, new NullFilter());
+  list.insert(201, new NullFilter());
 
   BOOST_CHECK_EQUAL(list.get_position(100), -1);
 }
@@ -210,22 +210,22 @@ BOOST_AUTO_TEST_CASE(get_position_for_non_existing)
 BOOST_AUTO_TEST_CASE(should_load_a_list)
 {
   std::istringstream in(
-    "0;drawbox;10;20;30;40\n"
-    "300;none;\n"
-    "600;delogo;100;50;200;80\n");
+    "1;drawbox;10;20;30;40\n"
+    "301;none;\n"
+    "601;delogo;100;50;200;80\n");
 
   FilterList list;
   list.load(in);
 
   BOOST_CHECK_EQUAL(list.size(), 3);
   auto it = list.begin();
-  BOOST_CHECK_EQUAL(it->first, 0);
+  BOOST_CHECK_EQUAL(it->first, 1);
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::DRAWBOX);
   ++it;
-  BOOST_CHECK_EQUAL(it->first, 300);
+  BOOST_CHECK_EQUAL(it->first, 301);
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::NO_OP);
   ++it;
-  BOOST_CHECK_EQUAL(it->first, 600);
+  BOOST_CHECK_EQUAL(it->first, 601);
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::DELOGO);
 }
 
@@ -242,7 +242,7 @@ BOOST_AUTO_TEST_CASE(should_fail_for_line_without_frame_and_filter)
 BOOST_AUTO_TEST_CASE(should_fail_if_frame_is_not_numeric)
 {
   std::istringstream in(
-    "0;none;\n"
+    "1;none;\n"
     "ab;delogo;1;2;3;4\n");
 
   FilterList list;
@@ -252,7 +252,7 @@ BOOST_AUTO_TEST_CASE(should_fail_if_frame_is_not_numeric)
 
 BOOST_AUTO_TEST_CASE(should_fail_for_invalid_filter)
 {
-  std::istringstream in("100;delogo;1;2\n");
+  std::istringstream in("101;delogo;1;2\n");
 
   FilterList list;
   BOOST_CHECK_THROW(list.load(in), fg::InvalidParametersException);
@@ -262,19 +262,19 @@ BOOST_AUTO_TEST_CASE(should_fail_for_invalid_filter)
 BOOST_AUTO_TEST_CASE(should_save_the_list)
 {
   FilterList list;
-  list.insert(0, new DelogoFilter(1, 2, 3, 4));
-  list.insert(500, new DrawboxFilter(11, 22, 33, 44));
-  list.insert(1500, new NullFilter());
-  list.insert(1000, new DrawboxFilter(111, 222, 333, 444));
+  list.insert(1, new DelogoFilter(1, 2, 3, 4));
+  list.insert(501, new DrawboxFilter(11, 22, 33, 44));
+  list.insert(1501, new NullFilter());
+  list.insert(1001, new DrawboxFilter(111, 222, 333, 444));
 
   std::ostringstream out;
   list.save(out);
 
   std::string expected =
-    "0;delogo;1;2;3;4\n"
-    "500;drawbox;11;22;33;44\n"
-    "1000;drawbox;111;222;333;444\n"
-    "1500;none;\n";
+    "1;delogo;1;2;3;4\n"
+    "501;drawbox;11;22;33;44\n"
+    "1001;drawbox;111;222;333;444\n"
+    "1501;none;\n";
   BOOST_CHECK_EQUAL(out.str(), expected);
 }
 
@@ -282,11 +282,11 @@ BOOST_AUTO_TEST_CASE(should_save_the_list)
 BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
 {
   FilterList list;
-  list.insert(0, new DelogoFilter(10, 11, 12, 13));
-  list.insert(500, new DrawboxFilter(20, 21, 22, 23));
-  list.insert(1000, new NullFilter());
-  list.insert(1300, new DrawboxFilter(30, 31, 32, 33));
-  list.insert(2000, new DrawboxFilter(40, 41, 42, 43));
+  list.insert(1, new DelogoFilter(10, 11, 12, 13));
+  list.insert(501, new DrawboxFilter(20, 21, 22, 23));
+  list.insert(1001, new NullFilter());
+  list.insert(1301, new DrawboxFilter(30, 31, 32, 33));
+  list.insert(2001, new DrawboxFilter(40, 41, 42, 43));
 
   std::ostringstream out;
   list.generate_ffmpeg_script(out);
@@ -303,8 +303,8 @@ BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
 BOOST_AUTO_TEST_CASE(should_discard_a_null_filter_at_the_end)
 {
   FilterList list;
-  list.insert(0, new DelogoFilter(10, 11, 12, 13));
-  list.insert(1000, new NullFilter());
+  list.insert(1, new DelogoFilter(10, 11, 12, 13));
+  list.insert(1001, new NullFilter());
 
   std::ostringstream out;
   list.generate_ffmpeg_script(out);

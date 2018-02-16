@@ -173,7 +173,8 @@ void FilterList::generate_ffmpeg_script_intermediary_filters(std::ostream& out) 
 
     auto& next = *i;
 
-    std::string frame_expr = get_frame_expression(current.first, next.first);
+    std::string frame_expr = get_frame_expression(current.first - 1,
+                                                  next.first - 1);
     std::string ffmpeg_str = current.second->ffmpeg_str(frame_expr);
     if (ffmpeg_str != "") {
       out << ffmpeg_str << ",\n";
@@ -185,7 +186,7 @@ void FilterList::generate_ffmpeg_script_intermediary_filters(std::ostream& out) 
 void FilterList::generate_ffmpeg_script_last_filter(std::ostream& out) const
 {
   auto& last = *--end();
-  std::string frame_expr = get_frame_expression(last.first);
+  std::string frame_expr = get_frame_expression(last.first - 1);
   std::string ffmpeg_str = last.second->ffmpeg_str(frame_expr);
   if (ffmpeg_str != "") {
     out << ffmpeg_str << "\n";
