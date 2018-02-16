@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_CASE(test_get_flags)
 
 BOOST_AUTO_TEST_CASE(test_get_n_columns)
 {
-  BOOST_CHECK_EQUAL(model->get_n_columns(), 2);
+  BOOST_CHECK_EQUAL(model->get_n_columns(), 3);
 }
 
 
@@ -94,6 +94,7 @@ BOOST_AUTO_TEST_CASE(test_get_column_type)
 {
   BOOST_CHECK_EQUAL(model->get_column_type(0), Glib::Value<int>::value_type());
   BOOST_CHECK_EQUAL(model->get_column_type(1), Glib::Value<fg::Filter*>::value_type());
+  BOOST_CHECK_EQUAL(model->get_column_type(2), Glib::Value<Glib::ustring>::value_type());
 }
 
 
@@ -173,18 +174,21 @@ BOOST_AUTO_TEST_CASE(test_iteration)
   BOOST_CHECK_EQUAL(row0[model->columns.start_frame], 0);
   fg::Filter* filter0 = row0[model->columns.filter];
   BOOST_CHECK_EQUAL(filter0->type(), fg::FilterType::DELOGO);
+  BOOST_CHECK_EQUAL(row0[model->columns.filter_name], "delogo");
 
   ++iter;
   auto row1 = *iter;
   BOOST_CHECK_EQUAL(row1[model->columns.start_frame], 100);
   fg::Filter* filter1 = row1[model->columns.filter];
   BOOST_CHECK_EQUAL(filter1->type(), fg::FilterType::NO_OP);
+  BOOST_CHECK_EQUAL(row1[model->columns.filter_name], "none");
 
   ++iter;
   auto row2 = *iter;
   BOOST_CHECK_EQUAL(row2.get_value(model->columns.start_frame), 200);
   fg::Filter* filter2 = row2.get_value(model->columns.filter);
   BOOST_CHECK_EQUAL(filter2->type(), fg::FilterType::DRAWBOX);
+  BOOST_CHECK_EQUAL(row2.get_value(model->columns.filter_name), "drawbox");
 
   ++iter;
   BOOST_CHECK_EQUAL(iter, children.end());
@@ -244,6 +248,16 @@ BOOST_AUTO_TEST_CASE(should_not_allow_changing_start_frame)
 
   BOOST_CHECK_THROW(row[model->columns.start_frame] = 500, std::invalid_argument);
 }
+
+
+BOOST_AUTO_TEST_CASE(should_not_allow_changing_name)
+{
+  auto iter = model->children()[1];
+  auto row = *iter;
+
+  BOOST_CHECK_THROW(row[model->columns.filter_name] = "a", std::invalid_argument);
+}
+
 
 BOOST_AUTO_TEST_CASE(should_allow_changing_the_filter)
 {

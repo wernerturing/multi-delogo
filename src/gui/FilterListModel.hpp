@@ -35,6 +35,7 @@ namespace mdl {
   public:
     Gtk::TreeModelColumn<int> start_frame;
     Gtk::TreeModelColumn<fg::Filter*> filter;
+    Gtk::TreeModelColumn<Glib::ustring> filter_name;
 
     FilterListColumns();
   };
