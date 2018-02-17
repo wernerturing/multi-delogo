@@ -288,15 +288,21 @@ void MovieWindow::on_save()
 
 void MovieWindow::on_encode()
 {
-  EncodeWindow* window = new EncodeWindow();
+  on_save();
+
+  EncodeWindow* window = new EncodeWindow(std::move(filter_data_));
   get_application()->register_window(window);
+
   hide();
 }
 
 
 void MovieWindow::on_hide()
 {
-  on_save();
+  // When this is called because of on_encode there is no filter_data_ anymore
+  if (filter_data_) {
+    on_save();
+  }
 }
 
 

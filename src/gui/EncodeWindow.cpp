@@ -16,6 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <memory>
+
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
 
@@ -24,12 +26,13 @@
 using namespace mdl;
 
 
-EncodeWindow::EncodeWindow()
+EncodeWindow::EncodeWindow(std::unique_ptr<fg::FilterData> filter_data)
+  : filter_data_(std::move(filter_data))
 {
   set_title(_("Encode video"));
   set_border_width(8);
 
-  Gtk::Label* lbl = Gtk::manage(new Gtk::Label("Encoding video"));
+  Gtk::Label* lbl = Gtk::manage(new Gtk::Label(filter_data_->movie_file()));
 
   Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 8));
   box->pack_start(*lbl, false, true);

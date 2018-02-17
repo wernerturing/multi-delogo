@@ -19,14 +19,21 @@
 #ifndef MDL_ENCODE_WINDOW_H
 #define MDL_ENCODE_WINDOW_H
 
+#include <memory>
+
 #include <gtkmm.h>
+
+#include "filter-generator/FilterData.hpp"
 
 
 namespace mdl {
   class EncodeWindow : public Gtk::ApplicationWindow
   {
   public:
-    EncodeWindow();
+    EncodeWindow(std::unique_ptr<fg::FilterData> filter_data);
+
+  private:
+    std::unique_ptr<fg::FilterData> filter_data_;
   };
 }
 
