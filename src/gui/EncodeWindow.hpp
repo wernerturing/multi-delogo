@@ -34,6 +34,12 @@ namespace mdl {
 
   private:
     std::unique_ptr<fg::FilterData> filter_data_;
+
+    Gtk::Entry txt_file_;
+
+    Gtk::Box* create_file_selection();
+
+    void on_select_file();
   };
 }
 
