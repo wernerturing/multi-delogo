@@ -33,13 +33,22 @@ namespace mdl {
     EncodeWindow(std::unique_ptr<fg::FilterData> filter_data);
 
   private:
+    enum class Codec { H264, H265 };
+    static const int H264_DEFAULT_CRF_ = 23;
+    static const int H265_DEFAULT_CRF_ = 28;
+
     std::unique_ptr<fg::FilterData> filter_data_;
+    Codec codec_;
 
     Gtk::Entry txt_file_;
+    Gtk::SpinButton txt_quality_;
 
     Gtk::Box* create_file_selection();
+    Gtk::Box* create_codec();
+    Gtk::Box* create_quality();
 
     void on_select_file();
+    void on_codec(Codec codec);
   };
 }
 
