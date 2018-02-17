@@ -20,6 +20,8 @@
 #define MDL_ENCODE_WINDOW_H
 
 #include <memory>
+#include <string>
+#include <vector>
 
 #include <gtkmm.h>
 
@@ -55,6 +57,11 @@ namespace mdl {
 
     bool check_file(const std::string& file);
     bool file_exists(const std::string& file);
+
+    std::vector<std::string> get_ffmpeg_cmd_line(const std::string& filter_file);
+
+
+    friend class EncodeWindowTestFixture;
   };
 }
 

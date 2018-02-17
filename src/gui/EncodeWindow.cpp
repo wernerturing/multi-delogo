@@ -202,3 +202,29 @@ bool EncodeWindow::file_exists(const std::string& file)
   return (stat(file.c_str(), &buffer) == 0);
 }
 
+
+std::vector<std::string> EncodeWindow::get_ffmpeg_cmd_line(const std::string& filter_file)
+{
+  std::string codec_name;
+  if (codec_ == Codec::H264) {
+    codec_name = "libx264";
+  } else if (codec_ == Codec::H265) {
+    codec_name = "libx265";
+  }
+
+  std::string quality = std::to_string(txt_quality_.get_value_as_int());
+
+  std::vector<std::string> cmd_line;
+  cmd_line.push_back("ffmpeg");
+  cmd_line.push_back("-y");
+  cmd_line.push_back("-v"); cmd_line.push_back("quiet");
+  cmd_line.push_back("-stats");
+  cmd_line.push_back("-i"); cmd_line.push_back(filter_data_->movie_file());
+  cmd_line.push_back("-filter_script:v"); cmd_line.push_back(filter_file);
+  cmd_line.push_back("-c:v"); cmd_line.push_back(codec_name);
+  cmd_line.push_back("-crf"); cmd_line.push_back(quality);
+  cmd_line.push_back("-c:a"); cmd_line.push_back("copy");
+  cmd_line.push_back(txt_file_.get_text());
+
+  return cmd_line;
+}
