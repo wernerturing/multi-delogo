@@ -45,6 +45,9 @@ namespace mdl {
     Gtk::Entry txt_file_;
     Gtk::SpinButton txt_quality_;
 
+    int tmp_fd_;
+    std::string tmp_filter_file_;
+
     Gtk::Box* create_file_selection();
     Gtk::Box* create_codec();
     Gtk::Box* create_quality();
@@ -53,12 +56,18 @@ namespace mdl {
     void on_select_file();
     void on_codec(Codec codec);
 
+    void on_encode();
     void on_generate_script();
 
     bool check_file(const std::string& file);
     bool file_exists(const std::string& file);
 
+    void generate_script(const std::string& file);
+
     std::vector<std::string> get_ffmpeg_cmd_line(const std::string& filter_file);
+    void start_ffmpeg(const std::vector<std::string>& cmd_line);
+
+    void ffmpeg_finished(Glib::Pid pid, int status);
 
 
     friend class EncodeWindowTestFixture;

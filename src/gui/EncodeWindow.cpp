@@ -16,9 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <unistd.h>
+#include <cstdio>
 #include <cerrno>
 #include <memory>
 #include <string>
@@ -143,10 +142,30 @@ Gtk::Box* EncodeWindow::create_buttons()
   btn_script->set_tooltip_text(_("Generates a ffmpeg filter script file that can be used to encode the video. Use this option if you want to run ffmpeg manually with custom encoding options"));
   btn_script->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_generate_script));
 
+  Gtk::Button* btn_encode = Gtk::manage(new Gtk::Button(_("Encode"), true));
+  btn_encode->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_encode));
+
   Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
+  box->pack_end(*btn_encode, false, false);
   box->pack_end(*btn_script, false, false);
 
   return box;
+}
+
+
+void EncodeWindow::on_encode()
+{
+  std::string file = txt_file_.get_text();
+  if (!check_file(file)) {
+    return;
+  }
+
+  tmp_fd_ = Glib::file_open_tmp(tmp_filter_file_, "mdlfilter");
+  generate_script(tmp_filter_file_);
+
+  std::vector<std::string> cmd_line = get_ffmpeg_cmd_line(tmp_filter_file_);
+
+  start_ffmpeg(cmd_line);
 }
 
 
@@ -157,17 +176,8 @@ void EncodeWindow::on_generate_script()
     return;
   }
 
-  std::ofstream file_stream(file);
-  if (!file_stream.is_open()) {
-    auto msg = Glib::ustring::compose(_("Could not open file %1: %2"),
-                                      file, Glib::strerror(errno));
-    Gtk::MessageDialog dlg(*this, msg, false, Gtk::MESSAGE_ERROR);
-    dlg.run();
-    return;
-  }
+  generate_script(file);
 
-  filter_data_->filter_list().generate_ffmpeg_script(file_stream);
-  file_stream.close();
   Gtk::MessageDialog dlg(*this, _("Filter script generated"));
   dlg.run();
 }
@@ -198,8 +208,23 @@ bool EncodeWindow::check_file(const std::string& file)
 
 bool EncodeWindow::file_exists(const std::string& file)
 {
-  struct stat buffer;
-  return (stat(file.c_str(), &buffer) == 0);
+  return Glib::file_test(file, Glib::FILE_TEST_EXISTS);
+}
+
+
+void EncodeWindow::generate_script(const std::string& file)
+{
+  std::ofstream file_stream(file);
+  if (!file_stream.is_open()) {
+    auto msg = Glib::ustring::compose(_("Could not open file %1: %2"),
+                                      file, Glib::strerror(errno));
+    Gtk::MessageDialog dlg(*this, msg, false, Gtk::MESSAGE_ERROR);
+    dlg.run();
+    return;
+  }
+
+  filter_data_->filter_list().generate_ffmpeg_script(file_stream);
+  file_stream.close();
 }
 
 
@@ -227,4 +252,42 @@ std::vector<std::string> EncodeWindow::get_ffmpeg_cmd_line(const std::string& fi
   cmd_line.push_back(txt_file_.get_text());
 
   return cmd_line;
+}
+
+
+void EncodeWindow::start_ffmpeg(const std::vector<std::string>& cmd_line)
+{
+  Glib::Pid ffmpeg_pid;
+  int ffmpeg_stderr_fd;
+  try {
+    Glib::spawn_async_with_pipes("",
+                                 cmd_line,
+                                 Glib::SPAWN_SEARCH_PATH | Glib::SPAWN_DO_NOT_REAP_CHILD | Glib::SPAWN_STDOUT_TO_DEV_NULL,
+                                 Glib::SlotSpawnChildSetup(),
+                                 &ffmpeg_pid,
+                                 nullptr,
+                                 nullptr,
+                                 &ffmpeg_stderr_fd);
+  } catch (Glib::SpawnError& e) {
+    auto msg = Glib::ustring::compose(_("Could not execute ffmpeg: %1"),
+                                      e.what());
+    Gtk::MessageDialog dlg(*this, msg, false, Gtk::MESSAGE_ERROR);
+    dlg.run();
+    return;
+  }
+
+  Glib::signal_child_watch().connect(sigc::mem_fun(*this, &EncodeWindow::ffmpeg_finished),
+                                     ffmpeg_pid);
+}
+
+
+void EncodeWindow::ffmpeg_finished(Glib::Pid pid, int status)
+{
+  Glib::spawn_close_pid(pid);
+  ::close(tmp_fd_);
+  ::unlink(tmp_filter_file_.c_str());
+
+  Gtk::MessageDialog dlg(*this, _("Encoding finished"));
+  dlg.run();
+
 }
