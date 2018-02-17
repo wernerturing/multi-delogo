@@ -27,7 +27,7 @@
 
 
 namespace mdl {
-  class FrameProvider : public Glib::ObjectBase
+  class FrameProvider : public Glib::Object
   {
   public:
     virtual Glib::RefPtr<Gdk::Pixbuf> get_frame(int frame_number) = 0;
