@@ -16,7 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <cerrno>
 #include <memory>
+#include <string>
+#include <fstream>
 
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
@@ -38,6 +44,7 @@ EncodeWindow::EncodeWindow(std::unique_ptr<fg::FilterData> filter_data)
   vbox->pack_start(*create_file_selection(), true, true);
   vbox->pack_start(*create_codec(), true, true);
   vbox->pack_start(*create_quality(), true, true);
+  vbox->pack_start(*create_buttons(), true, true);
 
   add(*vbox);
 }
@@ -128,3 +135,70 @@ Gtk::Box* EncodeWindow::create_quality()
 
   return box;
 }
+
+
+Gtk::Box* EncodeWindow::create_buttons()
+{
+  Gtk::Button* btn_script = Gtk::manage(new Gtk::Button(_("_Generate filter script"), true));
+  btn_script->set_tooltip_text(_("Generates a ffmpeg filter script file that can be used to encode the video. Use this option if you want to run ffmpeg manually with custom encoding options"));
+  btn_script->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_generate_script));
+
+  Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
+  box->pack_end(*btn_script, false, false);
+
+  return box;
+}
+
+
+void EncodeWindow::on_generate_script()
+{
+  std::string file = txt_file_.get_text();
+  if (!check_file(file)) {
+    return;
+  }
+
+  std::ofstream file_stream(file);
+  if (!file_stream.is_open()) {
+    auto msg = Glib::ustring::compose(_("Could not open file %1: %2"),
+                                      file, Glib::strerror(errno));
+    Gtk::MessageDialog dlg(*this, msg, false, Gtk::MESSAGE_ERROR);
+    dlg.run();
+    return;
+  }
+
+  filter_data_->filter_list().generate_ffmpeg_script(file_stream);
+  file_stream.close();
+  Gtk::MessageDialog dlg(*this, _("Filter script generated"));
+  dlg.run();
+}
+
+
+bool EncodeWindow::check_file(const std::string& file)
+{
+  if (file.empty()) {
+    Gtk::MessageDialog dlg(*this, _("Please select the output file"), false, Gtk::MESSAGE_ERROR);
+    dlg.run();
+    return false;
+  }
+
+  if (file_exists(file)) {
+    Gtk::MessageDialog dlg(*this,
+                           Glib::ustring::compose(_("File %1 already exists. Overwrite?"), file),
+                           false,
+                           Gtk::MESSAGE_QUESTION,
+                           Gtk::BUTTONS_NONE);
+    dlg.add_button(_("_Cancel"), Gtk::RESPONSE_NO);
+    dlg.add_button(_("_Overwrite"), Gtk::RESPONSE_YES);
+    return dlg.run() == Gtk::RESPONSE_YES;
+  }
+
+  return true;
+}
+
+
+bool EncodeWindow::file_exists(const std::string& file)
+{
+  struct stat buffer;
+  return (stat(file.c_str(), &buffer) == 0);
+}
+

@@ -46,9 +46,15 @@ namespace mdl {
     Gtk::Box* create_file_selection();
     Gtk::Box* create_codec();
     Gtk::Box* create_quality();
+    Gtk::Box* create_buttons();
 
     void on_select_file();
     void on_codec(Codec codec);
+
+    void on_generate_script();
+
+    bool check_file(const std::string& file);
+    bool file_exists(const std::string& file);
   };
 }
 
