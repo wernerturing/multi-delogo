@@ -80,6 +80,7 @@ namespace mdl {
     void on_zoom(int increment);
 
     void on_save();
+    void on_encode();
 
     void on_hide() override;
   };
