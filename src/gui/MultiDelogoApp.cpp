@@ -80,8 +80,7 @@ void MultiDelogoApp::create_movie_window(const Glib::RefPtr<Gio::File>& gfile)
   if (!file_stream.is_open()) {
     auto msg = Glib::ustring::compose(_("Could not open file %1: %2"),
                                       file, Glib::strerror(errno));
-    Gtk::MessageDialog dlg(msg, false, Gtk::MESSAGE_ERROR);
-    dlg.run();
+    error_dialog(msg);
     return;
   }
 
@@ -99,9 +98,7 @@ void MultiDelogoApp::create_movie_window(const Glib::RefPtr<Gio::File>& gfile)
     project_file = file + "." + EXTENSION_;
   } catch (fg::Exception& e) {
     auto msg = Glib::ustring::compose(_("Invalid data in file %1"), file);
-    Gtk::MessageDialog dlg(msg, false, Gtk::MESSAGE_ERROR);
-    dlg.run();
-
+    error_dialog(msg);
     return;
   }
 
@@ -117,9 +114,7 @@ void MultiDelogoApp::create_movie_window(const Glib::RefPtr<Gio::File>& gfile)
     register_window(window);
   } catch (const VideoNotOpenedException& e) {
     auto msg = Glib::ustring::compose(_("File %1 not recognized as video or multi-delogo data"), filter_data->movie_file());
-    Gtk::MessageDialog dlg(msg, false, Gtk::MESSAGE_ERROR);
-    dlg.run();
-
+    error_dialog(msg);
     return;
   }
 }
@@ -134,8 +129,7 @@ bool MultiDelogoApp::select_new_movie_file_if_necessary(fg::FilterData& filter_d
   }
 
   auto msg = Glib::ustring::compose(_("Movie file %1 in project could not be opened. Please select the movie file."), filter_data.movie_file());
-  Gtk::MessageDialog dlg(msg, false, Gtk::MESSAGE_WARNING);
-  dlg.run();
+  error_dialog(msg, Gtk::MESSAGE_WARNING);
 
   maybe_file new_file = select_movie_file();
   if (!new_file) {
@@ -178,8 +172,7 @@ void MultiDelogoApp::save_project(const std::string& project_file,
   if (!file_stream.is_open()) {
     auto msg = Glib::ustring::compose(_("Could not open file %1: %2"),
                                       project_file, Glib::strerror(errno));
-    Gtk::MessageDialog dlg(msg, false, Gtk::MESSAGE_ERROR);
-    dlg.run();
+    error_dialog(msg);
     return;
   }
 
@@ -229,6 +222,9 @@ maybe_file MultiDelogoApp::select_file_for_open(const std::string& title,
                                                 const Glib::RefPtr<Gtk::FileFilter>& filter)
 {
   Gtk::FileChooserDialog dlg(title);
+  if (initial_window_) {
+    dlg.set_transient_for(*initial_window_);
+  }
   dlg.add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL);
   dlg.add_button(_("_Open"), Gtk::RESPONSE_OK);
 
@@ -247,4 +243,14 @@ maybe_file MultiDelogoApp::select_file_for_open(const std::string& title,
   } else {
     return boost::none;
   }
+}
+
+
+void MultiDelogoApp::error_dialog(const Glib::ustring& message, Gtk::MessageType type)
+{
+  Gtk::MessageDialog dlg(message, false, type);
+  if (initial_window_) {
+    dlg.set_transient_for(*initial_window_);
+  }
+  dlg.run();
 }
