@@ -198,11 +198,11 @@ std::string FilterList::get_frame_expression(int start_frame, int next_start_fra
 {
   return "enable='between(n," + std::to_string(start_frame)
     + ',' + std::to_string(next_start_frame - 1)
-    + ')';
+    + ")\'";
 }
 
 
 std::string FilterList::get_frame_expression(int start_frame) const
 {
-  return "enable='gte(n," + std::to_string(start_frame) + ')';
+  return "enable='gte(n," + std::to_string(start_frame) + ")'";
 }
