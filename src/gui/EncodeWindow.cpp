@@ -322,6 +322,12 @@ void EncodeWindow::start_ffmpeg(const std::vector<std::string>& cmd_line)
 
 bool EncodeWindow::on_ffmpeg_output(Glib::IOCondition condition)
 {
+  // Under windows this function gets called after the process has terminated
+  // and the variable has been cleared
+  if (!ffmpeg_out_) {
+    return false;
+  }
+
   if (condition == Glib::IO_HUP) {
     ffmpeg_out_.reset();
     return false;
