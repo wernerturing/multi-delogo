@@ -184,7 +184,8 @@ void EncodeWindow::on_encode()
     return;
   }
 
-  tmp_fd_ = Glib::file_open_tmp(tmp_filter_file_, "mdlfilter");
+  int tmp_fd = Glib::file_open_tmp(tmp_filter_file_, "mdlfilter");
+  ::close(tmp_fd);
   generate_script(tmp_filter_file_);
 
   std::vector<std::string> cmd_line = get_ffmpeg_cmd_line(tmp_filter_file_);
@@ -342,7 +343,6 @@ bool EncodeWindow::on_ffmpeg_output(Glib::IOCondition condition)
 void EncodeWindow::on_ffmpeg_finished(Glib::Pid pid, int status)
 {
   Glib::spawn_close_pid(pid);
-  ::close(tmp_fd_);
   ::unlink(tmp_filter_file_.c_str());
   ffmpeg_out_.reset();
 
