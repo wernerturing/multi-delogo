@@ -52,6 +52,7 @@ po/*.gmo
 src/filter-generator/libfilter-generator.a
 src/opencv-frame-provider/libopencv-frame-provider.a
 src/gui/multi-delogo
+src/gui/multi-delogo.exe
 
 # Test related output
 test-driver
