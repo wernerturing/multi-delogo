@@ -302,6 +302,7 @@ void EncodeWindow::start_ffmpeg(const std::vector<std::string>& cmd_line)
   }
 
   lbl_status_.set_text(_("Encoding in progress"));
+  lbl_progress_.set_text("");
   box_progress_.set_no_show_all(false);
   box_progress_.show_all();
 
@@ -347,7 +348,12 @@ void EncodeWindow::on_ffmpeg_finished(Glib::Pid pid, int status)
   ffmpeg_out_.reset();
 
   enable_widgets();
-  lbl_status_.set_text(_("Encoding finished"));
+
+  if (status == 0) {
+    lbl_status_.set_text(_("Encoding finished successfully"));
+  } else {
+    lbl_status_.set_text(Glib::ustring::compose(_("Encoding failed. ffmpeg exited with status %1"), status));
+  }
 }
 
 
