@@ -372,3 +372,19 @@ void EncodeWindow::enable_widgets()
   }
 }
 
+
+bool EncodeWindow::on_delete_event(GdkEventAny*)
+{
+  if (!ffmpeg_out_) {
+    return false;
+  }
+
+  Gtk::MessageDialog dlg(*this,
+                         _("Encoding is in progress. If it is cancelled now, it'll be necessary to restart encoding from the beginning. Really cancel?"),
+                         false,
+                         Gtk::MESSAGE_QUESTION,
+                         Gtk::BUTTONS_NONE);
+  dlg.add_button(_("C_ancel encoding"), Gtk::RESPONSE_CLOSE);
+  dlg.add_button(_("_Continue"), Gtk::RESPONSE_OK);
+  return dlg.run() != Gtk::RESPONSE_CLOSE;
+}
