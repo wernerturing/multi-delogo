@@ -47,11 +47,16 @@ namespace mdl {
 
     int tmp_fd_;
     std::string tmp_filter_file_;
+    Glib::RefPtr<Glib::IOChannel> ffmpeg_out_;
+    Gtk::Box box_progress_;
+    Gtk::Label lbl_status_;
+    Gtk::Label lbl_progress_;
 
     Gtk::Box* create_file_selection();
     Gtk::Box* create_codec();
     Gtk::Box* create_quality();
     Gtk::Box* create_buttons();
+    Gtk::Box* create_progress();
 
     void on_select_file();
     void on_codec(Codec codec);
@@ -66,8 +71,8 @@ namespace mdl {
 
     std::vector<std::string> get_ffmpeg_cmd_line(const std::string& filter_file);
     void start_ffmpeg(const std::vector<std::string>& cmd_line);
-
-    void ffmpeg_finished(Glib::Pid pid, int status);
+    bool on_ffmpeg_output(Glib::IOCondition condition);
+    void on_ffmpeg_finished(Glib::Pid pid, int status);
 
 
     friend class EncodeWindowTestFixture;

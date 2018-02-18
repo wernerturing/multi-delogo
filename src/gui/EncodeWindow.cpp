@@ -44,6 +44,7 @@ EncodeWindow::EncodeWindow(std::unique_ptr<fg::FilterData> filter_data)
   vbox->pack_start(*create_codec(), true, true);
   vbox->pack_start(*create_quality(), true, true);
   vbox->pack_start(*create_buttons(), true, true);
+  vbox->pack_start(*create_progress(), true, true);
 
   add(*vbox);
 }
@@ -150,6 +151,22 @@ Gtk::Box* EncodeWindow::create_buttons()
   box->pack_end(*btn_script, false, false);
 
   return box;
+}
+
+
+Gtk::Box* EncodeWindow::create_progress()
+{
+  lbl_status_.set_halign(Gtk::ALIGN_START);
+  lbl_progress_.set_halign(Gtk::ALIGN_START);
+
+  box_progress_.set_orientation(Gtk::ORIENTATION_VERTICAL);
+  box_progress_.set_spacing(4);
+  box_progress_.set_no_show_all();
+
+  box_progress_.pack_start(lbl_status_, true, true);
+  box_progress_.pack_start(lbl_progress_, true, true);
+
+  return &box_progress_;
 }
 
 
@@ -276,18 +293,48 @@ void EncodeWindow::start_ffmpeg(const std::vector<std::string>& cmd_line)
     return;
   }
 
-  Glib::signal_child_watch().connect(sigc::mem_fun(*this, &EncodeWindow::ffmpeg_finished),
+  lbl_status_.set_text(_("Encoding in progress"));
+  box_progress_.set_no_show_all(false);
+  box_progress_.show_all();
+
+  Glib::signal_child_watch().connect(sigc::mem_fun(*this, &EncodeWindow::on_ffmpeg_finished),
                                      ffmpeg_pid);
+
+  ffmpeg_out_ = Glib::IOChannel::create_from_fd(ffmpeg_stderr_fd);
+  const auto io_source = Glib::IOSource::create(ffmpeg_out_,
+                                                Glib::IO_IN | Glib::IO_HUP);
+  io_source->set_priority(Glib::PRIORITY_LOW);
+  io_source->connect(sigc::mem_fun(*this, &EncodeWindow::on_ffmpeg_output));
+  io_source->attach(Glib::MainContext::get_default());
 }
 
 
-void EncodeWindow::ffmpeg_finished(Glib::Pid pid, int status)
+bool EncodeWindow::on_ffmpeg_output(Glib::IOCondition condition)
+{
+  if (condition == Glib::IO_HUP) {
+    ffmpeg_out_.reset();
+    return false;
+  }
+
+  Glib::ustring line;
+  ffmpeg_out_->read_line(line);
+  auto last_char = line.size() - 1;
+  if (line[last_char] == '\r' || line[last_char] == '\n') {
+    line.erase(last_char);
+  }
+  lbl_progress_.set_text(line);
+  box_progress_.show_all();
+
+  return true;
+}
+
+
+void EncodeWindow::on_ffmpeg_finished(Glib::Pid pid, int status)
 {
   Glib::spawn_close_pid(pid);
   ::close(tmp_fd_);
   ::unlink(tmp_filter_file_.c_str());
+  ffmpeg_out_.reset();
 
-  Gtk::MessageDialog dlg(*this, _("Encoding finished"));
-  dlg.run();
-
+  lbl_status_.set_text(_("Encoding finished"));
 }
