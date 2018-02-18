@@ -64,6 +64,8 @@ Gtk::Box* EncodeWindow::create_file_selection()
   box->pack_start(txt_file_, true, true);
   box->pack_start(*btn, false, false);
 
+  widgets_to_disable_.push_back(box);
+
   return box;
 }
 
@@ -104,6 +106,8 @@ Gtk::Box* EncodeWindow::create_codec()
   box->pack_start(*btn_h264, false, false);
   box->pack_start(*btn_h265, false, false);
 
+  widgets_to_disable_.push_back(box);
+
   return box;
 }
 
@@ -133,6 +137,8 @@ Gtk::Box* EncodeWindow::create_quality()
   box->pack_start(*lbl, false, false);
   box->pack_start(txt_quality_, false, true);
 
+  widgets_to_disable_.push_back(box);
+
   return box;
 }
 
@@ -149,6 +155,8 @@ Gtk::Box* EncodeWindow::create_buttons()
   Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
   box->pack_end(*btn_encode, false, false);
   box->pack_end(*btn_script, false, false);
+
+  widgets_to_disable_.push_back(box);
 
   return box;
 }
@@ -297,6 +305,8 @@ void EncodeWindow::start_ffmpeg(const std::vector<std::string>& cmd_line)
   box_progress_.set_no_show_all(false);
   box_progress_.show_all();
 
+  disable_widgets();
+
   Glib::signal_child_watch().connect(sigc::mem_fun(*this, &EncodeWindow::on_ffmpeg_finished),
                                      ffmpeg_pid);
 
@@ -336,5 +346,23 @@ void EncodeWindow::on_ffmpeg_finished(Glib::Pid pid, int status)
   ::unlink(tmp_filter_file_.c_str());
   ffmpeg_out_.reset();
 
+  enable_widgets();
   lbl_status_.set_text(_("Encoding finished"));
 }
+
+
+void EncodeWindow::disable_widgets()
+{
+  for (auto widget: widgets_to_disable_) {
+    widget->set_sensitive(false);
+  }
+}
+
+
+void EncodeWindow::enable_widgets()
+{
+  for (auto widget: widgets_to_disable_) {
+    widget->set_sensitive(true);
+  }
+}
+

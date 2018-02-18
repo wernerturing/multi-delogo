@@ -52,6 +52,8 @@ namespace mdl {
     Gtk::Label lbl_status_;
     Gtk::Label lbl_progress_;
 
+    std::vector<Gtk::Widget*> widgets_to_disable_;
+
     Gtk::Box* create_file_selection();
     Gtk::Box* create_codec();
     Gtk::Box* create_quality();
@@ -73,6 +75,9 @@ namespace mdl {
     void start_ffmpeg(const std::vector<std::string>& cmd_line);
     bool on_ffmpeg_output(Glib::IOCondition condition);
     void on_ffmpeg_finished(Glib::Pid pid, int status);
+
+    void disable_widgets();
+    void enable_widgets();
 
 
     friend class EncodeWindowTestFixture;
