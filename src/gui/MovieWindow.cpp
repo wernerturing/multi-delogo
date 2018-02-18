@@ -28,6 +28,7 @@
 
 #include "MovieWindow.hpp"
 #include "MultiDelogoApp.hpp"
+#include "EncodeWindow.hpp"
 
 using namespace mdl;
 
@@ -87,10 +88,17 @@ Gtk::Toolbar* MovieWindow::create_toolbar()
   btn_save->set_icon_name("document-save");
   gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_save->gobj()), "win.save");
 
+  add_action("encode", sigc::mem_fun(*this, &MovieWindow::on_encode));
+  Gtk::ToolButton* btn_encode = Gtk::manage(new Gtk::ToolButton(_("Encode")));
+  btn_encode->set_tooltip_text(_("Encode current project to a video with the filters applied"));
+  gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_encode->gobj()), "win.encode");
+
   Gtk::Toolbar* toolbar = Gtk::manage(new Gtk::Toolbar());
   toolbar->append(*btn_new);
   toolbar->append(*btn_open);
   toolbar->append(*btn_save);
+  toolbar->append(*Gtk::manage(new Gtk::SeparatorToolItem()));
+  toolbar->append(*btn_encode);
   return toolbar;
 }
 
@@ -278,9 +286,23 @@ void MovieWindow::on_save()
 }
 
 
-void MovieWindow::on_hide()
+void MovieWindow::on_encode()
 {
   on_save();
+
+  EncodeWindow* window = new EncodeWindow(std::move(filter_data_));
+  get_application()->register_window(window);
+
+  hide();
+}
+
+
+void MovieWindow::on_hide()
+{
+  // When this is called because of on_encode there is no filter_data_ anymore
+  if (filter_data_) {
+    on_save();
+  }
 }
 
 

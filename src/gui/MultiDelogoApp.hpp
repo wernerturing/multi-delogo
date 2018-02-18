@@ -40,6 +40,8 @@ namespace mdl {
     void save_project(const std::string& project_file,
                       const fg::FilterData& filter_data);
 
+    void register_window(Gtk::ApplicationWindow* window);
+
     const static std::string ACTION_NEW;
     const static std::string ACTION_OPEN;
 
@@ -54,7 +56,6 @@ namespace mdl {
     Gtk::ApplicationWindow* initial_window_;
 
     void create_movie_window(const Glib::RefPtr<Gio::File>& file);
-    void register_window(Gtk::ApplicationWindow* window);
 
     void new_project();
     void open_project();
