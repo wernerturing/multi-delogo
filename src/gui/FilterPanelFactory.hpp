@@ -21,7 +21,11 @@
 
 #include <gtkmm.h>
 
+#include <boost/optional.hpp>
+
 #include "filter-generator/Filters.hpp"
+
+#include "common/Rectangle.hpp"
 
 
 namespace mdl {
@@ -32,7 +36,10 @@ namespace mdl {
     virtual ~FilterPanel();
 
   public:
+    typedef boost::optional<Rectangle> MaybeRectangle;
+
     virtual fg::Filter* get_filter() const = 0;
+    virtual MaybeRectangle get_rectangle() const = 0;
   };
 
 
