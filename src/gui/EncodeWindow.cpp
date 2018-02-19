@@ -23,6 +23,10 @@
 #include <string>
 #include <fstream>
 
+#ifdef __MINGW32__
+#  include <windows.h>
+#endif
+
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
 
@@ -317,6 +321,10 @@ void EncodeWindow::start_ffmpeg(const std::vector<std::string>& cmd_line)
   io_source->set_priority(Glib::PRIORITY_LOW);
   io_source->connect(sigc::mem_fun(*this, &EncodeWindow::on_ffmpeg_output));
   io_source->attach(Glib::MainContext::get_default());
+
+#ifdef __MINGW32__
+  ffmpeg_handle_ = ffmpeg_pid;
+#endif
 }
 
 
@@ -393,5 +401,13 @@ bool EncodeWindow::on_delete_event(GdkEventAny*)
                          Gtk::BUTTONS_NONE);
   dlg.add_button(_("C_ancel encoding"), Gtk::RESPONSE_CLOSE);
   dlg.add_button(_("_Continue"), Gtk::RESPONSE_OK);
-  return dlg.run() != Gtk::RESPONSE_CLOSE;
+  bool terminate = dlg.run() == Gtk::RESPONSE_CLOSE;
+
+#ifdef __MINGW32__
+  if (terminate) {
+    TerminateProcess(ffmpeg_handle_, 250);
+  }
+#endif
+
+  return !terminate;
 }

@@ -45,6 +45,9 @@ namespace mdl {
     Gtk::Entry txt_file_;
     Gtk::SpinButton txt_quality_;
 
+#ifdef __MINGW32__
+    Glib::Pid ffmpeg_handle_;
+#endif
     std::string tmp_filter_file_;
     Glib::RefPtr<Glib::IOChannel> ffmpeg_out_;
     Gtk::Box box_progress_;
