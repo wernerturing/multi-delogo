@@ -22,6 +22,7 @@
 #include <gtkmm.h>
 
 #include "FilterList.hpp"
+#include "FilterListModel.hpp"
 #include "FrameNavigator.hpp"
 
 
@@ -33,9 +34,13 @@ namespace mdl {
 
   private:
     FilterList& filter_list_;
+    Glib::RefPtr<FilterListModel> filter_model_;
     FrameNavigator& frame_navigator_;
 
     void on_filter_selected(int start_frame);
+
+    sigc::connection on_frame_changed_;
+    void on_frame_changed(int frame);
   };
 }
 

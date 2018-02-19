@@ -153,6 +153,7 @@ void FrameNavigator::change_displayed_frame(int new_frame_number)
 
     frame_number_ = new_frame_number;
     txt_frame_number_.set_value(frame_number_);
+    signal_frame_changed_.emit(frame_number_);
   } catch (const FrameNotAvailableException& e) {
     Gtk::MessageDialog dlg(parent_window_,
                            _("Could not get frame"), false,
@@ -197,6 +198,12 @@ int FrameNavigator::get_jump_size() const
 void FrameNavigator::set_jump_size(int jump_size)
 {
   txt_jump_size_.set_value(jump_size);
+}
+
+
+FrameNavigator::type_signal_frame_changed FrameNavigator::signal_frame_changed()
+{
+  return signal_frame_changed_;
 }
 
 

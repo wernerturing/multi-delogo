@@ -41,6 +41,9 @@ namespace mdl {
     int get_jump_size() const;
     void set_jump_size(int jump_size);
 
+    typedef sigc::signal<void, int> type_signal_frame_changed;
+    type_signal_frame_changed signal_frame_changed();
+
   private:
     Gtk::Window& parent_window_;
 
@@ -57,6 +60,8 @@ namespace mdl {
     Gtk::Label lbl_zoom_;
     Gtk::Button btn_zoom_out_;
     Gtk::Button btn_zoom_in_;
+
+    type_signal_frame_changed signal_frame_changed_;
 
 
     Gtk::Box* create_navigation_box();

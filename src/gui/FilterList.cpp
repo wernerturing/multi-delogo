@@ -47,6 +47,24 @@ FilterList::FilterList(fg::FilterList& filter_list)
 }
 
 
+Glib::RefPtr<FilterListModel> FilterList::get_model()
+{
+  return model_;
+}
+
+
+void FilterList::select(const Gtk::TreeModel::iterator& iter)
+{
+  selection_->select(iter);
+}
+
+
+void FilterList::unselect()
+{
+  selection_->unselect_all();
+}
+
+
 FilterList::type_signal_selection_changed FilterList::signal_selection_changed()
 {
   return signal_selection_changed_;
@@ -56,6 +74,8 @@ FilterList::type_signal_selection_changed FilterList::signal_selection_changed()
 void FilterList::on_selection_changed()
 {
   auto iter = selection_->get_selected();
-  auto row = *iter;
-  signal_selection_changed_.emit(row[model_->columns.start_frame]);
+  if (iter) {
+    auto row = *iter;
+    signal_selection_changed_.emit(row[model_->columns.start_frame]);
+  }
 }

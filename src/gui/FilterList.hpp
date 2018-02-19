@@ -34,6 +34,11 @@ namespace mdl {
   public:
     FilterList(fg::FilterList& filter_list);
 
+    Glib::RefPtr<FilterListModel> get_model();
+
+    void select(const Gtk::TreeModel::iterator& iter);
+    void unselect();
+
     typedef sigc::signal<void, int> type_signal_selection_changed;
     type_signal_selection_changed signal_selection_changed();
 
