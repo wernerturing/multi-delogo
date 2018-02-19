@@ -65,6 +65,17 @@ AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"],
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.17])
 
+AC_SUBST([WINDOWS_LDFLAGS])
+case $host in
+  *mingw*)
+    AC_ARG_ENABLE([windows-console],
+      AS_HELP_STRING([--enable-windows-console], [Enable console window]),
+      [],
+      [
+        WINDOWS_LDFLAGS="-mwindows"
+      ])
+  ;;
+esac
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile
