@@ -21,21 +21,25 @@
 
 #include <gtkmm.h>
 
-#include "FilterList.hpp"
 #include "FilterListModel.hpp"
+#include "FilterList.hpp"
 #include "FrameNavigator.hpp"
+#include "FilterPanelFactory.hpp"
 
 
 namespace mdl {
   class Coordinator
   {
   public:
-    Coordinator(FilterList& filter_list, FrameNavigator& frame_navigator);
+    Coordinator(FilterList& filter_list,
+                FrameNavigator& frame_navigator,
+                int frame_width, int frame_height);
 
   private:
     FilterList& filter_list_;
     Glib::RefPtr<FilterListModel> filter_model_;
     FrameNavigator& frame_navigator_;
+    FilterPanelFactory panel_factory_;
 
     void on_filter_selected(int start_frame);
 

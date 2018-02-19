@@ -22,14 +22,18 @@
 #include "Coordinator.hpp"
 #include "FilterList.hpp"
 #include "FrameNavigator.hpp"
+#include "FilterPanelFactory.hpp"
 
 using namespace mdl;
 
 
-Coordinator::Coordinator(FilterList& filter_list, FrameNavigator& frame_navigator)
+Coordinator::Coordinator(FilterList& filter_list,
+                         FrameNavigator& frame_navigator,
+                         int frame_width, int frame_height)
   : filter_list_(filter_list)
   , filter_model_(filter_list.get_model())
   , frame_navigator_(frame_navigator)
+  , panel_factory_(frame_width, frame_height)
 {
   filter_list_.signal_selection_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_filter_selected));
@@ -42,9 +46,15 @@ Coordinator::Coordinator(FilterList& filter_list, FrameNavigator& frame_navigato
 void Coordinator::on_filter_selected(int start_frame)
 {
   printf("filter starting at %d selected\n", start_frame);
+
   on_frame_changed_.block();
   frame_navigator_.change_displayed_frame(start_frame);
   on_frame_changed_.block(false);
+
+  auto iter = filter_model_->get_for_frame(start_frame);
+  fg::Filter* filter = (*iter)[filter_model_->columns.filter];
+  FilterPanel* panel = Gtk::manage(panel_factory_.create(filter));
+  filter_list_.set_filter_panel(panel);
 }
 
 
