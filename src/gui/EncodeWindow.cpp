@@ -75,6 +75,7 @@ void EncodeWindow::on_select_file()
   Gtk::FileChooserDialog dlg(*this, _("Select output file"), Gtk::FILE_CHOOSER_ACTION_SAVE);
   dlg.add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL);
   dlg.add_button(_("_Save"), Gtk::RESPONSE_OK);
+  dlg.set_current_folder(Glib::path_get_dirname(filter_data_->movie_file()));
 
   if (dlg.run() == Gtk::RESPONSE_OK) {
     txt_file_.set_text(dlg.get_file()->get_path());
