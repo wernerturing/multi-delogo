@@ -23,9 +23,11 @@
 
 #include <gtkmm.h>
 
-#include "FilterListModel.hpp"
-
+#include "filter-generator/Filters.hpp"
 #include "filter-generator/FilterList.hpp"
+
+#include "FilterListModel.hpp"
+#include "FilterType.hpp"
 
 
 namespace mdl {
@@ -39,7 +41,7 @@ namespace mdl {
     void select(const Gtk::TreeModel::iterator& iter);
     void unselect();
 
-    void set_filter_panel(Gtk::Widget* panel);
+    void set_filter(fg::FilterType filter_type, Gtk::Widget* panel);
 
     typedef sigc::signal<void, int> type_signal_selection_changed;
     type_signal_selection_changed signal_selection_changed();
@@ -52,6 +54,7 @@ namespace mdl {
     Gtk::TreeView view_;
     Glib::RefPtr<Gtk::TreeView::Selection> selection_;
 
+    FilterType filter_type_;
     Gtk::Widget* current_panel_;
 
     void on_selection_changed();

@@ -30,7 +30,7 @@ using namespace mdl;
 
 
 FilterList::FilterList(fg::FilterList& filter_list)
-  : Gtk::Box(Gtk::ORIENTATION_VERTICAL)
+  : Gtk::Box(Gtk::ORIENTATION_VERTICAL, 8)
   , model_(FilterListModel::create(filter_list))
   , view_(model_)
   , current_panel_(nullptr)
@@ -41,7 +41,8 @@ FilterList::FilterList(fg::FilterList& filter_list)
   Gtk::ScrolledWindow* scroll = Gtk::manage(new Gtk::ScrolledWindow());
   scroll->add(view_);
 
-  pack_start(*scroll, false, false);
+  pack_start(*scroll, true, true);
+  pack_start(filter_type_, false, false);
 
   selection_ = view_.get_selection();
   selection_->signal_changed().connect(sigc::mem_fun(*this, &FilterList::on_selection_changed));
@@ -66,8 +67,10 @@ void FilterList::unselect()
 }
 
 
-void FilterList::set_filter_panel(Gtk::Widget* panel)
+void FilterList::set_filter(fg::FilterType filter_type, Gtk::Widget* panel)
 {
+  filter_type_.set(filter_type);
+
   if (current_panel_) {
     remove(*current_panel_);
   }

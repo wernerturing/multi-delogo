@@ -85,6 +85,6 @@ void Coordinator::change_filter(const FilterListModel::iterator& iter)
   }
 
   FilterPanel* panel = Gtk::manage(panel_factory_.create(filter));
-  filter_list_.set_filter_panel(panel);
+  filter_list_.set_filter(filter->type(), panel);
   current_filter_ = filter;
 }
