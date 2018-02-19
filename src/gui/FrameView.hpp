@@ -38,6 +38,9 @@ namespace mdl {
 
     void set_zoom(int level);
 
+    void show_rectangle(const Rectangle& rect);
+    void hide_rectangle();
+
   private:
     Goocanvas::Canvas canvas_;
     Glib::RefPtr<Goocanvas::Image> image_;

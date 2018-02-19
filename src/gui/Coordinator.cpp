@@ -22,6 +22,7 @@
 #include "Coordinator.hpp"
 #include "FilterList.hpp"
 #include "FrameNavigator.hpp"
+#include "FrameView.hpp"
 #include "FilterPanelFactory.hpp"
 
 using namespace mdl;
@@ -33,6 +34,7 @@ Coordinator::Coordinator(FilterList& filter_list,
   : filter_list_(filter_list)
   , filter_model_(filter_list.get_model())
   , frame_navigator_(frame_navigator)
+  , frame_view_(frame_navigator_.get_frame_view())
   , panel_factory_(frame_width, frame_height)
   , current_filter_(nullptr)
 {
@@ -87,4 +89,11 @@ void Coordinator::change_filter(const FilterListModel::iterator& iter)
   FilterPanel* panel = Gtk::manage(panel_factory_.create(filter));
   filter_list_.set_filter(filter->type(), panel);
   current_filter_ = filter;
+
+  auto rect = panel->get_rectangle();
+  if (rect) {
+    frame_view_.show_rectangle(*rect);
+  } else {
+    frame_view_.hide_rectangle();
+  }
 }

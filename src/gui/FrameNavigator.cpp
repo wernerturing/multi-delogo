@@ -199,6 +199,12 @@ void FrameNavigator::set_jump_size(int jump_size)
 }
 
 
+FrameView& FrameNavigator::get_frame_view()
+{
+  return frame_view_;
+}
+
+
 FrameNavigator::type_signal_frame_changed FrameNavigator::signal_frame_changed()
 {
   return signal_frame_changed_;

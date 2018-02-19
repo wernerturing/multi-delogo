@@ -24,6 +24,7 @@
 #include "FilterListModel.hpp"
 #include "FilterList.hpp"
 #include "FrameNavigator.hpp"
+#include "FrameView.hpp"
 #include "FilterPanelFactory.hpp"
 
 
@@ -39,8 +40,9 @@ namespace mdl {
     FilterList& filter_list_;
     Glib::RefPtr<FilterListModel> filter_model_;
     FrameNavigator& frame_navigator_;
-    FilterPanelFactory panel_factory_;
+    FrameView& frame_view_;
 
+    FilterPanelFactory panel_factory_;
     fg::Filter* current_filter_;
 
     sigc::connection on_filter_selected_;

@@ -41,6 +41,8 @@ namespace mdl {
     int get_jump_size() const;
     void set_jump_size(int jump_size);
 
+    FrameView& get_frame_view();
+
     typedef sigc::signal<void, int> type_signal_frame_changed;
     type_signal_frame_changed signal_frame_changed();
 
