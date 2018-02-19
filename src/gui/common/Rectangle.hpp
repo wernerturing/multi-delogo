@@ -16,44 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef MDL_FILTER_PANEL_FACTORY_H
-#define MDL_FILTER_PANEL_FACTORY_H
-
-#include <gtkmm.h>
-
-#include <boost/optional.hpp>
-
-#include "filter-generator/Filters.hpp"
-
-#include "common/Rectangle.hpp"
+#ifndef MDL_RECTANGLE_H
+#define MDL_RECTANGLE_H
 
 
 namespace mdl {
-  class FilterPanel : public Gtk::Box
+  struct Point
   {
-  protected:
-    FilterPanel();
-    virtual ~FilterPanel();
-
-  public:
-    typedef boost::optional<Rectangle> MaybeRectangle;
-
-    virtual fg::Filter* get_filter() const = 0;
-    virtual MaybeRectangle get_rectangle() const = 0;
+    gdouble x;
+    gdouble y;
   };
 
 
-  class FilterPanelFactory
+  struct Rectangle
   {
-  public:
-    FilterPanelFactory(int frame_width, int frame_height);
-
-    FilterPanel* create(fg::Filter* filter);
-
-  private:
-    int frame_width_;
-    int frame_height_;
+    gdouble x;
+    gdouble y;
+    gdouble width;
+    gdouble height;
   };
 }
 
-#endif // MDL_FILTER_PANEL_FACTORY_H
+#endif // MDL_RECTANGLE_H

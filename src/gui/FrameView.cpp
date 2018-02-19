@@ -64,6 +64,18 @@ void FrameView::set_zoom(int level)
   canvas_.set_scale(level / 100.0);
 }
 
+void FrameView::show_rectangle(const Rectangle& rect)
+{
+  rect_->property_visibility() = Goocanvas::ITEM_VISIBLE;
+  rect_->set_coordinates(rect);
+}
+
+
+void FrameView::hide_rectangle()
+{
+  rect_->property_visibility() = Goocanvas::ITEM_HIDDEN;
+}
+
 
 bool FrameView::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event)
 {

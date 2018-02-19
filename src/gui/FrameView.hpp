@@ -22,25 +22,11 @@
 #include <gtkmm.h>
 #include <goocanvasmm.h>
 
+#include "common/Rectangle.hpp"
+
 
 namespace mdl {
   class SelectionRect;
-
-
-  struct Point
-  {
-    gdouble x;
-    gdouble y;
-  };
-
-
-  struct Rectangle
-  {
-    gdouble x;
-    gdouble y;
-    gdouble width;
-    gdouble height;
-  };
 
 
   class FrameView : public Gtk::ScrolledWindow
@@ -51,6 +37,9 @@ namespace mdl {
     void set_image(Glib::RefPtr<Gdk::Pixbuf> pixbuf);
 
     void set_zoom(int level);
+
+    void show_rectangle(const Rectangle& rect);
+    void hide_rectangle();
 
   private:
     Goocanvas::Canvas canvas_;

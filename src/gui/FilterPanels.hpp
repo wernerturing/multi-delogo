@@ -23,6 +23,8 @@
 
 #include "filter-generator/Filters.hpp"
 
+#include "common/Rectangle.hpp"
+
 #include "FilterPanelFactory.hpp"
 
 
@@ -33,6 +35,7 @@ namespace mdl {
     FilterPanelNull();
 
     fg::Filter* get_filter() const override;
+    MaybeRectangle get_rectangle() const override;
   };
 
 
@@ -42,6 +45,10 @@ namespace mdl {
     FilterPanelRectangular(fg::RectangularFilter* filter,
                            int frame_width, int frame_height);
 
+  public:
+    MaybeRectangle get_rectangle() const override;
+
+  protected:
     Gtk::SpinButton txt_x_;
     Gtk::SpinButton txt_y_;
     Gtk::SpinButton txt_width_;

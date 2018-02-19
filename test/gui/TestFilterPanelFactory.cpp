@@ -77,6 +77,16 @@ BOOST_AUTO_TEST_CASE(filter_panel_null_should_return_a_null_filter)
 }
 
 
+BOOST_AUTO_TEST_CASE(filter_panel_null_should_return_no_rectangle)
+{
+  fg::NullFilter filter;
+  FilterPanel* panel = factory.create(&filter);
+
+  auto rect = panel->get_rectangle();
+  BOOST_CHECK(!rect);
+}
+
+
 BOOST_AUTO_TEST_CASE(should_create_a_panel_for_delogo_filter)
 {
   fg::DelogoFilter filter(1, 2, 3, 4);
@@ -103,6 +113,20 @@ BOOST_AUTO_TEST_CASE(filter_panel_delogo_should_return_a_delogo_filter)
 }
 
 
+BOOST_AUTO_TEST_CASE(filter_panel_delogo_should_return_a_rectangle)
+{
+  fg::DelogoFilter filter(15, 20, 80, 40);
+  FilterPanel* panel = factory.create(&filter);
+
+  auto rect = panel->get_rectangle();
+  BOOST_REQUIRE(rect);
+  BOOST_CHECK_EQUAL(rect->x, 15);
+  BOOST_CHECK_EQUAL(rect->y, 20);
+  BOOST_CHECK_EQUAL(rect->width, 80);
+  BOOST_CHECK_EQUAL(rect->height, 40);
+}
+
+
 BOOST_AUTO_TEST_CASE(should_create_a_panel_for_drawbox_filter)
 {
   fg::DrawboxFilter filter(11, 22, 33, 44);
@@ -126,6 +150,20 @@ BOOST_AUTO_TEST_CASE(filter_panel_drawbox_should_return_a_drawbox_filter)
   BOOST_CHECK_EQUAL(drawbox->y(), 22);
   BOOST_CHECK_EQUAL(drawbox->width(), 33);
   BOOST_CHECK_EQUAL(drawbox->height(), 44);
+}
+
+
+BOOST_AUTO_TEST_CASE(filter_panel_drawbox_should_return_a_rectangle)
+{
+  fg::DrawboxFilter filter(0, 500, 100, 30);
+  FilterPanel* panel = factory.create(&filter);
+
+  auto rect = panel->get_rectangle();
+  BOOST_REQUIRE(rect);
+  BOOST_CHECK_EQUAL(rect->x, 0);
+  BOOST_CHECK_EQUAL(rect->y, 500);
+  BOOST_CHECK_EQUAL(rect->width, 100);
+  BOOST_CHECK_EQUAL(rect->height, 30);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

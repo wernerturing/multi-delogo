@@ -37,6 +37,12 @@ fg::Filter* FilterPanelNull::get_filter() const
 }
 
 
+FilterPanelNull::MaybeRectangle FilterPanelNull::get_rectangle() const
+{
+  return boost::none;
+}
+
+
 FilterPanelRectangular::FilterPanelRectangular(fg::RectangularFilter* filter,
                                                int frame_width, int frame_height)
 {
@@ -72,6 +78,16 @@ void FilterPanelRectangular::add_widget(Gtk::Grid& grid, Gtk::Widget& widget,
   l->set_halign(Gtk::ALIGN_END);
   grid.attach(*l, 0, row, 1, 1);
   grid.attach_next_to(widget, *l, Gtk::POS_RIGHT, 1, 1);
+}
+
+
+FilterPanelRectangular::MaybeRectangle FilterPanelRectangular::get_rectangle() const
+{
+  Rectangle rect = {.x = txt_x_.get_value(),
+                    .y = txt_y_.get_value(),
+                    .width = txt_width_.get_value(),
+                    .height = txt_height_.get_value()};
+  return boost::make_optional(rect);
 }
 
 

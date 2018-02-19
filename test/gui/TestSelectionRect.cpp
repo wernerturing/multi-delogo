@@ -19,6 +19,8 @@
 #include <gtkmm.h>
 #include <goocanvasmm.h>
 
+#include "common/Rectangle.hpp"
+
 #include "FrameView.hpp"
 
 using namespace mdl;
