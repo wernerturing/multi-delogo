@@ -41,10 +41,15 @@ namespace mdl {
     FrameNavigator& frame_navigator_;
     FilterPanelFactory panel_factory_;
 
+    fg::Filter* current_filter_;
+
+    sigc::connection on_filter_selected_;
     void on_filter_selected(int start_frame);
 
     sigc::connection on_frame_changed_;
     void on_frame_changed(int frame);
+
+    void change_filter(const FilterListModel::iterator& iter);
   };
 }
 

@@ -34,8 +34,9 @@ Coordinator::Coordinator(FilterList& filter_list,
   , filter_model_(filter_list.get_model())
   , frame_navigator_(frame_navigator)
   , panel_factory_(frame_width, frame_height)
+  , current_filter_(nullptr)
 {
-  filter_list_.signal_selection_changed().connect(
+  on_filter_selected_ = filter_list_.signal_selection_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_filter_selected));
 
   on_frame_changed_ = frame_navigator_.signal_frame_changed().connect(
@@ -45,26 +46,43 @@ Coordinator::Coordinator(FilterList& filter_list,
 
 void Coordinator::on_filter_selected(int start_frame)
 {
-  printf("filter starting at %d selected\n", start_frame);
-
   on_frame_changed_.block();
   frame_navigator_.change_displayed_frame(start_frame);
   on_frame_changed_.block(false);
 
   auto iter = filter_model_->get_for_frame(start_frame);
-  fg::Filter* filter = (*iter)[filter_model_->columns.filter];
-  FilterPanel* panel = Gtk::manage(panel_factory_.create(filter));
-  filter_list_.set_filter_panel(panel);
+  change_filter(iter);
 }
 
 
 void Coordinator::on_frame_changed(int frame)
 {
-  printf("frame changed to %d\n", frame);
   auto iter = filter_model_->get_for_frame(frame);
+
+  on_filter_selected_.block();
   if (iter && (*iter)[filter_model_->columns.start_frame] == frame) {
     filter_list_.select(iter);
   } else {
     filter_list_.unselect();
   }
+  on_filter_selected_.block(false);
+
+  change_filter(iter);
+}
+
+
+void Coordinator::change_filter(const FilterListModel::iterator& iter)
+{
+  if (!iter) {
+    return;
+  }
+
+  fg::Filter* filter = (*iter)[filter_model_->columns.filter];
+  if (filter == current_filter_) {
+    return;
+  }
+
+  FilterPanel* panel = Gtk::manage(panel_factory_.create(filter));
+  filter_list_.set_filter_panel(panel);
+  current_filter_ = filter;
 }
