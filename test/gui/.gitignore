@@ -16,4 +16,5 @@
 # along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 
 TestFilterListModel
+TestFilterPanelFactory
 TestSelectionRect

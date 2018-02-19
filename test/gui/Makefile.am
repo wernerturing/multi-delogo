@@ -26,10 +26,15 @@ LDADD =  ../../src/filter-generator/libfilter-generator.a \
 
 
 check_PROGRAMS = TestFilterListModel \
+                 TestFilterPanelFactory \
                  TestSelectionRect
 
 TestFilterListModel_SOURCES = TestFilterListModel.cpp \
                               ../../src/gui/FilterListModel.cpp
+
+TestFilterPanelFactory_SOURCES = TestFilterPanelFactory.cpp \
+                                 ../../src/gui/FilterPanels.cpp \
+                                 ../../src/gui/FilterPanelFactory.cpp
 
 TestSelectionRect_SOURCES = TestSelectionRect.cpp \
                             ../../src/gui/FrameView.cpp

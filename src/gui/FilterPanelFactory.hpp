@@ -16,41 +16,37 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef MDL_COORDINATOR_H
-#define MDL_COORDINATOR_H
+#ifndef MDL_FILTER_PANEL_FACTORY_H
+#define MDL_FILTER_PANEL_FACTORY_H
 
 #include <gtkmm.h>
 
-#include "FilterListModel.hpp"
-#include "FilterList.hpp"
-#include "FrameNavigator.hpp"
-#include "FilterPanelFactory.hpp"
+#include "filter-generator/Filters.hpp"
 
 
 namespace mdl {
-  class Coordinator
+  class FilterPanel : public Gtk::Box
+  {
+  protected:
+    FilterPanel();
+    virtual ~FilterPanel();
+
+  public:
+    virtual fg::Filter* get_filter() const = 0;
+  };
+
+
+  class FilterPanelFactory
   {
   public:
-    Coordinator(FilterList& filter_list,
-                FrameNavigator& frame_navigator,
-                int frame_width, int frame_height);
+    FilterPanelFactory(int frame_width, int frame_height);
+
+    FilterPanel* create(fg::Filter* filter);
 
   private:
-    FilterList& filter_list_;
-    Glib::RefPtr<FilterListModel> filter_model_;
-    FrameNavigator& frame_navigator_;
-    FilterPanelFactory panel_factory_;
-
-    fg::Filter* current_filter_;
-
-    sigc::connection on_filter_selected_;
-    void on_filter_selected(int start_frame);
-
-    sigc::connection on_frame_changed_;
-    void on_frame_changed(int frame);
-
-    void change_filter(const FilterListModel::iterator& iter);
+    int frame_width_;
+    int frame_height_;
   };
 }
 
-#endif // MDL_COORDINATOR_H
+#endif // MDL_FILTER_PANEL_FACTORY_H

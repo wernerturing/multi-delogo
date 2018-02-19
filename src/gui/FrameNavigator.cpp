@@ -48,8 +48,6 @@ FrameNavigator::FrameNavigator(Gtk::Window& parent_window,
   bottom_box->pack_start(*create_zoom_box(), false, false);
 
   pack_start(*bottom_box, false, false);
-
-  change_displayed_frame(1);
 }
 
 

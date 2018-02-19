@@ -33,6 +33,7 @@ FilterList::FilterList(fg::FilterList& filter_list)
   : Gtk::Box(Gtk::ORIENTATION_VERTICAL)
   , model_(FilterListModel::create(filter_list))
   , view_(model_)
+  , current_panel_(nullptr)
 {
   view_.append_column(_("Start frame"), model_->columns.start_frame);
   view_.append_column(_("Filter"), model_->columns.filter_name);
@@ -62,6 +63,18 @@ void FilterList::select(const Gtk::TreeModel::iterator& iter)
 void FilterList::unselect()
 {
   selection_->unselect_all();
+}
+
+
+void FilterList::set_filter_panel(Gtk::Widget* panel)
+{
+  if (current_panel_) {
+    remove(*current_panel_);
+  }
+
+  pack_start(*panel, true, true);
+  show_all();
+  current_panel_ = panel;
 }
 
 
