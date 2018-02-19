@@ -201,7 +201,16 @@ maybe_file MultiDelogoApp::select_movie_file()
 {
   auto filter_movies = Gtk::FileFilter::create();
   filter_movies->set_name(_("Movies"));
+#ifndef __MINGW32__
   filter_movies->add_mime_type("video/*");
+#else // No wildcard mime support in Windows
+  filter_movies->add_pattern("*.avi");
+  filter_movies->add_pattern("*.flv");
+  filter_movies->add_pattern("*.mkv");
+  filter_movies->add_pattern("*.mp4");
+  filter_movies->add_pattern("*.webm");
+  filter_movies->add_pattern("*.wmv");
+#endif
 
   return select_file_for_open(_("Select video file"), filter_movies);
 }
