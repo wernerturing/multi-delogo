@@ -64,6 +64,19 @@ Glib::RefPtr<FilterListModel> FilterListModel::create(fg::FilterList& filter_lis
 }
 
 
+FilterListModel::Children::iterator FilterListModel::get_for_frame(int frame)
+{
+  auto my_children = children();
+  fg::FilterList::maybe_type filter = filter_list_.get_filter_for_frame(frame);
+  if (!filter) {
+    return my_children.end();
+  }
+
+  int pos = filter_list_.get_position(filter->first);
+  return my_children[pos];
+}
+
+
 void FilterListModel::insert(int start_frame, fg::Filter* filter)
 {
   if (filter_list_.get_by_start_frame(start_frame)) {

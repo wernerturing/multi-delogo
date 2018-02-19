@@ -50,6 +50,7 @@ namespace mdl {
   public:
     static Glib::RefPtr<FilterListModel> create(fg::FilterList& filter_list);
 
+    Children::iterator get_for_frame(int frame);
     void insert(int start_frame, fg::Filter* filter);
     void remove(const iterator& iter);
 
