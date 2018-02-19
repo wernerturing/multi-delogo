@@ -41,6 +41,8 @@ Coordinator::Coordinator(FilterList& filter_list,
 
   on_frame_changed_ = frame_navigator_.signal_frame_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_frame_changed));
+
+  frame_navigator_.change_displayed_frame(1);
 }
 
 
