@@ -21,6 +21,7 @@
 #include <istream>
 #include <ostream>
 #include <stdexcept>
+#include <limits>
 
 #include <boost/optional.hpp>
 
@@ -75,7 +76,7 @@ FilterList::const_iterator FilterList::end() const
 }
 
 
-FilterList::maybe_type FilterList::get_by_start_frame(int start_frame)
+FilterList::maybe_type FilterList::get_by_start_frame(int start_frame) const
 {
   auto iter = filters_.find(start_frame);
   if (iter == end()) {
@@ -86,7 +87,7 @@ FilterList::maybe_type FilterList::get_by_start_frame(int start_frame)
 }
 
 
-FilterList::maybe_type FilterList::get_by_position(size_type position)
+FilterList::maybe_type FilterList::get_by_position(size_type position) const
 {
   const_iterator i;
   for (i = begin(); position > 0 && i != end(); --position) {
@@ -101,7 +102,7 @@ FilterList::maybe_type FilterList::get_by_position(size_type position)
 }
 
 
-int FilterList::get_position(int start_frame)
+int FilterList::get_position(int start_frame) const
 {
   int pos = 0;
   for (auto& entry: filters_) {
@@ -112,6 +113,29 @@ int FilterList::get_position(int start_frame)
   }
 
   return -1;
+}
+
+
+FilterList::maybe_type FilterList::get_filter_for_frame(int frame) const
+{
+  const_iterator i = begin();
+  while (i != end()) {
+    auto& current = *i++;
+    int current_start = current.first;
+
+    int next_start;
+    if (i == end()) {
+      next_start = std::numeric_limits<int>::max();
+    } else {
+      next_start = i->first;
+    }
+
+    if (frame >= current_start && frame < next_start) {
+      return boost::make_optional(current);
+    }
+  }
+
+  return boost::none;
 }
 
 
