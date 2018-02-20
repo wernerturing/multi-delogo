@@ -38,6 +38,8 @@ namespace mdl {
     fg::Filter* get_filter() const override;
     MaybeRectangle get_rectangle() const override;
     void set_rectangle(const Rectangle& rect) override;
+    bool is_changed() const override;
+    void set_changed(bool changed) override;
   };
 
 
@@ -50,12 +52,16 @@ namespace mdl {
   public:
     MaybeRectangle get_rectangle() const override;
     void set_rectangle(const Rectangle& rect) override;
+    bool is_changed() const override;
+    void set_changed(bool changed) override;
 
   protected:
     Gtk::SpinButton txt_x_;
     Gtk::SpinButton txt_y_;
     Gtk::SpinButton txt_width_;
     Gtk::SpinButton txt_height_;
+
+    bool is_changed_;
 
   private:
     Glib::RefPtr<Gtk::Adjustment> create_adjustment(int start_value, int max);

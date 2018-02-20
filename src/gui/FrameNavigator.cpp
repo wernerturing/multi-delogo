@@ -149,9 +149,9 @@ void FrameNavigator::change_displayed_frame(int new_frame_number)
     auto pixbuf = frame_provider_->get_frame(new_frame_number - 1);
     frame_view_.set_image(pixbuf);
 
+    signal_frame_changed_.emit(frame_number_, new_frame_number);
     frame_number_ = new_frame_number;
     txt_frame_number_.set_value(frame_number_);
-    signal_frame_changed_.emit(frame_number_);
   } catch (const FrameNotAvailableException& e) {
     Gtk::MessageDialog dlg(parent_window_,
                            _("Could not get frame"), false,

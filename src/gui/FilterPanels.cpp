@@ -55,8 +55,21 @@ void FilterPanelNull::set_rectangle(const Rectangle& rect)
 }
 
 
+bool FilterPanelNull::is_changed() const
+{
+  return false;
+}
+
+
+void FilterPanelNull::set_changed(bool changed)
+{
+  // nothing to do
+}
+
+
 FilterPanelRectangular::FilterPanelRectangular(fg::RectangularFilter* filter,
                                                int frame_width, int frame_height)
+  : is_changed_(false)
 {
   txt_x_.configure(create_adjustment(filter->x(), frame_width - 1), 10, 0);
   txt_y_.configure(create_adjustment(filter->y(), frame_height - 1), 10, 0);
@@ -121,8 +134,21 @@ void FilterPanelRectangular::set_rectangle(const Rectangle& rect)
 }
 
 
+bool FilterPanelRectangular::is_changed() const
+{
+  return is_changed_;
+}
+
+
+void FilterPanelRectangular::set_changed(bool changed)
+{
+  is_changed_ = changed;
+}
+
+
 void FilterPanelRectangular::on_coordinate_change()
 {
+  is_changed_ = true;
   signal_rectangle_changed_.emit(*get_rectangle());
 }
 

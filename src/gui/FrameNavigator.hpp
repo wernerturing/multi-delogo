@@ -44,7 +44,7 @@ namespace mdl {
 
     FrameView& get_frame_view();
 
-    typedef sigc::signal<void, int> type_signal_frame_changed;
+    typedef sigc::signal<void, int, int> type_signal_frame_changed;
     type_signal_frame_changed signal_frame_changed();
 
   private:
