@@ -249,7 +249,7 @@ BOOST_AUTO_TEST_CASE(test_insert)
   model->signal_row_inserted().connect(sigc::mem_fun(*this, &FilterModelFixture::test_inserted_or_changed_signal_callback));
 
   auto iter_from_before_insert = model->children().begin();
-  model->insert(150, new fg::DelogoFilter(10, 20, 30, 40));
+  auto returned_iter = model->insert(150, new fg::DelogoFilter(10, 20, 30, 40));
   auto iter_from_after_insert = model->children().begin();
 
   BOOST_CHECK_EQUAL(list.size(), 4);
@@ -259,6 +259,9 @@ BOOST_AUTO_TEST_CASE(test_insert)
 
   auto inserted_row = *saved_iter;
   BOOST_CHECK_EQUAL(inserted_row[model->columns.start_frame], 150);
+
+  auto inserted_row_from_returned_iter = *returned_iter;
+  BOOST_CHECK_EQUAL(inserted_row_from_returned_iter[model->columns.start_frame], 150);
 }
 
 

@@ -50,10 +50,10 @@ namespace mdl {
   public:
     static Glib::RefPtr<FilterListModel> create(fg::FilterList& filter_list);
 
-    Children::iterator get_for_frame(int frame);
-    Children::iterator get_by_start_frame(int start_frame);
+    iterator get_for_frame(int frame);
+    iterator get_by_start_frame(int start_frame);
 
-    void insert(int start_frame, fg::Filter* filter);
+    iterator insert(int start_frame, fg::Filter* filter);
     void remove(const iterator& iter);
 
     static FilterListColumns columns;

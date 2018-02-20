@@ -64,7 +64,7 @@ Glib::RefPtr<FilterListModel> FilterListModel::create(fg::FilterList& filter_lis
 }
 
 
-FilterListModel::Children::iterator FilterListModel::get_for_frame(int frame)
+FilterListModel::iterator FilterListModel::get_for_frame(int frame)
 {
   auto my_children = children();
   fg::FilterList::maybe_type filter = filter_list_.get_filter_for_frame(frame);
@@ -77,7 +77,7 @@ FilterListModel::Children::iterator FilterListModel::get_for_frame(int frame)
 }
 
 
-FilterListModel::Children::iterator FilterListModel::get_by_start_frame(int start_frame)
+FilterListModel::iterator FilterListModel::get_by_start_frame(int start_frame)
 {
   auto children_col = children();
   int pos = filter_list_.get_position(start_frame);
@@ -89,7 +89,7 @@ FilterListModel::Children::iterator FilterListModel::get_by_start_frame(int star
 }
 
 
-void FilterListModel::insert(int start_frame, fg::Filter* filter)
+FilterListModel::iterator FilterListModel::insert(int start_frame, fg::Filter* filter)
 {
   if (filter_list_.get_by_start_frame(start_frame)) {
     throw DuplicateRowException();
@@ -101,7 +101,10 @@ void FilterListModel::insert(int start_frame, fg::Filter* filter)
   int pos = filter_list_.get_position(start_frame);
   Path path;
   path.push_back(pos);
-  row_inserted(path, get_iter(path));
+  auto iter = get_iter(path);
+  row_inserted(path, iter);
+
+  return iter;
 }
 
 
