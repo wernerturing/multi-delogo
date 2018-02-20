@@ -40,6 +40,7 @@ namespace mdl {
 
     void select(const Gtk::TreeModel::iterator& iter);
     void unselect();
+    void scroll_to_row(const Gtk::TreeModel::iterator& iter);
 
     void set_filter(fg::FilterType filter_type, Gtk::Widget* panel);
 

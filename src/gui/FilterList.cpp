@@ -67,6 +67,12 @@ void FilterList::unselect()
 }
 
 
+void FilterList::scroll_to_row(const Gtk::TreeModel::iterator& iter)
+{
+  view_.scroll_to_row(model_->get_path(iter));
+}
+
+
 void FilterList::set_filter(fg::FilterType filter_type, Gtk::Widget* panel)
 {
   filter_type_.set(filter_type);

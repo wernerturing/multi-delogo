@@ -55,6 +55,9 @@ namespace mdl {
 
     void on_frame_changed(int new_frame);
 
+    void select_row(const FilterListModel::iterator& iter);
+    void unselect_rows();
+
     void change_displayed_filter(const FilterListModel::iterator& iter);
     void update_displayed_panel(fg::FilterType type, FilterPanel* panel);
 

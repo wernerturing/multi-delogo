@@ -66,17 +66,33 @@ void Coordinator::on_frame_changed(int new_frame)
 
   auto iter = filter_model_->get_for_frame(new_frame);
 
-  on_filter_selected_.block();
   if (iter && (*iter)[filter_model_->columns.start_frame] == new_frame) {
-    filter_list_.select(iter);
+    select_row(iter);
   } else {
-    filter_list_.unselect();
+    unselect_rows();
   }
-  on_filter_selected_.block(false);
 
   change_displayed_filter(iter);
 
   current_frame_ = new_frame;
+}
+
+
+void Coordinator::select_row(const FilterListModel::iterator& iter)
+{
+  on_filter_selected_.block();
+  filter_list_.select(iter);
+  on_filter_selected_.block(false);
+
+  filter_list_.scroll_to_row(iter);
+}
+
+
+void Coordinator::unselect_rows()
+{
+  on_filter_selected_.block();
+  filter_list_.unselect();
+  on_filter_selected_.block(false);
 }
 
 
@@ -169,8 +185,6 @@ void Coordinator::add_new_filter_if_not_on_filter_starting_frame()
   auto inserted_row = filter_model_->insert(current_frame_, current_filter_);
   current_filter_panel_->set_changed(false);
 
-  on_filter_selected_.block();
-  filter_list_.select(inserted_row);
-  on_filter_selected_.block(false);
+  select_row(inserted_row);
 }
 
