@@ -41,7 +41,7 @@ Coordinator::Coordinator(FilterList& filter_list,
   on_filter_selected_ = filter_list_.signal_selection_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_filter_selected));
 
-  on_frame_changed_ = frame_navigator_.signal_frame_changed().connect(
+  frame_navigator_.signal_frame_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_frame_changed));
 
   frame_navigator_.change_displayed_frame(1);
@@ -50,12 +50,7 @@ Coordinator::Coordinator(FilterList& filter_list,
 
 void Coordinator::on_filter_selected(int start_frame)
 {
-  on_frame_changed_.block();
   frame_navigator_.change_displayed_frame(start_frame);
-  on_frame_changed_.block(false);
-
-  auto iter = filter_model_->get_for_frame(start_frame);
-  change_filter(iter);
 }
 
 

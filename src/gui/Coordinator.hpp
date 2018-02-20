@@ -48,7 +48,6 @@ namespace mdl {
     sigc::connection on_filter_selected_;
     void on_filter_selected(int start_frame);
 
-    sigc::connection on_frame_changed_;
     void on_frame_changed(int frame);
 
     void change_filter(const FilterListModel::iterator& iter);
