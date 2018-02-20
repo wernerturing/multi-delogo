@@ -34,6 +34,7 @@ namespace mdl {
   public:
     FilterPanelNull();
 
+    bool creates_filter() const override;
     fg::Filter* get_filter() const override;
     MaybeRectangle get_rectangle() const override;
     void set_rectangle(const Rectangle& rect) override;

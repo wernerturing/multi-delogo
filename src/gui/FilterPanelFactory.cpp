@@ -36,6 +36,12 @@ FilterPanel::~FilterPanel()
 }
 
 
+bool FilterPanel::creates_filter() const
+{
+  return true;
+}
+
+
 FilterPanel::type_signal_rectangle_changed FilterPanel::signal_rectangle_changed()
 {
   return signal_rectangle_changed_;

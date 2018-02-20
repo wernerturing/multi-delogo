@@ -38,6 +38,7 @@ namespace mdl {
   public:
     typedef boost::optional<Rectangle> MaybeRectangle;
 
+    virtual bool creates_filter() const;
     virtual fg::Filter* get_filter() const = 0;
     virtual MaybeRectangle get_rectangle() const = 0;
     virtual void set_rectangle(const Rectangle& rect) = 0;

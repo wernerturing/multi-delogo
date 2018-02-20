@@ -132,6 +132,10 @@ void Coordinator::add_new_filter_if_not_on_filter_starting_frame()
     return;
   }
 
+  if (!current_filter_panel_->creates_filter()) {
+    return;
+  }
+
   current_filter_ = current_filter_panel_->get_filter();
   auto inserted_row = filter_model_->insert(current_frame, current_filter_);
 

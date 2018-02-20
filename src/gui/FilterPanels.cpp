@@ -31,6 +31,12 @@ FilterPanelNull::FilterPanelNull()
 }
 
 
+bool FilterPanelNull::creates_filter() const
+{
+  return false;
+}
+
+
 fg::Filter* FilterPanelNull::get_filter() const
 {
   return new fg::NullFilter();
