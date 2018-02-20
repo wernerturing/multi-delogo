@@ -90,10 +90,7 @@ void Coordinator::change_displayed_filter(const FilterListModel::iterator& iter)
   }
   current_filter_ = filter;
 
-  current_filter_panel_ = Gtk::manage(panel_factory_.create(filter));
-  filter_list_.set_filter(filter->type(), current_filter_panel_);
-  on_panel_rectangle_changed_ = current_filter_panel_->signal_rectangle_changed().connect(
-    sigc::mem_fun(*this, &Coordinator::on_panel_rectangle_changed));
+  update_displayed_panel(filter->type(), panel_factory_.create(filter));
 
   auto rect = current_filter_panel_->get_rectangle();
   if (rect) {
@@ -101,6 +98,15 @@ void Coordinator::change_displayed_filter(const FilterListModel::iterator& iter)
   } else {
     frame_view_.hide_rectangle();
   }
+}
+
+
+void Coordinator::update_displayed_panel(fg::FilterType type, FilterPanel* panel)
+{
+  current_filter_panel_ = Gtk::manage(panel);
+  filter_list_.set_filter(type, current_filter_panel_);
+  on_panel_rectangle_changed_ = current_filter_panel_->signal_rectangle_changed().connect(
+    sigc::mem_fun(*this, &Coordinator::on_panel_rectangle_changed));
 }
 
 
@@ -131,10 +137,7 @@ void Coordinator::on_panel_rectangle_changed(Rectangle rect)
 void Coordinator::create_new_filter_panel()
 {
   fg::FilterType filter_type = filter_list_.get_selected_type();
-  current_filter_panel_ = panel_factory_.create(filter_type);
-  filter_list_.set_filter(filter_type, current_filter_panel_);
-  on_panel_rectangle_changed_ = current_filter_panel_->signal_rectangle_changed().connect(
-    sigc::mem_fun(*this, &Coordinator::on_panel_rectangle_changed));
+  update_displayed_panel(filter_type, panel_factory_.create(filter_type));
 }
 
 

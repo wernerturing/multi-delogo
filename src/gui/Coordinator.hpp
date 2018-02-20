@@ -52,6 +52,7 @@ namespace mdl {
     void on_frame_changed(int current_frame, int new_frame);
 
     void change_displayed_filter(const FilterListModel::iterator& iter);
+    void update_displayed_panel(fg::FilterType type, FilterPanel* panel);
 
     sigc::connection on_frame_rectangle_changed_;
     void on_frame_rectangle_changed(Rectangle rect);
