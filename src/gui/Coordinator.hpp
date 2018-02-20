@@ -43,6 +43,7 @@ namespace mdl {
     FrameView& frame_view_;
 
     FilterPanelFactory panel_factory_;
+    FilterPanel* current_filter_panel_;
     fg::Filter* current_filter_;
 
     sigc::connection on_filter_selected_;
@@ -51,6 +52,8 @@ namespace mdl {
     void on_frame_changed(int frame);
 
     void change_filter(const FilterListModel::iterator& iter);
+
+    void on_rectangle_changed(Rectangle rect);
   };
 }
 

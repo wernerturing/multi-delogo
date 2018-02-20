@@ -41,6 +41,9 @@ namespace mdl {
     void show_rectangle(const Rectangle& rect);
     void hide_rectangle();
 
+    typedef sigc::signal<void, Rectangle> type_signal_rectangle_changed;
+    type_signal_rectangle_changed signal_rectangle_changed();
+
   private:
     Goocanvas::Canvas canvas_;
     Glib::RefPtr<Goocanvas::Image> image_;
@@ -50,10 +53,12 @@ namespace mdl {
     bool drag_;
     Point drag_start_;
 
+    type_signal_rectangle_changed signal_rectangle_changed_;
+
 
     bool on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
-    bool on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
     bool on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventMotion* event);
+    bool on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
   };
 
 
@@ -77,6 +82,10 @@ namespace mdl {
     Rectangle get_coordinates();
     void set_coordinates(Rectangle coordinates);
 
+    typedef sigc::signal<void, Rectangle> type_signal_rectangle_changed;
+    type_signal_rectangle_changed signal_rectangle_changed();
+
+
   private:
     const static gdouble RESIZE_MARGIN_;
 
@@ -87,6 +96,8 @@ namespace mdl {
     Glib::RefPtr<Gdk::Cursor> move_cursor_;
     Glib::RefPtr<Gdk::Cursor> resize_br_cursor_;
 
+    type_signal_rectangle_changed signal_rectangle_changed_;
+
 
     Point to_inside_coordinates(const Point& point);
     DragMode get_drag_mode_for_point(const Point& point);
@@ -96,8 +107,8 @@ namespace mdl {
     Rectangle get_new_coordinates(Point drag_point);
 
     bool on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
-    bool on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
     bool on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventMotion* event);
+    bool on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
 
     bool on_leave_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventCrossing* event);
 

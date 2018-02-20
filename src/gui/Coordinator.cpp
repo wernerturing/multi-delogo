@@ -36,6 +36,7 @@ Coordinator::Coordinator(FilterList& filter_list,
   , frame_navigator_(frame_navigator)
   , frame_view_(frame_navigator_.get_frame_view())
   , panel_factory_(frame_width, frame_height)
+  , current_filter_panel_(nullptr)
   , current_filter_(nullptr)
 {
   on_filter_selected_ = filter_list_.signal_selection_changed().connect(
@@ -43,6 +44,9 @@ Coordinator::Coordinator(FilterList& filter_list,
 
   frame_navigator_.signal_frame_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_frame_changed));
+
+  frame_view_.signal_rectangle_changed().connect(
+    sigc::mem_fun(*this, &Coordinator::on_rectangle_changed));
 
   frame_navigator_.change_displayed_frame(1);
 }
@@ -81,14 +85,22 @@ void Coordinator::change_filter(const FilterListModel::iterator& iter)
     return;
   }
 
-  FilterPanel* panel = Gtk::manage(panel_factory_.create(filter));
-  filter_list_.set_filter(filter->type(), panel);
+  current_filter_panel_ = Gtk::manage(panel_factory_.create(filter));
+  filter_list_.set_filter(filter->type(), current_filter_panel_);
   current_filter_ = filter;
 
-  auto rect = panel->get_rectangle();
+  auto rect = current_filter_panel_->get_rectangle();
   if (rect) {
     frame_view_.show_rectangle(*rect);
   } else {
     frame_view_.hide_rectangle();
+  }
+}
+
+
+void Coordinator::on_rectangle_changed(Rectangle rect)
+{
+  if (current_filter_panel_) {
+    current_filter_panel_->set_rectangle(rect);
   }
 }

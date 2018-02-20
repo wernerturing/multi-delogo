@@ -38,13 +38,14 @@ FrameView::FrameView(int width, int height)
 
   image_ = Goocanvas::Image::create(0, 0);
   image_->signal_button_press_event().connect(sigc::mem_fun(*this, &FrameView::on_button_press));
-  image_->signal_button_release_event().connect(sigc::mem_fun(*this, &FrameView::on_button_release));
   image_->signal_motion_notify_event().connect(sigc::mem_fun(*this, &FrameView::on_motion_notify));
+  image_->signal_button_release_event().connect(sigc::mem_fun(*this, &FrameView::on_button_release));
   root->add_child(image_);
 
   rect_ = SelectionRect::create(100, 50, 150, 30);
   rect_->enable_drag_and_drop();
   root->add_child(rect_);
+  rect_->signal_rectangle_changed().connect(sigc::mem_fun(signal_rectangle_changed_, &type_signal_rectangle_changed::emit));
 
   temp_rect_ = SelectionRect::create();
   root->add_child(temp_rect_);
@@ -77,6 +78,12 @@ void FrameView::hide_rectangle()
 }
 
 
+FrameView::type_signal_rectangle_changed FrameView::signal_rectangle_changed()
+{
+  return signal_rectangle_changed_;
+}
+
+
 bool FrameView::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event)
 {
   if (event->button != 1) {
@@ -98,6 +105,19 @@ bool FrameView::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEv
 }
 
 
+bool FrameView::on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventMotion* event)
+{
+  if (!drag_) {
+    return false;
+  }
+
+  temp_rect_->set_coordinates({.x = drag_start_.x, .y = drag_start_.y,
+                               .width = event->x - drag_start_.x,
+                               .height = event->y - drag_start_.y});
+  return true;
+}
+
+
 bool FrameView::on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event)
 {
   if (!drag_) {
@@ -111,19 +131,8 @@ bool FrameView::on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, Gdk
   rect_->property_visibility() = Goocanvas::ITEM_VISIBLE;
   temp_rect_->property_visibility() = Goocanvas::ITEM_HIDDEN;
 
-  return true;
-}
+  signal_rectangle_changed_.emit(temp_rect_->get_coordinates());
 
-
-bool FrameView::on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventMotion* event)
-{
-  if (!drag_) {
-    return false;
-  }
-
-  temp_rect_->set_coordinates({.x = drag_start_.x, .y = drag_start_.y,
-                               .width = event->x - drag_start_.x,
-                               .height = event->y - drag_start_.y});
   return true;
 }
 
@@ -144,8 +153,8 @@ SelectionRect::SelectionRect(gdouble x, gdouble y, gdouble width, gdouble height
 void SelectionRect::enable_drag_and_drop()
 {
   signal_button_press_event().connect(sigc::mem_fun(*this, &SelectionRect::on_button_press));
-  signal_button_release_event().connect(sigc::mem_fun(*this, &SelectionRect::on_button_release));
   signal_motion_notify_event().connect(sigc::mem_fun(*this, &SelectionRect::on_motion_notify));
+  signal_button_release_event().connect(sigc::mem_fun(*this, &SelectionRect::on_button_release));
 
   signal_leave_notify_event().connect(sigc::mem_fun(*this, &SelectionRect::on_leave_notify));
 
@@ -177,6 +186,12 @@ void SelectionRect::set_coordinates(Rectangle coordinates)
   property_y() = coordinates.y;
   property_width() = coordinates.width;
   property_height() = coordinates.height;
+}
+
+
+SelectionRect::type_signal_rectangle_changed SelectionRect::signal_rectangle_changed()
+{
+  return signal_rectangle_changed_;
 }
 
 
@@ -265,19 +280,6 @@ bool SelectionRect::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, G
 }
 
 
-bool SelectionRect::on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event)
-{
-  if (drag_mode_ == DragMode::NONE) {
-    return false;
-  }
-
-  drag_mode_ = DragMode::NONE;
-  item->get_canvas()->pointer_ungrab(item, event->time);
-
-  return true;
-}
-
-
 bool SelectionRect::on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventMotion* event)
 {
   if (drag_mode_ == DragMode::NONE) {
@@ -289,6 +291,21 @@ bool SelectionRect::on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, 
   }
 
   set_coordinates(get_new_coordinates({.x = event->x, .y = event->y}));
+
+  return true;
+}
+
+
+bool SelectionRect::on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event)
+{
+  if (drag_mode_ == DragMode::NONE) {
+    return false;
+  }
+
+  drag_mode_ = DragMode::NONE;
+  item->get_canvas()->pointer_ungrab(item, event->time);
+
+  signal_rectangle_changed_.emit(get_coordinates());
 
   return true;
 }

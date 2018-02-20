@@ -36,6 +36,7 @@ namespace mdl {
 
     fg::Filter* get_filter() const override;
     MaybeRectangle get_rectangle() const override;
+    void set_rectangle(const Rectangle& rect) override;
   };
 
 
@@ -47,6 +48,7 @@ namespace mdl {
 
   public:
     MaybeRectangle get_rectangle() const override;
+    void set_rectangle(const Rectangle& rect) override;
 
   protected:
     Gtk::SpinButton txt_x_;

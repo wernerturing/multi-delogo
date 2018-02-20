@@ -43,6 +43,12 @@ FilterPanelNull::MaybeRectangle FilterPanelNull::get_rectangle() const
 }
 
 
+void FilterPanelNull::set_rectangle(const Rectangle& rect)
+{
+  // nothing to do
+}
+
+
 FilterPanelRectangular::FilterPanelRectangular(fg::RectangularFilter* filter,
                                                int frame_width, int frame_height)
 {
@@ -88,6 +94,15 @@ FilterPanelRectangular::MaybeRectangle FilterPanelRectangular::get_rectangle() c
                     .width = txt_width_.get_value(),
                     .height = txt_height_.get_value()};
   return boost::make_optional(rect);
+}
+
+
+void FilterPanelRectangular::set_rectangle(const Rectangle& rect)
+{
+  txt_x_.set_value(rect.x);
+  txt_y_.set_value(rect.y);
+  txt_width_.set_value(rect.width);
+  txt_height_.set_value(rect.height);
 }
 
 
