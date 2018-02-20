@@ -60,6 +60,8 @@ namespace mdl {
     Glib::RefPtr<Gtk::Adjustment> create_adjustment(int start_value, int max);
     void add_widget(Gtk::Grid& grid, Gtk::Widget& widget,
                     const Glib::ustring& label, int row);
+
+    void on_coordinate_change();
   };
 
 

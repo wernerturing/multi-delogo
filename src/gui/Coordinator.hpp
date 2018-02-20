@@ -53,7 +53,10 @@ namespace mdl {
 
     void change_filter(const FilterListModel::iterator& iter);
 
-    void on_rectangle_changed(Rectangle rect);
+    sigc::connection on_frame_rectangle_changed_;
+    void on_frame_rectangle_changed(Rectangle rect);
+    sigc::connection on_panel_rectangle_changed_;
+    void on_panel_rectangle_changed(Rectangle rect);
   };
 }
 

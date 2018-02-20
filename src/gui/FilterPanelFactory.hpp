@@ -41,6 +41,12 @@ namespace mdl {
     virtual fg::Filter* get_filter() const = 0;
     virtual MaybeRectangle get_rectangle() const = 0;
     virtual void set_rectangle(const Rectangle& rect) = 0;
+
+    typedef sigc::signal<void, Rectangle> type_signal_rectangle_changed;
+    virtual type_signal_rectangle_changed signal_rectangle_changed();
+
+  protected:
+    type_signal_rectangle_changed signal_rectangle_changed_;
   };
 
 

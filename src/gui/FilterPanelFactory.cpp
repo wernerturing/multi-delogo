@@ -36,6 +36,12 @@ FilterPanel::~FilterPanel()
 }
 
 
+FilterPanel::type_signal_rectangle_changed FilterPanel::signal_rectangle_changed()
+{
+  return signal_rectangle_changed_;
+}
+
+
 FilterPanelFactory::FilterPanelFactory(int frame_width, int frame_height)
   : frame_width_(frame_width)
   , frame_height_(frame_height)

@@ -66,6 +66,15 @@ FilterPanelRectangular::FilterPanelRectangular(fg::RectangularFilter* filter,
   add_widget(*grid, txt_width_, _("_width:"), 2);
   add_widget(*grid, txt_height_, _("_height:"), 3);
 
+  txt_x_.signal_value_changed().connect(
+    sigc::mem_fun(*this, &FilterPanelRectangular::on_coordinate_change));
+  txt_y_.signal_value_changed().connect(
+    sigc::mem_fun(*this, &FilterPanelRectangular::on_coordinate_change));
+  txt_width_.signal_value_changed().connect(
+    sigc::mem_fun(*this, &FilterPanelRectangular::on_coordinate_change));
+  txt_height_.signal_value_changed().connect(
+    sigc::mem_fun(*this, &FilterPanelRectangular::on_coordinate_change));
+
   pack_start(*grid, true, true);
 }
 
@@ -103,6 +112,12 @@ void FilterPanelRectangular::set_rectangle(const Rectangle& rect)
   txt_y_.set_value(rect.y);
   txt_width_.set_value(rect.width);
   txt_height_.set_value(rect.height);
+}
+
+
+void FilterPanelRectangular::on_coordinate_change()
+{
+  signal_rectangle_changed_.emit(*get_rectangle());
 }
 
 
