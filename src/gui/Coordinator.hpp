@@ -51,12 +51,14 @@ namespace mdl {
 
     void on_frame_changed(int frame);
 
-    void change_filter(const FilterListModel::iterator& iter);
+    void change_displayed_filter(const FilterListModel::iterator& iter);
 
     sigc::connection on_frame_rectangle_changed_;
     void on_frame_rectangle_changed(Rectangle rect);
     sigc::connection on_panel_rectangle_changed_;
     void on_panel_rectangle_changed(Rectangle rect);
+
+    void add_new_filter_if_not_on_filter_starting_frame();
   };
 }
 

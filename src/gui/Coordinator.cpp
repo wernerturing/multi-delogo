@@ -70,11 +70,11 @@ void Coordinator::on_frame_changed(int frame)
   }
   on_filter_selected_.block(false);
 
-  change_filter(iter);
+  change_displayed_filter(iter);
 }
 
 
-void Coordinator::change_filter(const FilterListModel::iterator& iter)
+void Coordinator::change_displayed_filter(const FilterListModel::iterator& iter)
 {
   if (!iter) {
     return;
@@ -102,11 +102,15 @@ void Coordinator::change_filter(const FilterListModel::iterator& iter)
 
 void Coordinator::on_frame_rectangle_changed(Rectangle rect)
 {
-  if (current_filter_panel_) {
-    on_panel_rectangle_changed_.block();
-    current_filter_panel_->set_rectangle(rect);
-    on_panel_rectangle_changed_.block(false);
+  if (!current_filter_panel_) {
+    return;
   }
+
+  on_panel_rectangle_changed_.block();
+  current_filter_panel_->set_rectangle(rect);
+  on_panel_rectangle_changed_.block(false);
+
+  add_new_filter_if_not_on_filter_starting_frame();
 }
 
 
@@ -115,4 +119,24 @@ void Coordinator::on_panel_rectangle_changed(Rectangle rect)
   on_frame_rectangle_changed_.block();
   frame_view_.show_rectangle(rect);
   on_frame_rectangle_changed_.block(false);
+
+  add_new_filter_if_not_on_filter_starting_frame();
 }
+
+
+void Coordinator::add_new_filter_if_not_on_filter_starting_frame()
+{
+  int current_frame = frame_navigator_.get_current_frame();
+  auto iter = filter_model_->get_by_start_frame(current_frame);
+  if (iter) {
+    return;
+  }
+
+  current_filter_ = current_filter_panel_->get_filter();
+  auto inserted_row = filter_model_->insert(current_frame, current_filter_);
+
+  on_filter_selected_.block();
+  filter_list_.select(inserted_row);
+  on_filter_selected_.block(false);
+}
+

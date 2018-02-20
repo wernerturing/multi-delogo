@@ -174,6 +174,12 @@ void FrameNavigator::jump_step_frame(int direction)
 }
 
 
+int FrameNavigator::get_current_frame() const
+{
+  return frame_number_;
+}
+
+
 void FrameNavigator::on_frame_number_activate()
 {
   change_displayed_frame(txt_frame_number_.get_value());
