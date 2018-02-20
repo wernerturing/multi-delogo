@@ -81,6 +81,12 @@ void FilterList::set_filter(fg::FilterType filter_type, Gtk::Widget* panel)
 }
 
 
+fg::FilterType FilterList::get_selected_type() const
+{
+  return filter_type_.get();
+}
+
+
 FilterList::type_signal_selection_changed FilterList::signal_selection_changed()
 {
   return signal_selection_changed_;

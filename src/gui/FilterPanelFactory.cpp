@@ -19,6 +19,8 @@
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
 
+#include "filter-generator/Filters.hpp"
+
 #include "FilterPanelFactory.hpp"
 #include "FilterPanels.hpp"
 
@@ -73,3 +75,22 @@ FilterPanel* FilterPanelFactory::create(fg::Filter* filter)
     return nullptr;
   }
 }
+
+
+FilterPanel* FilterPanelFactory::create(fg::FilterType type)
+{
+  switch (type) {
+  case fg::FilterType::NO_OP:
+    return new FilterPanelNull();
+
+  case fg::FilterType::DELOGO:
+    return new FilterPanelDelogo(frame_width_, frame_height_);
+
+  case fg::FilterType::DRAWBOX:
+    return new FilterPanelDrawbox(frame_width_, frame_height_);
+
+  default:
+    return nullptr;
+  }
+}
+

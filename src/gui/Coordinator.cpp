@@ -19,6 +19,8 @@
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
 
+#include "filter-generator/Filters.hpp"
+
 #include "Coordinator.hpp"
 #include "FilterList.hpp"
 #include "FrameNavigator.hpp"
@@ -105,7 +107,7 @@ void Coordinator::change_displayed_filter(const FilterListModel::iterator& iter)
 void Coordinator::on_frame_rectangle_changed(Rectangle rect)
 {
   if (!current_filter_panel_) {
-    return;
+    create_new_filter_panel();
   }
 
   on_panel_rectangle_changed_.block();
@@ -123,6 +125,16 @@ void Coordinator::on_panel_rectangle_changed(Rectangle rect)
   on_frame_rectangle_changed_.block(false);
 
   add_new_filter_if_not_on_filter_starting_frame();
+}
+
+
+void Coordinator::create_new_filter_panel()
+{
+  fg::FilterType filter_type = filter_list_.get_selected_type();
+  current_filter_panel_ = panel_factory_.create(filter_type);
+  filter_list_.set_filter(filter_type, current_filter_panel_);
+  on_panel_rectangle_changed_ = current_filter_panel_->signal_rectangle_changed().connect(
+    sigc::mem_fun(*this, &Coordinator::on_panel_rectangle_changed));
 }
 
 

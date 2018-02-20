@@ -58,6 +58,7 @@ namespace mdl {
     sigc::connection on_panel_rectangle_changed_;
     void on_panel_rectangle_changed(Rectangle rect);
 
+    void create_new_filter_panel();
     void update_current_filter_if_necessary(int current_frame);
     void add_new_filter_if_not_on_filter_starting_frame();
   };

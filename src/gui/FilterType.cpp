@@ -53,12 +53,12 @@ FilterType::FilterType()
 void FilterType::set(fg::FilterType type)
 {
   switch (type) {
-  case fg::FilterType::DRAWBOX:
-    rad_drawbox_.set_active();
-    break;
-
   case fg::FilterType::DELOGO:
     rad_delogo_.set_active();
+    break;
+
+  case fg::FilterType::DRAWBOX:
+    rad_drawbox_.set_active();
     break;
 
   case fg::FilterType::NO_OP:
@@ -67,3 +67,16 @@ void FilterType::set(fg::FilterType type)
     break;
   }
 }
+
+
+fg::FilterType FilterType::get() const
+{
+  if (rad_delogo_.get_active()) {
+    return fg::FilterType::DELOGO;
+  } else if (rad_drawbox_.get_active()) {
+    return fg::FilterType::DRAWBOX;
+  } else {
+    return fg::FilterType::NO_OP;
+  }
+}
+

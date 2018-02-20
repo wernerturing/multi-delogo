@@ -67,14 +67,28 @@ void FilterPanelNull::set_changed(bool changed)
 }
 
 
+FilterPanelRectangular::FilterPanelRectangular(int frame_width, int frame_height)
+  : FilterPanelRectangular(0, 0, 0, 0, frame_width, frame_height)
+{
+}
+
+
 FilterPanelRectangular::FilterPanelRectangular(fg::RectangularFilter* filter,
+                                               int frame_width, int frame_height)
+  : FilterPanelRectangular(filter->x(), filter->y(), filter->width(), filter->height(),
+                           frame_width, frame_height)
+{
+}
+
+
+FilterPanelRectangular::FilterPanelRectangular(int x, int y, int width, int height,
                                                int frame_width, int frame_height)
   : is_changed_(false)
 {
-  txt_x_.configure(create_adjustment(filter->x(), frame_width - 1), 10, 0);
-  txt_y_.configure(create_adjustment(filter->y(), frame_height - 1), 10, 0);
-  txt_width_.configure(create_adjustment(filter->width(), frame_width), 10, 0);
-  txt_height_.configure(create_adjustment(filter->height(), frame_height), 10, 0);
+  txt_x_.configure(create_adjustment(x, frame_width - 1), 10, 0);
+  txt_y_.configure(create_adjustment(y, frame_height - 1), 10, 0);
+  txt_width_.configure(create_adjustment(width, frame_width), 10, 0);
+  txt_height_.configure(create_adjustment(height, frame_height), 10, 0);
 
   Gtk::Grid* grid = Gtk::manage(new Gtk::Grid());
   grid->set_row_spacing(6);
@@ -153,6 +167,12 @@ void FilterPanelRectangular::on_coordinate_change()
 }
 
 
+FilterPanelDelogo::FilterPanelDelogo(int frame_width, int frame_height)
+  : FilterPanelRectangular(frame_width, frame_height)
+{
+}
+
+
 FilterPanelDelogo::FilterPanelDelogo(fg::DelogoFilter* filter,
                                      int frame_width, int frame_height)
   : FilterPanelRectangular(filter, frame_width, frame_height)
@@ -166,6 +186,12 @@ fg::Filter* FilterPanelDelogo::get_filter() const
                               txt_y_.get_value_as_int(),
                               txt_width_.get_value_as_int(),
                               txt_height_.get_value_as_int());
+}
+
+
+FilterPanelDrawbox::FilterPanelDrawbox(int frame_width, int frame_height)
+  : FilterPanelRectangular(frame_width, frame_height)
+{
 }
 
 

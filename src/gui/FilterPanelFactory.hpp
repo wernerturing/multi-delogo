@@ -59,6 +59,7 @@ namespace mdl {
     FilterPanelFactory(int frame_width, int frame_height);
 
     FilterPanel* create(fg::Filter* filter);
+    FilterPanel* create(fg::FilterType type);
 
   private:
     int frame_width_;

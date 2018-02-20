@@ -31,6 +31,7 @@ namespace mdl {
     FilterType();
 
     void set(fg::FilterType type);
+    fg::FilterType get() const;
 
   private:
     Gtk::RadioButton rad_delogo_;

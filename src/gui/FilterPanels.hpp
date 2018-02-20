@@ -46,7 +46,10 @@ namespace mdl {
   class FilterPanelRectangular : public FilterPanel
   {
   protected:
+    FilterPanelRectangular(int frame_width, int frame_height);
     FilterPanelRectangular(fg::RectangularFilter* filter,
+                           int frame_width, int frame_height);
+    FilterPanelRectangular(int x, int y, int width, int height,
                            int frame_width, int frame_height);
 
   public:
@@ -75,6 +78,7 @@ namespace mdl {
   class FilterPanelDelogo : public FilterPanelRectangular
   {
   public:
+    FilterPanelDelogo(int frame_width, int frame_height);
     FilterPanelDelogo(fg::DelogoFilter* filter,
                       int frame_width, int frame_height);
 
@@ -85,6 +89,7 @@ namespace mdl {
   class FilterPanelDrawbox : public FilterPanelRectangular
   {
   public:
+    FilterPanelDrawbox(int frame_width, int frame_height);
     FilterPanelDrawbox(fg::DrawboxFilter* filter,
                        int frame_width, int frame_height);
 

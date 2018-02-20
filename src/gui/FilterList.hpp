@@ -43,6 +43,8 @@ namespace mdl {
 
     void set_filter(fg::FilterType filter_type, Gtk::Widget* panel);
 
+    fg::FilterType get_selected_type() const;
+
     typedef sigc::signal<void, int> type_signal_selection_changed;
     type_signal_selection_changed signal_selection_changed();
 
