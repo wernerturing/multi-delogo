@@ -218,6 +218,32 @@ BOOST_AUTO_TEST_CASE(test_get_for_frame_in_empty_model)
 }
 
 
+BOOST_AUTO_TEST_CASE(test_get_by_start_frame)
+{
+  auto iter = model->get_by_start_frame(100);
+  Gtk::TreeRow row = *iter;
+  fg::Filter* filter = row[model->columns.filter];
+  BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::NO_OP);
+}
+
+
+BOOST_AUTO_TEST_CASE(test_get_by_start_frame_non_existing)
+{
+  auto iter = model->get_by_start_frame(105);
+  BOOST_CHECK(!iter);
+}
+
+
+BOOST_AUTO_TEST_CASE(test_get_by_start_frame_in_empty_model)
+{
+  fg::FilterList empty_list;
+  Glib::RefPtr<mdl::FilterListModel> empty_model = mdl::FilterListModel::create(empty_list);
+
+  auto iter = empty_model->get_by_start_frame(10);
+  BOOST_CHECK(!iter);
+}
+
+
 BOOST_AUTO_TEST_CASE(test_insert)
 {
   model->signal_row_inserted().connect(sigc::mem_fun(*this, &FilterModelFixture::test_inserted_or_changed_signal_callback));

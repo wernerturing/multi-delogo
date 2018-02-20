@@ -77,6 +77,18 @@ FilterListModel::Children::iterator FilterListModel::get_for_frame(int frame)
 }
 
 
+FilterListModel::Children::iterator FilterListModel::get_by_start_frame(int start_frame)
+{
+  auto children_col = children();
+  int pos = filter_list_.get_position(start_frame);
+  if (pos == -1) {
+    return children_col.end();
+  }
+
+  return children_col[pos];
+}
+
+
 void FilterListModel::insert(int start_frame, fg::Filter* filter)
 {
   if (filter_list_.get_by_start_frame(start_frame)) {
