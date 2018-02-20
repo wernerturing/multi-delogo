@@ -37,14 +37,13 @@ namespace mdl {
     void single_step_frame(int direction);
     void jump_step_frame(int direction);
     void change_displayed_frame(int new_frame_number);
-    int get_current_frame() const;
 
     int get_jump_size() const;
     void set_jump_size(int jump_size);
 
     FrameView& get_frame_view();
 
-    typedef sigc::signal<void, int, int> type_signal_frame_changed;
+    typedef sigc::signal<void, int> type_signal_frame_changed;
     type_signal_frame_changed signal_frame_changed();
 
   private:

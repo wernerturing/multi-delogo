@@ -149,7 +149,7 @@ void FrameNavigator::change_displayed_frame(int new_frame_number)
     auto pixbuf = frame_provider_->get_frame(new_frame_number - 1);
     frame_view_.set_image(pixbuf);
 
-    signal_frame_changed_.emit(frame_number_, new_frame_number);
+    signal_frame_changed_.emit(new_frame_number);
     frame_number_ = new_frame_number;
     txt_frame_number_.set_value(frame_number_);
   } catch (const FrameNotAvailableException& e) {
@@ -171,12 +171,6 @@ void FrameNavigator::single_step_frame(int direction)
 void FrameNavigator::jump_step_frame(int direction)
 {
   change_displayed_frame(frame_number_ + txt_jump_size_.get_value()*direction);
-}
-
-
-int FrameNavigator::get_current_frame() const
-{
-  return frame_number_;
 }
 
 

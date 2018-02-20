@@ -60,9 +60,9 @@ void Coordinator::on_filter_selected(int start_frame)
 }
 
 
-void Coordinator::on_frame_changed(int current_frame, int new_frame)
+void Coordinator::on_frame_changed(int new_frame)
 {
-  update_current_filter_if_necessary(current_frame);
+  update_current_filter_if_necessary();
 
   auto iter = filter_model_->get_for_frame(new_frame);
 
@@ -75,6 +75,8 @@ void Coordinator::on_frame_changed(int current_frame, int new_frame)
   on_filter_selected_.block(false);
 
   change_displayed_filter(iter);
+
+  current_frame_ = new_frame;
 }
 
 
@@ -141,9 +143,9 @@ void Coordinator::create_new_filter_panel()
 }
 
 
-void Coordinator::update_current_filter_if_necessary(int current_frame)
+void Coordinator::update_current_filter_if_necessary()
 {
-  auto iter = filter_model_->get_by_start_frame(current_frame);
+  auto iter = filter_model_->get_by_start_frame(current_frame_);
   if (!iter || !current_filter_panel_ || !current_filter_panel_->is_changed()) {
     return;
   }
@@ -154,8 +156,7 @@ void Coordinator::update_current_filter_if_necessary(int current_frame)
 
 void Coordinator::add_new_filter_if_not_on_filter_starting_frame()
 {
-  int current_frame = frame_navigator_.get_current_frame();
-  auto iter = filter_model_->get_by_start_frame(current_frame);
+  auto iter = filter_model_->get_by_start_frame(current_frame_);
   if (iter) {
     return;
   }
@@ -165,7 +166,7 @@ void Coordinator::add_new_filter_if_not_on_filter_starting_frame()
   }
 
   current_filter_ = current_filter_panel_->get_filter();
-  auto inserted_row = filter_model_->insert(current_frame, current_filter_);
+  auto inserted_row = filter_model_->insert(current_frame_, current_filter_);
   current_filter_panel_->set_changed(false);
 
   on_filter_selected_.block();

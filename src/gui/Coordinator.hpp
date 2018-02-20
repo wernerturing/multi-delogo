@@ -36,11 +36,15 @@ namespace mdl {
                 FrameNavigator& frame_navigator,
                 int frame_width, int frame_height);
 
+    void update_current_filter_if_necessary();
+
   private:
     FilterList& filter_list_;
     Glib::RefPtr<FilterListModel> filter_model_;
+
     FrameNavigator& frame_navigator_;
     FrameView& frame_view_;
+    int current_frame_;
 
     FilterPanelFactory panel_factory_;
     FilterPanel* current_filter_panel_;
@@ -49,7 +53,7 @@ namespace mdl {
     sigc::connection on_filter_selected_;
     void on_filter_selected(int start_frame);
 
-    void on_frame_changed(int current_frame, int new_frame);
+    void on_frame_changed(int new_frame);
 
     void change_displayed_filter(const FilterListModel::iterator& iter);
     void update_displayed_panel(fg::FilterType type, FilterPanel* panel);
@@ -60,7 +64,6 @@ namespace mdl {
     void on_panel_rectangle_changed(Rectangle rect);
 
     void create_new_filter_panel();
-    void update_current_filter_if_necessary(int current_frame);
     void add_new_filter_if_not_on_filter_starting_frame();
   };
 }
