@@ -70,13 +70,13 @@ Gtk::Box* FrameNavigator::create_navigation_box()
                1));
 
   Gtk::Button* btn_prev_jump = Gtk::manage(new Gtk::Button("<<"));
-  btn_prev_jump->set_tooltip_text(_("Move back the number of frames specified in \"jump size\" (a)"));
+  btn_prev_jump->set_tooltip_text(_("Jump back the number of frames specified in \"jump size\" (a)"));
   btn_prev_jump->signal_clicked().connect(
     sigc::bind(sigc::mem_fun(*this, &FrameNavigator::jump_step_frame),
                -1));
 
   Gtk::Button* btn_next_jump = Gtk::manage(new Gtk::Button(">>"));
-  btn_next_jump->set_tooltip_text(_("Move forward the number of frames specified in \"jump size\" (f)"));
+  btn_next_jump->set_tooltip_text(_("Jump forward the number of frames specified in \"jump size\" (f)"));
   btn_next_jump->signal_clicked().connect(
     sigc::bind(sigc::mem_fun(*this, &FrameNavigator::jump_step_frame),
                1));
