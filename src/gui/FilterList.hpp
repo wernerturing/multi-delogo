@@ -49,16 +49,21 @@ namespace mdl {
     typedef sigc::signal<void, int> type_signal_selection_changed;
     type_signal_selection_changed signal_selection_changed();
 
-  protected:
-    type_signal_selection_changed signal_selection_changed_;
+    typedef sigc::signal<void> type_signal_remove_filter;
+    type_signal_remove_filter signal_remove_filter();
 
   private:
     Glib::RefPtr<FilterListModel> model_;
     Gtk::TreeView view_;
     Glib::RefPtr<Gtk::TreeView::Selection> selection_;
 
+    Gtk::Button btn_remove_filter_;
+
     FilterType filter_type_;
     Gtk::Widget* current_panel_;
+
+    type_signal_selection_changed signal_selection_changed_;
+    type_signal_remove_filter signal_remove_filter_;
 
     void on_selection_changed();
   };

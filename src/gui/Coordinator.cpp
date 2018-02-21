@@ -44,6 +44,9 @@ Coordinator::Coordinator(FilterList& filter_list,
   on_filter_selected_ = filter_list_.signal_selection_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_filter_selected));
 
+  filter_list_.signal_remove_filter().connect(
+    sigc::mem_fun(*this, &Coordinator::on_remove_filter));
+
   frame_navigator_.signal_frame_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_frame_changed));
 
@@ -188,3 +191,12 @@ void Coordinator::add_new_filter_if_not_on_filter_starting_frame()
   select_row(inserted_row);
 }
 
+
+void Coordinator::on_remove_filter()
+{
+  auto iter = filter_model_->get_by_start_frame(current_frame_);
+  on_filter_selected_.block();
+  filter_model_->remove(iter);
+  on_filter_selected_.block(false);
+  on_frame_changed(current_frame_);
+}

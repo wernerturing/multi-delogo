@@ -68,6 +68,8 @@ namespace mdl {
 
     void create_new_filter_panel();
     void add_new_filter_if_not_on_filter_starting_frame();
+
+    void on_remove_filter();
   };
 }
 

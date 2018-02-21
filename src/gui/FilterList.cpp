@@ -41,7 +41,16 @@ FilterList::FilterList(fg::FilterList& filter_list)
   Gtk::ScrolledWindow* scroll = Gtk::manage(new Gtk::ScrolledWindow());
   scroll->add(view_);
 
+  btn_remove_filter_.set_image_from_icon_name("list-remove");
+  btn_remove_filter_.set_tooltip_text(_("Remove the selected filter"));
+  btn_remove_filter_.set_sensitive(false);
+  btn_remove_filter_.signal_clicked().connect(
+    sigc::mem_fun(signal_remove_filter_, &type_signal_remove_filter::emit));
+  Gtk::ButtonBox* buttons = Gtk::manage(new Gtk::ButtonBox());
+  buttons->pack_start(btn_remove_filter_, false, false);
+
   pack_start(*scroll, true, true);
+  pack_start(*buttons, false, false);
   pack_start(filter_type_, false, false);
 
   selection_ = view_.get_selection();
@@ -99,11 +108,20 @@ FilterList::type_signal_selection_changed FilterList::signal_selection_changed()
 }
 
 
+FilterList::type_signal_remove_filter FilterList::signal_remove_filter()
+{
+  return signal_remove_filter_;
+}
+
+
 void FilterList::on_selection_changed()
 {
   auto iter = selection_->get_selected();
   if (iter) {
+    btn_remove_filter_.set_sensitive(true);
     auto row = *iter;
     signal_selection_changed_.emit(row[model_->columns.start_frame]);
+  } else {
+    btn_remove_filter_.set_sensitive(false);
   }
 }
