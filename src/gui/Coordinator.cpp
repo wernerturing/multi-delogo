@@ -149,7 +149,7 @@ void Coordinator::on_filter_type_changed(fg::FilterType new_type)
 
   FilterPanel* new_panel = panel_factory_.convert(current_filter_, new_type);
   update_displayed_panel(new_type, new_panel);
-  update_current_filter();
+  update_current_filter(true);
 }
 
 
@@ -186,20 +186,17 @@ void Coordinator::create_new_filter_panel()
 
 void Coordinator::update_current_filter_if_necessary()
 {
+  update_current_filter(false);
+}
+
+void Coordinator::update_current_filter(bool force_update)
+{
   auto iter = filter_model_->get_by_start_frame(current_frame_);
-  if (!iter || !current_filter_panel_ || !current_filter_panel_->is_changed()) {
+  if (!force_update
+      && (!iter || !current_filter_panel_ || !current_filter_panel_->is_changed())) {
     return;
   }
 
-  auto new_filter = current_filter_panel_->get_filter();
-  (*iter)[filter_model_->columns.filter] = new_filter;
-  current_filter_ = new_filter;
-}
-
-
-void Coordinator::update_current_filter()
-{
-  auto iter = filter_model_->get_by_start_frame(current_frame_);
   auto new_filter = current_filter_panel_->get_filter();
   (*iter)[filter_model_->columns.filter] = new_filter;
   current_filter_ = new_filter;
