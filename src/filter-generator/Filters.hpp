@@ -23,6 +23,7 @@
 #include <vector>
 #include <ostream>
 
+
 namespace fg {
   enum class FilterType
   {
@@ -38,6 +39,7 @@ namespace fg {
     virtual ~Filter();
 
     virtual FilterType type() const = 0;
+    virtual std::string name() const = 0;
     virtual std::string save_str() const = 0;
     virtual std::string ffmpeg_str(const std::string& between_expr) const = 0;
   };
@@ -48,9 +50,10 @@ namespace fg {
   public:
     static NullFilter* load(const std::string& parameters);
 
-    virtual FilterType type() const;
-    virtual std::string save_str() const;
-    virtual std::string ffmpeg_str(const std::string& between_expr) const;
+    FilterType type() const override;
+    std::string name() const override;
+    std::string save_str() const override;
+    std::string ffmpeg_str(const std::string& between_expr) const override;
   };
 
 
@@ -86,9 +89,10 @@ namespace fg {
 
     static DelogoFilter* load(const std::string& parameters);
 
-    virtual FilterType type() const;
-    virtual std::string save_str() const;
-    virtual std::string ffmpeg_str(const std::string& between_expr) const;
+    FilterType type() const override;
+    std::string name() const override;
+    std::string save_str() const override;
+    std::string ffmpeg_str(const std::string& between_expr) const override;
   };
 
 
@@ -99,9 +103,10 @@ namespace fg {
 
     static DrawboxFilter* load(const std::string& parameters);
 
-    virtual FilterType type() const;
-    virtual std::string save_str() const;
-    virtual std::string ffmpeg_str(const std::string& between_expr) const;
+    FilterType type() const override;
+    std::string name() const override;
+    std::string save_str() const override;
+    std::string ffmpeg_str(const std::string& between_expr) const override;
   };
 }
 

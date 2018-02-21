@@ -28,7 +28,16 @@
 
 #include "../TestHelpers.hpp"
 
-BOOST_AUTO_TEST_CASE(test_construction) {
+BOOST_AUTO_TEST_CASE(test_name)
+{
+  fg::DrawboxFilter filter(1, 2, 3, 4);
+
+  BOOST_CHECK_EQUAL(filter.name(), "drawbox");
+}
+
+
+BOOST_AUTO_TEST_CASE(test_construction)
+{
   fg::DrawboxFilter filter(1, 2, 3, 4);
 
   BOOST_CHECK_EQUAL(filter.type(), fg::FilterType::DRAWBOX);
@@ -37,6 +46,7 @@ BOOST_AUTO_TEST_CASE(test_construction) {
   BOOST_CHECK_EQUAL(filter.width(), 3);
   BOOST_CHECK_EQUAL(filter.height(), 4);
 }
+
 
 BOOST_AUTO_TEST_CASE(test_load)
 {
@@ -49,11 +59,13 @@ BOOST_AUTO_TEST_CASE(test_load)
   BOOST_CHECK_EQUAL(filter->height(), 80);
 }
 
+
 BOOST_AUTO_TEST_CASE(test_load_with_too_little_params)
 {
   BOOST_CHECK_THROW(fg::DrawboxFilter::load("1;22"),
                     fg::InvalidParametersException);
 }
+
 
 BOOST_AUTO_TEST_CASE(test_load_with_too_many_params)
 {
@@ -61,13 +73,16 @@ BOOST_AUTO_TEST_CASE(test_load_with_too_many_params)
                     fg::InvalidParametersException);
 }
 
+
 BOOST_AUTO_TEST_CASE(test_load_with_invalid_parameter)
 {
   BOOST_CHECK_THROW(fg::DrawboxFilter::load("1;fd;2;4444"),
                     fg::InvalidParametersException);
 }
 
-BOOST_AUTO_TEST_CASE(test_save_str) {
+
+BOOST_AUTO_TEST_CASE(test_save_str)
+{
   fg::DrawboxFilter filter(10, 15, 100, 20);
 
   std::string serialized(filter.save_str());
@@ -75,7 +90,9 @@ BOOST_AUTO_TEST_CASE(test_save_str) {
   BOOST_CHECK_EQUAL(serialized, "drawbox;10;15;100;20");
 }
 
-BOOST_AUTO_TEST_CASE(test_ffmpeg_str) {
+
+BOOST_AUTO_TEST_CASE(test_ffmpeg_str)
+{
   fg::DrawboxFilter filter(50, 60, 150, 30);
 
   std::string ffmpeg(filter.ffmpeg_str("<BETWEEN>"));

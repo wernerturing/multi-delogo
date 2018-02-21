@@ -21,15 +21,30 @@ multi_delogo_SOURCES = main.cpp \
                        MultiDelogoApp.cpp \
                        NumericEntry.cpp \
                        FrameView.cpp \
+                       FrameNavigator.cpp \
+                       FilterListModel.cpp \
+                       FilterPanels.cpp \
+                       FilterPanelFactory.cpp \
+                       FilterType.cpp \
+                       FilterList.cpp \
+                       Coordinator.cpp \
                        MovieWindow.cpp \
                        EncodeWindow.cpp \
                        InitialWindow.cpp
 
 noinst_HEADERS = common/Exceptions.hpp \
+                 common/Rectangle.hpp \
                  common/FrameProvider.hpp \
                  MultiDelogoApp.hpp \
                  NumericEntry.hpp \
                  FrameView.hpp \
+                 FrameNavigator.hpp \
+                 FilterListModel.hpp \
+                 FilterPanels.hpp \
+                 FilterPanelFactory.hpp \
+                 FilterType.hpp \
+                 FilterList.hpp \
+                 Coordinator.hpp \
                  MovieWindow.hpp \
                  EncodeWindow.hpp \
                  InitialWindow.hpp

@@ -27,8 +27,9 @@
 #include "common/FrameProvider.hpp"
 #include "filter-generator/FilterData.hpp"
 
-#include "NumericEntry.hpp"
-#include "FrameView.hpp"
+#include "FilterList.hpp"
+#include "FrameNavigator.hpp"
+#include "Coordinator.hpp"
 
 
 namespace mdl {
@@ -47,37 +48,16 @@ namespace mdl {
 
   private:
     std::string project_file_;
-
     std::unique_ptr<fg::FilterData> filter_data_;
 
-    Glib::RefPtr<FrameProvider> frame_provider_;
-    int number_of_frames_;
-    int frame_number_;
-
-    FrameView frame_view_;
-
-    NumericEntry txt_frame_number_;
-    NumericEntry txt_jump_size_;
-
-    int zoom_;
-    Gtk::Label lbl_zoom_;
-    Gtk::Button btn_zoom_out_;
-    Gtk::Button btn_zoom_in_;
+    FilterList filter_list_;
+    FrameNavigator frame_navigator_;
+    Coordinator coordinator_;
 
 
     Gtk::Toolbar* create_toolbar();
-    Gtk::Box* create_navigation_box();
-    Gtk::Box* create_zoom_box();
 
-    void change_displayed_frame(int new_frame_number);
-
-    void on_single_step_frame(int direction);
-    void on_jump_step_frame(int direction);
-    void on_frame_number_activate();
-    bool on_frame_number_input(GdkEventFocus*);
     bool on_key_press(GdkEventKey* key_event);
-
-    void on_zoom(int increment);
 
     void on_save();
     void on_encode();

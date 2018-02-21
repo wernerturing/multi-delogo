@@ -47,9 +47,11 @@ namespace fg {
 
     const_iterator begin() const;
     const_iterator end() const;
-    maybe_type get_by_start_frame(int start_frame);
-    maybe_type get_by_position(size_type position);
-    int get_position(int start_frame);
+
+    maybe_type get_by_start_frame(int start_frame) const;
+    maybe_type get_by_position(size_type position) const;
+    int get_position(int start_frame) const;
+    maybe_type get_filter_for_frame(int frame) const;
 
     void load(std::istream& in);
     void save(std::ostream& out) const;

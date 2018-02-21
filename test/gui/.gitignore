@@ -17,4 +17,5 @@
 
 TestEncodeWindow
 TestFilterListModel
+TestFilterPanelFactory
 TestSelectionRect

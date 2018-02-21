@@ -121,7 +121,7 @@ BOOST_AUTO_TEST_CASE(get_by_frame_returning_an_item)
   list.insert(101, new NullFilter());
 
   auto maybe = list.get_by_start_frame(101);
-  BOOST_CHECK(maybe);
+  BOOST_REQUIRE(maybe);
   BOOST_CHECK_EQUAL(maybe->first, 101);
   BOOST_CHECK_EQUAL(maybe->second->type(), FilterType::NO_OP);
 }
@@ -146,12 +146,12 @@ BOOST_AUTO_TEST_CASE(get_by_position_returning_an_item)
   list.insert(401, new DelogoFilter(99, 88, 77, 66));
 
   auto maybe0 = list.get_by_position(0);
-  BOOST_CHECK(maybe0);
+  BOOST_REQUIRE(maybe0);
   BOOST_CHECK_EQUAL(maybe0->first, 1);
   BOOST_CHECK_EQUAL(maybe0->second->type(), FilterType::DELOGO);
 
   auto maybe2 = list.get_by_position(2);
-  BOOST_CHECK(maybe2);
+  BOOST_REQUIRE(maybe2);
   BOOST_CHECK_EQUAL(maybe2->first, 201);
   BOOST_CHECK_EQUAL(maybe2->second->type(), FilterType::DRAWBOX);
 }
@@ -204,6 +204,58 @@ BOOST_AUTO_TEST_CASE(get_position_for_non_existing)
   list.insert(201, new NullFilter());
 
   BOOST_CHECK_EQUAL(list.get_position(100), -1);
+}
+
+
+BOOST_AUTO_TEST_CASE(get_filter_for_frame_returns_filter_applied_to_that_frame)
+{
+  FilterList list;
+  list.insert(101, new NullFilter());
+  list.insert(401, new NullFilter());
+  list.insert(251, new NullFilter());
+  list.insert(651, new NullFilter());
+
+  auto maybe30 = list.get_filter_for_frame(30);
+  BOOST_CHECK(!maybe30);
+
+  auto maybe251 = list.get_filter_for_frame(251);
+  BOOST_REQUIRE(maybe251);
+  BOOST_CHECK_EQUAL(maybe251->first, 251);
+
+  auto maybe252 = list.get_filter_for_frame(252);
+  BOOST_REQUIRE(maybe252);
+  BOOST_CHECK_EQUAL(maybe252->first, 251);
+
+  auto maybe430 = list.get_filter_for_frame(430);
+  BOOST_REQUIRE(maybe430);
+  BOOST_CHECK_EQUAL(maybe430->first, 401);
+
+  auto maybe1000 = list.get_filter_for_frame(1000);
+  BOOST_REQUIRE(maybe1000);
+  BOOST_CHECK_EQUAL(maybe1000->first, 651);
+}
+
+
+BOOST_AUTO_TEST_CASE(get_filter_for_frame_on_empty_list)
+{
+  FilterList list;
+
+  auto maybe250 = list.get_filter_for_frame(250);
+  BOOST_CHECK(!maybe250);
+}
+
+
+BOOST_AUTO_TEST_CASE(get_filter_for_frame_on_list_with_one_element)
+{
+  FilterList list;
+  list.insert(101, new NullFilter());
+
+  auto maybe50 = list.get_filter_for_frame(50);
+  BOOST_CHECK(!maybe50);
+
+  auto maybe150 = list.get_filter_for_frame(150);
+  BOOST_REQUIRE(maybe150);
+  BOOST_CHECK_EQUAL(maybe150->first, 101);
 }
 
 

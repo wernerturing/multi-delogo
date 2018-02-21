@@ -37,6 +37,7 @@ FilterListColumns::FilterListColumns()
 {
   add(start_frame);
   add(filter);
+  add(filter_name);
 }
 
 
@@ -63,7 +64,32 @@ Glib::RefPtr<FilterListModel> FilterListModel::create(fg::FilterList& filter_lis
 }
 
 
-void FilterListModel::insert(int start_frame, fg::Filter* filter)
+FilterListModel::iterator FilterListModel::get_for_frame(int frame)
+{
+  auto my_children = children();
+  fg::FilterList::maybe_type filter = filter_list_.get_filter_for_frame(frame);
+  if (!filter) {
+    return my_children.end();
+  }
+
+  int pos = filter_list_.get_position(filter->first);
+  return my_children[pos];
+}
+
+
+FilterListModel::iterator FilterListModel::get_by_start_frame(int start_frame)
+{
+  auto children_col = children();
+  int pos = filter_list_.get_position(start_frame);
+  if (pos == -1) {
+    return children_col.end();
+  }
+
+  return children_col[pos];
+}
+
+
+FilterListModel::iterator FilterListModel::insert(int start_frame, fg::Filter* filter)
 {
   if (filter_list_.get_by_start_frame(start_frame)) {
     throw DuplicateRowException();
@@ -75,18 +101,23 @@ void FilterListModel::insert(int start_frame, fg::Filter* filter)
   int pos = filter_list_.get_position(start_frame);
   Path path;
   path.push_back(pos);
-  row_inserted(path, get_iter(path));
+  auto iter = get_iter(path);
+  row_inserted(path, iter);
+
+  return iter;
 }
 
 
 void FilterListModel::remove(const iterator& iter)
 {
   if (!check_iter_validity(iter)) {
+    g_warning("FilterListModel::remove with invalid iter");
     return;
   }
 
   fg::FilterList::maybe_type filter = get_filter_by_iter(iter);
   if (!filter) {
+    g_warning("FilterListModel::remove: no filter found");
     return;
   }
 
@@ -105,19 +136,18 @@ Gtk::TreeModelFlags FilterListModel::get_flags_vfunc() const
 
 int FilterListModel::get_n_columns_vfunc() const
 {
-  return 2;
+  return columns.size();
 }
 
 
 GType FilterListModel::get_column_type_vfunc(int index) const
 {
-  if (index == 0) {
-    return Glib::Value<int>::value_type();
-  } else if (index == 1) {
-    return Glib::Value<fg::Filter*>::value_type();
-  } else {
+  if ((unsigned) index + 1 > columns.size()) {
+    g_warning("Invalid column %d for FilterListModel::get_column_type_vfunc", index);
     return 0;
   }
+
+  return columns.types()[index];
 }
 
 
@@ -130,7 +160,7 @@ bool FilterListModel::iter_next_vfunc(const iterator& iter, iterator& iter_next)
   }
 
   unsigned int next = get_position(iter) + 1;
-  if (next > filter_list_.size() - 1) {
+  if (next + 1 > filter_list_.size()) {
     return false;
   }
 
@@ -174,7 +204,7 @@ bool FilterListModel::iter_nth_root_child_vfunc(int n, iterator& iter) const
 {
   iter = iterator();
 
-  if ((unsigned) n > filter_list_.size() - 1) {
+  if ((unsigned) n + 1 > filter_list_.size()) {
     return false;
   }
 
@@ -210,7 +240,12 @@ bool FilterListModel::get_iter_vfunc(const Path& path, iterator& iter) const
     return false;
   }
 
-  iter = create_iter(path[0]);
+  unsigned int pos = path[0];
+  if (pos + 1 > filter_list_.size()) {
+    return false;
+  }
+
+  iter = create_iter(pos);
   return true;
 }
 
@@ -219,20 +254,23 @@ void FilterListModel::get_value_vfunc(const const_iterator& iter, int column, Gl
 {
   if (!check_iter_validity(iter)
       || (unsigned) column > columns.size() - 1) {
+    g_warning("FilterListModel::get_value_vfunc: invalid iter or column");
     return;
   }
 
   fg::FilterList::maybe_type filter = get_filter_by_iter(iter);
   if (!filter) {
+    g_warning("FilterListModel::get_value_vfunc: no filter found");
     return;
   }
 
+  g_value_init(value.gobj(), get_column_type(column));
   if (column == columns.start_frame.index()) {
-    g_value_init(value.gobj(), columns.start_frame.type());
     g_value_set_int(value.gobj(), filter->first);
   } else if (column == columns.filter.index()) {
-    g_value_init(value.gobj(), columns.filter.type());
     g_value_set_pointer(value.gobj(), filter->second);
+  } else if (column == columns.filter_name.index()) {
+    g_value_set_string(value.gobj(), filter->second->name().c_str());
   }
 }
 
@@ -242,17 +280,21 @@ void FilterListModel::set_value_impl(const iterator& iter, int column, const Gli
   if (!check_iter_validity(iter)
       || (unsigned) column > columns.size() - 1
       || !g_value_type_compatible(G_VALUE_TYPE(value.gobj()), get_column_type(column))) {
+    g_warning("FilterListModel::set_value_impl: invalid iter or column; or incompatible g_value");
     return;
   }
 
   if (column == columns.start_frame.index()) {
     throw std::invalid_argument("Impossible to change start frame");
+  } else if (column == columns.filter_name.index()) {
+    throw std::invalid_argument("Impossible to change filter name");
   } else if (column == columns.filter.index()) {
     Glib::Value<fg::Filter*> filter_value;
     filter_value.init(value.gobj());
 
     fg::FilterList::maybe_type filter = get_filter_by_iter(iter);
     if (!filter) {
+      g_warning("FilterListModel::set_value_impl: filter_not_found");
       return;
     }
 
