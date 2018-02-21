@@ -44,8 +44,6 @@ FilterList::FilterList(fg::FilterList& filter_list)
   btn_remove_filter_.set_image_from_icon_name("list-remove");
   btn_remove_filter_.set_tooltip_text(_("Remove the selected filter"));
   btn_remove_filter_.set_sensitive(false);
-  btn_remove_filter_.signal_clicked().connect(
-    sigc::mem_fun(signal_remove_filter_, &type_signal_remove_filter::emit));
   Gtk::ButtonBox* buttons = Gtk::manage(new Gtk::ButtonBox());
   buttons->pack_start(btn_remove_filter_, false, false);
 
@@ -55,6 +53,12 @@ FilterList::FilterList(fg::FilterList& filter_list)
 
   selection_ = view_.get_selection();
   selection_->signal_changed().connect(sigc::mem_fun(*this, &FilterList::on_selection_changed));
+
+  btn_remove_filter_.signal_clicked().connect(
+    sigc::mem_fun(signal_remove_filter_, &type_signal_remove_filter::emit));
+
+  filter_type_.signal_type_changed().connect(
+    sigc::mem_fun(signal_type_changed_, &type_signal_type_changed::emit));
 }
 
 
@@ -111,6 +115,12 @@ FilterList::type_signal_selection_changed FilterList::signal_selection_changed()
 FilterList::type_signal_remove_filter FilterList::signal_remove_filter()
 {
   return signal_remove_filter_;
+}
+
+
+FilterList::type_signal_type_changed FilterList::signal_type_changed()
+{
+  return signal_type_changed_;
 }
 
 

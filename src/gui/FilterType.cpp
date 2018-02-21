@@ -39,6 +39,16 @@ FilterType::FilterType()
   rad_drawbox_.set_halign(Gtk::ALIGN_START);
   rad_none_.set_halign(Gtk::ALIGN_START);
 
+  rad_delogo_.signal_toggled().connect(
+    sigc::bind<const Gtk::RadioButton&>(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
+                                        rad_delogo_));
+  rad_drawbox_.signal_toggled().connect(
+    sigc::bind<const Gtk::RadioButton&>(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
+                                        rad_drawbox_));
+  rad_none_.signal_toggled().connect(
+    sigc::bind<const Gtk::RadioButton&>(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
+                                        rad_none_));
+
   set_column_spacing(4);
 
   Gtk::Label* lbl = Gtk::manage(new Gtk::Label(_("Filter:")));
@@ -80,3 +90,16 @@ fg::FilterType FilterType::get() const
   }
 }
 
+
+FilterType::type_signal_type_changed FilterType::signal_type_changed()
+{
+  return signal_type_changed_;
+}
+
+
+void FilterType::on_radio_toggled(const Gtk::RadioButton& radio)
+{
+  if (radio.get_active()) {
+    signal_type_changed_.emit(get());
+  }
+}

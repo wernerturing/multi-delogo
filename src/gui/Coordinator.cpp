@@ -47,6 +47,9 @@ Coordinator::Coordinator(FilterList& filter_list,
   filter_list_.signal_remove_filter().connect(
     sigc::mem_fun(*this, &Coordinator::on_remove_filter));
 
+  on_filter_type_changed_ = filter_list_.signal_type_changed().connect(
+    sigc::mem_fun(*this, &Coordinator::on_filter_type_changed));
+
   frame_navigator_.signal_frame_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_frame_changed));
 
@@ -125,9 +128,28 @@ void Coordinator::change_displayed_filter(const FilterListModel::iterator& iter)
 void Coordinator::update_displayed_panel(fg::FilterType type, FilterPanel* panel)
 {
   current_filter_panel_ = Gtk::manage(panel);
+
+  on_filter_type_changed_.block();
   filter_list_.set_filter(type, current_filter_panel_);
+  on_filter_type_changed_.block(false);
+
   on_panel_rectangle_changed_ = current_filter_panel_->signal_rectangle_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_panel_rectangle_changed));
+}
+
+
+void Coordinator::on_filter_type_changed(fg::FilterType new_type)
+{
+  if (!current_filter_) {
+    return;
+  }
+
+  update_current_filter_if_necessary();
+  add_new_filter_if_not_on_filter_starting_frame(true);
+
+  FilterPanel* new_panel = panel_factory_.convert(current_filter_, new_type);
+  update_displayed_panel(new_type, new_panel);
+  update_current_filter();
 }
 
 
@@ -169,18 +191,29 @@ void Coordinator::update_current_filter_if_necessary()
     return;
   }
 
-  (*iter)[filter_model_->columns.filter] = current_filter_panel_->get_filter();
+  auto new_filter = current_filter_panel_->get_filter();
+  (*iter)[filter_model_->columns.filter] = new_filter;
+  current_filter_ = new_filter;
 }
 
 
-void Coordinator::add_new_filter_if_not_on_filter_starting_frame()
+void Coordinator::update_current_filter()
+{
+  auto iter = filter_model_->get_by_start_frame(current_frame_);
+  auto new_filter = current_filter_panel_->get_filter();
+  (*iter)[filter_model_->columns.filter] = new_filter;
+  current_filter_ = new_filter;
+}
+
+
+void Coordinator::add_new_filter_if_not_on_filter_starting_frame(bool always_add)
 {
   auto iter = filter_model_->get_by_start_frame(current_frame_);
   if (iter) {
     return;
   }
 
-  if (!current_filter_panel_->creates_filter()) {
+  if (!always_add && !current_filter_panel_->creates_filter()) {
     return;
   }
 
