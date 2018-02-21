@@ -103,5 +103,9 @@ FilterPanel* FilterPanelFactory::convert(fg::Filter* original, fg::FilterType ne
     return create(fg::FilterType::NO_OP);
   }
 
+  if (original->type() == fg::FilterType::NO_OP) {
+    return create(new_type);
+  }
+
   throw std::invalid_argument("Unsupported conversion");
 }

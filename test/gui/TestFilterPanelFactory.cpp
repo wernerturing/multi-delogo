@@ -214,4 +214,24 @@ BOOST_AUTO_TEST_CASE(should_convert_from_drawbox_to_null_filter)
 }
 
 
+BOOST_AUTO_TEST_CASE(should_convert_from_null_filter_to_delogo)
+{
+  fg::NullFilter filter;
+  FilterPanel* panel = factory.convert(&filter, fg::FilterType::DELOGO);
+  FilterPanelDelogo* downcasted = dynamic_cast<FilterPanelDelogo*>(panel);
+
+  BOOST_CHECK(downcasted != nullptr);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_convert_from_null_filter_to_drawbox)
+{
+  fg::NullFilter filter;
+  FilterPanel* panel = factory.convert(&filter, fg::FilterType::DRAWBOX);
+  FilterPanelDrawbox* downcasted = dynamic_cast<FilterPanelDrawbox*>(panel);
+
+  BOOST_CHECK(downcasted != nullptr);
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
