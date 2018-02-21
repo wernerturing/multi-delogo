@@ -149,9 +149,8 @@ void MultiDelogoApp::register_window(Gtk::ApplicationWindow* window)
   }
 
   window->signal_hide().connect(
-    sigc::bind<Gtk::ApplicationWindow*>(
-      sigc::mem_fun(*this, &MultiDelogoApp::on_hide_window),
-      window));
+    sigc::bind(sigc::mem_fun(*this, &MultiDelogoApp::on_hide_window),
+               window));
 
   add_window(*window);
   window->show_all();

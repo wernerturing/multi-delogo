@@ -90,17 +90,15 @@ Gtk::Box* EncodeWindow::create_codec()
   Gtk::RadioButton* btn_h264 = Gtk::manage(new Gtk::RadioButton("H.26_4", true));
   btn_h264->set_tooltip_text(_("Most compatible video format. If in doubt, use this format"));
   btn_h264->signal_toggled().connect(
-    sigc::bind<Codec>(
-      sigc::mem_fun(*this, &EncodeWindow::on_codec),
-      Codec::H264));
+    sigc::bind(sigc::mem_fun(*this, &EncodeWindow::on_codec),
+               Codec::H264));
 
   Gtk::RadioButton* btn_h265 = Gtk::manage(new Gtk::RadioButton("H.26_5", true));
   btn_h265->join_group(*btn_h264);
   btn_h265->set_tooltip_text(_("A newer format that produces smaller video files. May not work on all players"));
   btn_h265->signal_toggled().connect(
-    sigc::bind<Codec>(
-      sigc::mem_fun(*this, &EncodeWindow::on_codec),
-      Codec::H265));
+    sigc::bind(sigc::mem_fun(*this, &EncodeWindow::on_codec),
+               Codec::H265));
 
   Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 4));
   box->pack_start(*lbl, false, false);

@@ -60,30 +60,26 @@ Gtk::Box* FrameNavigator::create_navigation_box()
   Gtk::Button* btn_prev = Gtk::manage(new Gtk::Button("<"));
   btn_prev->set_tooltip_text(_("Move back one frame (s)"));
   btn_prev->signal_clicked().connect(
-    sigc::bind<int>(
-      sigc::mem_fun(*this, &FrameNavigator::single_step_frame),
-      -1));
+    sigc::bind(sigc::mem_fun(*this, &FrameNavigator::single_step_frame),
+               -1));
 
   Gtk::Button* btn_next = Gtk::manage(new Gtk::Button(">"));
   btn_next->set_tooltip_text(_("Move forward one frame (d)"));
   btn_next->signal_clicked().connect(
-    sigc::bind<int>(
-      sigc::mem_fun(*this, &FrameNavigator::single_step_frame),
-      1));
+    sigc::bind(sigc::mem_fun(*this, &FrameNavigator::single_step_frame),
+               1));
 
   Gtk::Button* btn_prev_jump = Gtk::manage(new Gtk::Button("<<"));
   btn_prev_jump->set_tooltip_text(_("Move back the number of frames specified in \"jump size\" (a)"));
   btn_prev_jump->signal_clicked().connect(
-    sigc::bind<int>(
-      sigc::mem_fun(*this, &FrameNavigator::jump_step_frame),
-      -1));
+    sigc::bind(sigc::mem_fun(*this, &FrameNavigator::jump_step_frame),
+               -1));
 
   Gtk::Button* btn_next_jump = Gtk::manage(new Gtk::Button(">>"));
   btn_next_jump->set_tooltip_text(_("Move forward the number of frames specified in \"jump size\" (f)"));
   btn_next_jump->signal_clicked().connect(
-    sigc::bind<int>(
-      sigc::mem_fun(*this, &FrameNavigator::jump_step_frame),
-      1));
+    sigc::bind(sigc::mem_fun(*this, &FrameNavigator::jump_step_frame),
+               1));
 
   txt_frame_number_.set_tooltip_text(_("Current frame number"));
   txt_frame_number_.signal_activate().connect(
@@ -129,13 +125,11 @@ Gtk::Box* FrameNavigator::create_zoom_box()
   box->pack_start(btn_zoom_in_, false, false);
 
   btn_zoom_out_.signal_clicked().connect(
-    sigc::bind<int>(
-      sigc::mem_fun(*this, &FrameNavigator::on_zoom),
-      -10));
+    sigc::bind(sigc::mem_fun(*this, &FrameNavigator::on_zoom),
+               -10));
   btn_zoom_in_.signal_clicked().connect(
-    sigc::bind<int>(
-      sigc::mem_fun(*this, &FrameNavigator::on_zoom),
-      10));
+    sigc::bind(sigc::mem_fun(*this, &FrameNavigator::on_zoom),
+               10));
 
   return box;
 }
