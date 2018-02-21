@@ -107,5 +107,20 @@ FilterPanel* FilterPanelFactory::convert(fg::Filter* original, fg::FilterType ne
     return create(new_type);
   }
 
+  if (is_rectangular(original->type()) && is_rectangular(new_type)) {
+    FilterPanel* panel = create(new_type);
+    fg::RectangularFilter* rectangular = dynamic_cast<fg::RectangularFilter*>(original);
+    panel->set_rectangle({.x = (gdouble) rectangular->x(), .y = (gdouble) rectangular->y(),
+                          .width = (gdouble) rectangular->width(), .height = (gdouble) rectangular->height()});
+    return panel;
+  }
+
   throw std::invalid_argument("Unsupported conversion");
 }
+
+
+bool FilterPanelFactory::is_rectangular(fg::FilterType type)
+{
+  return type == fg::FilterType::DELOGO || type == fg::FilterType::DRAWBOX;
+}
+

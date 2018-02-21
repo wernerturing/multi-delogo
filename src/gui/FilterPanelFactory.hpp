@@ -65,6 +65,8 @@ namespace mdl {
   private:
     int frame_width_;
     int frame_height_;
+
+    bool is_rectangular(fg::FilterType type);
   };
 }
 
