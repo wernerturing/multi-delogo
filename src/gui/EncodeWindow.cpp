@@ -348,10 +348,12 @@ void EncodeWindow::on_ffmpeg_finished(Glib::Pid pid, int status)
 
   enable_widgets();
 
-  if (status == 0) {
+  GError *error = nullptr;
+  if (g_spawn_check_exit_status(status, &error)) {
     lbl_status_.set_text(_("Encoding finished successfully"));
   } else {
-    lbl_status_.set_text(Glib::ustring::compose(_("Encoding failed. ffmpeg exited with status %1"), status));
+    lbl_status_.set_text(Glib::ustring::compose(_("Encoding failed: %1"), error->message));
+    g_error_free(error);
   }
 }
 
