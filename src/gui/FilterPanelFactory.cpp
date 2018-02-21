@@ -16,6 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <stdexcept>
+
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
 
@@ -94,3 +96,12 @@ FilterPanel* FilterPanelFactory::create(fg::FilterType type)
   }
 }
 
+
+FilterPanel* FilterPanelFactory::convert(fg::Filter* original, fg::FilterType new_type)
+{
+  if (new_type == fg::FilterType::NO_OP) {
+    return create(fg::FilterType::NO_OP);
+  }
+
+  throw std::invalid_argument("Unsupported conversion");
+}

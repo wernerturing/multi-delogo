@@ -60,6 +60,7 @@ namespace mdl {
 
     FilterPanel* create(fg::Filter* filter);
     FilterPanel* create(fg::FilterType type);
+    FilterPanel* convert(fg::Filter* original, fg::FilterType new_type);
 
   private:
     int frame_width_;

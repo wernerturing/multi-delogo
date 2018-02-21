@@ -193,4 +193,25 @@ BOOST_AUTO_TEST_CASE(filter_panel_drawbox_should_return_a_rectangle)
   BOOST_CHECK_EQUAL(rect->height, 30);
 }
 
+
+BOOST_AUTO_TEST_CASE(should_convert_from_delogo_to_null_filter)
+{
+  fg::DelogoFilter filter(0, 500, 100, 30);
+  FilterPanel* panel = factory.convert(&filter, fg::FilterType::NO_OP);
+  FilterPanelNull* downcasted = dynamic_cast<FilterPanelNull*>(panel);
+
+  BOOST_CHECK(downcasted != nullptr);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_convert_from_drawbox_to_null_filter)
+{
+  fg::DelogoFilter filter(0, 0, 10, 10);
+  FilterPanel* panel = factory.convert(&filter, fg::FilterType::NO_OP);
+  FilterPanelNull* downcasted = dynamic_cast<FilterPanelNull*>(panel);
+
+  BOOST_CHECK(downcasted != nullptr);
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
