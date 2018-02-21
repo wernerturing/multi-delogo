@@ -23,8 +23,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: multi-delogo\n"
 "Report-Msgid-Bugs-To: werner.turing@protonmail.com\n"
-"POT-Creation-Date: 2018-02-04 13:35-0200\n"
-"PO-Revision-Date: 2018-02-10 11:46-0200\n"
+"POT-Creation-Date: 2018-02-21 17:52-0300\n"
+"PO-Revision-Date: 2018-02-21 17:52-0300\n"
 "Last-Translator: Werner Turing <werner.turing@protonmail.com>\n"
 "Language-Team: Werner Turing <werner.turing@protonmail.com>\n"
 "Language: pt_BR\n"
@@ -33,10 +33,277 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/gui/MultiDelogoApp.cpp:43
-msgid "Could not open file %1"
-msgstr "Não foi possível abrir o arquivo %1"
+#: ../src/gui/EncodeWindow.cpp:38
+msgid "Encode video"
+msgstr "Converter vídeo"
 
-#: ../src/gui/MovieWindow.cpp:70
+#: ../src/gui/EncodeWindow.cpp:55
+msgid "_Output file:"
+msgstr "_Arquivo de destino:"
+
+#: ../src/gui/EncodeWindow.cpp:58
+msgid "_Select"
+msgstr "_Selecionar"
+
+#: ../src/gui/EncodeWindow.cpp:75
+msgid "Select output file"
+msgstr "Selecione o arquivo de destino"
+
+#: ../src/gui/EncodeWindow.cpp:76 ../src/gui/EncodeWindow.cpp:224
+#: ../src/gui/MultiDelogoApp.cpp:227
+msgid "_Cancel"
+msgstr "_Cancelar"
+
+#: ../src/gui/EncodeWindow.cpp:77
+msgid "_Save"
+msgstr "_Salvar"
+
+#: ../src/gui/EncodeWindow.cpp:88
+msgid "Video format:"
+msgstr "Formato do vídeo:"
+
+#: ../src/gui/EncodeWindow.cpp:91
+msgid "Most compatible video format. If in doubt, use this format"
+msgstr ""
+"Formato de vídeo mais compatível. Se estiver em dúvida, use este formato"
+
+#: ../src/gui/EncodeWindow.cpp:98
+msgid ""
+"A newer format that produces smaller video files. May not work on all players"
+msgstr ""
+"Um formato mais novo que gera arquivos menores. Pode não ser suportado por "
+"todos os players"
+
+#: ../src/gui/EncodeWindow.cpp:127
+msgid "_Quality:"
+msgstr "_Qualidade:"
+
+#: ../src/gui/EncodeWindow.cpp:133
+msgid ""
+"CRF value to use for encoding. Lower values generally lead to higher "
+"quality, but bigger files. If in doubt, accept the default"
+msgstr ""
+"Valor CRF a ser usado na conversão do vídeo. Valores mais baixos em geral "
+"produzem melhor qualidade, mas arquivos maiores. Se estiver em dúvida, use o "
+"padrão"
+
+#: ../src/gui/EncodeWindow.cpp:147
+msgid "_Generate filter script"
+msgstr "_Gerar script com filtros"
+
+#: ../src/gui/EncodeWindow.cpp:148
+msgid ""
+"Generates a ffmpeg filter script file that can be used to encode the video. "
+"Use this option if you want to run ffmpeg manually with custom encoding "
+"options"
+msgstr ""
+"Gerar um arquivo script de filtros do ffmpeg que pode ser usado para "
+"converter o vídeo. Selecione esta opção se você quiser executar o ffmpeg "
+"manualmente com opções de conversão personalizadas"
+
+#: ../src/gui/EncodeWindow.cpp:151
+msgid "_Encode"
+msgstr "_Converter"
+
+#: ../src/gui/EncodeWindow.cpp:205
+msgid "Filter script generated"
+msgstr "Script com filtros gerado"
+
+#: ../src/gui/EncodeWindow.cpp:213
+msgid "Please select the output file"
+msgstr "Por favor selecione o arquivo de destino"
+
+#: ../src/gui/EncodeWindow.cpp:220
+msgid "File %1 already exists. Overwrite?"
+msgstr "Arquivo %1 já existe. Sobrescrever?"
+
+#: ../src/gui/EncodeWindow.cpp:225
+msgid "_Overwrite"
+msgstr "_Sobrescrever"
+
+#: ../src/gui/EncodeWindow.cpp:243 ../src/gui/MultiDelogoApp.cpp:81
+#: ../src/gui/MultiDelogoApp.cpp:172
+msgid "Could not open file %1: %2"
+msgstr "Não foi possível abrir o arquivo %1: %2"
+
+#: ../src/gui/EncodeWindow.cpp:296
+msgid "Could not execute ffmpeg: %1"
+msgstr "Não foi possível executar o ffmpeg: %1"
+
+#: ../src/gui/EncodeWindow.cpp:303
+msgid "Encoding in progress"
+msgstr "Conversão sendo executada"
+
+#: ../src/gui/EncodeWindow.cpp:353
+msgid "Encoding finished successfully"
+msgstr "Conversão terminou com sucesso"
+
+#: ../src/gui/EncodeWindow.cpp:355
+msgid "Encoding failed: %1"
+msgstr "Conversão falhou: %1"
+
+#: ../src/gui/EncodeWindow.cpp:384
+msgid ""
+"Encoding is in progress. If it is cancelled now, it'll be necessary to "
+"restart encoding from the beginning. Really cancel?"
+msgstr ""
+"A conversão está sendo executada. Se for cancelada agora, será necesário "
+"reiniciar a conversão do começo. Realmente deseja cancelar?"
+
+#: ../src/gui/EncodeWindow.cpp:388
+msgid "C_ancel encoding"
+msgstr "C_ancelar conversão"
+
+#: ../src/gui/EncodeWindow.cpp:389
+msgid "_Continue"
+msgstr "_Continuar"
+
+#: ../src/gui/FilterList.cpp:38
+msgid "Start frame"
+msgstr "Quadro inicial"
+
+#: ../src/gui/FilterList.cpp:39
+msgid "Filter"
+msgstr "Filtro"
+
+#: ../src/gui/FilterList.cpp:45
+msgid "Remove the selected filter"
+msgstr "Remover o filtro selecionado"
+
+#: ../src/gui/FilterPanels.cpp:97
+msgid "_x:"
+msgstr "_x:"
+
+#: ../src/gui/FilterPanels.cpp:98
+msgid "_y:"
+msgstr "_y:"
+
+#: ../src/gui/FilterPanels.cpp:99
+msgid "_width:"
+msgstr "_largura:"
+
+#: ../src/gui/FilterPanels.cpp:100
+msgid "_height:"
+msgstr "_altura:"
+
+#: ../src/gui/FilterType.cpp:54
+msgid "Filter:"
+msgstr "Filtro:"
+
+#: ../src/gui/FrameNavigator.cpp:61
+msgid "Move back one frame (s)"
+msgstr "Voltar um quadro (s)"
+
+#: ../src/gui/FrameNavigator.cpp:67
+msgid "Move forward one frame (d)"
+msgstr "Avançar um quadro (d)"
+
+#: ../src/gui/FrameNavigator.cpp:73
+msgid "Jump back the number of frames specified in \"jump size\" (a)"
+msgstr ""
+"Saltar para frente o número de quadros especificado em \"tamanho do salto"
+"\" (a)"
+
+#: ../src/gui/FrameNavigator.cpp:79
+msgid "Jump forward the number of frames specified in \"jump size\" (f)"
+msgstr ""
+"Saltar para trás o número de quadros especificado em \"tamanho do salto\" (f)"
+
+#: ../src/gui/FrameNavigator.cpp:84
+msgid "Current frame number"
+msgstr "Número do quadro atual"
+
+#: ../src/gui/FrameNavigator.cpp:99
+msgid "_Jump size:"
+msgstr "_Tamanho do salto:"
+
+#: ../src/gui/FrameNavigator.cpp:105
+msgid "Number of frames to jump when using << and >> buttons"
+msgstr "Número de quadros a saltar quando os botões << e >> são utilizados"
+
+#: ../src/gui/FrameNavigator.cpp:117
+msgid "Make image smaller"
+msgstr "Diminuir tamanho da imagem"
+
+#: ../src/gui/FrameNavigator.cpp:123
+msgid "Make image larger"
+msgstr "Aumentar tamanho da imagem"
+
+#: ../src/gui/FrameNavigator.cpp:151
 msgid "Could not get frame"
 msgstr "Não foi possível obter o frame"
+
+#: ../src/gui/InitialWindow.cpp:30
+msgid "multi-delogo"
+msgstr "multi-delogo"
+
+#: ../src/gui/InitialWindow.cpp:33
+msgid "What would you like to do?"
+msgstr "O que deseja fazer?"
+
+#: ../src/gui/InitialWindow.cpp:36
+msgid "Start a _new project"
+msgstr "Começar um _novo projeto"
+
+#: ../src/gui/InitialWindow.cpp:42
+msgid "_Open an existing project"
+msgstr "_Abrir um projeto existente"
+
+#: ../src/gui/MovieWindow.cpp:72
+msgid "Create a new project"
+msgstr "Criar  um novo projeto"
+
+#: ../src/gui/MovieWindow.cpp:77
+msgid "Open an existing project"
+msgstr "Abrir um projeto existente"
+
+#: ../src/gui/MovieWindow.cpp:83
+msgid "Save current project"
+msgstr "Salvar projeto atual"
+
+#: ../src/gui/MovieWindow.cpp:88
+msgid "Encode"
+msgstr "Converter"
+
+#: ../src/gui/MovieWindow.cpp:89
+msgid "Encode current project to a video with the filters applied"
+msgstr "Converter o projeto atual para um vídeo com os filtros aplicados"
+
+#: ../src/gui/MultiDelogoApp.cpp:100
+msgid "Invalid data in file %1"
+msgstr "Dados inválidos no arquivo %1"
+
+#: ../src/gui/MultiDelogoApp.cpp:116
+msgid "File %1 not recognized as video or multi-delogo data"
+msgstr "Arquivo %1 não reconhecido como vídeo ou arquivo do multi-delogo"
+
+#: ../src/gui/MultiDelogoApp.cpp:131
+msgid ""
+"Movie file %1 in project could not be opened. Please select the movie file."
+msgstr ""
+"Arquivo de vídeo %1 no projeto não pôde ser aberto. Por falor selecione o "
+"vídeo."
+
+#: ../src/gui/MultiDelogoApp.cpp:203
+msgid "Movies"
+msgstr "Vídeos"
+
+#: ../src/gui/MultiDelogoApp.cpp:206
+msgid "Select video file"
+msgstr "Selecione arquivo de vídeo"
+
+#: ../src/gui/MultiDelogoApp.cpp:213
+msgid "Project files"
+msgstr "Projetos"
+
+#: ../src/gui/MultiDelogoApp.cpp:216
+msgid "Open project"
+msgstr "Abra um projeto"
+
+#: ../src/gui/MultiDelogoApp.cpp:228
+msgid "_Open"
+msgstr "_Abrir"
+
+#: ../src/gui/MultiDelogoApp.cpp:231
+msgid "All files"
+msgstr "Todos os arquivos"
