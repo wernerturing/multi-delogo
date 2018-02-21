@@ -148,7 +148,7 @@ Gtk::Box* EncodeWindow::create_buttons()
   btn_script->set_tooltip_text(_("Generates a ffmpeg filter script file that can be used to encode the video. Use this option if you want to run ffmpeg manually with custom encoding options"));
   btn_script->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_generate_script));
 
-  Gtk::Button* btn_encode = Gtk::manage(new Gtk::Button(_("Encode"), true));
+  Gtk::Button* btn_encode = Gtk::manage(new Gtk::Button(_("_Encode"), true));
   btn_encode->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_encode));
 
   Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
