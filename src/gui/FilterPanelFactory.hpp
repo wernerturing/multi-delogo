@@ -60,10 +60,13 @@ namespace mdl {
 
     FilterPanel* create(fg::Filter* filter);
     FilterPanel* create(fg::FilterType type);
+    FilterPanel* convert(fg::Filter* original, fg::FilterType new_type);
 
   private:
     int frame_width_;
     int frame_height_;
+
+    bool is_rectangular(fg::FilterType type);
   };
 }
 

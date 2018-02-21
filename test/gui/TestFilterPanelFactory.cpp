@@ -193,4 +193,77 @@ BOOST_AUTO_TEST_CASE(filter_panel_drawbox_should_return_a_rectangle)
   BOOST_CHECK_EQUAL(rect->height, 30);
 }
 
+
+BOOST_AUTO_TEST_CASE(should_convert_from_delogo_to_null_filter)
+{
+  fg::DelogoFilter filter(0, 500, 100, 30);
+  FilterPanel* panel = factory.convert(&filter, fg::FilterType::NO_OP);
+  FilterPanelNull* downcasted = dynamic_cast<FilterPanelNull*>(panel);
+
+  BOOST_CHECK(downcasted != nullptr);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_convert_from_drawbox_to_null_filter)
+{
+  fg::DelogoFilter filter(0, 0, 10, 10);
+  FilterPanel* panel = factory.convert(&filter, fg::FilterType::NO_OP);
+  FilterPanelNull* downcasted = dynamic_cast<FilterPanelNull*>(panel);
+
+  BOOST_CHECK(downcasted != nullptr);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_convert_from_null_filter_to_delogo)
+{
+  fg::NullFilter filter;
+  FilterPanel* panel = factory.convert(&filter, fg::FilterType::DELOGO);
+  FilterPanelDelogo* downcasted = dynamic_cast<FilterPanelDelogo*>(panel);
+
+  BOOST_CHECK(downcasted != nullptr);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_convert_from_null_filter_to_drawbox)
+{
+  fg::NullFilter filter;
+  FilterPanel* panel = factory.convert(&filter, fg::FilterType::DRAWBOX);
+  FilterPanelDrawbox* downcasted = dynamic_cast<FilterPanelDrawbox*>(panel);
+
+  BOOST_CHECK(downcasted != nullptr);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_convert_from_delogo_to_drawbox)
+{
+  fg::DelogoFilter filter(9, 8, 7, 6);
+  FilterPanel* panel = factory.convert(&filter, fg::FilterType::DRAWBOX);
+
+  FilterPanelDrawbox* downcasted = dynamic_cast<FilterPanelDrawbox*>(panel);
+  BOOST_CHECK(downcasted != nullptr);
+
+  fg::DrawboxFilter* drawbox = dynamic_cast<fg::DrawboxFilter*>(downcasted->get_filter());
+  BOOST_CHECK_EQUAL(drawbox->x(), 9);
+  BOOST_CHECK_EQUAL(drawbox->y(), 8);
+  BOOST_CHECK_EQUAL(drawbox->width(), 7);
+  BOOST_CHECK_EQUAL(drawbox->height(), 6);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_convert_from_drawbox_to_delogo)
+{
+  fg::DrawboxFilter filter(1, 2, 3, 4);
+  FilterPanel* panel = factory.convert(&filter, fg::FilterType::DELOGO);
+
+  FilterPanelDelogo* downcasted = dynamic_cast<FilterPanelDelogo*>(panel);
+  BOOST_CHECK(downcasted != nullptr);
+
+  fg::DelogoFilter* delogo = dynamic_cast<fg::DelogoFilter*>(downcasted->get_filter());
+  BOOST_CHECK_EQUAL(delogo->x(), 1);
+  BOOST_CHECK_EQUAL(delogo->y(), 2);
+  BOOST_CHECK_EQUAL(delogo->width(), 3);
+  BOOST_CHECK_EQUAL(delogo->height(), 4);
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()

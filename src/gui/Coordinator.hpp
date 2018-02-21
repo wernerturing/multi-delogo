@@ -61,13 +61,17 @@ namespace mdl {
     void change_displayed_filter(const FilterListModel::iterator& iter);
     void update_displayed_panel(fg::FilterType type, FilterPanel* panel);
 
+    sigc::connection on_filter_type_changed_;
+    void on_filter_type_changed(fg::FilterType new_type);
+
     sigc::connection on_frame_rectangle_changed_;
     void on_frame_rectangle_changed(Rectangle rect);
     sigc::connection on_panel_rectangle_changed_;
     void on_panel_rectangle_changed(Rectangle rect);
 
     void create_new_filter_panel();
-    void add_new_filter_if_not_on_filter_starting_frame();
+    void update_current_filter(bool force_updated);
+    void add_new_filter_if_not_on_filter_starting_frame(bool always_add = false);
 
     void on_remove_filter();
   };

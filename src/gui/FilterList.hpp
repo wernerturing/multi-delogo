@@ -52,6 +52,9 @@ namespace mdl {
     typedef sigc::signal<void> type_signal_remove_filter;
     type_signal_remove_filter signal_remove_filter();
 
+    typedef FilterType::type_signal_type_changed type_signal_type_changed;
+    type_signal_type_changed signal_type_changed();
+
   private:
     Glib::RefPtr<FilterListModel> model_;
     Gtk::TreeView view_;
@@ -64,6 +67,7 @@ namespace mdl {
 
     type_signal_selection_changed signal_selection_changed_;
     type_signal_remove_filter signal_remove_filter_;
+    type_signal_type_changed signal_type_changed_;
 
     void on_selection_changed();
   };

@@ -33,10 +33,17 @@ namespace mdl {
     void set(fg::FilterType type);
     fg::FilterType get() const;
 
+    typedef sigc::signal<void, fg::FilterType> type_signal_type_changed;
+    type_signal_type_changed signal_type_changed();
+
   private:
     Gtk::RadioButton rad_delogo_;
     Gtk::RadioButton rad_drawbox_;
     Gtk::RadioButton rad_none_;
+
+    type_signal_type_changed signal_type_changed_;
+
+    void on_radio_toggled(const Gtk::RadioButton& radio);
   };
 }
 
