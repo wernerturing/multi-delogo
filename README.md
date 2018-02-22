@@ -4,6 +4,8 @@ multi-delogo is an application that helps you remove logos or other watermarks f
 
 For more details and usage instructions, see [here](docs/en/README.md).
 
+Para informações em português, [clique aqui](README.pt_BR.md).
+
 
 ## Installation on Windows
 
