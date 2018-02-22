@@ -20,7 +20,7 @@ AC_CONFIG_SRCDIR([src/gui/main.cpp])
 
 AC_CONFIG_MACRO_DIR([m4])
 
-AM_INIT_AUTOMAKE([foreign])
+AM_INIT_AUTOMAKE([foreign dist-xz no-dist-gzip])
 AM_SILENT_RULES([yes])
 
 AC_CANONICAL_HOST
