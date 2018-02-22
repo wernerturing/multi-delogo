@@ -15,5 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 
+noinst_HEADERS = TestHelpers.hpp
+
 SUBDIRS = filter-generator \
           gui
