@@ -56,7 +56,7 @@ Then run `multi-delogo` to start the application.
 
 ## Using the application
 
-TODO
+See the instructions [here](docs/en/README.md)
 
 
 ## Bugs, suggestions, etc.
