@@ -15,17 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 
-pkgdocdir = $(datadir)/doc/multi-delogo
-
-pkgdoc_DATA = COPYING
-
-EXTRA_DIST = README.md README.pt_BR.md
-
-
-if RUN_TESTS
-  MAYBE_TEST = test
-endif
-
-SUBDIRS = src $(MAYBE_TEST) po docs
-
-
+EXTRA_DIST = en/* \
+             pt_BR/* \
+             images/* \
+             sample.mp4 \
+             sample.mp4.copyright
