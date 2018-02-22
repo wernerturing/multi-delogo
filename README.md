@@ -2,6 +2,8 @@
 
 multi-delogo is an application that helps you remove logos or other watermarks from videos. Even if the position of the logo changes from time to time, multi-delogo allows you to mark all the positions and generate a video without the logos.
 
+For more details and usage instructions, see [here](docs/en/README.md).
+
 
 ## Installation on Windows
 
@@ -52,11 +54,6 @@ make install
 ```
 
 Then run `multi-delogo` to start the application.
-
-
-## Using the application
-
-See the instructions [here](docs/en/README.md)
 
 
 ## Bugs, suggestions, etc.
