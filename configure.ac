@@ -22,6 +22,9 @@ AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE([foreign])
 
+AC_CANONICAL_HOST
+
+AC_PROG_CC
 AC_PROG_CXX
 AX_CXX_COMPILE_STDCXX_11
 
@@ -35,15 +38,23 @@ PKG_CHECK_MODULES([GOOCANVASMM], [goocanvasmm-2.0])
 AC_SUBST([GOOCANVASMM_CFLAGS])
 AC_SUBST([GOOCANVASMM_LIBS])
 
-PKG_CHECK_MODULES([OPENCV], [opencv >= 3.0])
-dnl pkg-config brings all the libs, so override it with only the needed ones
-OPENCV_LIBS="-lopencv_videoio -lopencv_imgproc -lopencv_core"
+if test x$OPENCV_LIBS == x ; then
+  PKG_CHECK_MODULES([OPENCV], [opencv >= 3.0])
+  dnl pkg-config brings all the libs, so override it with only the needed ones
+  OPENCV_LIBS="-lopencv_videoio -lopencv_imgproc -lopencv_core"
+fi
 AC_SUBST([OPENCV_CFLAGS])
 AC_SUBST([OPENCV_LIBS])
 
 AX_BOOST_BASE([1.46], [], [
   AC_MSG_ERROR([boost library could not be found])])
-AX_BOOST_UNIT_TEST_FRAMEWORK
+case $host in
+  *mingw*)
+  ;;
+  *)
+    AX_BOOST_UNIT_TEST_FRAMEWORK
+  ;;
+esac
 AM_CONDITIONAL([RUN_TESTS], [test x$BOOST_UNIT_TEST_FRAMEWORK_LIB != x])
 
 IT_PROG_INTLTOOL([0.35.0])
@@ -54,6 +65,17 @@ AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"],
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.17])
 
+AC_SUBST([WINDOWS_LDFLAGS])
+case $host in
+  *mingw*)
+    AC_ARG_ENABLE([windows-console],
+      AS_HELP_STRING([--enable-windows-console], [Enable console window]),
+      [],
+      [
+        WINDOWS_LDFLAGS="-mwindows"
+      ])
+  ;;
+esac
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile

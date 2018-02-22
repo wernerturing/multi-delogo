@@ -16,6 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifdef __MINGW32__
+#  include <windows.h>
+#endif
+
 #include <libintl.h>
 
 #include "MultiDelogoApp.hpp"
@@ -23,7 +27,15 @@
 
 int main(int argc, char *argv[])
 {
+#ifndef __MINGW32__
   bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
+#else
+  char file[2048];
+  GetModuleFileName(nullptr, file, 2048 - 1);
+  std::string dir = Glib::path_get_dirname(file);
+  dir.append("/locale");
+  bindtextdomain(GETTEXT_PACKAGE, dir.c_str());
+#endif
   bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
   textdomain(GETTEXT_PACKAGE);
 

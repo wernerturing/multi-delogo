@@ -23,6 +23,10 @@
 #include <string>
 #include <fstream>
 
+#ifdef __MINGW32__
+#  include <windows.h>
+#endif
+
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
 
@@ -184,7 +188,8 @@ void EncodeWindow::on_encode()
     return;
   }
 
-  tmp_fd_ = Glib::file_open_tmp(tmp_filter_file_, "mdlfilter");
+  int tmp_fd = Glib::file_open_tmp(tmp_filter_file_, "mdlfilter");
+  ::close(tmp_fd);
   generate_script(tmp_filter_file_);
 
   std::vector<std::string> cmd_line = get_ffmpeg_cmd_line(tmp_filter_file_);
@@ -316,11 +321,21 @@ void EncodeWindow::start_ffmpeg(const std::vector<std::string>& cmd_line)
   io_source->set_priority(Glib::PRIORITY_LOW);
   io_source->connect(sigc::mem_fun(*this, &EncodeWindow::on_ffmpeg_output));
   io_source->attach(Glib::MainContext::get_default());
+
+#ifdef __MINGW32__
+  ffmpeg_handle_ = ffmpeg_pid;
+#endif
 }
 
 
 bool EncodeWindow::on_ffmpeg_output(Glib::IOCondition condition)
 {
+  // Under windows this function gets called after the process has terminated
+  // and the variable has been cleared
+  if (!ffmpeg_out_) {
+    return false;
+  }
+
   if (condition == Glib::IO_HUP) {
     ffmpeg_out_.reset();
     return false;
@@ -342,7 +357,6 @@ bool EncodeWindow::on_ffmpeg_output(Glib::IOCondition condition)
 void EncodeWindow::on_ffmpeg_finished(Glib::Pid pid, int status)
 {
   Glib::spawn_close_pid(pid);
-  ::close(tmp_fd_);
   ::unlink(tmp_filter_file_.c_str());
   ffmpeg_out_.reset();
 
@@ -387,5 +401,13 @@ bool EncodeWindow::on_delete_event(GdkEventAny*)
                          Gtk::BUTTONS_NONE);
   dlg.add_button(_("C_ancel encoding"), Gtk::RESPONSE_CLOSE);
   dlg.add_button(_("_Continue"), Gtk::RESPONSE_OK);
-  return dlg.run() != Gtk::RESPONSE_CLOSE;
+  bool terminate = dlg.run() == Gtk::RESPONSE_CLOSE;
+
+#ifdef __MINGW32__
+  if (terminate) {
+    TerminateProcess(ffmpeg_handle_, 250);
+  }
+#endif
+
+  return !terminate;
 }

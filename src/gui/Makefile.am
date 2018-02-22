@@ -62,4 +62,5 @@ frame_provider_lib = ../opencv-frame-provider/libopencv-frame-provider.a $(OPENC
 multi_delogo_LDADD = ../filter-generator/libfilter-generator.a \
                      $(frame_provider_lib) \
                      $(GTKMM_LIBS) \
-                     $(GOOCANVASMM_LIBS)
+                     $(GOOCANVASMM_LIBS) \
+                     $(WINDOWS_LDFLAGS)
