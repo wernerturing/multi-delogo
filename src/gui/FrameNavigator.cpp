@@ -25,6 +25,7 @@
 #include "common/FrameProvider.hpp"
 
 #include "FrameNavigator.hpp"
+#include "FrameNavigatorUtil.hpp"
 #include "FrameView.hpp"
 
 using namespace mdl;
@@ -111,6 +112,10 @@ Gtk::Box* FrameNavigator::create_navigation_box()
 
 Gtk::Box* FrameNavigator::create_zoom_box()
 {
+  Gtk::Button* btn_zoom_fit = Gtk::manage(new Gtk::Button());
+  btn_zoom_fit->set_image_from_icon_name("zoom-fit-best");
+  btn_zoom_fit->set_tooltip_text(_("Fit the image to the window"));
+
   btn_zoom_out_.set_image_from_icon_name("zoom-out");
   btn_zoom_out_.set_tooltip_text(_("Make image smaller"));
 
@@ -122,6 +127,8 @@ Gtk::Box* FrameNavigator::create_zoom_box()
   btn_zoom_100_.set_tooltip_text(_("Zoom to original size"));
   btn_zoom_100_.set_sensitive(false);
 
+  btn_zoom_fit->signal_clicked().connect(
+    sigc::mem_fun(*this, &FrameNavigator::on_zoom_fit));
   btn_zoom_out_.signal_clicked().connect(
     sigc::bind(sigc::mem_fun(*this, &FrameNavigator::on_step_zoom),
                -10));
@@ -132,6 +139,7 @@ Gtk::Box* FrameNavigator::create_zoom_box()
     sigc::mem_fun(*this, &FrameNavigator::on_zoom_100));
 
   Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
+  box->pack_start(*btn_zoom_fit, false, false);
   box->pack_start(btn_zoom_out_, false, false);
   box->pack_start(lbl_zoom_);
   box->pack_start(btn_zoom_in_, false, false);
@@ -220,6 +228,14 @@ void FrameNavigator::on_step_zoom(int increment)
 void FrameNavigator::on_zoom_100()
 {
   set_zoom(100);
+}
+
+
+void FrameNavigator::on_zoom_fit()
+{
+  Gtk::Allocation size = frame_view_.get_allocation();
+  set_zoom(get_zoom_to_fit_ratio(frame_provider_->get_frame_width(), frame_provider_->get_frame_height(),
+                                  size.get_width(), size.get_height()));
 }
 
 

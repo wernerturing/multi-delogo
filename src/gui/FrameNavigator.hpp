@@ -75,6 +75,7 @@ namespace mdl {
 
     void on_step_zoom(int increment);
     void on_zoom_100();
+    void on_zoom_fit();
     void set_zoom(int zoom);
   };
 }
