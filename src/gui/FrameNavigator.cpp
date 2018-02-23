@@ -111,25 +111,31 @@ Gtk::Box* FrameNavigator::create_navigation_box()
 
 Gtk::Box* FrameNavigator::create_zoom_box()
 {
-  Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
-
   btn_zoom_out_.set_image_from_icon_name("zoom-out");
   btn_zoom_out_.set_tooltip_text(_("Make image smaller"));
-  box->pack_start(btn_zoom_out_, false, false);
-
-  box->pack_start(lbl_zoom_);
 
   btn_zoom_in_.set_image_from_icon_name("zoom-in");
   btn_zoom_in_.set_tooltip_text(_("Make image larger"));
   btn_zoom_in_.set_sensitive(false);
-  box->pack_start(btn_zoom_in_, false, false);
+
+  btn_zoom_100_.set_image_from_icon_name("zoom-original");
+  btn_zoom_100_.set_tooltip_text(_("Zoom to original size"));
+  btn_zoom_100_.set_sensitive(false);
 
   btn_zoom_out_.signal_clicked().connect(
-    sigc::bind(sigc::mem_fun(*this, &FrameNavigator::on_zoom),
+    sigc::bind(sigc::mem_fun(*this, &FrameNavigator::on_step_zoom),
                -10));
   btn_zoom_in_.signal_clicked().connect(
-    sigc::bind(sigc::mem_fun(*this, &FrameNavigator::on_zoom),
+    sigc::bind(sigc::mem_fun(*this, &FrameNavigator::on_step_zoom),
                10));
+  btn_zoom_100_.signal_clicked().connect(
+    sigc::mem_fun(*this, &FrameNavigator::on_zoom_100));
+
+  Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
+  box->pack_start(btn_zoom_out_, false, false);
+  box->pack_start(lbl_zoom_);
+  box->pack_start(btn_zoom_in_, false, false);
+  box->pack_start(btn_zoom_100_, false, false);
 
   return box;
 }
@@ -205,12 +211,25 @@ FrameNavigator::type_signal_frame_changed FrameNavigator::signal_frame_changed()
 }
 
 
-void FrameNavigator::on_zoom(int increment)
+void FrameNavigator::on_step_zoom(int increment)
 {
-  zoom_ += increment;
+  set_zoom(boost::algorithm::clamp(zoom_ + increment, 10, 100));
+}
+
+
+void FrameNavigator::on_zoom_100()
+{
+  set_zoom(100);
+}
+
+
+void FrameNavigator::set_zoom(int zoom)
+{
+  zoom_ = zoom;
 
   btn_zoom_out_.set_sensitive(zoom_ > 10);
   btn_zoom_in_.set_sensitive(zoom_ < 100);
+  btn_zoom_100_.set_sensitive(zoom_ != 100);
 
   lbl_zoom_.set_text(Glib::ustring::compose("%1%%", zoom_));
 
