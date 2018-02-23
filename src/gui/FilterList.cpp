@@ -39,6 +39,7 @@ FilterList::FilterList(fg::FilterList& filter_list)
   view_.append_column(_("Filter"), model_->columns.filter_name);
 
   Gtk::ScrolledWindow* scroll = Gtk::manage(new Gtk::ScrolledWindow());
+  scroll->set_min_content_width(200);
   scroll->add(view_);
 
   btn_remove_filter_.set_image_from_icon_name("list-remove");

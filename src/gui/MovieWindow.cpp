@@ -53,7 +53,7 @@ MovieWindow::MovieWindow(const std::string& project_file,
   vbox->pack_start(*create_toolbar(), false, false);
 
   Gtk::Box* hbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
-  hbox->pack_start(filter_list_, true, true);
+  hbox->pack_start(filter_list_, false, false);
   hbox->pack_start(frame_navigator_, true, true);
 
   vbox->pack_start(*hbox, true, true);
