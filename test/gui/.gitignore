@@ -18,4 +18,5 @@
 TestEncodeWindow
 TestFilterListModel
 TestFilterPanelFactory
+TestFrameNavigatorUtil
 TestSelectionRect
