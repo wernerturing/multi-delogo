@@ -32,7 +32,7 @@ using namespace mdl;
 
 FrameNavigator::FrameNavigator(Gtk::Window& parent_window,
                                const Glib::RefPtr<FrameProvider>& frame_provider)
-  : Gtk::Box(Gtk::ORIENTATION_VERTICAL)
+  : Gtk::Box(Gtk::ORIENTATION_VERTICAL, 4)
   , parent_window_(parent_window)
   , frame_provider_(frame_provider)
   , number_of_frames_(frame_provider->get_number_of_frames())
