@@ -40,6 +40,7 @@ FilterList::FilterList(fg::FilterList& filter_list)
 
   Gtk::ScrolledWindow* scroll = Gtk::manage(new Gtk::ScrolledWindow());
   scroll->set_min_content_width(200);
+  scroll->set_min_content_height(225);
   scroll->add(view_);
 
   btn_remove_filter_.set_image_from_icon_name("list-remove");
@@ -48,7 +49,7 @@ FilterList::FilterList(fg::FilterList& filter_list)
   Gtk::ButtonBox* buttons = Gtk::manage(new Gtk::ButtonBox());
   buttons->pack_start(btn_remove_filter_, false, false);
 
-  pack_start(*scroll, true, true);
+  pack_start(*scroll, false, false);
   pack_start(*buttons, false, false);
   pack_start(filter_type_, false, false);
 
