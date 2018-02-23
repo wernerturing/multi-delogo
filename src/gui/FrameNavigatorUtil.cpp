@@ -20,14 +20,14 @@
 
 #include "FrameNavigatorUtil.hpp"
 
-int mdl::get_zoom_to_fit_ratio(int image_width, int image_height, int window_width, int window_height)
+double mdl::get_zoom_to_fit_ratio(int image_width, int image_height, int window_width, int window_height)
 {
-  double ratio_width = (double) window_width / image_width;
-  double ratio_height = (double) window_height / image_height;
+  double ratio_width = (double) (window_width - 1) / image_width;
+  double ratio_height = (double) (window_height - 1) / image_height;
 
-  int ratio = std::min(ratio_width, ratio_height) * 100;
-  if (ratio > 100) {
-    ratio = 100;
+  double ratio = std::min(ratio_width, ratio_height);
+  if (ratio > 1) {
+    ratio = 1;
   }
 
   return ratio;

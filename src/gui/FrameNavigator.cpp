@@ -38,7 +38,7 @@ FrameNavigator::FrameNavigator(Gtk::Window& parent_window,
   , frame_provider_(frame_provider)
   , number_of_frames_(frame_provider->get_number_of_frames())
   , frame_view_(frame_provider->get_frame_width(), frame_provider->get_frame_height())
-  , zoom_(100)
+  , zoom_(1)
   , lbl_zoom_("100%")
 {
   pack_start(frame_view_, true, true);
@@ -131,10 +131,10 @@ Gtk::Box* FrameNavigator::create_zoom_box()
     sigc::mem_fun(*this, &FrameNavigator::on_zoom_fit));
   btn_zoom_out_.signal_clicked().connect(
     sigc::bind(sigc::mem_fun(*this, &FrameNavigator::on_step_zoom),
-               -10));
+               -0.1));
   btn_zoom_in_.signal_clicked().connect(
     sigc::bind(sigc::mem_fun(*this, &FrameNavigator::on_step_zoom),
-               10));
+               0.1));
   btn_zoom_100_.signal_clicked().connect(
     sigc::mem_fun(*this, &FrameNavigator::on_zoom_100));
 
@@ -219,15 +219,15 @@ FrameNavigator::type_signal_frame_changed FrameNavigator::signal_frame_changed()
 }
 
 
-void FrameNavigator::on_step_zoom(int increment)
+void FrameNavigator::on_step_zoom(gdouble increment)
 {
-  set_zoom(boost::algorithm::clamp(zoom_ + increment, 10, 100));
+  set_zoom(boost::algorithm::clamp(zoom_ + increment, 0.1, 1.0));
 }
 
 
 void FrameNavigator::on_zoom_100()
 {
-  set_zoom(100);
+  set_zoom(1);
 }
 
 
@@ -239,15 +239,15 @@ void FrameNavigator::on_zoom_fit()
 }
 
 
-void FrameNavigator::set_zoom(int zoom)
+void FrameNavigator::set_zoom(gdouble zoom)
 {
   zoom_ = zoom;
 
-  btn_zoom_out_.set_sensitive(zoom_ > 10);
-  btn_zoom_in_.set_sensitive(zoom_ < 100);
-  btn_zoom_100_.set_sensitive(zoom_ != 100);
+  btn_zoom_out_.set_sensitive(zoom_ > 0.1);
+  btn_zoom_in_.set_sensitive(zoom_ < 1.0);
+  btn_zoom_100_.set_sensitive(zoom_ != 1.0);
 
-  lbl_zoom_.set_text(Glib::ustring::compose("%1%%", zoom_));
+  lbl_zoom_.set_text(Glib::ustring::compose("%1%%", (int) (zoom_ * 100)));
 
   frame_view_.set_zoom(zoom_);
 }

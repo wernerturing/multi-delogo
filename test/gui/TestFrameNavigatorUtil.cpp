@@ -26,26 +26,27 @@ using namespace mdl;
 #include <boost/test/unit_test.hpp>
 
 
-BOOST_AUTO_TEST_SUITE(get_zoom_to_fit_ratio_tests)
+BOOST_AUTO_TEST_SUITE(get_zoom_to_fit_ratio_tests,
+                      * boost::unit_test::tolerance(0.001))
 
 BOOST_AUTO_TEST_CASE(should_fit_the_width)
 {
-  int ratio = get_zoom_to_fit_ratio(1920, 1080, 800, 800);
-  BOOST_CHECK_EQUAL(ratio, 41);
+  double ratio = get_zoom_to_fit_ratio(1920, 1080, 800, 800);
+  BOOST_TEST(ratio == 0.416146);
 }
 
 
 BOOST_AUTO_TEST_CASE(should_fit_the_height)
 {
-  int ratio = get_zoom_to_fit_ratio(1280, 720, 800, 200);
-  BOOST_CHECK_EQUAL(ratio, 27);
+  double ratio = get_zoom_to_fit_ratio(1280, 720, 800, 200);
+  BOOST_TEST(ratio == 0.276389);
 }
 
 
-BOOST_AUTO_TEST_CASE(should_return_100_if_image_fits_window)
+BOOST_AUTO_TEST_CASE(should_return_1_if_image_fits_window)
 {
-  int ratio = get_zoom_to_fit_ratio(640, 480, 800, 800);
-  BOOST_CHECK_EQUAL(ratio, 100);
+  double ratio = get_zoom_to_fit_ratio(640, 480, 800, 800);
+  BOOST_TEST(ratio == 1);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

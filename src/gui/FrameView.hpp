@@ -36,7 +36,7 @@ namespace mdl {
 
     void set_image(Glib::RefPtr<Gdk::Pixbuf> pixbuf);
 
-    void set_zoom(int level);
+    void set_zoom(gdouble level);
 
     void show_rectangle(const Rectangle& rect);
     void hide_rectangle();

@@ -21,7 +21,7 @@
 
 
 namespace mdl {
-  int get_zoom_to_fit_ratio(int image_width, int image_height, int window_width, int window_height);
+  double get_zoom_to_fit_ratio(int image_width, int image_height, int window_width, int window_height);
 }
 
 #endif // MDL_FRAME_NAVIGATOR_UTIL_H
