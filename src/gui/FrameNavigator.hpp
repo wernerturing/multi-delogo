@@ -58,10 +58,11 @@ namespace mdl {
     NumericEntry txt_frame_number_;
     NumericEntry txt_jump_size_;
 
-    int zoom_;
+    gdouble zoom_;
     Gtk::Label lbl_zoom_;
     Gtk::Button btn_zoom_out_;
     Gtk::Button btn_zoom_in_;
+    Gtk::Button btn_zoom_100_;
 
     type_signal_frame_changed signal_frame_changed_;
 
@@ -72,7 +73,10 @@ namespace mdl {
     void on_frame_number_activate();
     bool on_frame_number_input(GdkEventFocus*);
 
-    void on_zoom(int increment);
+    void on_step_zoom(gdouble increment);
+    void on_zoom_100();
+    void on_zoom_fit();
+    void set_zoom(gdouble zoom);
   };
 }
 

@@ -25,6 +25,7 @@
 #include "common/FrameProvider.hpp"
 
 #include "FrameNavigator.hpp"
+#include "FrameNavigatorUtil.hpp"
 #include "FrameView.hpp"
 
 using namespace mdl;
@@ -37,7 +38,7 @@ FrameNavigator::FrameNavigator(Gtk::Window& parent_window,
   , frame_provider_(frame_provider)
   , number_of_frames_(frame_provider->get_number_of_frames())
   , frame_view_(frame_provider->get_frame_width(), frame_provider->get_frame_height())
-  , zoom_(100)
+  , zoom_(1)
   , lbl_zoom_("100%")
 {
   pack_start(frame_view_, true, true);
@@ -111,25 +112,38 @@ Gtk::Box* FrameNavigator::create_navigation_box()
 
 Gtk::Box* FrameNavigator::create_zoom_box()
 {
-  Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
+  Gtk::Button* btn_zoom_fit = Gtk::manage(new Gtk::Button());
+  btn_zoom_fit->set_image_from_icon_name("zoom-fit-best");
+  btn_zoom_fit->set_tooltip_text(_("Fit the image to the window"));
 
   btn_zoom_out_.set_image_from_icon_name("zoom-out");
   btn_zoom_out_.set_tooltip_text(_("Make image smaller"));
-  box->pack_start(btn_zoom_out_, false, false);
-
-  box->pack_start(lbl_zoom_);
 
   btn_zoom_in_.set_image_from_icon_name("zoom-in");
   btn_zoom_in_.set_tooltip_text(_("Make image larger"));
   btn_zoom_in_.set_sensitive(false);
-  box->pack_start(btn_zoom_in_, false, false);
 
+  btn_zoom_100_.set_image_from_icon_name("zoom-original");
+  btn_zoom_100_.set_tooltip_text(_("Zoom to original size"));
+  btn_zoom_100_.set_sensitive(false);
+
+  btn_zoom_fit->signal_clicked().connect(
+    sigc::mem_fun(*this, &FrameNavigator::on_zoom_fit));
   btn_zoom_out_.signal_clicked().connect(
-    sigc::bind(sigc::mem_fun(*this, &FrameNavigator::on_zoom),
-               -10));
+    sigc::bind(sigc::mem_fun(*this, &FrameNavigator::on_step_zoom),
+               -0.1));
   btn_zoom_in_.signal_clicked().connect(
-    sigc::bind(sigc::mem_fun(*this, &FrameNavigator::on_zoom),
-               10));
+    sigc::bind(sigc::mem_fun(*this, &FrameNavigator::on_step_zoom),
+               0.1));
+  btn_zoom_100_.signal_clicked().connect(
+    sigc::mem_fun(*this, &FrameNavigator::on_zoom_100));
+
+  Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
+  box->pack_start(*btn_zoom_fit, false, false);
+  box->pack_start(btn_zoom_out_, false, false);
+  box->pack_start(lbl_zoom_);
+  box->pack_start(btn_zoom_in_, false, false);
+  box->pack_start(btn_zoom_100_, false, false);
 
   return box;
 }
@@ -205,14 +219,35 @@ FrameNavigator::type_signal_frame_changed FrameNavigator::signal_frame_changed()
 }
 
 
-void FrameNavigator::on_zoom(int increment)
+void FrameNavigator::on_step_zoom(gdouble increment)
 {
-  zoom_ += increment;
+  set_zoom(boost::algorithm::clamp(zoom_ + increment, 0.1, 1.0));
+}
 
-  btn_zoom_out_.set_sensitive(zoom_ > 10);
-  btn_zoom_in_.set_sensitive(zoom_ < 100);
 
-  lbl_zoom_.set_text(Glib::ustring::compose("%1%%", zoom_));
+void FrameNavigator::on_zoom_100()
+{
+  set_zoom(1);
+}
+
+
+void FrameNavigator::on_zoom_fit()
+{
+  Gtk::Allocation size = frame_view_.get_allocation();
+  set_zoom(get_zoom_to_fit_ratio(frame_provider_->get_frame_width(), frame_provider_->get_frame_height(),
+                                  size.get_width(), size.get_height()));
+}
+
+
+void FrameNavigator::set_zoom(gdouble zoom)
+{
+  zoom_ = zoom;
+
+  btn_zoom_out_.set_sensitive(zoom_ > 0.1);
+  btn_zoom_in_.set_sensitive(zoom_ < 1.0);
+  btn_zoom_100_.set_sensitive(zoom_ != 1.0);
+
+  lbl_zoom_.set_text(Glib::ustring::compose("%1%%", (int) (zoom_ * 100)));
 
   frame_view_.set_zoom(zoom_);
 }

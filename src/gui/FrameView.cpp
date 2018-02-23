@@ -61,9 +61,9 @@ void FrameView::set_image(Glib::RefPtr<Gdk::Pixbuf> pixbuf)
 }
 
 
-void FrameView::set_zoom(int level)
+void FrameView::set_zoom(gdouble level)
 {
-  canvas_.set_scale(level / 100.0);
+  canvas_.set_scale(level);
 }
 
 void FrameView::show_rectangle(const Rectangle& rect)

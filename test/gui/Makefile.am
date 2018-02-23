@@ -28,7 +28,8 @@ LDADD =  ../../src/filter-generator/libfilter-generator.a \
 check_PROGRAMS = TestFilterListModel \
                  TestFilterPanelFactory \
                  TestEncodeWindow \
-                 TestSelectionRect
+                 TestSelectionRect \
+                 TestFrameNavigatorUtil
 
 TestFilterListModel_SOURCES = TestFilterListModel.cpp \
                               ../../src/gui/FilterListModel.cpp
@@ -44,5 +45,8 @@ TestSelectionRect_SOURCES = TestSelectionRect.cpp \
                             ../../src/gui/FrameView.cpp
 TestSelectionRect_CPPFLAGS = $(AM_CPPFLAGS) $(GOOCANVASMM_CFLAGS)
 TestSelectionRect_LDADD = $(LDADD) $(GOOCANVASMM_LIBS)
+
+TestFrameNavigatorUtil_SOURCES = TestFrameNavigatorUtil.cpp \
+                                 ../../src/gui/FrameNavigatorUtil.cpp
 
 TESTS = $(check_PROGRAMS)

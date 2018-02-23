@@ -22,6 +22,7 @@ multi_delogo_SOURCES = main.cpp \
                        NumericEntry.cpp \
                        FrameView.cpp \
                        FrameNavigator.cpp \
+                       FrameNavigatorUtil.cpp \
                        FilterListModel.cpp \
                        FilterPanels.cpp \
                        FilterPanelFactory.cpp \
@@ -39,6 +40,7 @@ noinst_HEADERS = common/Exceptions.hpp \
                  NumericEntry.hpp \
                  FrameView.hpp \
                  FrameNavigator.hpp \
+                 FrameNavigatorUtil.hpp \
                  FilterListModel.hpp \
                  FilterPanels.hpp \
                  FilterPanelFactory.hpp \
