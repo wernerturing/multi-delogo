@@ -39,6 +39,7 @@ FilterList::FilterList(fg::FilterList& filter_list)
   view_.append_column(_("Filter"), model_->columns.filter_name);
 
   Gtk::ScrolledWindow* scroll = Gtk::manage(new Gtk::ScrolledWindow());
+  scroll->set_shadow_type(Gtk::SHADOW_IN);
   scroll->set_min_content_width(200);
   scroll->set_min_content_height(225);
   scroll->add(view_);
