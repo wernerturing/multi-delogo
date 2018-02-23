@@ -33,6 +33,7 @@ FrameView::FrameView(int width, int height)
 {
   canvas_.set_bounds(0, 0, width, height);
   canvas_.property_integer_layout() = true;
+  canvas_.property_anchor() = Goocanvas::ANCHOR_CENTER;
 
   auto root = canvas_.get_root_item();
 
