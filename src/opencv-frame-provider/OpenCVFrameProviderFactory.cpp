@@ -21,7 +21,7 @@
 
 #include <glibmm/refptr.h>
 
-#include <opencv2/opencv.hpp>
+#include <opencv2/videoio.hpp>
 
 #include "gui/common/Exceptions.hpp"
 #include "gui/common/FrameProvider.hpp"

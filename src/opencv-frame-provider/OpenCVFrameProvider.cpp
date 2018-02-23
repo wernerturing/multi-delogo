@@ -21,7 +21,8 @@
 #include <glibmm/refptr.h>
 #include <gdkmm/pixbuf.h>
 
-#include <opencv2/opencv.hpp>
+#include <opencv2/videoio.hpp>
+#include <opencv2/imgproc.hpp>
 
 #include "gui/common/Exceptions.hpp"
 
@@ -39,7 +40,7 @@ OpenCVFrameProvider::OpenCVFrameProvider(std::unique_ptr<cv::VideoCapture> video
 
 Glib::RefPtr<Gdk::Pixbuf> OpenCVFrameProvider::get_frame(int frame_number)
 {
-  video_->set(CV_CAP_PROP_POS_FRAMES, frame_number);
+  video_->set(cv::CAP_PROP_POS_FRAMES, frame_number);
 
   cv::Mat bgr_frame;
   bool success = video_->read(bgr_frame);
@@ -47,7 +48,7 @@ Glib::RefPtr<Gdk::Pixbuf> OpenCVFrameProvider::get_frame(int frame_number)
     throw mdl::FrameNotAvailableException();
   }
 
-  cv::cvtColor(bgr_frame, frame_, CV_BGR2RGB);
+  cv::cvtColor(bgr_frame, frame_, cv::COLOR_BGR2RGB);
   return Gdk::Pixbuf::create_from_data(frame_.data,
                                        Gdk::COLORSPACE_RGB,
                                        false, 8,
@@ -58,17 +59,17 @@ Glib::RefPtr<Gdk::Pixbuf> OpenCVFrameProvider::get_frame(int frame_number)
 
 int OpenCVFrameProvider::get_frame_width()
 {
-  return video_->get(CV_CAP_PROP_FRAME_WIDTH);
+  return video_->get(cv::CAP_PROP_FRAME_WIDTH);
 }
 
 
 int OpenCVFrameProvider::get_frame_height()
 {
-  return video_->get(CV_CAP_PROP_FRAME_HEIGHT);
+  return video_->get(cv::CAP_PROP_FRAME_HEIGHT);
 }
 
 
 int OpenCVFrameProvider::get_number_of_frames()
 {
-  return video_->get(CV_CAP_PROP_FRAME_COUNT);
+  return video_->get(cv::CAP_PROP_FRAME_COUNT);
 }

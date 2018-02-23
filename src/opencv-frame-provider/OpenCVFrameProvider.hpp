@@ -26,6 +26,8 @@
 #include <glibmm/refptr.h>
 #include <gdkmm/pixbuf.h>
 
+#include <opencv2/videoio.hpp>
+
 #include "gui/common/FrameProvider.hpp"
 
 
