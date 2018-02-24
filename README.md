@@ -45,7 +45,7 @@ This is very similar to installing on Linux as described above. You'll need some
 Clone the project with
 
 ```sh
-git clone git@github.com:wernerturing/multi-delogo.git
+git clone https://github.com/wernerturing/multi-delogo.git
 ```
 
 Enter the `multi-delogo` directory, run `autogen.sh` to generate the `configure` script and the Makefiles, and finally run

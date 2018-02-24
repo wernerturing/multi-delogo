@@ -43,7 +43,7 @@ O processo é muito parecido com a instação no Linux descrita acima. Você pre
 Faça o clone do projeto com
 
 ```sh
-git clone git@github.com:wernerturing/multi-delogo.git
+git clone https://github.com/wernerturing/multi-delogo.git
 ```
 
 Entre no diretório `multi-delogo`, execute `autogen.sh` para gerar o script `configure` e os Makefiles, e finalment execute
