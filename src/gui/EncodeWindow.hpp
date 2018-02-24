@@ -32,7 +32,7 @@ namespace mdl {
   class EncodeWindow : public Gtk::ApplicationWindow
   {
   public:
-    EncodeWindow(std::unique_ptr<fg::FilterData> filter_data);
+    EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int total_frames);
 
   private:
     enum class Codec { H264, H265 };
@@ -40,6 +40,7 @@ namespace mdl {
     static const int H265_DEFAULT_CRF_ = 28;
 
     std::unique_ptr<fg::FilterData> filter_data_;
+    int total_frames_;
     Codec codec_;
 
     Gtk::Entry txt_file_;
@@ -76,6 +77,7 @@ namespace mdl {
     std::vector<std::string> get_ffmpeg_cmd_line(const std::string& filter_file);
     void start_ffmpeg(const std::vector<std::string>& cmd_line);
     bool on_ffmpeg_output(Glib::IOCondition condition);
+    double get_progress(const std::string& ffmpeg_stats);
     void on_ffmpeg_finished(Glib::Pid pid, int status);
 
     void disable_widgets();

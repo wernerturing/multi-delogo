@@ -52,7 +52,7 @@ class EncodeWindowTestFixture
 {
 public:
   EncodeWindowTestFixture()
-    : window(std::move(std::unique_ptr<fg::FilterData>(new fg::FilterData())))
+    : window(std::move(std::unique_ptr<fg::FilterData>(new fg::FilterData())), 0)
   {
     window.filter_data_->set_movie_file("input.mp4");
     window.txt_file_.set_text("output.mp4");
@@ -78,11 +78,21 @@ public:
     return window.get_ffmpeg_cmd_line("filters.ffm");
   }
 
+  void set_total_frames(int frames)
+  {
+    window.total_frames_ = frames;
+  }
+
+  double get_progress(const std::string& ffmpeg_stats)
+  {
+    return window.get_progress(ffmpeg_stats);
+  }
+
   EncodeWindow window;
 };
 }
-BOOST_FIXTURE_TEST_SUITE(encode_window, mdl::EncodeWindowTestFixture)
 
+BOOST_FIXTURE_TEST_SUITE(ffmpeg_command_line, mdl::EncodeWindowTestFixture)
 
 BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264)
 {
@@ -117,6 +127,29 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h265)
     "output.mp4"};
   BOOST_TEST(get_ffmpeg_cmd_line() == expected,
              boost::test_tools::per_element());
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+
+BOOST_FIXTURE_TEST_SUITE(progress, mdl::EncodeWindowTestFixture,
+                         * boost::unit_test::tolerance(0.001))
+
+BOOST_AUTO_TEST_CASE(should_calculate_progress)
+{
+  set_total_frames(15372);
+
+  double progress = get_progress("frame=  4238 fps= 36 q=31.0 size=    2048kB time=00:00:19.06 bitrate= 880.1kbits/s speed=0.605x");
+  BOOST_TEST(progress == 0.27569);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_return_negative_for_invalid_line)
+{
+  set_total_frames(15372);
+
+  double progress = get_progress("Some random string");
+  BOOST_TEST(progress < 0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

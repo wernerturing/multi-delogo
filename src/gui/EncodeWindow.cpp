@@ -22,6 +22,7 @@
 #include <memory>
 #include <string>
 #include <fstream>
+#include <regex>
 
 #ifdef __MINGW32__
 #  include <windows.h>
@@ -35,8 +36,9 @@
 using namespace mdl;
 
 
-EncodeWindow::EncodeWindow(std::unique_ptr<fg::FilterData> filter_data)
+EncodeWindow::EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int total_frames)
   : filter_data_(std::move(filter_data))
+  , total_frames_(total_frames)
   , codec_(Codec::H264)
 {
   set_title(_("Encode video"));
@@ -351,6 +353,20 @@ bool EncodeWindow::on_ffmpeg_output(Glib::IOCondition condition)
   box_progress_.show_all();
 
   return true;
+}
+
+
+double EncodeWindow::get_progress(const std::string& ffmpeg_stats)
+{
+  std::regex r("^frame=\\s+(\\d+)");
+  std::smatch matches;
+
+  if (!std::regex_search(ffmpeg_stats, matches, r)) {
+    return -1;
+  }
+
+  int frames_encoded = std::stoi(matches[1].str());
+  return (double) frames_encoded / total_frames_;
 }
 
 
