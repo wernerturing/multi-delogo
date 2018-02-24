@@ -21,7 +21,9 @@
 #include <cerrno>
 #include <memory>
 #include <string>
+#include <iomanip>
 #include <fstream>
+#include <regex>
 
 #ifdef __MINGW32__
 #  include <windows.h>
@@ -35,8 +37,9 @@
 using namespace mdl;
 
 
-EncodeWindow::EncodeWindow(std::unique_ptr<fg::FilterData> filter_data)
+EncodeWindow::EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int total_frames)
   : filter_data_(std::move(filter_data))
+  , total_frames_(total_frames)
   , codec_(Codec::H264)
 {
   set_title(_("Encode video"));
@@ -167,15 +170,17 @@ Gtk::Box* EncodeWindow::create_buttons()
 
 Gtk::Box* EncodeWindow::create_progress()
 {
+  lbl_status_.set_margin_top(16);
   lbl_status_.set_halign(Gtk::ALIGN_START);
-  lbl_progress_.set_halign(Gtk::ALIGN_START);
+
+  progress_bar_.set_show_text();
 
   box_progress_.set_orientation(Gtk::ORIENTATION_VERTICAL);
   box_progress_.set_spacing(4);
   box_progress_.set_no_show_all();
 
   box_progress_.pack_start(lbl_status_, true, true);
-  box_progress_.pack_start(lbl_progress_, true, true);
+  box_progress_.pack_start(progress_bar_, true, true);
 
   return &box_progress_;
 }
@@ -306,11 +311,13 @@ void EncodeWindow::start_ffmpeg(const std::vector<std::string>& cmd_line)
   }
 
   lbl_status_.set_text(_("Encoding in progress"));
-  lbl_progress_.set_text("");
+  progress_bar_.set_fraction(0);
   box_progress_.set_no_show_all(false);
   box_progress_.show_all();
 
   disable_widgets();
+
+  ffmpeg_timer_.start();
 
   Glib::signal_child_watch().connect(sigc::mem_fun(*this, &EncodeWindow::on_ffmpeg_finished),
                                      ffmpeg_pid);
@@ -347,10 +354,60 @@ bool EncodeWindow::on_ffmpeg_output(Glib::IOCondition condition)
   if (line[last_char] == '\r' || line[last_char] == '\n') {
     line.erase(last_char);
   }
-  lbl_progress_.set_text(line);
-  box_progress_.show_all();
+
+  Progress p = get_progress(line);
+  if (p.percentage >= 0) {
+    progress_bar_.set_fraction(p.percentage);
+  }
+  progress_bar_.set_text(get_progress_str(p));
 
   return true;
+}
+
+
+EncodeWindow::Progress EncodeWindow::get_progress(const std::string& ffmpeg_stats)
+{
+  Progress p;
+
+  std::regex r("^frame=\\s+(\\d+)");
+  std::smatch matches;
+  if (std::regex_search(ffmpeg_stats, matches, r)) {
+    int frames_encoded = std::stoi(matches[1].str());
+    p.percentage = (double) frames_encoded / total_frames_;
+  } else {
+    p.percentage = -1;
+  }
+
+  p.seconds_elapsed = ffmpeg_timer_.elapsed();
+
+  return p;
+}
+
+
+std::string EncodeWindow::get_progress_str(const Progress& progress)
+{
+  return Glib::ustring::compose(_("%1%% done, %2"),
+                                (int) (progress.percentage * 100),
+                                get_time_remaining(calculate_seconds_remaining(progress)));
+}
+
+
+int EncodeWindow::calculate_seconds_remaining(const Progress& progress)
+{
+  return progress.seconds_elapsed / progress.percentage - progress.seconds_elapsed;
+}
+
+
+std::string EncodeWindow::get_time_remaining(int seconds_remaining)
+{
+  int hours = seconds_remaining/(60*60);
+  seconds_remaining %= 60*60;
+  int minutes = seconds_remaining/60;
+  int seconds = seconds_remaining % 60;
+
+  std::string min_str = Glib::ustring::format(std::setfill(L'0'), std::setw(2), minutes);
+  std::string sec_str = Glib::ustring::format(std::setfill(L'0'), std::setw(2), seconds);
+  return Glib::ustring::compose(_("about %1:%2:%3 left"), hours, min_str, sec_str);
 }
 
 
@@ -361,6 +418,7 @@ void EncodeWindow::on_ffmpeg_finished(Glib::Pid pid, int status)
   ffmpeg_out_.reset();
 
   enable_widgets();
+  progress_bar_.set_fraction(1);
 
   GError *error = nullptr;
   if (g_spawn_check_exit_status(status, &error)) {

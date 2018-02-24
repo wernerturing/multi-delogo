@@ -149,6 +149,12 @@ Gtk::Box* FrameNavigator::create_zoom_box()
 }
 
 
+int FrameNavigator::get_number_of_frames() const
+{
+  return number_of_frames_;
+}
+
+
 void FrameNavigator::change_displayed_frame(int new_frame_number)
 {
   try {

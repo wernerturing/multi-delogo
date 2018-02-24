@@ -140,7 +140,8 @@ void MovieWindow::on_encode()
 {
   on_save();
 
-  EncodeWindow* window = new EncodeWindow(std::move(filter_data_));
+  EncodeWindow* window = new EncodeWindow(std::move(filter_data_),
+                                          frame_navigator_.get_number_of_frames());
   get_application()->register_window(window);
 
   hide();

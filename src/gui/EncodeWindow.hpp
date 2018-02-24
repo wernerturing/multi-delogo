@@ -32,14 +32,21 @@ namespace mdl {
   class EncodeWindow : public Gtk::ApplicationWindow
   {
   public:
-    EncodeWindow(std::unique_ptr<fg::FilterData> filter_data);
+    EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int total_frames);
 
   private:
+    struct Progress
+    {
+      double percentage;
+      int seconds_elapsed;
+    };
+
     enum class Codec { H264, H265 };
     static const int H264_DEFAULT_CRF_ = 23;
     static const int H265_DEFAULT_CRF_ = 28;
 
     std::unique_ptr<fg::FilterData> filter_data_;
+    int total_frames_;
     Codec codec_;
 
     Gtk::Entry txt_file_;
@@ -50,9 +57,10 @@ namespace mdl {
 #endif
     std::string tmp_filter_file_;
     Glib::RefPtr<Glib::IOChannel> ffmpeg_out_;
+    Glib::Timer ffmpeg_timer_;
     Gtk::Box box_progress_;
     Gtk::Label lbl_status_;
-    Gtk::Label lbl_progress_;
+    Gtk::ProgressBar progress_bar_;
 
     std::vector<Gtk::Widget*> widgets_to_disable_;
 
@@ -75,7 +83,13 @@ namespace mdl {
 
     std::vector<std::string> get_ffmpeg_cmd_line(const std::string& filter_file);
     void start_ffmpeg(const std::vector<std::string>& cmd_line);
+
     bool on_ffmpeg_output(Glib::IOCondition condition);
+    Progress get_progress(const std::string& ffmpeg_stats);
+    std::string get_progress_str(const Progress& progress);
+    int calculate_seconds_remaining(const Progress& progress);
+    std::string get_time_remaining(int seconds_remaining);
+
     void on_ffmpeg_finished(Glib::Pid pid, int status);
 
     void disable_widgets();
