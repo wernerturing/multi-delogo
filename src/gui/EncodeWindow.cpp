@@ -379,6 +379,12 @@ EncodeWindow::Progress EncodeWindow::get_progress(const std::string& ffmpeg_stat
 }
 
 
+int EncodeWindow::calculate_seconds_remaining(const Progress& progress)
+{
+  return progress.seconds_elapsed / progress.percentage - progress.seconds_elapsed;
+}
+
+
 std::string EncodeWindow::get_time_remaining(int seconds_remaining)
 {
   int hours = seconds_remaining/(60*60);

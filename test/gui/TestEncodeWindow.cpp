@@ -93,6 +93,11 @@ public:
     return window.get_time_remaining(seconds_remaining);
   }
 
+  int calculate_seconds_remaining(double percentage, int seconds_elapsed)
+  {
+    return window.calculate_seconds_remaining({.percentage = percentage, .seconds_elapsed = seconds_elapsed});
+  }
+
   EncodeWindow window;
 };
 }
@@ -161,6 +166,13 @@ BOOST_AUTO_TEST_SUITE_END()
 
 
 BOOST_FIXTURE_TEST_SUITE(time_remaining, mdl::EncodeWindowTestFixture)
+
+BOOST_AUTO_TEST_CASE(should_calculate_time_remaining)
+{
+  BOOST_TEST(calculate_seconds_remaining(.13, 66) == 441);
+  BOOST_TEST(calculate_seconds_remaining(.93, 11832) == 890);
+}
+
 
 BOOST_AUTO_TEST_CASE(should_format_time_remaining)
 {

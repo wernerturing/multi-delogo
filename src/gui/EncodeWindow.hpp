@@ -85,6 +85,7 @@ namespace mdl {
 
     bool on_ffmpeg_output(Glib::IOCondition condition);
     Progress get_progress(const std::string& ffmpeg_stats);
+    int calculate_seconds_remaining(const Progress& progress);
     std::string get_time_remaining(int seconds_remaining);
 
     void on_ffmpeg_finished(Glib::Pid pid, int status);
