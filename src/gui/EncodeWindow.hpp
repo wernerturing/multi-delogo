@@ -82,8 +82,11 @@ namespace mdl {
 
     std::vector<std::string> get_ffmpeg_cmd_line(const std::string& filter_file);
     void start_ffmpeg(const std::vector<std::string>& cmd_line);
+
     bool on_ffmpeg_output(Glib::IOCondition condition);
     Progress get_progress(const std::string& ffmpeg_stats);
+    std::string get_time_remaining(int seconds_remaining);
+
     void on_ffmpeg_finished(Glib::Pid pid, int status);
 
     void disable_widgets();

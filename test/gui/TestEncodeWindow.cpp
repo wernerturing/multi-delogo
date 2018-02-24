@@ -88,6 +88,11 @@ public:
     return window.get_progress(ffmpeg_stats).percentage;
   }
 
+  std::string get_time_remaining(int seconds_remaining)
+  {
+    return window.get_time_remaining(seconds_remaining);
+  }
+
   EncodeWindow window;
 };
 }
@@ -132,7 +137,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h265)
 BOOST_AUTO_TEST_SUITE_END()
 
 
-BOOST_FIXTURE_TEST_SUITE(progress, mdl::EncodeWindowTestFixture,
+BOOST_FIXTURE_TEST_SUITE(progress_percentage, mdl::EncodeWindowTestFixture,
                          * boost::unit_test::tolerance(0.001))
 
 BOOST_AUTO_TEST_CASE(should_calculate_progress)
@@ -151,5 +156,22 @@ BOOST_AUTO_TEST_CASE(should_return_negative_for_invalid_line)
   double p = get_progress_percentage("Some random string");
   BOOST_TEST(p < 0);
 }
+
+BOOST_AUTO_TEST_SUITE_END()
+
+
+BOOST_FIXTURE_TEST_SUITE(time_remaining, mdl::EncodeWindowTestFixture)
+
+BOOST_AUTO_TEST_CASE(should_format_time_remaining)
+{
+  BOOST_TEST(get_time_remaining(1) == "about 0:00:01 left");
+  BOOST_TEST(get_time_remaining(59) == "about 0:00:59 left");
+
+  BOOST_TEST(get_time_remaining(3*60 + 23) == "about 0:03:23 left");
+  BOOST_TEST(get_time_remaining(59*60 + 59) == "about 0:59:59 left");
+
+  BOOST_TEST(get_time_remaining(2*60*60 + 5*60) == "about 2:05:00 left");
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()

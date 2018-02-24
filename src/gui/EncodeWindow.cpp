@@ -21,6 +21,7 @@
 #include <cerrno>
 #include <memory>
 #include <string>
+#include <iomanip>
 #include <fstream>
 #include <regex>
 
@@ -375,6 +376,19 @@ EncodeWindow::Progress EncodeWindow::get_progress(const std::string& ffmpeg_stat
   }
 
   return p;
+}
+
+
+std::string EncodeWindow::get_time_remaining(int seconds_remaining)
+{
+  int hours = seconds_remaining/(60*60);
+  seconds_remaining %= 60*60;
+  int minutes = seconds_remaining/60;
+  int seconds = seconds_remaining % 60;
+
+  std::string min_str = Glib::ustring::format(std::setfill(L'0'), std::setw(2), minutes);
+  std::string sec_str = Glib::ustring::format(std::setfill(L'0'), std::setw(2), seconds);
+  return Glib::ustring::compose("about %1:%2:%3 left", hours, min_str, sec_str);
 }
 
 
