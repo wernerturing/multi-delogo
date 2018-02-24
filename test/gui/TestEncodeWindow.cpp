@@ -83,9 +83,9 @@ public:
     window.total_frames_ = frames;
   }
 
-  double get_progress(const std::string& ffmpeg_stats)
+  double get_progress_percentage(const std::string& ffmpeg_stats)
   {
-    return window.get_progress(ffmpeg_stats);
+    return window.get_progress(ffmpeg_stats).percentage;
   }
 
   EncodeWindow window;
@@ -139,8 +139,8 @@ BOOST_AUTO_TEST_CASE(should_calculate_progress)
 {
   set_total_frames(15372);
 
-  double progress = get_progress("frame=  4238 fps= 36 q=31.0 size=    2048kB time=00:00:19.06 bitrate= 880.1kbits/s speed=0.605x");
-  BOOST_TEST(progress == 0.27569);
+  double p = get_progress_percentage("frame=  4238 fps= 36 q=31.0 size=    2048kB time=00:00:19.06 bitrate= 880.1kbits/s speed=0.605x");
+  BOOST_TEST(p == 0.27569);
 }
 
 
@@ -148,8 +148,8 @@ BOOST_AUTO_TEST_CASE(should_return_negative_for_invalid_line)
 {
   set_total_frames(15372);
 
-  double progress = get_progress("Some random string");
-  BOOST_TEST(progress < 0);
+  double p = get_progress_percentage("Some random string");
+  BOOST_TEST(p < 0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

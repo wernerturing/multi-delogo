@@ -35,6 +35,12 @@ namespace mdl {
     EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int total_frames);
 
   private:
+    struct Progress
+    {
+      double percentage;
+      int seconds_elapsed;
+    };
+
     enum class Codec { H264, H265 };
     static const int H264_DEFAULT_CRF_ = 23;
     static const int H265_DEFAULT_CRF_ = 28;
@@ -77,7 +83,7 @@ namespace mdl {
     std::vector<std::string> get_ffmpeg_cmd_line(const std::string& filter_file);
     void start_ffmpeg(const std::vector<std::string>& cmd_line);
     bool on_ffmpeg_output(Glib::IOCondition condition);
-    double get_progress(const std::string& ffmpeg_stats);
+    Progress get_progress(const std::string& ffmpeg_stats);
     void on_ffmpeg_finished(Glib::Pid pid, int status);
 
     void disable_widgets();

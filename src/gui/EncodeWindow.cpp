@@ -352,26 +352,29 @@ bool EncodeWindow::on_ffmpeg_output(Glib::IOCondition condition)
     line.erase(last_char);
   }
 
-  double progress = get_progress(line);
-  if (progress >= 0) {
-    progress_bar_.set_fraction(progress);
+  Progress p = get_progress(line);
+  if (p.percentage >= 0) {
+    progress_bar_.set_fraction(p.percentage);
   }
 
   return true;
 }
 
 
-double EncodeWindow::get_progress(const std::string& ffmpeg_stats)
+EncodeWindow::Progress EncodeWindow::get_progress(const std::string& ffmpeg_stats)
 {
+  Progress p;
+
   std::regex r("^frame=\\s+(\\d+)");
   std::smatch matches;
-
-  if (!std::regex_search(ffmpeg_stats, matches, r)) {
-    return -1;
+  if (std::regex_search(ffmpeg_stats, matches, r)) {
+    int frames_encoded = std::stoi(matches[1].str());
+    p.percentage = (double) frames_encoded / total_frames_;
+  } else {
+    p.percentage = -1;
   }
 
-  int frames_encoded = std::stoi(matches[1].str());
-  return (double) frames_encoded / total_frames_;
+  return p;
 }
 
 
