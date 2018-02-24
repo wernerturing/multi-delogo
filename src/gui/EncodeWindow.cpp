@@ -169,15 +169,17 @@ Gtk::Box* EncodeWindow::create_buttons()
 
 Gtk::Box* EncodeWindow::create_progress()
 {
+  lbl_status_.set_margin_top(16);
   lbl_status_.set_halign(Gtk::ALIGN_START);
-  lbl_progress_.set_halign(Gtk::ALIGN_START);
+
+  progress_bar_.set_show_text();
 
   box_progress_.set_orientation(Gtk::ORIENTATION_VERTICAL);
   box_progress_.set_spacing(4);
   box_progress_.set_no_show_all();
 
   box_progress_.pack_start(lbl_status_, true, true);
-  box_progress_.pack_start(lbl_progress_, true, true);
+  box_progress_.pack_start(progress_bar_, true, true);
 
   return &box_progress_;
 }
@@ -308,7 +310,7 @@ void EncodeWindow::start_ffmpeg(const std::vector<std::string>& cmd_line)
   }
 
   lbl_status_.set_text(_("Encoding in progress"));
-  lbl_progress_.set_text("");
+  progress_bar_.set_fraction(0);
   box_progress_.set_no_show_all(false);
   box_progress_.show_all();
 
@@ -349,8 +351,11 @@ bool EncodeWindow::on_ffmpeg_output(Glib::IOCondition condition)
   if (line[last_char] == '\r' || line[last_char] == '\n') {
     line.erase(last_char);
   }
-  lbl_progress_.set_text(line);
-  box_progress_.show_all();
+
+  double progress = get_progress(line);
+  if (progress >= 0) {
+    progress_bar_.set_fraction(progress);
+  }
 
   return true;
 }
@@ -377,6 +382,7 @@ void EncodeWindow::on_ffmpeg_finished(Glib::Pid pid, int status)
   ffmpeg_out_.reset();
 
   enable_widgets();
+  progress_bar_.set_fraction(1);
 
   GError *error = nullptr;
   if (g_spawn_check_exit_status(status, &error)) {

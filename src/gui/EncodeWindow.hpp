@@ -53,7 +53,7 @@ namespace mdl {
     Glib::RefPtr<Glib::IOChannel> ffmpeg_out_;
     Gtk::Box box_progress_;
     Gtk::Label lbl_status_;
-    Gtk::Label lbl_progress_;
+    Gtk::ProgressBar progress_bar_;
 
     std::vector<Gtk::Widget*> widgets_to_disable_;
 
