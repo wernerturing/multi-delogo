@@ -394,7 +394,7 @@ std::string EncodeWindow::get_time_remaining(int seconds_remaining)
 
   std::string min_str = Glib::ustring::format(std::setfill(L'0'), std::setw(2), minutes);
   std::string sec_str = Glib::ustring::format(std::setfill(L'0'), std::setw(2), seconds);
-  return Glib::ustring::compose("about %1:%2:%3 left", hours, min_str, sec_str);
+  return Glib::ustring::compose(_("about %1:%2:%3 left"), hours, min_str, sec_str);
 }
 
 
