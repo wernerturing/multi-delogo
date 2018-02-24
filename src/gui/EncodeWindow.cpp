@@ -317,6 +317,8 @@ void EncodeWindow::start_ffmpeg(const std::vector<std::string>& cmd_line)
 
   disable_widgets();
 
+  ffmpeg_timer_.start();
+
   Glib::signal_child_watch().connect(sigc::mem_fun(*this, &EncodeWindow::on_ffmpeg_finished),
                                      ffmpeg_pid);
 
@@ -357,6 +359,7 @@ bool EncodeWindow::on_ffmpeg_output(Glib::IOCondition condition)
   if (p.percentage >= 0) {
     progress_bar_.set_fraction(p.percentage);
   }
+  progress_bar_.set_text(get_progress_str(p));
 
   return true;
 }
@@ -374,6 +377,8 @@ EncodeWindow::Progress EncodeWindow::get_progress(const std::string& ffmpeg_stat
   } else {
     p.percentage = -1;
   }
+
+  p.seconds_elapsed = ffmpeg_timer_.elapsed();
 
   return p;
 }

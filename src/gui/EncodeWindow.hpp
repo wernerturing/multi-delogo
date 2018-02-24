@@ -57,6 +57,7 @@ namespace mdl {
 #endif
     std::string tmp_filter_file_;
     Glib::RefPtr<Glib::IOChannel> ffmpeg_out_;
+    Glib::Timer ffmpeg_timer_;
     Gtk::Box box_progress_;
     Gtk::Label lbl_status_;
     Gtk::ProgressBar progress_bar_;
