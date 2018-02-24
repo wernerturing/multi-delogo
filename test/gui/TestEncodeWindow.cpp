@@ -98,6 +98,11 @@ public:
     return window.calculate_seconds_remaining({.percentage = percentage, .seconds_elapsed = seconds_elapsed});
   }
 
+  std::string get_progress_str(double percentage, int seconds_elapsed)
+  {
+    return window.get_progress_str({.percentage = percentage, .seconds_elapsed = seconds_elapsed});
+  }
+
   EncodeWindow window;
 };
 }
@@ -183,6 +188,13 @@ BOOST_AUTO_TEST_CASE(should_format_time_remaining)
   BOOST_TEST(get_time_remaining(59*60 + 59) == "about 0:59:59 left");
 
   BOOST_TEST(get_time_remaining(2*60*60 + 5*60) == "about 2:05:00 left");
+}
+
+
+BOOST_AUTO_TEST_CASE(should_format_progress)
+{
+  BOOST_TEST(get_progress_str(.13, 66) == "13% done, about 0:07:21 left");
+  BOOST_TEST(get_progress_str(.93, 11832) == "93% done, about 0:14:50 left");
 }
 
 

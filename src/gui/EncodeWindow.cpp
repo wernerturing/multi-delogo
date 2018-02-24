@@ -379,6 +379,14 @@ EncodeWindow::Progress EncodeWindow::get_progress(const std::string& ffmpeg_stat
 }
 
 
+std::string EncodeWindow::get_progress_str(const Progress& progress)
+{
+  return Glib::ustring::compose(_("%1%% done, %2"),
+                                (int) (progress.percentage * 100),
+                                get_time_remaining(calculate_seconds_remaining(progress)));
+}
+
+
 int EncodeWindow::calculate_seconds_remaining(const Progress& progress)
 {
   return progress.seconds_elapsed / progress.percentage - progress.seconds_elapsed;
