@@ -45,8 +45,8 @@ MultiDelogoApp::MultiDelogoApp()
   : Gtk::Application("wt.multi-delogo", Gio::APPLICATION_HANDLES_OPEN)
   , initial_window_(nullptr)
 {
-  add_action("new", sigc::mem_fun(*this, &MultiDelogoApp::new_project));
-  add_action("open", sigc::mem_fun(*this, &MultiDelogoApp::open_project));
+  add_action("new", sigc::mem_fun(*this, &MultiDelogoApp::on_new_project));
+  add_action("open", sigc::mem_fun(*this, &MultiDelogoApp::on_open_project));
 }
 
 
@@ -67,55 +67,89 @@ void MultiDelogoApp::on_open(const Gio::Application::type_vec_files& files,
                              const Glib::ustring& hint)
 {
   for (Glib::RefPtr<Gio::File> file: files) {
-    create_movie_window(file);
+    open_file(file);
   }
 }
 
 
-void MultiDelogoApp::create_movie_window(const Glib::RefPtr<Gio::File>& gfile)
+void MultiDelogoApp::open_file(const Glib::RefPtr<Gio::File>& gfile)
 {
-  auto file = gfile->get_path();
+  std::string file = gfile->get_path();
+  maybe_Project mpr = open_or_create_project(file);
+  if (!mpr) {
+    return;
+  }
 
+  Glib::RefPtr<FrameProvider> frame_provider = open_movie(*(mpr->filter_data));
+  if (!frame_provider) {
+    return;
+  }
+
+  MovieWindow* window = new MovieWindow(mpr->file,
+                                        std::move(mpr->filter_data),
+                                        frame_provider);
+  register_window(window);
+}
+
+
+MultiDelogoApp::maybe_Project MultiDelogoApp::open_or_create_project(const std::string& file)
+{
   std::ifstream file_stream(file);
   if (!file_stream.is_open()) {
     auto msg = Glib::ustring::compose(_("Could not open file %1: %2"),
                                       file, Glib::strerror(errno));
     error_dialog(msg);
-    return;
+    return boost::none;
   }
 
-  std::string project_file;
+  if (fg::FilterData::is_filter_data(file_stream)) {
+    file_stream.seekg(0);
+    return open_project(file, file_stream);
+  } else {
+    return create_project(file);
+  }
+}
+
+
+MultiDelogoApp::maybe_Project MultiDelogoApp::open_project(const std::string& project_file, std::istream& project_file_stream)
+{
   std::unique_ptr<fg::FilterData> filter_data(new fg::FilterData());
   try {
-    filter_data->load(file_stream);
-    project_file = file;
-  } catch (fg::InvalidFilterDataException& e) {
-    file_stream.close();
-
-    filter_data = std::unique_ptr<fg::FilterData>(new fg::FilterData());
-    filter_data->set_movie_file(file);
-
-    project_file = file + "." + EXTENSION_;
+    filter_data->load(project_file_stream);
   } catch (fg::Exception& e) {
-    auto msg = Glib::ustring::compose(_("Invalid data in file %1"), file);
+    auto msg = Glib::ustring::compose(_("Invalid data in file %1"), project_file);
     error_dialog(msg);
-    return;
+    return boost::none;
+  }
+
+  Project pr{.file = project_file, .filter_data = std::move(filter_data)};
+  return pr;
+}
+
+
+MultiDelogoApp::maybe_Project MultiDelogoApp::create_project(const std::string& movie_file)
+{
+  std::unique_ptr<fg::FilterData> filter_data(new fg::FilterData());
+  filter_data->set_movie_file(movie_file);
+
+  Project pr{.file = movie_file + "." + EXTENSION_,
+             .filter_data = std::move(filter_data)};
+  return pr;
+}
+
+
+Glib::RefPtr<FrameProvider> MultiDelogoApp::open_movie(fg::FilterData& filter_data)
+{
+  if (!select_new_movie_file_if_necessary(filter_data)) {
+    return Glib::RefPtr<FrameProvider>();
   }
 
   try {
-    if (!select_new_movie_file_if_necessary(*filter_data)) {
-      return;
-    }
-
-    auto frame_provider = create_frame_provider(filter_data->movie_file());
-    MovieWindow* window = new MovieWindow(project_file,
-                                          std::move(filter_data),
-                                          frame_provider);
-    register_window(window);
-  } catch (const VideoNotOpenedException& e) {
-    auto msg = Glib::ustring::compose(_("File %1 not recognized as video or multi-delogo data"), filter_data->movie_file());
+    return create_frame_provider(filter_data.movie_file());
+  } catch (VideoNotOpenedException& e) {
+    auto msg = Glib::ustring::compose(_("File %1 not recognized as video or multi-delogo data"), filter_data.movie_file());
     error_dialog(msg);
-    return;
+    return Glib::RefPtr<FrameProvider>();
   }
 }
 
@@ -179,20 +213,20 @@ void MultiDelogoApp::save_project(const std::string& project_file,
 }
 
 
-void MultiDelogoApp::new_project()
+void MultiDelogoApp::on_new_project()
 {
   maybe_file file = select_movie_file();
   if (file) {
-    create_movie_window(*file);
+    open_file(*file);
   }
 }
 
 
-void MultiDelogoApp::open_project()
+void MultiDelogoApp::on_open_project()
 {
   maybe_file file = select_project_file();
   if (file) {
-    create_movie_window(*file);
+    open_file(*file);
   }
 }
 
