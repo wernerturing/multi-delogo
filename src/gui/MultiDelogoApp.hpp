@@ -64,6 +64,7 @@ namespace mdl {
     void on_open(const Gio::Application::type_vec_files& files,
                  const Glib::ustring& hint);
     void open_file(const Glib::RefPtr<Gio::File>& gfile);
+    void open_file(const std::string& file);
     maybe_Project open_or_create_project(const std::string& file);
     maybe_Project open_project(const std::string& project_file, std::istream& project_file_stream);
     maybe_Project create_project(const std::string& movie_file);

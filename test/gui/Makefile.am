@@ -39,7 +39,8 @@ TestFilterPanelFactory_SOURCES = TestFilterPanelFactory.cpp \
                                  ../../src/gui/FilterPanelFactory.cpp
 
 TestEncodeWindow_SOURCES = TestEncodeWindow.cpp \
-                           ../../src/gui/EncodeWindow.cpp
+                           ../../src/gui/EncodeWindow.cpp \
+                           ../../src/gui/Utils.cpp
 
 TestSelectionRect_SOURCES = TestSelectionRect.cpp \
                             ../../src/gui/FrameView.cpp

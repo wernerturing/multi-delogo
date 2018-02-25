@@ -31,6 +31,7 @@ multi_delogo_SOURCES = main.cpp \
                        Coordinator.cpp \
                        MovieWindow.cpp \
                        EncodeWindow.cpp \
+                       Utils.cpp \
                        InitialWindow.cpp
 
 noinst_HEADERS = common/Exceptions.hpp \
@@ -49,6 +50,7 @@ noinst_HEADERS = common/Exceptions.hpp \
                  Coordinator.hpp \
                  MovieWindow.hpp \
                  EncodeWindow.hpp \
+                 Utils.hpp \
                  InitialWindow.hpp
 
 
