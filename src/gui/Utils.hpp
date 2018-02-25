@@ -16,40 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FG_FILTER_DATA_H
-#define FG_FILTER_DATA_H
+#ifndef MDL_UTILS_H
+#define MDL_UTILS_H
 
 #include <string>
-#include <istream>
-#include <ostream>
-
-#include "FilterList.hpp"
 
 
-namespace fg {
-  class FilterData
-  {
-  public:
-    FilterData();
-
-    void set_movie_file(const std::string& movie_file);
-    void set_jump_size(int jump_size);
-
-    std::string movie_file() const;
-    int jump_size() const;
-    FilterList& filter_list();
-
-    static bool is_filter_data(std::istream& in);
-    void load(std::istream& in);
-    void save(std::ostream& out) const;
-
-  private:
-    const static std::string HEADER_;
-
-    std::string movie_file_;
-    int jump_size_;
-    FilterList filter_list_;
-  };
+namespace mdl {
+  bool file_exists(const std::string& file);
 }
 
-#endif // FG_FILTER_DATA_H
+#endif // MDL_UTILS_H

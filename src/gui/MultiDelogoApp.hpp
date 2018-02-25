@@ -25,6 +25,8 @@
 
 #include "filter-generator/FilterData.hpp"
 
+#include "common/FrameProvider.hpp"
+
 
 namespace mdl {
   typedef boost::optional<Glib::RefPtr<Gio::File>> maybe_file;
@@ -45,21 +47,32 @@ namespace mdl {
     const static std::string ACTION_NEW;
     const static std::string ACTION_OPEN;
 
-  protected:
-    void on_activate();
-    void on_open(const Gio::Application::type_vec_files& files,
-                 const Glib::ustring& hint);
-
   private:
     const static std::string EXTENSION_;
 
+    struct Project
+    {
+      std::string file;
+      std::unique_ptr<fg::FilterData> filter_data;
+    };
+    typedef boost::optional<Project> maybe_Project;
+
     Gtk::ApplicationWindow* initial_window_;
 
-    void create_movie_window(const Glib::RefPtr<Gio::File>& file);
+    void on_activate();
 
-    void new_project();
-    void open_project();
+    void on_open(const Gio::Application::type_vec_files& files,
+                 const Glib::ustring& hint);
+    void open_file(const Glib::RefPtr<Gio::File>& gfile);
+    void open_file(const std::string& file);
+    maybe_Project open_or_create_project(const std::string& file);
+    maybe_Project open_project(const std::string& project_file, std::istream& project_file_stream);
+    maybe_Project create_project(const std::string& movie_file);
+    Glib::RefPtr<FrameProvider> open_movie(fg::FilterData& filter_data);
     bool select_new_movie_file_if_necessary(fg::FilterData& filter_data);
+
+    void on_new_project();
+    void on_open_project();
 
     maybe_file select_movie_file();
     maybe_file select_project_file();

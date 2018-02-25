@@ -31,6 +31,30 @@ using namespace fg;
 
 #include "../TestHelpers.hpp"
 
+BOOST_AUTO_TEST_CASE(should_identify_a_valid_header)
+{
+  std::istringstream in("MDLV1\n");
+
+  BOOST_TEST(FilterData::is_filter_data(in));
+}
+
+
+BOOST_AUTO_TEST_CASE(should_identify_an_invalid_header_1)
+{
+  std::istringstream in("MDLV10\n");
+
+  BOOST_TEST(!FilterData::is_filter_data(in));
+}
+
+
+BOOST_AUTO_TEST_CASE(should_identify_an_invalid_header_2)
+{
+  std::istringstream in("Anything\n");
+
+  BOOST_TEST(!FilterData::is_filter_data(in));
+}
+
+
 BOOST_AUTO_TEST_CASE(load_should_fail_if_header_is_invalid)
 {
   std::istringstream in(

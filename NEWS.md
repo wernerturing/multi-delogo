@@ -4,3 +4,6 @@
 
 * Added a progress bar with estimated time remaining to the encoding
   window.
+
+* If you try to open a video and there is already a project for that
+  video, you'll be given the option to open the project instead.

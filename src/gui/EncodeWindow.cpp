@@ -33,6 +33,7 @@
 #include <glibmm/i18n.h>
 
 #include "EncodeWindow.hpp"
+#include "Utils.hpp"
 
 using namespace mdl;
 
@@ -237,12 +238,6 @@ bool EncodeWindow::check_file(const std::string& file)
   }
 
   return true;
-}
-
-
-bool EncodeWindow::file_exists(const std::string& file)
-{
-  return Glib::file_test(file, Glib::FILE_TEST_EXISTS);
 }
 
 

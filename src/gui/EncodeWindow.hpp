@@ -77,7 +77,6 @@ namespace mdl {
     void on_generate_script();
 
     bool check_file(const std::string& file);
-    bool file_exists(const std::string& file);
 
     void generate_script(const std::string& file);
 
