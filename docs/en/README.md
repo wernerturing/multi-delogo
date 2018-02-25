@@ -104,10 +104,10 @@ For both codecs, CRF mode is used. The **Quality** number defines the video qual
 
 ### Running the encoder
 
-To do the actual encoding, press the **Encode** button. This will start ffmpeg to encode the video, applying the filters. Encoding may take a long time and cannot be interrupted.
+To do the actual encoding, press the **Encode** button. This will start FFmpeg to encode the video, applying the filters. Encoding may take a long time and cannot be interrupted.
 
-ffmpeg is included in the Windows download, but for Linux you'll have to install it. Your distribution probably includes a package for it.
+FFmpeg is included in the Windows download, but for Linux you'll have to install it. Your distribution probably includes a package for it.
 
-### Running ffmpeg manually
+### Running FFmpeg manually
 
-If you want more control over the encoding process, you can run ffmpeg manually. To do that, instead of **Encode**, use **Generate filter script**. This generates a file with the description of the filters to apply, that can be passed to ffmpeg with the `-filter_script` option.
+If you want more control over the encoding process, you can run FFmpeg manually. To do that, instead of **Encode**, use **Generate filter script**. This generates a file with the description of the filters to apply, that can be passed to FFmpeg with the `-filter_script` option.

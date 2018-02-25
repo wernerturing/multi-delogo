@@ -104,10 +104,10 @@ Para ambos os codecs, o modo CRF é utilizado. O número em **Qualidade** determ
 
 ### Executando o conversor
 
-Para fazer a conversão, aperte o botão **Converter**. Isso iniciará o ffmpeg para converter o vídeo, aplicando os filtros. A conversão pode demorar um longo tempo e não pode ser interrompida.
+Para fazer a conversão, aperte o botão **Converter**. Isso iniciará o FFmpeg para converter o vídeo, aplicando os filtros. A conversão pode demorar um longo tempo e não pode ser interrompida.
 
-O ffmpeg é incluído no download para Windows, mas no Linux você terá que instalá-lo. Sua distribuição provavelmente tem um pacote com ele.
+O FFmpeg é incluído no download para Windows, mas no Linux você terá que instalá-lo. Sua distribuição provavelmente tem um pacote com ele.
 
-### Executando o ffmpeg manualmente
+### Executando o FFmpeg manualmente
 
-Se você quiser mais controle sobre o processo de conversão, você pode rodar o ffmpeg manualmente. Para fazer isso, ao invés de **Converter**, use **Gerar script com filtros**. Isso gera um arquivo com a descrição dos filtros a aplicar, que pode ser passado para o ffmpeg com a opção `-filter_script`.
+Se você quiser mais controle sobre o processo de conversão, você pode rodar o FFmpeg manualmente. Para fazer isso, ao invés de **Converter**, use **Gerar script com filtros**. Isso gera um arquivo com a descrição dos filtros a aplicar, que pode ser passado para o FFmpeg com a opção `-filter_script`.

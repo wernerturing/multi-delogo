@@ -153,7 +153,7 @@ Gtk::Box* EncodeWindow::create_quality()
 Gtk::Box* EncodeWindow::create_buttons()
 {
   Gtk::Button* btn_script = Gtk::manage(new Gtk::Button(_("_Generate filter script"), true));
-  btn_script->set_tooltip_text(_("Generates a ffmpeg filter script file that can be used to encode the video. Use this option if you want to run ffmpeg manually with custom encoding options"));
+  btn_script->set_tooltip_text(_("Generates a FFmpeg filter script file that can be used to encode the video. Use this option if you want to run FFmpeg manually with custom encoding options"));
   btn_script->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_generate_script));
 
   Gtk::Button* btn_encode = Gtk::manage(new Gtk::Button(_("_Encode"), true));
@@ -298,7 +298,7 @@ void EncodeWindow::start_ffmpeg(const std::vector<std::string>& cmd_line)
                                  nullptr,
                                  &ffmpeg_stderr_fd);
   } catch (Glib::SpawnError& e) {
-    auto msg = Glib::ustring::compose(_("Could not execute ffmpeg: %1"),
+    auto msg = Glib::ustring::compose(_("Could not execute FFmpeg: %1"),
                                       e.what());
     Gtk::MessageDialog dlg(*this, msg, false, Gtk::MESSAGE_ERROR);
     dlg.run();
