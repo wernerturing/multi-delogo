@@ -28,7 +28,7 @@
 using namespace fg;
 
 
-const std::string FilterData::HEADER_ = "MDLV1";
+const std::string FilterData::HEADER_ = "MDLV1\n";
 
 
 FilterData::FilterData()
@@ -66,14 +66,19 @@ FilterList& FilterData::filter_list()
 }
 
 
-void FilterData::load(std::istream& in)
+bool FilterData::is_filter_data(std::istream& in)
 {
   char header[HEADER_.size()];
   in.read(header, HEADER_.size());
-  if (memcmp(header, HEADER_.c_str(), HEADER_.size()) != 0) {
+  return (memcmp(header, HEADER_.c_str(), HEADER_.size()) == 0);
+}
+
+
+void FilterData::load(std::istream& in)
+{
+  if (!is_filter_data(in)) {
     throw InvalidFilterDataException();
   }
-  in.read(header, 1); // skip new line
 
   std::getline(in, movie_file_);
 
@@ -91,7 +96,7 @@ void FilterData::load(std::istream& in)
 
 void FilterData::save(std::ostream& out) const
 {
-  out << HEADER_ << '\n';
+  out << HEADER_;
   out << movie_file_ << '\n';
   out << std::to_string(jump_size_) << '\n';
 

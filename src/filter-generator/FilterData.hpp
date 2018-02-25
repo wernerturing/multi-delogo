@@ -39,6 +39,7 @@ namespace fg {
     int jump_size() const;
     FilterList& filter_list();
 
+    static bool is_filter_data(std::istream& in);
     void load(std::istream& in);
     void save(std::ostream& out) const;
 
