@@ -108,6 +108,8 @@ Para fazer a conversão, aperte o botão **Converter**. Isso iniciará o FFmpeg 
 
 O FFmpeg é incluído no download para Windows, mas no Linux você terá que instalá-lo. Sua distribuição provavelmente tem um pacote com ele.
 
+No Windows, uma janela preta de console aparece enquanto o vídeo é gerado. Isso é normal, a janela é o FFmpeg sendo executado. Não feche a janela, ou a geração do vídeo será interrompida.
+
 ### Executando o FFmpeg manualmente
 
 Se você quiser mais controle sobre o processo de conversão, você pode rodar o FFmpeg manualmente. Para fazer isso, ao invés de **Converter**, use **Gerar script com filtros**. Isso gera um arquivo com a descrição dos filtros a aplicar, que pode ser passado para o FFmpeg com a opção `-filter_script`.

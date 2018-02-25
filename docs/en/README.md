@@ -108,6 +108,8 @@ To do the actual encoding, press the **Encode** button. This will start FFmpeg t
 
 FFmpeg is included in the Windows download, but for Linux you'll have to install it. Your distribution probably includes a package for it.
 
+In Windows, a black console window appears while the video is being encoded. This is normal, that window is FFmpeg being run. Don't close that window, or encoding will stop.
+
 ### Running FFmpeg manually
 
 If you want more control over the encoding process, you can run FFmpeg manually. To do that, instead of **Encode**, use **Generate filter script**. This generates a file with the description of the filters to apply, that can be passed to FFmpeg with the `-filter_script` option.
