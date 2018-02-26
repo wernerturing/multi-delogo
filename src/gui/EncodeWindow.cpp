@@ -194,13 +194,20 @@ void EncodeWindow::on_encode()
     return;
   }
 
-  int tmp_fd = Glib::file_open_tmp(tmp_filter_file_, "mdlfilter");
-  ::close(tmp_fd);
-  generate_script(tmp_filter_file_);
+  try {
+    int tmp_fd = Glib::file_open_tmp(tmp_filter_file_, "mdlfilter");
+    ::close(tmp_fd);
+    generate_script(tmp_filter_file_);
 
-  std::vector<std::string> cmd_line = get_ffmpeg_cmd_line(tmp_filter_file_);
+    std::vector<std::string> cmd_line = get_ffmpeg_cmd_line(tmp_filter_file_);
 
-  start_ffmpeg(cmd_line);
+    start_ffmpeg(cmd_line);
+  } catch (Glib::FileError& e) {
+    Gtk::MessageDialog dlg(*this,
+                           Glib::ustring::compose(_("Error generating filter script for FFmpeg: %1"), e.what()),
+                           false, Gtk::MESSAGE_ERROR);
+    dlg.run();
+  }
 }
 
 
