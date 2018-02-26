@@ -67,6 +67,7 @@ namespace mdl {
     NONE,
     MOVE,
     RESIZE_BR,
+    RESIZE_B,
   };
 
 
@@ -95,6 +96,7 @@ namespace mdl {
 
     Glib::RefPtr<Gdk::Cursor> move_cursor_;
     Glib::RefPtr<Gdk::Cursor> resize_br_cursor_;
+    Glib::RefPtr<Gdk::Cursor> resize_b_cursor_;
 
     type_signal_rectangle_changed signal_rectangle_changed_;
 
