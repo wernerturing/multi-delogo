@@ -58,22 +58,27 @@ public:
     return rect->drag_mode_;
   }
 
-  Point to_inside_coordinates(Point point)
+  Point to_inside_coordinates(const Point& point)
   {
     return rect->to_inside_coordinates(point);
   }
 
-  DragMode get_drag_mode_for_point(Point point)
+  Rectangle normalize(const Rectangle& original)
+  {
+    return rect->normalize(original);
+  }
+
+  DragMode get_drag_mode_for_point(const Point& point)
   {
     return rect->get_drag_mode_for_point(point);
   }
 
-  void start_drag(DragMode mode, Point start)
+  void start_drag(DragMode mode, const Point& start)
   {
     rect->start_drag(mode, start);
   };
 
-  Rectangle get_new_coordinates(Point drag_point)
+  Rectangle get_new_coordinates(const Point& drag_point)
   {
     return rect->get_new_coordinates(drag_point);
   };
@@ -96,6 +101,54 @@ BOOST_AUTO_TEST_CASE(conversion_to_coordinates_inside_item,
   Point ret = to_inside_coordinates({.x = 21, .y = 23});
   BOOST_CHECK_EQUAL(ret.x, 11.0);
   BOOST_CHECK_EQUAL(ret.y, 8.0);
+}
+
+
+BOOST_AUTO_TEST_CASE(normalize_should_return_same_object_if_coordinates_are_ok)
+{
+  Rectangle original = {.x = 10, .y = 20, .width = 100, .height = 50};
+
+  Rectangle normalized = normalize(original);
+  BOOST_TEST(normalized.x == original.x);
+  BOOST_TEST(normalized.y == original.y);
+  BOOST_TEST(normalized.width == original.width);
+  BOOST_TEST(normalized.height == original.height);
+}
+
+
+BOOST_AUTO_TEST_CASE(normalize_should_adjust_x_if_dragging_to_the_left)
+{
+  Rectangle original = {.x = 100, .y = 20, .width = -50, .height = 30};
+
+  Rectangle normalized = normalize(original);
+  BOOST_TEST(normalized.x == 50);
+  BOOST_TEST(normalized.y == original.y);
+  BOOST_TEST(normalized.width == 50);
+  BOOST_TEST(normalized.height == original.height);
+}
+
+
+BOOST_AUTO_TEST_CASE(normalize_should_adjust_y_if_dragging_to_the_top)
+{
+  Rectangle original = {.x = 50, .y = 130, .width = 100, .height = -23};
+
+  Rectangle normalized = normalize(original);
+  BOOST_TEST(normalized.x == original.x);
+  BOOST_TEST(normalized.y == 107);
+  BOOST_TEST(normalized.width == 100);
+  BOOST_TEST(normalized.height == 23);
+}
+
+
+BOOST_AUTO_TEST_CASE(normalize_should_adjust_x_and_y_if_dragging_to_the_top_left)
+{
+  Rectangle original = {.x = 200, .y = 150, .width = -115, .height = -30};
+
+  Rectangle normalized = normalize(original);
+  BOOST_TEST(normalized.x == 85);
+  BOOST_TEST(normalized.y == 120);
+  BOOST_TEST(normalized.width == 115);
+  BOOST_TEST(normalized.height == 30);
 }
 
 

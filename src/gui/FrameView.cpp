@@ -181,18 +181,34 @@ Rectangle SelectionRect::get_coordinates()
 }
 
 
-void SelectionRect::set_coordinates(Rectangle coordinates)
+void SelectionRect::set_coordinates(const Rectangle& coordinates)
 {
-  property_x() = coordinates.x;
-  property_y() = coordinates.y;
-  property_width() = coordinates.width;
-  property_height() = coordinates.height;
+  Rectangle r(normalize(coordinates));
+  property_x() = r.x;
+  property_y() = r.y;
+  property_width() = r.width;
+  property_height() = r.height;
 }
 
 
 SelectionRect::type_signal_rectangle_changed SelectionRect::signal_rectangle_changed()
 {
   return signal_rectangle_changed_;
+}
+
+
+Rectangle SelectionRect::normalize(const Rectangle& original)
+{
+  Rectangle ret(original);
+  if (ret.width < 0) {
+    ret.width = -ret.width;
+    ret.x -= ret.width;
+  }
+  if (ret.height < 0) {
+    ret.height = -ret.height;
+    ret.y -= ret.height;
+  }
+  return ret;
 }
 
 
@@ -236,7 +252,7 @@ void SelectionRect::start_drag(DragMode mode, Point start)
 }
 
 
-Rectangle SelectionRect::get_new_coordinates(Point drag_point)
+Rectangle SelectionRect::get_new_coordinates(const Point& drag_point)
 {
   Rectangle ret = start_coordinates_;
   gdouble rel_x = drag_point.x - drag_start_.x;
