@@ -305,6 +305,7 @@ void EncodeWindow::start_ffmpeg(const std::vector<std::string>& cmd_line)
                                  nullptr,
                                  &ffmpeg_stderr_fd);
   } catch (Glib::SpawnError& e) {
+    ::unlink(tmp_filter_file_.c_str());
     auto msg = Glib::ustring::compose(_("Could not execute FFmpeg: %1"),
                                       e.what());
     Gtk::MessageDialog dlg(*this, msg, false, Gtk::MESSAGE_ERROR);
