@@ -16,6 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <cmath>
+
 #include <gtkmm.h>
 #include <goocanvasmm.h>
 
@@ -66,6 +68,7 @@ void FrameView::set_zoom(gdouble level)
   canvas_.set_scale(level);
 }
 
+
 void FrameView::show_rectangle(const Rectangle& rect)
 {
   rect_->property_visibility() = Goocanvas::ITEM_VISIBLE;
@@ -92,9 +95,6 @@ bool FrameView::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEv
   }
 
   drag_ = true;
-  temp_rect_->set_coordinates({.x = event->x, .y = event->y,
-                               .width = 1, .height = 1});
-  temp_rect_->property_visibility() = Goocanvas::ITEM_VISIBLE;
   drag_start_.x = event->x;
   drag_start_.y = event->y;
 
@@ -112,9 +112,14 @@ bool FrameView::on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkE
     return false;
   }
 
-  temp_rect_->set_coordinates({.x = drag_start_.x, .y = drag_start_.y,
-                               .width = event->x - drag_start_.x,
-                               .height = event->y - drag_start_.y});
+  double width = event->x - drag_start_.x;
+  double height = event->y - drag_start_.y;
+  if (abs(width) >= 5 || abs(height) >= 5) {
+    temp_rect_->set_coordinates({.x = drag_start_.x, .y = drag_start_.y,
+                                 .width = width, .height = height});
+    temp_rect_->property_visibility() = Goocanvas::ITEM_VISIBLE;
+  }
+
   return true;
 }
 
@@ -127,12 +132,14 @@ bool FrameView::on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, Gdk
 
   drag_ = false;
   item->get_canvas()->pointer_ungrab(item, event->time);
-
-  rect_->set_coordinates(temp_rect_->get_coordinates());
-  rect_->property_visibility() = Goocanvas::ITEM_VISIBLE;
   temp_rect_->property_visibility() = Goocanvas::ITEM_HIDDEN;
 
-  signal_rectangle_changed_.emit(temp_rect_->get_coordinates());
+  Rectangle coordinates = temp_rect_->get_coordinates();
+  if (coordinates.width >= 5 || coordinates.height >= 5) {
+    rect_->set_coordinates(coordinates);
+    rect_->property_visibility() = Goocanvas::ITEM_VISIBLE;
+    signal_rectangle_changed_.emit(coordinates);
+  }
 
   return true;
 }

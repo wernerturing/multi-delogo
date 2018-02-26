@@ -8,5 +8,7 @@
 * If you try to open a video and there is already a project for that
   video, you'll be given the option to open the project instead.
 
+* Clicking on the image does not affect the selection rectangle.
+
 * The temporary file with FFmpeg filters is properly deleted if FFmpeg
   fails to start.
