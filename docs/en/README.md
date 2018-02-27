@@ -75,7 +75,7 @@ Now just repeat the process, marking each new position for the logo. In our shor
 
 The list on the left displays all the filters set for the current project. Selecting a row moves to the start frame of that video, and displays the area in which the video is applied.
 
-To edit an existing filter, you have to be on that filter's start frame. You can move the rectangle by dragging it, and resize it by dragging the bottom right corner. It's also possible to draw another rectangle, replacing the current one. Another possibility is to use the **x**, **y**, **width** and **height** controls below the filter list.
+To edit an existing filter, you have to be on that filter's start frame. You can move the rectangle by dragging it, and resize it by dragging from the corners and borders. It's also possible to draw another rectangle, replacing the current one. Another possibility is to use the **x**, **y**, **width** and **height** controls below the filter list.
 
 If you are not at a filter's start frame and make any change to the filter, a new filter is added.
 
