@@ -67,6 +67,13 @@ namespace mdl {
     NONE,
     MOVE,
     RESIZE_BR,
+    RESIZE_BL,
+    RESIZE_TL,
+    RESIZE_TR,
+    RESIZE_B,
+    RESIZE_L,
+    RESIZE_T,
+    RESIZE_R,
   };
 
 
@@ -80,7 +87,7 @@ namespace mdl {
     void enable_drag_and_drop();
 
     Rectangle get_coordinates();
-    void set_coordinates(Rectangle coordinates);
+    void set_coordinates(const Rectangle& coordinates);
 
     typedef sigc::signal<void, Rectangle> type_signal_rectangle_changed;
     type_signal_rectangle_changed signal_rectangle_changed();
@@ -95,16 +102,25 @@ namespace mdl {
 
     Glib::RefPtr<Gdk::Cursor> move_cursor_;
     Glib::RefPtr<Gdk::Cursor> resize_br_cursor_;
+    Glib::RefPtr<Gdk::Cursor> resize_bl_cursor_;
+    Glib::RefPtr<Gdk::Cursor> resize_tl_cursor_;
+    Glib::RefPtr<Gdk::Cursor> resize_tr_cursor_;
+    Glib::RefPtr<Gdk::Cursor> resize_b_cursor_;
+    Glib::RefPtr<Gdk::Cursor> resize_l_cursor_;
+    Glib::RefPtr<Gdk::Cursor> resize_t_cursor_;
+    Glib::RefPtr<Gdk::Cursor> resize_r_cursor_;
 
     type_signal_rectangle_changed signal_rectangle_changed_;
 
+
+    Rectangle normalize(const Rectangle& original);
 
     Point to_inside_coordinates(const Point& point);
     DragMode get_drag_mode_for_point(const Point& point);
     Glib::RefPtr<Gdk::Cursor> get_cursor(DragMode mode);
 
     void start_drag(DragMode mode, Point start);
-    Rectangle get_new_coordinates(Point drag_point);
+    Rectangle get_new_coordinates(const Point& drag_point);
 
     bool on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
     bool on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventMotion* event);

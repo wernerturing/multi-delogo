@@ -8,5 +8,10 @@
 * If you try to open a video and there is already a project for that
   video, you'll be given the option to open the project instead.
 
+* Clicking on the image does not affect the selection rectangle.
+
+* It's now possible to resize the selection rectangle using the other
+  corners and borders, not only the bottom right corner.
+
 * The temporary file with FFmpeg filters is properly deleted if FFmpeg
   fails to start.

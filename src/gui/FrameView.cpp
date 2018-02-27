@@ -16,6 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <cmath>
+
 #include <gtkmm.h>
 #include <goocanvasmm.h>
 
@@ -66,6 +68,7 @@ void FrameView::set_zoom(gdouble level)
   canvas_.set_scale(level);
 }
 
+
 void FrameView::show_rectangle(const Rectangle& rect)
 {
   rect_->property_visibility() = Goocanvas::ITEM_VISIBLE;
@@ -92,9 +95,6 @@ bool FrameView::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEv
   }
 
   drag_ = true;
-  temp_rect_->set_coordinates({.x = event->x, .y = event->y,
-                               .width = 1, .height = 1});
-  temp_rect_->property_visibility() = Goocanvas::ITEM_VISIBLE;
   drag_start_.x = event->x;
   drag_start_.y = event->y;
 
@@ -112,9 +112,14 @@ bool FrameView::on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkE
     return false;
   }
 
-  temp_rect_->set_coordinates({.x = drag_start_.x, .y = drag_start_.y,
-                               .width = event->x - drag_start_.x,
-                               .height = event->y - drag_start_.y});
+  double width = event->x - drag_start_.x;
+  double height = event->y - drag_start_.y;
+  if (abs(width) >= 5 || abs(height) >= 5) {
+    temp_rect_->set_coordinates({.x = drag_start_.x, .y = drag_start_.y,
+                                 .width = width, .height = height});
+    temp_rect_->property_visibility() = Goocanvas::ITEM_VISIBLE;
+  }
+
   return true;
 }
 
@@ -127,12 +132,14 @@ bool FrameView::on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, Gdk
 
   drag_ = false;
   item->get_canvas()->pointer_ungrab(item, event->time);
-
-  rect_->set_coordinates(temp_rect_->get_coordinates());
-  rect_->property_visibility() = Goocanvas::ITEM_VISIBLE;
   temp_rect_->property_visibility() = Goocanvas::ITEM_HIDDEN;
 
-  signal_rectangle_changed_.emit(temp_rect_->get_coordinates());
+  Rectangle coordinates = temp_rect_->get_coordinates();
+  if (coordinates.width >= 5 || coordinates.height >= 5) {
+    rect_->set_coordinates(coordinates);
+    rect_->property_visibility() = Goocanvas::ITEM_VISIBLE;
+    signal_rectangle_changed_.emit(coordinates);
+  }
 
   return true;
 }
@@ -159,8 +166,15 @@ void SelectionRect::enable_drag_and_drop()
 
   signal_leave_notify_event().connect(sigc::mem_fun(*this, &SelectionRect::on_leave_notify));
 
-  move_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), Gdk::FLEUR);
-  resize_br_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), Gdk::BOTTOM_RIGHT_CORNER);
+  move_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "move");
+  resize_br_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "se-resize");
+  resize_bl_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "sw-resize");
+  resize_tl_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "nw-resize");
+  resize_tr_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "ne-resize");
+  resize_b_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "s-resize");
+  resize_l_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "w-resize");
+  resize_t_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "n-resize");
+  resize_r_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "e-resize");
 }
 
 
@@ -181,18 +195,34 @@ Rectangle SelectionRect::get_coordinates()
 }
 
 
-void SelectionRect::set_coordinates(Rectangle coordinates)
+void SelectionRect::set_coordinates(const Rectangle& coordinates)
 {
-  property_x() = coordinates.x;
-  property_y() = coordinates.y;
-  property_width() = coordinates.width;
-  property_height() = coordinates.height;
+  Rectangle r(normalize(coordinates));
+  property_x() = r.x;
+  property_y() = r.y;
+  property_width() = r.width;
+  property_height() = r.height;
 }
 
 
 SelectionRect::type_signal_rectangle_changed SelectionRect::signal_rectangle_changed()
 {
   return signal_rectangle_changed_;
+}
+
+
+Rectangle SelectionRect::normalize(const Rectangle& original)
+{
+  Rectangle ret(original);
+  if (ret.width < 0) {
+    ret.width = -ret.width;
+    ret.x -= ret.width;
+  }
+  if (ret.height < 0) {
+    ret.height = -ret.height;
+    ret.y -= ret.height;
+  }
+  return ret;
 }
 
 
@@ -207,9 +237,26 @@ DragMode SelectionRect::get_drag_mode_for_point(const Point& point)
   if (point.x >= property_width() - RESIZE_MARGIN_
       && point.y >= property_height() - RESIZE_MARGIN_) {
     return DragMode::RESIZE_BR;
+  } else if (point.x <= RESIZE_MARGIN_
+             && point.y >= property_height() - RESIZE_MARGIN_) {
+    return DragMode::RESIZE_BL;
+  } else if (point.x <= RESIZE_MARGIN_
+             && point.y <= RESIZE_MARGIN_) {
+    return DragMode::RESIZE_TL;
+  } else if (point.x >= property_width() - RESIZE_MARGIN_
+             && point.y <= RESIZE_MARGIN_) {
+    return DragMode::RESIZE_TR;
+  } else if (point.y >= property_height() - RESIZE_MARGIN_) {
+    return DragMode::RESIZE_B;
+  } else if (point.x <= RESIZE_MARGIN_) {
+    return DragMode::RESIZE_L;
+  } else if (point.y <= RESIZE_MARGIN_) {
+    return DragMode::RESIZE_T;
+  } else if (point.x >= property_width() - RESIZE_MARGIN_) {
+    return DragMode::RESIZE_R;
+  } else {
+    return DragMode::MOVE;
   }
-
-  return DragMode::MOVE;
 }
 
 
@@ -221,6 +268,27 @@ Glib::RefPtr<Gdk::Cursor> SelectionRect::get_cursor(DragMode mode)
 
   case DragMode::RESIZE_BR:
     return resize_br_cursor_;
+
+  case DragMode::RESIZE_BL:
+    return resize_bl_cursor_;
+
+  case DragMode::RESIZE_TL:
+    return resize_tl_cursor_;
+
+  case DragMode::RESIZE_TR:
+    return resize_tr_cursor_;
+
+  case DragMode::RESIZE_B:
+    return resize_b_cursor_;
+
+  case DragMode::RESIZE_L:
+    return resize_l_cursor_;
+
+  case DragMode::RESIZE_T:
+    return resize_t_cursor_;
+
+  case DragMode::RESIZE_R:
+    return resize_r_cursor_;
 
   default:
     return Glib::RefPtr<Gdk::Cursor>();
@@ -236,7 +304,7 @@ void SelectionRect::start_drag(DragMode mode, Point start)
 }
 
 
-Rectangle SelectionRect::get_new_coordinates(Point drag_point)
+Rectangle SelectionRect::get_new_coordinates(const Point& drag_point)
 {
   Rectangle ret = start_coordinates_;
   gdouble rel_x = drag_point.x - drag_start_.x;
@@ -251,6 +319,43 @@ Rectangle SelectionRect::get_new_coordinates(Point drag_point)
   case DragMode::RESIZE_BR:
     ret.width = start_coordinates_.width + rel_x;
     ret.height = start_coordinates_.height + rel_y;
+    break;
+
+  case DragMode::RESIZE_BL:
+    ret.x = start_coordinates_.x + rel_x;
+    ret.width = start_coordinates_.width - rel_x;
+    ret.height = start_coordinates_.height + rel_y;
+    break;
+
+  case DragMode::RESIZE_TL:
+    ret.x = start_coordinates_.x + rel_x;
+    ret.y = start_coordinates_.y + rel_y;
+    ret.width = start_coordinates_.width - rel_x;
+    ret.height = start_coordinates_.height - rel_y;
+    break;
+
+  case DragMode::RESIZE_TR:
+    ret.y = start_coordinates_.y + rel_y;
+    ret.width = start_coordinates_.width + rel_x;
+    ret.height = start_coordinates_.height - rel_y;
+    break;
+
+  case DragMode::RESIZE_B:
+    ret.height = start_coordinates_.height + rel_y;
+    break;
+
+  case DragMode::RESIZE_L:
+    ret.x = start_coordinates_.x + rel_x;
+    ret.width = start_coordinates_.width - rel_x;
+    break;
+
+  case DragMode::RESIZE_T:
+    ret.y = start_coordinates_.y + rel_y;
+    ret.height = start_coordinates_.height - rel_y;
+    break;
+
+  case DragMode::RESIZE_R:
+    ret.width = start_coordinates_.width + rel_x;
     break;
 
   default:
