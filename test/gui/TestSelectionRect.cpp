@@ -163,6 +163,17 @@ BOOST_AUTO_TEST_CASE(should_return_resize_br_for_the_bottom_right_10x10_square)
 }
 
 
+BOOST_AUTO_TEST_CASE(should_return_resize_bl_for_the_bottom_left_10x10_square)
+{
+  BOOST_CHECK_EQUAL(get_drag_mode_for_point({.x = 1, .y = 50}),
+                    DragMode::RESIZE_BL);
+  BOOST_CHECK_EQUAL(get_drag_mode_for_point({.x = 10, .y = 40}),
+                    DragMode::RESIZE_BL);
+  BOOST_CHECK_EQUAL(get_drag_mode_for_point({.x = 4, .y = 43}),
+                    DragMode::RESIZE_BL);
+}
+
+
 BOOST_AUTO_TEST_CASE(should_return_resize_b_for_the_bottom_10_rectangle)
 {
   BOOST_CHECK_EQUAL(get_drag_mode_for_point({.x = 11, .y = 40}),
@@ -208,6 +219,19 @@ BOOST_AUTO_TEST_CASE(should_calculate_new_position_for_resize_br,
   BOOST_CHECK_EQUAL(ret.y, 15.0);
   BOOST_CHECK_EQUAL(ret.width, 96.0);
   BOOST_CHECK_EQUAL(ret.height, 72.0);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_calculate_new_position_for_resize_bl,
+                     * boost::unit_test_framework::tolerance(0.00001))
+{
+  start_drag(DragMode::RESIZE_BL, {.x = 17, .y = 65});
+
+  Rectangle ret = get_new_coordinates({.x = 8, .y = 70});
+  BOOST_CHECK_EQUAL(ret.x, 1.0);
+  BOOST_CHECK_EQUAL(ret.y, 15.0);
+  BOOST_CHECK_EQUAL(ret.width, 109.0);
+  BOOST_CHECK_EQUAL(ret.height, 55.0);
 }
 
 
