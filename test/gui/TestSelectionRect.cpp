@@ -207,6 +207,17 @@ BOOST_AUTO_TEST_CASE(should_return_resize_l_for_the_left_10_rectangle)
 }
 
 
+BOOST_AUTO_TEST_CASE(should_return_resize_l_for_the_top_10_rectangle)
+{
+  BOOST_CHECK_EQUAL(get_drag_mode_for_point({.x = 11, .y = 1}),
+                    DragMode::RESIZE_T);
+  BOOST_CHECK_EQUAL(get_drag_mode_for_point({.x = 86, .y = 7}),
+                    DragMode::RESIZE_T);
+  BOOST_CHECK_EQUAL(get_drag_mode_for_point({.x = 89, .y = 9}),
+                    DragMode::RESIZE_T);
+}
+
+
 BOOST_AUTO_TEST_CASE(should_return_move_for_the_inside_of_the_rectangle)
 {
   BOOST_CHECK_EQUAL(get_drag_mode_for_point({.x = 89, .y = 11}),
@@ -293,6 +304,19 @@ BOOST_AUTO_TEST_CASE(should_calculate_new_position_for_resize_l,
   BOOST_CHECK_EQUAL(ret.y, 15.0);
   BOOST_CHECK_EQUAL(ret.width, 104.0);
   BOOST_CHECK_EQUAL(ret.height, 50.0);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_calculate_new_position_for_resize_t,
+                     * boost::unit_test_framework::tolerance(0.00001))
+{
+  start_drag(DragMode::RESIZE_T, {.x = 19, .y = 24});
+
+  Rectangle ret = get_new_coordinates({.x = 21, .y = 29});
+  BOOST_CHECK_EQUAL(ret.x, 10.0);
+  BOOST_CHECK_EQUAL(ret.y, 20.0);
+  BOOST_CHECK_EQUAL(ret.width, 100.0);
+  BOOST_CHECK_EQUAL(ret.height, 45.0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
