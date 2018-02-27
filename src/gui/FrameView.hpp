@@ -69,6 +69,7 @@ namespace mdl {
     RESIZE_BR,
     RESIZE_BL,
     RESIZE_TL,
+    RESIZE_TR,
     RESIZE_B,
     RESIZE_L,
     RESIZE_T,
@@ -102,6 +103,7 @@ namespace mdl {
     Glib::RefPtr<Gdk::Cursor> resize_br_cursor_;
     Glib::RefPtr<Gdk::Cursor> resize_bl_cursor_;
     Glib::RefPtr<Gdk::Cursor> resize_tl_cursor_;
+    Glib::RefPtr<Gdk::Cursor> resize_tr_cursor_;
     Glib::RefPtr<Gdk::Cursor> resize_b_cursor_;
     Glib::RefPtr<Gdk::Cursor> resize_l_cursor_;
     Glib::RefPtr<Gdk::Cursor> resize_t_cursor_;
