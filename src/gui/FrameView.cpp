@@ -174,6 +174,7 @@ void SelectionRect::enable_drag_and_drop()
   resize_b_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "s-resize");
   resize_l_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "w-resize");
   resize_t_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "n-resize");
+  resize_r_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "e-resize");
 }
 
 
@@ -251,9 +252,11 @@ DragMode SelectionRect::get_drag_mode_for_point(const Point& point)
     return DragMode::RESIZE_L;
   } else if (point.y <= RESIZE_MARGIN_) {
     return DragMode::RESIZE_T;
+  } else if (point.x >= property_width() - RESIZE_MARGIN_) {
+    return DragMode::RESIZE_R;
+  } else {
+    return DragMode::MOVE;
   }
-
-  return DragMode::MOVE;
 }
 
 
@@ -283,6 +286,9 @@ Glib::RefPtr<Gdk::Cursor> SelectionRect::get_cursor(DragMode mode)
 
   case DragMode::RESIZE_T:
     return resize_t_cursor_;
+
+  case DragMode::RESIZE_R:
+    return resize_r_cursor_;
 
   default:
     return Glib::RefPtr<Gdk::Cursor>();
@@ -346,6 +352,10 @@ Rectangle SelectionRect::get_new_coordinates(const Point& drag_point)
   case DragMode::RESIZE_T:
     ret.y = start_coordinates_.y + rel_y;
     ret.height = start_coordinates_.height - rel_y;
+    break;
+
+  case DragMode::RESIZE_R:
+    ret.width = start_coordinates_.width + rel_x;
     break;
 
   default:

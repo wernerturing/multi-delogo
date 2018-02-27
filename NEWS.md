@@ -10,5 +10,8 @@
 
 * Clicking on the image does not affect the selection rectangle.
 
+* It's now possible to resize the selection rectangle using the other
+  corners and borders, not only the bottom right corner.
+
 * The temporary file with FFmpeg filters is properly deleted if FFmpeg
   fails to start.
