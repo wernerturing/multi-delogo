@@ -68,6 +68,7 @@ namespace mdl {
     MOVE,
     RESIZE_BR,
     RESIZE_BL,
+    RESIZE_TL,
     RESIZE_B,
     RESIZE_L,
   };
@@ -99,6 +100,7 @@ namespace mdl {
     Glib::RefPtr<Gdk::Cursor> move_cursor_;
     Glib::RefPtr<Gdk::Cursor> resize_br_cursor_;
     Glib::RefPtr<Gdk::Cursor> resize_bl_cursor_;
+    Glib::RefPtr<Gdk::Cursor> resize_tl_cursor_;
     Glib::RefPtr<Gdk::Cursor> resize_b_cursor_;
     Glib::RefPtr<Gdk::Cursor> resize_l_cursor_;
 
