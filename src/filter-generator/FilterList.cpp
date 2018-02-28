@@ -26,6 +26,7 @@
 #include <boost/optional.hpp>
 
 #include "Exceptions.hpp"
+#include "IOUtils.hpp"
 #include "Filters.hpp"
 #include "FilterFactory.hpp"
 #include "FilterList.hpp"
@@ -142,7 +143,7 @@ FilterList::maybe_type FilterList::get_filter_for_frame(int frame) const
 void FilterList::load(std::istream& in)
 {
   std::string line;
-  while (std::getline(in, line)) {
+  while (fg::getline(in, line)) {
     load_line(line);
   }
 }

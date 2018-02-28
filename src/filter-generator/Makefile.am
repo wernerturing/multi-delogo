@@ -16,6 +16,7 @@
 # along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 
 noinst_HEADERS = Exceptions.hpp \
+                 IOUtils.hpp \
                  Filters.hpp \
                  FilterFactory.hpp \
                  FilterList.hpp \
@@ -23,7 +24,8 @@ noinst_HEADERS = Exceptions.hpp \
 
 noinst_LIBRARIES = libfilter-generator.a
 
-libfilter_generator_a_SOURCES = Filters.cpp \
+libfilter_generator_a_SOURCES = IOUtils.cpp \
+                                Filters.cpp \
                                 FilterFactory.cpp \
                                 FilterList.cpp \
                                 FilterData.cpp

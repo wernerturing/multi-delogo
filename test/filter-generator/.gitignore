@@ -20,4 +20,5 @@ TestDrawboxFilter
 TestFilterData
 TestFilterFactory
 TestFilterList
+TestIOUtils
 TestNullFilter

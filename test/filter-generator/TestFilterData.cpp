@@ -39,6 +39,14 @@ BOOST_AUTO_TEST_CASE(should_identify_a_valid_header)
 }
 
 
+BOOST_AUTO_TEST_CASE(should_identify_a_valid_header_with_windows_line_ending)
+{
+  std::istringstream in("MDLV1\r\n");
+
+  BOOST_TEST(FilterData::is_filter_data(in));
+}
+
+
 BOOST_AUTO_TEST_CASE(should_identify_an_invalid_header_1)
 {
   std::istringstream in("MDLV10\n");
@@ -49,7 +57,7 @@ BOOST_AUTO_TEST_CASE(should_identify_an_invalid_header_1)
 
 BOOST_AUTO_TEST_CASE(should_identify_an_invalid_header_2)
 {
-  std::istringstream in("Anything\n");
+  std::istringstream in("Anything\r\n");
 
   BOOST_TEST(!FilterData::is_filter_data(in));
 }
@@ -78,8 +86,8 @@ BOOST_AUTO_TEST_CASE(load_should_fail_if_movie_file_is_missing)
 BOOST_AUTO_TEST_CASE(load_should_fail_if_jump_size_is_missing)
 {
   std::istringstream in(
-    "MDLV1\n"
-    "Movie.mp4\n");
+    "MDLV1\r\n"
+    "Movie.mp4\r\n");
 
   FilterData filters;
   BOOST_CHECK_THROW(filters.load(in), InvalidFilterDataException);
@@ -136,6 +144,24 @@ BOOST_AUTO_TEST_CASE(should_load_a_file_with_filters)
   ++it;
   BOOST_CHECK_EQUAL(it->first, 601);
   BOOST_CHECK_EQUAL(it->second->type(), FilterType::DELOGO);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_load_a_file_with_filters_with_windows_line_ending)
+{
+  std::istringstream in(
+    "MDLV1\r\n"
+    "Movie.mp4\r\n"
+    "500\r\n"
+    "1;drawbox;10;20;30;40\r\n"
+    "601;delogo;100;50;200;80\r\n");
+
+  FilterData filters;
+  filters.load(in);
+
+  BOOST_CHECK_EQUAL(filters.movie_file(), "Movie.mp4");
+  BOOST_CHECK_EQUAL(filters.jump_size(), 500);
+  BOOST_CHECK_EQUAL(filters.filter_list().size(), 2);
 }
 
 

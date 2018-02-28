@@ -22,13 +22,14 @@
 #include <ostream>
 
 #include "Exceptions.hpp"
+#include "IOUtils.hpp"
 #include "FilterData.hpp"
 #include "FilterList.hpp"
 
 using namespace fg;
 
 
-const std::string FilterData::HEADER_ = "MDLV1\n";
+const std::string FilterData::HEADER_ = "MDLV1";
 
 
 FilterData::FilterData()
@@ -70,7 +71,13 @@ bool FilterData::is_filter_data(std::istream& in)
 {
   char header[HEADER_.size()];
   in.read(header, HEADER_.size());
-  return (memcmp(header, HEADER_.c_str(), HEADER_.size()) == 0);
+  if (memcmp(header, HEADER_.c_str(), HEADER_.size()) != 0) {
+    return false;
+  }
+
+  std::string rest_of_line;
+  fg::getline(in, rest_of_line);
+  return rest_of_line == "";
 }
 
 
@@ -80,10 +87,10 @@ void FilterData::load(std::istream& in)
     throw InvalidFilterDataException();
   }
 
-  std::getline(in, movie_file_);
+  fg::getline(in, movie_file_);
 
   std::string jump_size_str;
-  std::getline(in, jump_size_str);
+  fg::getline(in, jump_size_str);
   try {
     jump_size_ = std::stoi(jump_size_str);
   } catch (std::invalid_argument& e) {
@@ -96,7 +103,7 @@ void FilterData::load(std::istream& in)
 
 void FilterData::save(std::ostream& out) const
 {
-  out << HEADER_;
+  out << HEADER_ << '\n';
   out << movie_file_ << '\n';
   out << std::to_string(jump_size_) << '\n';
 

@@ -282,6 +282,29 @@ BOOST_AUTO_TEST_CASE(should_load_a_list)
 }
 
 
+BOOST_AUTO_TEST_CASE(should_load_a_list_with_windows_line_ending)
+{
+  std::istringstream in(
+    "1;drawbox;10;20;30;40\r\n"
+    "301;none;\r\n"
+    "601;delogo;100;50;200;80\r\n");
+
+  FilterList list;
+  list.load(in);
+
+  BOOST_CHECK_EQUAL(list.size(), 3);
+  auto it = list.begin();
+  BOOST_CHECK_EQUAL(it->first, 1);
+  BOOST_CHECK_EQUAL(it->second->type(), FilterType::DRAWBOX);
+  ++it;
+  BOOST_CHECK_EQUAL(it->first, 301);
+  BOOST_CHECK_EQUAL(it->second->type(), FilterType::NO_OP);
+  ++it;
+  BOOST_CHECK_EQUAL(it->first, 601);
+  BOOST_CHECK_EQUAL(it->second->type(), FilterType::DELOGO);
+}
+
+
 BOOST_AUTO_TEST_CASE(should_fail_for_line_without_frame_and_filter)
 {
   std::istringstream in("none\n");
@@ -294,8 +317,8 @@ BOOST_AUTO_TEST_CASE(should_fail_for_line_without_frame_and_filter)
 BOOST_AUTO_TEST_CASE(should_fail_if_frame_is_not_numeric)
 {
   std::istringstream in(
-    "1;none;\n"
-    "ab;delogo;1;2;3;4\n");
+    "1;none;\r\n"
+    "ab;delogo;1;2;3;4\r\n");
 
   FilterList list;
   BOOST_CHECK_THROW(list.load(in), fg::InvalidFilterException);
