@@ -32,6 +32,9 @@
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
 
+#include "filter-generator/FilterData.hpp"
+#include "filter-generator/RegularScriptGenerator.hpp"
+
 #include "EncodeWindow.hpp"
 #include "Utils.hpp"
 
@@ -259,7 +262,8 @@ void EncodeWindow::generate_script(const std::string& file)
     return;
   }
 
-  filter_data_->filter_list().generate_ffmpeg_script(file_stream);
+  fg::RegularScriptGenerator g(filter_data_->filter_list());
+  g.generate_ffmpeg_script(file_stream);
   file_stream.close();
 }
 

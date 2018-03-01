@@ -20,6 +20,7 @@ noinst_HEADERS = Exceptions.hpp \
                  Filters.hpp \
                  FilterFactory.hpp \
                  FilterList.hpp \
+                 RegularScriptGenerator.hpp \
                  FilterData.hpp
 
 noinst_LIBRARIES = libfilter-generator.a
@@ -28,4 +29,5 @@ libfilter_generator_a_SOURCES = IOUtils.cpp \
                                 Filters.cpp \
                                 FilterFactory.cpp \
                                 FilterList.cpp \
+                                RegularScriptGenerator.cpp \
                                 FilterData.cpp
