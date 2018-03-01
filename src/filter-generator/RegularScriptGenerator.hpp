@@ -19,19 +19,23 @@
 #ifndef FG_REGULAR_SCRIPT_GENERATOR_H
 #define FG_REGULAR_SCRIPT_GENERATOR_H
 
+#include <memory>
 #include <string>
 #include <ostream>
 
+#include "ScriptGenerator.hpp"
 #include "FilterList.hpp"
 
 
 namespace fg {
-  class RegularScriptGenerator
+  class RegularScriptGenerator : public ScriptGenerator
   {
-  public:
+  protected:
     RegularScriptGenerator(const FilterList& filter_list);
 
-    void generate_ffmpeg_script(std::ostream& out) const;
+  public:
+    static std::shared_ptr<RegularScriptGenerator> create(const FilterList& filter_list);
+    void generate_ffmpeg_script(std::ostream& out) const override;
 
   protected:
     const FilterList& filter_list_;

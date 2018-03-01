@@ -262,8 +262,8 @@ void EncodeWindow::generate_script(const std::string& file)
     return;
   }
 
-  fg::RegularScriptGenerator g(filter_data_->filter_list());
-  g.generate_ffmpeg_script(file_stream);
+  std::shared_ptr<fg::ScriptGenerator> g = fg::RegularScriptGenerator::create(filter_data_->filter_list());
+  g->generate_ffmpeg_script(file_stream);
   file_stream.close();
 }
 

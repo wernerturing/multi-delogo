@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <memory>
 #include <string>
 #include <ostream>
 
@@ -29,6 +30,12 @@ using namespace fg;
 RegularScriptGenerator::RegularScriptGenerator(const FilterList& filter_list)
   : filter_list_(filter_list)
 {
+}
+
+
+std::shared_ptr<RegularScriptGenerator> RegularScriptGenerator::create(const FilterList& filter_list)
+{
+  return std::shared_ptr<RegularScriptGenerator>(new RegularScriptGenerator(filter_list));
 }
 
 

@@ -20,6 +20,7 @@ noinst_HEADERS = Exceptions.hpp \
                  Filters.hpp \
                  FilterFactory.hpp \
                  FilterList.hpp \
+                 ScriptGenerator.hpp \
                  RegularScriptGenerator.hpp \
                  FilterData.hpp
 
