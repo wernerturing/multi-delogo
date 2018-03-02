@@ -52,6 +52,9 @@ namespace mdl {
     Gtk::Entry txt_file_;
     Gtk::SpinButton txt_quality_;
 
+    Gtk::CheckButton chk_fuzzy_;
+    Gtk::SpinButton txt_fuzzyness_;
+
 #ifdef __MINGW32__
     Glib::Pid ffmpeg_handle_;
 #endif
@@ -67,11 +70,13 @@ namespace mdl {
     Gtk::Box* create_file_selection();
     Gtk::Box* create_codec();
     Gtk::Box* create_quality();
+    Gtk::Box* create_fuzzy();
     Gtk::Box* create_buttons();
     Gtk::Box* create_progress();
 
     void on_select_file();
     void on_codec(Codec codec);
+    void on_fuzzy_toggled();
 
     void on_encode();
     void on_generate_script();

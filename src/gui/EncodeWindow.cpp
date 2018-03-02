@@ -34,6 +34,7 @@
 
 #include "filter-generator/FilterData.hpp"
 #include "filter-generator/RegularScriptGenerator.hpp"
+#include "filter-generator/FuzzyScriptGenerator.hpp"
 
 #include "EncodeWindow.hpp"
 #include "Utils.hpp"
@@ -54,6 +55,7 @@ EncodeWindow::EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int tota
   vbox->pack_start(*create_file_selection(), true, true);
   vbox->pack_start(*create_codec(), true, true);
   vbox->pack_start(*create_quality(), true, true);
+  vbox->pack_start(*create_fuzzy(), true, true);
   vbox->pack_start(*create_buttons(), true, true);
   vbox->pack_start(*create_progress(), true, true);
 
@@ -150,6 +152,41 @@ Gtk::Box* EncodeWindow::create_quality()
   widgets_to_disable_.push_back(box);
 
   return box;
+}
+
+
+Gtk::Box* EncodeWindow::create_fuzzy()
+{
+  chk_fuzzy_.set_label(_("_Randomnly increase filter times"));
+  chk_fuzzy_.set_use_underline();
+  chk_fuzzy_.set_tooltip_text(_("If set, each filter's duration will be randomly increated, so that two or more filters can be active at the same time."));
+  chk_fuzzy_.signal_toggled().connect(sigc::mem_fun(*this, &EncodeWindow::on_fuzzy_toggled));
+
+  Gtk::Label* lbl = Gtk::manage(new Gtk::Label(_("_Factor:"), true));
+  lbl->set_mnemonic_widget(txt_fuzzyness_);
+  lbl->set_margin_start(16);
+
+  txt_fuzzyness_.set_sensitive(false);
+  txt_fuzzyness_.set_digits(1);
+  txt_fuzzyness_.set_range(0.1, 10);
+  txt_fuzzyness_.set_increments(0.1, 0.1);
+  txt_fuzzyness_.set_value(2);
+  txt_fuzzyness_.set_tooltip_text(_("Controls how much each filter's time is increased. If set to 2, then on average filters will last twice their original duration."));
+
+  Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 4));
+  box->pack_start(chk_fuzzy_, false, false);
+  box->pack_start(*lbl, false, false);
+  box->pack_start(txt_fuzzyness_, false, false);
+
+  widgets_to_disable_.push_back(box);
+
+  return box;
+}
+
+
+void EncodeWindow::on_fuzzy_toggled()
+{
+  txt_fuzzyness_.set_sensitive(chk_fuzzy_.get_active());
 }
 
 
@@ -262,7 +299,13 @@ void EncodeWindow::generate_script(const std::string& file)
     return;
   }
 
-  std::shared_ptr<fg::ScriptGenerator> g = fg::RegularScriptGenerator::create(filter_data_->filter_list());
+  std::shared_ptr<fg::ScriptGenerator> g;
+  if (chk_fuzzy_.get_active()) {
+    g = fg::FuzzyScriptGenerator::create(filter_data_->filter_list(), txt_fuzzyness_.get_value());
+  }  else {
+    g = fg::RegularScriptGenerator::create(filter_data_->filter_list());
+  }
+
   g->generate_ffmpeg_script(file_stream);
   file_stream.close();
 }
