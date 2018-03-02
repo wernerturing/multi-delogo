@@ -102,6 +102,12 @@ Two codecs are supported: H.264 and H.265. H.265 produces smaller files, but enc
 
 For both codecs, CRF mode is used. The **Quality** number defines the video quality: in general, lower numbers generate better looking videos, but the file sizes are larger. If in doubt, use the defaults. For more details, see https://trac.ffmpeg.org/wiki/Encode/H.264#crf and https://trac.ffmpeg.org/wiki/Encode/H.265 .
 
+### Changing filter duration
+
+If you check **Randomnly increase filter times**, the duration of each filter will be randomly increased, making it start earlier and/or finish later. The original portion of the video will always be included.
+
+The **Factor** field controls how much each duration is increased. If set to **2**, then each filter will last on average twice its original duration.
+
 ### Running the encoder
 
 To do the actual encoding, press the **Encode** button. This will start FFmpeg to encode the video, applying the filters. Encoding may take a long time and cannot be interrupted.
