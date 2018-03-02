@@ -24,6 +24,7 @@ check_PROGRAMS = TestIOUtils \
                  TestFilterFactory \
                  TestFilterList \
                  TestRegularScriptGenerator \
+                 TestFuzzyScriptGenerator \
                  TestFilterData
 
 TESTS = $(check_PROGRAMS)
