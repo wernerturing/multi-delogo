@@ -32,6 +32,17 @@ using namespace fg;
 
 #include "../TestHelpers.hpp"
 
+BOOST_AUTO_TEST_CASE(test_empty)
+{
+  FilterList list;
+
+  BOOST_TEST(list.empty());
+
+  list.insert(1, new NullFilter());
+  BOOST_TEST(!list.empty());
+}
+
+
 BOOST_AUTO_TEST_CASE(insert_should_keep_the_filters_ordered)
 {
   FilterList list;
@@ -350,41 +361,5 @@ BOOST_AUTO_TEST_CASE(should_save_the_list)
     "501;drawbox;11;22;33;44\n"
     "1001;drawbox;111;222;333;444\n"
     "1501;none;\n";
-  BOOST_CHECK_EQUAL(out.str(), expected);
-}
-
-
-BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
-{
-  FilterList list;
-  list.insert(1, new DelogoFilter(10, 11, 12, 13));
-  list.insert(501, new DrawboxFilter(20, 21, 22, 23));
-  list.insert(1001, new NullFilter());
-  list.insert(1301, new DrawboxFilter(30, 31, 32, 33));
-  list.insert(2001, new DrawboxFilter(40, 41, 42, 43));
-
-  std::ostringstream out;
-  list.generate_ffmpeg_script(out);
-
-  std::string expected =
-    "delogo=enable='between(n,0,499)':x=10:y=11:w=12:h=13,\n"
-    "drawbox=enable='between(n,500,999)':x=20:y=21:w=22:h=23:c=black:t=max,\n"
-    "drawbox=enable='between(n,1300,1999)':x=30:y=31:w=32:h=33:c=black:t=max,\n"
-    "drawbox=enable='gte(n,2000)':x=40:y=41:w=42:h=43:c=black:t=max\n";
-  BOOST_CHECK_EQUAL(out.str(), expected);
-}
-
-
-BOOST_AUTO_TEST_CASE(should_discard_a_null_filter_at_the_end)
-{
-  FilterList list;
-  list.insert(1, new DelogoFilter(10, 11, 12, 13));
-  list.insert(1001, new NullFilter());
-
-  std::ostringstream out;
-  list.generate_ffmpeg_script(out);
-
-  std::string expected =
-    "delogo=enable='between(n,0,999)':x=10:y=11:w=12:h=13,\n";
   BOOST_CHECK_EQUAL(out.str(), expected);
 }

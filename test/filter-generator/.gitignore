@@ -22,3 +22,5 @@ TestFilterFactory
 TestFilterList
 TestIOUtils
 TestNullFilter
+TestFuzzyScriptGenerator
+TestRegularScriptGenerator

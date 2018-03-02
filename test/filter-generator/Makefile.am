@@ -23,6 +23,8 @@ check_PROGRAMS = TestIOUtils \
                  TestDrawboxFilter \
                  TestFilterFactory \
                  TestFilterList \
+                 TestRegularScriptGenerator \
+                 TestFuzzyScriptGenerator \
                  TestFilterData
 
 TESTS = $(check_PROGRAMS)

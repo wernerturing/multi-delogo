@@ -8,6 +8,8 @@
 * If you try to open a video and there is already a project for that
   video, you'll be given the option to open the project instead.
 
+* Added function to randomly increase filter times.
+
 * Clicking on the image does not affect the selection rectangle.
 
 * It's now possible to resize the selection rectangle using the other
