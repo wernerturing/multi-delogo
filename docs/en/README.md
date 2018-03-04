@@ -12,7 +12,9 @@ multi-delogo allows you to mark all the occurrences of the text, and generate a 
 
 ## Starting
 
-When you run the program, you'll see a screen with two options:
+When you run the program, you'll see a window with two options:
+
+![Initial window](images/initial-window.png)
 
 * **Start a new project** starts a new project from a video file.
 * **Open an existing project** allows you to continue a project you've already started.

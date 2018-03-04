@@ -12,7 +12,9 @@ multi-delogo lhe permite marcar todos os lugares onde o texto aparece, e gerar u
 
 ## Iniciando
 
-Ao executar o programa, você verá uma tela com duas opções:
+Ao executar o programa, você verá uma janela com duas opções:
+
+![Janela inicial](images/initial-window.png)
 
 * **Começar um novo projeto** começa um projeto de um arquivo de vídeo.
 * **Abrir um projeto existente** lhe permite continuar um projeto já iniciado.
