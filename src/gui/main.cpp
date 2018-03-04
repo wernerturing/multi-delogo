@@ -20,6 +20,8 @@
 #  include <windows.h>
 #endif
 
+#include <glibmm.h>
+
 #include <libintl.h>
 
 #include "MultiDelogoApp.hpp"
@@ -38,6 +40,10 @@ int main(int argc, char *argv[])
 #endif
   bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
   textdomain(GETTEXT_PACKAGE);
+
+#ifdef __MINGW32__ // Use normal window borders
+  Glib::setenv("GTK_CSD", "0");
+#endif
 
   auto app = mdl::MultiDelogoApp::create();
   return app->run(argc, argv);
