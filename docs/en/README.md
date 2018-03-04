@@ -12,7 +12,9 @@ multi-delogo allows you to mark all the occurrences of the text, and generate a 
 
 ## Starting
 
-When you run the program, you'll see a screen with two options:
+When you run the program, you'll see a window with two options:
+
+![Initial window](images/initial-window.png)
 
 * **Start a new project** starts a new project from a video file.
 * **Open an existing project** allows you to continue a project you've already started.
@@ -75,7 +77,7 @@ Now just repeat the process, marking each new position for the logo. In our shor
 
 The list on the left displays all the filters set for the current project. Selecting a row moves to the start frame of that video, and displays the area in which the video is applied.
 
-To edit an existing filter, you have to be on that filter's start frame. You can move the rectangle by dragging it, and resize it by dragging the bottom right corner. It's also possible to draw another rectangle, replacing the current one. Another possibility is to use the **x**, **y**, **width** and **height** controls below the filter list.
+To edit an existing filter, you have to be on that filter's start frame. You can move the rectangle by dragging it, and resize it by dragging from the corners and borders. It's also possible to draw another rectangle, replacing the current one. Another possibility is to use the **x**, **y**, **width** and **height** controls below the filter list.
 
 If you are not at a filter's start frame and make any change to the filter, a new filter is added.
 
@@ -101,6 +103,12 @@ The options in **Video format** and **Quality** define the video codec to use an
 Two codecs are supported: H.264 and H.265. H.265 produces smaller files, but encoding is slower, and not all players support it. H.264 is more compatible and faster, but the files are larger.
 
 For both codecs, CRF mode is used. The **Quality** number defines the video quality: in general, lower numbers generate better looking videos, but the file sizes are larger. If in doubt, use the defaults. For more details, see https://trac.ffmpeg.org/wiki/Encode/H.264#crf and https://trac.ffmpeg.org/wiki/Encode/H.265 .
+
+### Changing filter duration
+
+If you check **Randomnly increase filter times**, the duration of each filter will be randomly increased, making it start earlier and/or finish later. The original portion of the video will always be included.
+
+The **Factor** field controls how much each duration is increased. If set to **2**, then each filter will last on average twice its original duration.
 
 ### Running the encoder
 

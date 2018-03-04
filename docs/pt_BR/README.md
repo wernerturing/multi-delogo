@@ -12,7 +12,9 @@ multi-delogo lhe permite marcar todos os lugares onde o texto aparece, e gerar u
 
 ## Iniciando
 
-Ao executar o programa, você verá uma tela com duas opções:
+Ao executar o programa, você verá uma janela com duas opções:
+
+![Janela inicial](images/initial-window.png)
 
 * **Começar um novo projeto** começa um projeto de um arquivo de vídeo.
 * **Abrir um projeto existente** lhe permite continuar um projeto já iniciado.
@@ -75,7 +77,7 @@ Agora apenas repita o processo, marcando cada nova posição do logo. Em nosso c
 
 A lista à esquerda mostra todos os filtros definidos para o projeto atual. Selecionar uma linha exibe o quadro inicial daquele filtro, bem como a área em que ele é aplicado.
 
-Para editar um filtro existente, você deverá estar no quadro inicial daquele filtro. Você pode mover o retângulo arrastando-o, ou redimensioná-lo arrastando o canto inferior direito. Também é possível desenhar um novo retângulo, substituindo o atual. Outra possibilidade é usar os controles **x**, **y**, **largura** e **altura** abaixo da lista de filtros.
+Para editar um filtro existente, você deverá estar no quadro inicial daquele filtro. Você pode mover o retângulo arrastando-o, ou redimensioná-lo arrastando-o pelos cantos ou bordas. Também é possível desenhar um novo retângulo, substituindo o atual. Outra possibilidade é usar os controles **x**, **y**, **largura** e **altura** abaixo da lista de filtros.
 
 Se você não estiver no quadro inicial e fizer alguma alteração, um novo filtro é adicionado.
 
@@ -101,6 +103,12 @@ As opções **Formato do vídeo** e **Qualidade** definem o codec a utilizar e a
 Dois codecs são suportados. H.264 e H.265. H.265 gera arquivos menores, mas a conversão é mais demorada, e nem todos os players suportam esse formato. H.264 é mais compatível e mais rápido, mas os arquivos são maiores.
 
 Para ambos os codecs, o modo CRF é utilizado. O número em **Qualidade** determina a qualidade: em geral, números menores produzem vídeos com mais qualidade, mas os arquivos são maiores. Em caso de dúvida, use os padrões. Para mais detalhes, veja  https://trac.ffmpeg.org/wiki/Encode/H.264#crf e https://trac.ffmpeg.org/wiki/Encode/H.265 .
+
+### Alterando a duração dos filtros
+
+Se **Aumentar duranção dos filtros aleatoriamente** estiver marcado, a duração de cada filtro será aumentada aleatoriamente, fazendo com que eles iniciem antes e/ou terminem depois. A parte originalmente marcada será sempre incluída.
+
+O campo **Fator** controla quanto cada duração é aumentada. Se tem o valor **2**, então cada filtro durará, em média, o dobro do tempo original.
 
 ### Executando o conversor
 
