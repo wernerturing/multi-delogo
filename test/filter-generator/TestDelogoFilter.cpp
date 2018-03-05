@@ -36,6 +36,13 @@ BOOST_AUTO_TEST_CASE(test_name)
 }
 
 
+BOOST_AUTO_TEST_CASE(delogo_filter_does_not_affect_audio)
+{
+  fg::DelogoFilter filter(90, 80, 70, 60);
+  BOOST_TEST(!filter.affects_audio());
+}
+
+
 BOOST_AUTO_TEST_CASE(test_construction)
 {
   fg::DelogoFilter filter(90, 80, 70, 60);

@@ -32,6 +32,12 @@ Filter::~Filter()
 }
 
 
+bool Filter::affects_audio() const
+{
+  return false;
+}
+
+
 NullFilter* NullFilter::load(const std::string& parameters)
 {
   if (parameters != "") {
