@@ -120,4 +120,4 @@ In Windows, a black console window appears while the video is being encoded. Thi
 
 ### Running FFmpeg manually
 
-If you want more control over the encoding process, you can run FFmpeg manually. To do that, instead of **Encode**, use **Generate filter script**. This generates a file with the description of the filters to apply, that can be passed to FFmpeg with the `-filter_script` option.
+If you want more control over the encoding process, you can run FFmpeg manually. To do that, instead of **Encode**, use **Generate filter script**. This generates a file with the description of the filters to apply, that can be passed to FFmpeg with the `-filter_complex_script` option.
