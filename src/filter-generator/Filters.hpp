@@ -29,7 +29,8 @@ namespace fg {
   {
     NO_OP,
     DELOGO,
-    DRAWBOX
+    DRAWBOX,
+    CUT,
   };
 
 
@@ -110,6 +111,21 @@ namespace fg {
 
     FilterType type() const override;
     std::string name() const override;
+
+    std::string save_str() const override;
+    std::string ffmpeg_str(const std::string& between_expr) const override;
+  };
+
+
+  class CutFilter : public Filter
+  {
+  public:
+    static CutFilter* load(const std::string& parameters);
+
+    FilterType type() const override;
+    std::string name() const override;
+
+    bool affects_audio() const override;
 
     std::string save_str() const override;
     std::string ffmpeg_str(const std::string& between_expr) const override;

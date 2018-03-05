@@ -39,6 +39,9 @@ namespace fg {
     case FilterType::DRAWBOX:
       ostr << "DRAWBOX";
       break;
+
+    case FilterType::CUT:
+      ostr << "CUT";
     }
 
     return ostr;

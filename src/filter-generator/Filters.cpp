@@ -231,3 +231,43 @@ std::string DrawboxFilter::ffmpeg_str(const std::string& between_expr) const
   buf.append(":c=black:t=max");
   return buf;
 }
+
+
+CutFilter* CutFilter::load(const std::string& parameters)
+{
+  if (parameters != "") {
+    throw InvalidParametersException();
+  }
+
+  return new CutFilter();
+}
+
+
+FilterType CutFilter::type() const
+{
+  return FilterType::CUT;
+}
+
+
+std::string CutFilter::name() const
+{
+  return "cut";
+}
+
+
+bool CutFilter::affects_audio() const
+{
+  return true;
+}
+
+
+std::string CutFilter::save_str() const
+{
+  return "cut;";
+}
+
+
+std::string CutFilter::ffmpeg_str(const std::string& between_expr) const
+{
+  return "";
+}
