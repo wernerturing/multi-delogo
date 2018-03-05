@@ -1,3 +1,8 @@
+## [ongoing]
+
+* Fixed bug that caused FFmpeg to fail if the last filter is a "none".
+
+
 ## 1.1.0
 
 * Added 'zoom to fit' feature.

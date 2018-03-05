@@ -29,6 +29,7 @@ using namespace fg;
 
 RegularScriptGenerator::RegularScriptGenerator(const FilterList& filter_list)
   : filter_list_(filter_list)
+  , first_filter_(true)
 {
 }
 
@@ -66,7 +67,12 @@ void RegularScriptGenerator::generate_ffmpeg_script_intermediary_filters(std::os
                                                   next.first - 1);
     std::string ffmpeg_str = current.second->ffmpeg_str(frame_expr);
     if (ffmpeg_str != "") {
-      out << ffmpeg_str << ",\n";
+      if (first_filter_) {
+        first_filter_ = false;
+      } else {
+        out << ",\n";
+      }
+      out << ffmpeg_str;
     }
   }
 }
@@ -78,7 +84,10 @@ void RegularScriptGenerator::generate_ffmpeg_script_last_filter(std::ostream& ou
   std::string frame_expr = get_frame_expression(last.first - 1);
   std::string ffmpeg_str = last.second->ffmpeg_str(frame_expr);
   if (ffmpeg_str != "") {
-    out << ffmpeg_str << "\n";
+    if (!first_filter_) {
+      out << ",\n";
+    }
+    out << ffmpeg_str;
   }
 }
 

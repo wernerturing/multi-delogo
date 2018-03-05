@@ -39,6 +39,7 @@ namespace fg {
 
   protected:
     const FilterList& filter_list_;
+    mutable int first_filter_;
 
     void generate_ffmpeg_script_intermediary_filters(std::ostream& out) const;
     void generate_ffmpeg_script_last_filter(std::ostream& out) const;
