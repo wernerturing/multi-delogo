@@ -46,8 +46,10 @@ void RegularScriptGenerator::generate_ffmpeg_script(std::ostream& out) const
     return;
   }
 
+  out << "[0:v]\n";
   generate_ffmpeg_script_intermediary_filters(out);
   generate_ffmpeg_script_last_filter(out);
+  out << "\n[out_v]";
 }
 
 

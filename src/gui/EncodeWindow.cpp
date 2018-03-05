@@ -327,11 +327,17 @@ std::vector<std::string> EncodeWindow::get_ffmpeg_cmd_line(const std::string& fi
   cmd_line.push_back("-y");
   cmd_line.push_back("-v"); cmd_line.push_back("quiet");
   cmd_line.push_back("-stats");
+
   cmd_line.push_back("-i"); cmd_line.push_back(filter_data_->movie_file());
-  cmd_line.push_back("-filter_script:v"); cmd_line.push_back(filter_file);
+  cmd_line.push_back("-filter_complex_script"); cmd_line.push_back(filter_file);
+
+  cmd_line.push_back("-map"); cmd_line.push_back("[out_v]");
   cmd_line.push_back("-c:v"); cmd_line.push_back(codec_name);
   cmd_line.push_back("-crf"); cmd_line.push_back(quality);
+
+  cmd_line.push_back("-map"); cmd_line.push_back("0:a?");
   cmd_line.push_back("-c:a"); cmd_line.push_back("copy");
+
   cmd_line.push_back(txt_file_.get_text());
 
   return cmd_line;

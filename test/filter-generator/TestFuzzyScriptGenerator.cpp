@@ -120,6 +120,9 @@ BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
   g->generate_ffmpeg_script(result);
 
   std::string line;
+  std::getline(result, line);
+  BOOST_TEST(line == "[0:v]");
+
   for (int i = 0; i < iters - 1; ++i) {
     std::getline(result, line);
     BOOST_TEST_CONTEXT("line " << i << ": " << line) {
@@ -130,4 +133,7 @@ BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
   BOOST_TEST_CONTEXT("line " << iters - 1 << ": " << line) {
     verify_last(line, iters - 1, filter_length);
   }
+
+  std::getline(result, line);
+  BOOST_TEST(line == "[out_v]");
 }

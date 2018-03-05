@@ -118,9 +118,9 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264)
     "ffmpeg",
     "-y", "-v", "quiet", "-stats",
     "-i", "input.mp4",
-    "-filter_script:v", "filters.ffm",
-    "-c:v", "libx264", "-crf", "20",
-    "-c:a", "copy",
+    "-filter_complex_script", "filters.ffm",
+    "-map", "[out_v]", "-c:v", "libx264", "-crf", "20",
+    "-map", "0:a?", "-c:a", "copy",
     "output.mp4"};
   BOOST_TEST(get_ffmpeg_cmd_line() == expected,
              boost::test_tools::per_element());
@@ -136,9 +136,9 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h265)
     "ffmpeg",
     "-y", "-v", "quiet", "-stats",
     "-i", "input.mp4",
-    "-filter_script:v", "filters.ffm",
-    "-c:v", "libx265", "-crf", "25",
-    "-c:a", "copy",
+    "-filter_complex_script", "filters.ffm",
+    "-map", "[out_v]", "-c:v", "libx265", "-crf", "25",
+    "-map", "0:a?", "-c:a", "copy",
     "output.mp4"};
   BOOST_TEST(get_ffmpeg_cmd_line() == expected,
              boost::test_tools::per_element());

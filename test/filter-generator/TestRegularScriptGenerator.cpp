@@ -48,10 +48,12 @@ BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
   g->generate_ffmpeg_script(out);
 
   std::string expected =
+    "[0:v]\n"
     "delogo=enable='between(n,0,499)':x=10:y=11:w=12:h=13,\n"
     "drawbox=enable='between(n,500,999)':x=20:y=21:w=22:h=23:c=black:t=max,\n"
     "drawbox=enable='between(n,1300,1999)':x=30:y=31:w=32:h=33:c=black:t=max,\n"
-    "drawbox=enable='gte(n,2000)':x=40:y=41:w=42:h=43:c=black:t=max";
+    "drawbox=enable='gte(n,2000)':x=40:y=41:w=42:h=43:c=black:t=max\n"
+    "[out_v]";
   BOOST_CHECK_EQUAL(out.str(), expected);
 }
 
@@ -67,7 +69,9 @@ BOOST_AUTO_TEST_CASE(should_discard_a_null_filter_at_the_end)
   g->generate_ffmpeg_script(out);
 
   std::string expected =
-    "delogo=enable='between(n,0,999)':x=10:y=11:w=12:h=13";
+    "[0:v]\n"
+    "delogo=enable='between(n,0,999)':x=10:y=11:w=12:h=13\n"
+    "[out_v]";
   BOOST_CHECK_EQUAL(out.str(), expected);
 }
 
@@ -82,6 +86,8 @@ BOOST_AUTO_TEST_CASE(should_work_for_a_one_filter_list)
   g->generate_ffmpeg_script(out);
 
   std::string expected =
-    "delogo=enable='gte(n,49)':x=10:y=11:w=12:h=13";
+    "[0:v]\n"
+    "delogo=enable='gte(n,49)':x=10:y=11:w=12:h=13\n"
+    "[out_v]";
   BOOST_CHECK_EQUAL(out.str(), expected);
 }
