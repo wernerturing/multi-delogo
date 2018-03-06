@@ -53,7 +53,7 @@ class EncodeWindowTestFixture
 {
 public:
   EncodeWindowTestFixture()
-    : window(std::move(std::unique_ptr<fg::FilterData>(new fg::FilterData())), 0)
+    : window(std::move(std::unique_ptr<fg::FilterData>(new fg::FilterData())), 25, 0)
   {
     window.filter_data_->set_movie_file("input.mp4");
     window.txt_file_.set_text("output.mp4");

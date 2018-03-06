@@ -32,16 +32,17 @@
 using namespace fg;
 
 
-RegularScriptGenerator::RegularScriptGenerator(const FilterList& filter_list)
+RegularScriptGenerator::RegularScriptGenerator(const FilterList& filter_list, double fps)
   : filter_list_(filter_list)
   , first_filter_(true)
 {
+  fps_ = "/" + std::to_string(fps);
 }
 
 
-std::shared_ptr<RegularScriptGenerator> RegularScriptGenerator::create(const FilterList& filter_list)
+std::shared_ptr<RegularScriptGenerator> RegularScriptGenerator::create(const FilterList& filter_list, double fps)
 {
-  return std::shared_ptr<RegularScriptGenerator>(new RegularScriptGenerator(filter_list));
+  return std::shared_ptr<RegularScriptGenerator>(new RegularScriptGenerator(filter_list, fps));
 }
 
 
@@ -62,6 +63,7 @@ void RegularScriptGenerator::generate_ffmpeg_script(std::ostream& out) const
   generate_ffmpeg_script_standard_filters(out);
   generate_ffmpeg_script_cuts(out);
   out << "\n[out_v]";
+  generate_ffmpeg_script_audio(out);
 }
 
 
@@ -124,6 +126,22 @@ void RegularScriptGenerator::generate_ffmpeg_script_cuts(std::ostream& out) cons
 }
 
 
+void RegularScriptGenerator::generate_ffmpeg_script_audio(std::ostream& out) const
+{
+  if (cuts_.empty()) {
+    return;
+  }
+
+  std::vector<std::string> positions;
+  positions.resize(cuts_.size());
+  std::transform(cuts_.begin(), cuts_.end(), positions.begin(),
+                 [this](auto& i) { return get_audio_expression(i.first, i.second); });
+
+  std::string expressions(boost::algorithm::join(positions, "+"));
+  out << ";\n[0:a]aselect='not(" << expressions << ")',asetpts=N/SR/TB[out_a]";
+}
+
+
 std::string RegularScriptGenerator::separator() const
 {
   if (first_filter_) {
@@ -148,5 +166,20 @@ std::string RegularScriptGenerator::get_frame_expression(int start_frame, maybe_
       + ',' + std::to_string(*next_start_frame - 1) + ")";
   } else {
     return "gte(n," + std::to_string(start_frame) + ")";
+  }
+}
+
+
+std::string RegularScriptGenerator::get_audio_expression(int start_frame, maybe_int next_start_frame) const
+{
+  if (next_start_frame) {
+    return "between(t,"
+      + std::to_string(start_frame) + fps_
+      + ',' + std::to_string(*next_start_frame - 1) + fps_
+      + ")";
+  } else {
+    return "gte(t,"
+      + std::to_string(start_frame) + fps_
+      + ")";
   }
 }

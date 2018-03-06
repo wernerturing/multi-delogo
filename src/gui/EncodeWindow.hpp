@@ -33,7 +33,7 @@ namespace mdl {
   class EncodeWindow : public Gtk::ApplicationWindow
   {
   public:
-    EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int total_frames);
+    EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int total_frames, double fps);
 
   private:
     struct Progress
@@ -50,6 +50,7 @@ namespace mdl {
 
     std::unique_ptr<fg::FilterData> filter_data_;
     int total_frames_;
+    double fps_;
     Codec codec_;
 
     Gtk::Entry txt_file_;

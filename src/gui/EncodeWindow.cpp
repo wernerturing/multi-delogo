@@ -42,9 +42,10 @@
 using namespace mdl;
 
 
-EncodeWindow::EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int total_frames)
+EncodeWindow::EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int total_frames, double fps)
   : filter_data_(std::move(filter_data))
   , total_frames_(total_frames)
+  , fps_(fps)
   , codec_(Codec::H264)
 {
   set_title(_("Encode video"));
@@ -294,9 +295,9 @@ EncodeWindow::Generator EncodeWindow::get_generator()
 {
   Generator g;
   if (chk_fuzzy_.get_active()) {
-    g = fg::FuzzyScriptGenerator::create(filter_data_->filter_list(), txt_fuzzyness_.get_value());
+    g = fg::FuzzyScriptGenerator::create(filter_data_->filter_list(), fps_, txt_fuzzyness_.get_value());
   }  else {
-    g = fg::RegularScriptGenerator::create(filter_data_->filter_list());
+    g = fg::RegularScriptGenerator::create(filter_data_->filter_list(), fps_);
   }
   return g;
 }

@@ -34,16 +34,17 @@ namespace fg {
   class RegularScriptGenerator : public ScriptGenerator
   {
   protected:
-    RegularScriptGenerator(const FilterList& filter_list);
+    RegularScriptGenerator(const FilterList& filter_list, double fps);
 
   public:
-    static std::shared_ptr<RegularScriptGenerator> create(const FilterList& filter_list);
+    static std::shared_ptr<RegularScriptGenerator> create(const FilterList& filter_list, double fps);
 
     bool affects_audio() const override;
     void generate_ffmpeg_script(std::ostream& out) const override;
 
   protected:
     const FilterList& filter_list_;
+    std::string fps_;
     mutable int first_filter_;
 
     typedef boost::optional<int> maybe_int;
@@ -51,6 +52,7 @@ namespace fg {
 
     void generate_ffmpeg_script_standard_filters(std::ostream& out) const;
     void generate_ffmpeg_script_cuts(std::ostream& out) const;
+    void generate_ffmpeg_script_audio(std::ostream& out) const;
     std::string separator() const;
 
     void process_standard_filter(fg::Filter* filter,
@@ -60,6 +62,7 @@ namespace fg {
 
     virtual std::string get_enable_expression(int start_frame, maybe_int next_start_frame) const;
     std::string get_frame_expression(int start_frame, maybe_int next_start_frame) const;
+    std::string get_audio_expression(int start_frame, maybe_int next_start_frame) const;
   };
 }
 

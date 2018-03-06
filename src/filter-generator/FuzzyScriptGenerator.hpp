@@ -33,10 +33,10 @@ namespace fg {
   class FuzzyScriptGenerator : public RegularScriptGenerator
   {
   protected:
-    FuzzyScriptGenerator(const FilterList& filter_list, double fuzzyness);
+    FuzzyScriptGenerator(const FilterList& filter_list, double fps, double fuzzyness);
 
   public:
-    static std::shared_ptr<FuzzyScriptGenerator> create(const FilterList& filter_list, double fuzzyness);
+    static std::shared_ptr<FuzzyScriptGenerator> create(const FilterList& filter_list, double fps, double fuzzyness);
     void generate_ffmpeg_script(std::ostream& out) const override;
 
   protected:
