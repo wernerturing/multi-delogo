@@ -48,6 +48,8 @@ Filter* FilterFactory::create(const std::string& type, const std::string& parame
     return DelogoFilter::load(parameters);
   } else if (type == "drawbox") {
     return DrawboxFilter::load(parameters);
+  } else if (type == "cut") {
+    return CutFilter::load(parameters);
   } else {
     throw UnknownFilterException();
   }

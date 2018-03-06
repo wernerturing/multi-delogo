@@ -34,10 +34,12 @@ BOOST_AUTO_TEST_CASE(test_load_with_invalid_string)
   BOOST_CHECK_THROW(fg::FilterFactory::load("none"), fg::InvalidFilterException);
 }
 
+
 BOOST_AUTO_TEST_CASE(test_load_with_unknown_filter)
 {
   BOOST_CHECK_THROW(fg::FilterFactory::load("blur;1;2;3;4"), fg::UnknownFilterException);
 }
+
 
 BOOST_AUTO_TEST_CASE(test_load_null_filter)
 {
@@ -45,6 +47,7 @@ BOOST_AUTO_TEST_CASE(test_load_null_filter)
 
   BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::NO_OP);
 }
+
 
 BOOST_AUTO_TEST_CASE(test_load_delogo_filter)
 {
@@ -58,6 +61,7 @@ BOOST_AUTO_TEST_CASE(test_load_delogo_filter)
   BOOST_CHECK_EQUAL(dfilter->height(), 40);
 }
 
+
 BOOST_AUTO_TEST_CASE(test_load_drawbox_filter)
 {
   fg::Filter* filter = fg::FilterFactory::load("drawbox;200;100;30;15");
@@ -68,4 +72,12 @@ BOOST_AUTO_TEST_CASE(test_load_drawbox_filter)
   BOOST_CHECK_EQUAL(dfilter->y(), 100);
   BOOST_CHECK_EQUAL(dfilter->width(), 30);
   BOOST_CHECK_EQUAL(dfilter->height(), 15);
+}
+
+
+BOOST_AUTO_TEST_CASE(test_load_cut_filter)
+{
+  fg::Filter* filter = fg::FilterFactory::load("cut;");
+
+  BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::CUT);
 }
