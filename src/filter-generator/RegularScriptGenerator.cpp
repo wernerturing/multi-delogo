@@ -19,6 +19,7 @@
 #include <memory>
 #include <string>
 #include <ostream>
+#include <algorithm>
 
 #include "RegularScriptGenerator.hpp"
 #include "Filters.hpp"
@@ -37,6 +38,13 @@ RegularScriptGenerator::RegularScriptGenerator(const FilterList& filter_list)
 std::shared_ptr<RegularScriptGenerator> RegularScriptGenerator::create(const FilterList& filter_list)
 {
   return std::shared_ptr<RegularScriptGenerator>(new RegularScriptGenerator(filter_list));
+}
+
+
+bool RegularScriptGenerator::affects_audio() const
+{
+  return std::any_of(filter_list_.begin(), filter_list_.end(),
+                     [](auto& f) { return f.second->affects_audio(); });
 }
 
 

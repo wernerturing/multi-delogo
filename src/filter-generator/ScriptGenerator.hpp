@@ -27,6 +27,7 @@ namespace fg {
   {
   public:
     virtual ~ScriptGenerator() { };
+    virtual bool affects_audio() const = 0;
     virtual void generate_ffmpeg_script(std::ostream& out) const = 0;
   };
 }

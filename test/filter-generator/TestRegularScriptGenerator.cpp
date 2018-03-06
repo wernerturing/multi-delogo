@@ -33,6 +33,29 @@ using namespace fg;
 
 #include "../TestHelpers.hpp"
 
+BOOST_AUTO_TEST_CASE(affects_audio_without_audio_affecting_filters)
+{
+  FilterList list;
+  list.insert(1, new DelogoFilter(10, 11, 12, 13));
+  list.insert(501, new DrawboxFilter(20, 21, 22, 23));
+  list.insert(1001, new NullFilter());
+  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list);
+
+  BOOST_TEST(!g->affects_audio());
+}
+
+
+BOOST_AUTO_TEST_CASE(affects_audio_with_audio_affecting_filters)
+{
+  FilterList list;
+  list.insert(1, new DelogoFilter(10, 11, 12, 13));
+  list.insert(501, new CutFilter());
+  list.insert(1001, new NullFilter());
+  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list);
+
+  BOOST_TEST(g->affects_audio());
+}
+
 
 BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
 {

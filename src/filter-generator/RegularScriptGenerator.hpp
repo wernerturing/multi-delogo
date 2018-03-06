@@ -35,6 +35,8 @@ namespace fg {
 
   public:
     static std::shared_ptr<RegularScriptGenerator> create(const FilterList& filter_list);
+
+    bool affects_audio() const override;
     void generate_ffmpeg_script(std::ostream& out) const override;
 
   protected:
