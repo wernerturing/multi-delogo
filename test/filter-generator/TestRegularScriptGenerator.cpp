@@ -114,3 +114,63 @@ BOOST_AUTO_TEST_CASE(should_work_for_a_one_filter_list)
     "[out_v]";
   BOOST_CHECK_EQUAL(out.str(), expected);
 }
+
+
+BOOST_AUTO_TEST_CASE(should_generate_script_with_cut_filter)
+{
+  FilterList list;
+  list.insert(1, new DelogoFilter(10, 11, 12, 13));
+  list.insert(601, new CutFilter());
+  list.insert(1001, new DrawboxFilter(20, 21, 22, 23));
+  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list);
+
+  std::ostringstream out;
+  g->generate_ffmpeg_script(out);
+
+  std::string expected =
+    "[0:v]\n"
+    "delogo=enable='between(n,0,599)':x=10:y=11:w=12:h=13,\n"
+    "drawbox=enable='gte(n,1000)':x=20:y=21:w=22:h=23:c=black:t=max,\n"
+    "select='not(between(n,600,999))',setpts=N/FRAME_RATE/TB\n"
+    "[out_v]";
+  BOOST_CHECK_EQUAL(out.str(), expected);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_generate_script_with_only_cut_filters)
+{
+  FilterList list;
+  list.insert(101, new CutFilter());
+  list.insert(201, new NullFilter());
+  list.insert(501, new CutFilter());
+  list.insert(1001, new NullFilter());
+  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list);
+
+  std::ostringstream out;
+  g->generate_ffmpeg_script(out);
+
+  std::string expected =
+    "[0:v]\n"
+    "select='not(between(n,100,199)+between(n,500,999))',setpts=N/FRAME_RATE/TB\n"
+    "[out_v]";
+  BOOST_CHECK_EQUAL(out.str(), expected);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_generate_script_with_cut_filter_at_the_end)
+{
+  FilterList list;
+  list.insert(1, new DelogoFilter(10, 11, 12, 13));
+  list.insert(601, new CutFilter());
+  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list);
+
+  std::ostringstream out;
+  g->generate_ffmpeg_script(out);
+
+  std::string expected =
+    "[0:v]\n"
+    "delogo=enable='between(n,0,599)':x=10:y=11:w=12:h=13,\n"
+    "select='not(gte(n,600))',setpts=N/FRAME_RATE/TB\n"
+    "[out_v]";
+  BOOST_CHECK_EQUAL(out.str(), expected);
+}

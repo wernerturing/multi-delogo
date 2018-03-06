@@ -21,7 +21,10 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 #include <ostream>
+
+#include <boost/optional.hpp>
 
 #include "ScriptGenerator.hpp"
 #include "FilterList.hpp"
@@ -43,11 +46,20 @@ namespace fg {
     const FilterList& filter_list_;
     mutable int first_filter_;
 
-    void generate_ffmpeg_script_intermediary_filters(std::ostream& out) const;
-    void generate_ffmpeg_script_last_filter(std::ostream& out) const;
+    typedef boost::optional<int> maybe_int;
+    mutable std::vector<std::pair<int, maybe_int>> cuts_;
 
-    virtual std::string get_frame_expression(int start_frame, int next_start_frame) const;
-    virtual std::string get_frame_expression(int start_frame) const;
+    void generate_ffmpeg_script_standard_filters(std::ostream& out) const;
+    void generate_ffmpeg_script_cuts(std::ostream& out) const;
+    std::string separator() const;
+
+    void process_standard_filter(fg::Filter* filter,
+                                 int start_frame, maybe_int next_start_frame,
+                                 std::ostream& out) const;
+    void process_cut_filter(int start_frame, maybe_int next_start_frame) const;
+
+    virtual std::string get_enable_expression(int start_frame, maybe_int next_start_frame) const;
+    std::string get_frame_expression(int start_frame, maybe_int next_start_frame) const;
   };
 }
 

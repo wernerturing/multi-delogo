@@ -40,8 +40,7 @@ namespace fg {
     void generate_ffmpeg_script(std::ostream& out) const override;
 
   protected:
-    std::string get_frame_expression(int start_frame, int next_start_frame) const override;
-    std::string get_frame_expression(int start_frame) const override;
+    std::string get_enable_expression(int start_frame, maybe_int next_start_frame) const override;
 
   private:
     std::function<double()> rng;
@@ -49,7 +48,7 @@ namespace fg {
     mutable int length_;
 
     int adjust_start(int start_frame) const;
-    int adjust_end(int end_frame) const;
+    maybe_int adjust_end(maybe_int end_frame) const;
   };
 }
 

@@ -18,8 +18,12 @@
  */
 #include <memory>
 #include <string>
+#include <utility>
 #include <ostream>
 #include <algorithm>
+
+#include <boost/algorithm/string/join.hpp>
+#include <boost/optional.hpp>
 
 #include "RegularScriptGenerator.hpp"
 #include "Filters.hpp"
@@ -55,62 +59,94 @@ void RegularScriptGenerator::generate_ffmpeg_script(std::ostream& out) const
   }
 
   out << "[0:v]\n";
-  generate_ffmpeg_script_intermediary_filters(out);
-  generate_ffmpeg_script_last_filter(out);
+  generate_ffmpeg_script_standard_filters(out);
+  generate_ffmpeg_script_cuts(out);
   out << "\n[out_v]";
 }
 
 
-void RegularScriptGenerator::generate_ffmpeg_script_intermediary_filters(std::ostream& out) const
+void RegularScriptGenerator::generate_ffmpeg_script_standard_filters(std::ostream& out) const
 {
   FilterList::const_iterator i = filter_list_.begin();
 
-  while (true) {
+  while (i != filter_list_.end()) {
     auto& current = *i++;
-    if (i == filter_list_.end()) {
-      break;
+
+    fg::Filter* filter = current.second;
+
+    int start = current.first - 1;
+    maybe_int next_start;
+    if (i != filter_list_.end()) {
+      auto& next = *i;
+      next_start = boost::make_optional(next.first - 1);
     }
 
-    auto& next = *i;
-
-    std::string frame_expr = get_frame_expression(current.first - 1,
-                                                  next.first - 1);
-    std::string ffmpeg_str = current.second->ffmpeg_str(frame_expr);
-    if (ffmpeg_str != "") {
-      if (first_filter_) {
-        first_filter_ = false;
-      } else {
-        out << ",\n";
-      }
-      out << ffmpeg_str;
+    if (filter->type() == fg::FilterType::CUT) {
+      process_cut_filter(start, next_start);
+    } else {
+      process_standard_filter(filter, start, next_start, out);
     }
   }
 }
 
 
-void RegularScriptGenerator::generate_ffmpeg_script_last_filter(std::ostream& out) const
+void RegularScriptGenerator::process_standard_filter(fg::Filter* filter,
+                                                     int start_frame, maybe_int next_start_frame,
+                                                     std::ostream& out) const
 {
-  auto& last = *--filter_list_.end();
-  std::string frame_expr = get_frame_expression(last.first - 1);
-  std::string ffmpeg_str = last.second->ffmpeg_str(frame_expr);
+  std::string frame_expr = get_enable_expression(start_frame, next_start_frame);
+  std::string ffmpeg_str = filter->ffmpeg_str(frame_expr);
   if (ffmpeg_str != "") {
-    if (!first_filter_) {
-      out << ",\n";
-    }
-    out << ffmpeg_str;
+    out << separator() << ffmpeg_str;
   }
 }
 
 
-std::string RegularScriptGenerator::get_frame_expression(int start_frame, int next_start_frame) const
+void RegularScriptGenerator::process_cut_filter(int start_frame, maybe_int next_start_frame) const
 {
-  return "enable='between(n," + std::to_string(start_frame)
-    + ',' + std::to_string(next_start_frame - 1)
-    + ")\'";
+  cuts_.push_back(std::make_pair(start_frame, next_start_frame));
 }
 
 
-std::string RegularScriptGenerator::get_frame_expression(int start_frame) const
+void RegularScriptGenerator::generate_ffmpeg_script_cuts(std::ostream& out) const
 {
-  return "enable='gte(n," + std::to_string(start_frame) + ")'";
+  if (cuts_.empty()) {
+    return;
+  }
+
+  std::vector<std::string> positions;
+  positions.resize(cuts_.size());
+  std::transform(cuts_.begin(), cuts_.end(), positions.begin(),
+                 [this](auto& i) { return get_frame_expression(i.first, i.second); });
+
+  std::string expressions(boost::algorithm::join(positions, "+"));
+  out << separator() << "select='not(" << expressions << ")',setpts=N/FRAME_RATE/TB";
+}
+
+
+std::string RegularScriptGenerator::separator() const
+{
+  if (first_filter_) {
+    first_filter_ = false;
+    return "";
+  } else {
+    return ",\n";
+  }
+}
+
+
+std::string RegularScriptGenerator::get_enable_expression(int start_frame, maybe_int next_start_frame) const
+{
+  return "enable='" + get_frame_expression(start_frame, next_start_frame) + "'";
+}
+
+
+std::string RegularScriptGenerator::get_frame_expression(int start_frame, maybe_int next_start_frame) const
+{
+  if (next_start_frame) {
+    return "between(n," + std::to_string(start_frame)
+      + ',' + std::to_string(*next_start_frame - 1) + ")";
+  } else {
+    return "gte(n," + std::to_string(start_frame) + ")";
+  }
 }

@@ -25,6 +25,7 @@
 #include <ostream>
 
 #include <boost/algorithm/clamp.hpp>
+#include <boost/optional.hpp>
 
 #include "FuzzyScriptGenerator.hpp"
 #include "Filters.hpp"
@@ -58,19 +59,15 @@ void FuzzyScriptGenerator::generate_ffmpeg_script(std::ostream& out) const
 }
 
 
-std::string FuzzyScriptGenerator::get_frame_expression(int start_frame, int next_start_frame) const
+std::string FuzzyScriptGenerator::get_enable_expression(int start_frame, maybe_int next_start_frame) const
 {
-  length_ = next_start_frame - start_frame;
-  int adjusted_start = adjust_start(start_frame);
-  int adjusted_next = adjust_end(next_start_frame);
-  return RegularScriptGenerator::get_frame_expression(adjusted_start, adjusted_next);
-}
+  if (next_start_frame) {
+    length_ = *next_start_frame - start_frame;
+  }
 
-
-std::string FuzzyScriptGenerator::get_frame_expression(int start_frame) const
-{
   int adjusted_start = adjust_start(start_frame);
-  return RegularScriptGenerator::get_frame_expression(adjusted_start);
+  maybe_int adjusted_next = adjust_end(next_start_frame);
+  return RegularScriptGenerator::get_enable_expression(adjusted_start, adjusted_next);
 }
 
 
@@ -81,8 +78,12 @@ int FuzzyScriptGenerator::adjust_start(int start_frame) const
 }
 
 
-int FuzzyScriptGenerator::adjust_end(int end_frame) const
+FuzzyScriptGenerator::maybe_int FuzzyScriptGenerator::adjust_end(maybe_int end_frame) const
 {
-  int new_end = end_frame + rng()*length_;
-  return std::max(new_end, end_frame);
+  if (!end_frame) {
+    return boost::none;
+  }
+
+  int new_end = *end_frame + rng()*length_;
+  return boost::make_optional(std::max(new_end, *end_frame));
 }
