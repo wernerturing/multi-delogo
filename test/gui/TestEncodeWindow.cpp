@@ -23,6 +23,7 @@
 #include <gtkmm.h>
 
 #include "filter-generator/FilterData.hpp"
+#include "filter-generator/Filters.hpp"
 
 #include "EncodeWindow.hpp"
 
@@ -73,9 +74,14 @@ public:
     window.txt_quality_.set_value(quality);
   }
 
+  void add_filter(int start_frame, fg::Filter* filter)
+  {
+    window.filter_data_->filter_list().insert(start_frame, filter);
+  }
+
   std::vector<std::string> get_ffmpeg_cmd_line()
   {
-    return window.get_ffmpeg_cmd_line("filters.ffm");
+    return window.get_ffmpeg_cmd_line("filters.ffm", window.get_generator());
   }
 
   void set_total_frames(int frames)
@@ -109,7 +115,7 @@ public:
 
 BOOST_FIXTURE_TEST_SUITE(ffmpeg_command_line, mdl::EncodeWindowTestFixture)
 
-BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264)
+BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264_copy_audio)
 {
   set_codec_h264();
   set_quality(20);
@@ -127,7 +133,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264)
 }
 
 
-BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h265)
+BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h265_copy_audio)
 {
   set_codec_h265();
   set_quality(25);
@@ -139,6 +145,24 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h265)
     "-filter_complex_script", "filters.ffm",
     "-map", "[out_v]", "-c:v", "libx265", "-crf", "25",
     "-map", "0:a?", "-c:a", "copy",
+    "output.mp4"};
+  BOOST_TEST(get_ffmpeg_cmd_line() == expected,
+             boost::test_tools::per_element());
+}
+
+BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264_reencode_audio)
+{
+  add_filter(1000, new fg::CutFilter());
+  set_codec_h264();
+  set_quality(20);
+
+  std::vector<std::string> expected{
+    "ffmpeg",
+    "-y", "-v", "quiet", "-stats",
+    "-i", "input.mp4",
+    "-filter_complex_script", "filters.ffm",
+    "-map", "[out_v]", "-c:v", "libx264", "-crf", "20",
+    "-map", "[out_a]", "-c:a", "aac", "-b:a", "192k",
     "output.mp4"};
   BOOST_TEST(get_ffmpeg_cmd_line() == expected,
              boost::test_tools::per_element());

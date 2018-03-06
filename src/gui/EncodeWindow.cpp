@@ -237,9 +237,10 @@ void EncodeWindow::on_encode()
   try {
     int tmp_fd = Glib::file_open_tmp(tmp_filter_file_, "mdlfilter");
     ::close(tmp_fd);
-    generate_script(tmp_filter_file_);
+    Generator generator = get_generator();
+    generate_script(tmp_filter_file_, generator);
 
-    std::vector<std::string> cmd_line = get_ffmpeg_cmd_line(tmp_filter_file_);
+    std::vector<std::string> cmd_line = get_ffmpeg_cmd_line(tmp_filter_file_, generator);
 
     start_ffmpeg(cmd_line);
   } catch (Glib::FileError& e) {
@@ -258,7 +259,8 @@ void EncodeWindow::on_generate_script()
     return;
   }
 
-  generate_script(file);
+  Generator generator = get_generator();
+  generate_script(file, generator);
 
   Gtk::MessageDialog dlg(*this, _("Filter script generated"));
   dlg.run();
@@ -288,7 +290,19 @@ bool EncodeWindow::check_file(const std::string& file)
 }
 
 
-void EncodeWindow::generate_script(const std::string& file)
+EncodeWindow::Generator EncodeWindow::get_generator()
+{
+  Generator g;
+  if (chk_fuzzy_.get_active()) {
+    g = fg::FuzzyScriptGenerator::create(filter_data_->filter_list(), txt_fuzzyness_.get_value());
+  }  else {
+    g = fg::RegularScriptGenerator::create(filter_data_->filter_list());
+  }
+  return g;
+}
+
+
+void EncodeWindow::generate_script(const std::string& file, Generator generator)
 {
   std::ofstream file_stream(file);
   if (!file_stream.is_open()) {
@@ -299,19 +313,12 @@ void EncodeWindow::generate_script(const std::string& file)
     return;
   }
 
-  std::shared_ptr<fg::ScriptGenerator> g;
-  if (chk_fuzzy_.get_active()) {
-    g = fg::FuzzyScriptGenerator::create(filter_data_->filter_list(), txt_fuzzyness_.get_value());
-  }  else {
-    g = fg::RegularScriptGenerator::create(filter_data_->filter_list());
-  }
-
-  g->generate_ffmpeg_script(file_stream);
+  generator->generate_ffmpeg_script(file_stream);
   file_stream.close();
 }
 
 
-std::vector<std::string> EncodeWindow::get_ffmpeg_cmd_line(const std::string& filter_file)
+std::vector<std::string> EncodeWindow::get_ffmpeg_cmd_line(const std::string& filter_file, Generator generator)
 {
   std::string codec_name;
   if (codec_ == Codec::H264) {
@@ -335,12 +342,29 @@ std::vector<std::string> EncodeWindow::get_ffmpeg_cmd_line(const std::string& fi
   cmd_line.push_back("-c:v"); cmd_line.push_back(codec_name);
   cmd_line.push_back("-crf"); cmd_line.push_back(quality);
 
-  cmd_line.push_back("-map"); cmd_line.push_back("0:a?");
-  cmd_line.push_back("-c:a"); cmd_line.push_back("copy");
+  std::vector<std::string> audio_opts = get_audio_opts(generator);
+  cmd_line.insert(cmd_line.end(), audio_opts.begin(), audio_opts.end());
 
   cmd_line.push_back(txt_file_.get_text());
 
   return cmd_line;
+}
+
+
+std::vector<std::string> EncodeWindow::get_audio_opts(Generator generator)
+{
+  std::vector<std::string> audio_opts;
+
+  if (generator->affects_audio()) {
+    audio_opts.push_back("-map"); audio_opts.push_back("[out_a]");
+    audio_opts.push_back("-c:a"); audio_opts.push_back("aac");
+    audio_opts.push_back("-b:a"); audio_opts.push_back("192k");
+  } else {
+    audio_opts.push_back("-map"); audio_opts.push_back("0:a?");
+    audio_opts.push_back("-c:a"); audio_opts.push_back("copy");
+  }
+
+  return audio_opts;
 }
 
 

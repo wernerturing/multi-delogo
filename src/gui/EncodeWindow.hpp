@@ -26,6 +26,7 @@
 #include <gtkmm.h>
 
 #include "filter-generator/FilterData.hpp"
+#include "filter-generator/ScriptGenerator.hpp"
 
 
 namespace mdl {
@@ -44,6 +45,8 @@ namespace mdl {
     enum class Codec { H264, H265 };
     static const int H264_DEFAULT_CRF_ = 23;
     static const int H265_DEFAULT_CRF_ = 28;
+
+    typedef std::shared_ptr<fg::ScriptGenerator> Generator;
 
     std::unique_ptr<fg::FilterData> filter_data_;
     int total_frames_;
@@ -83,9 +86,11 @@ namespace mdl {
 
     bool check_file(const std::string& file);
 
-    void generate_script(const std::string& file);
+    Generator get_generator();
+    void generate_script(const std::string& file, Generator generator);
 
-    std::vector<std::string> get_ffmpeg_cmd_line(const std::string& filter_file);
+    std::vector<std::string> get_ffmpeg_cmd_line(const std::string& filter_file, Generator generator);
+    std::vector<std::string> get_audio_opts(Generator generator);
     void start_ffmpeg(const std::vector<std::string>& cmd_line);
 
     bool on_ffmpeg_output(Glib::IOCondition condition);
