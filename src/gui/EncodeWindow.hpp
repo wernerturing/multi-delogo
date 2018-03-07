@@ -26,13 +26,14 @@
 #include <gtkmm.h>
 
 #include "filter-generator/FilterData.hpp"
+#include "filter-generator/ScriptGenerator.hpp"
 
 
 namespace mdl {
   class EncodeWindow : public Gtk::ApplicationWindow
   {
   public:
-    EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int total_frames);
+    EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int total_frames, double fps);
 
   private:
     struct Progress
@@ -45,8 +46,11 @@ namespace mdl {
     static const int H264_DEFAULT_CRF_ = 23;
     static const int H265_DEFAULT_CRF_ = 28;
 
+    typedef std::shared_ptr<fg::ScriptGenerator> Generator;
+
     std::unique_ptr<fg::FilterData> filter_data_;
     int total_frames_;
+    double fps_;
     Codec codec_;
 
     Gtk::Entry txt_file_;
@@ -59,6 +63,7 @@ namespace mdl {
     Glib::Pid ffmpeg_handle_;
 #endif
     std::string tmp_filter_file_;
+    int total_frames_output_;
     Glib::RefPtr<Glib::IOChannel> ffmpeg_out_;
     Glib::Timer ffmpeg_timer_;
     Gtk::Box box_progress_;
@@ -83,9 +88,11 @@ namespace mdl {
 
     bool check_file(const std::string& file);
 
-    void generate_script(const std::string& file);
+    Generator get_generator();
+    void generate_script(const std::string& file, Generator generator);
 
-    std::vector<std::string> get_ffmpeg_cmd_line(const std::string& filter_file);
+    std::vector<std::string> get_ffmpeg_cmd_line(const std::string& filter_file, Generator generator);
+    std::vector<std::string> get_audio_opts(Generator generator);
     void start_ffmpeg(const std::vector<std::string>& cmd_line);
 
     bool on_ffmpeg_output(Glib::IOCondition condition);

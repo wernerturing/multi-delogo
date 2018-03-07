@@ -26,6 +26,35 @@
 using namespace mdl;
 
 
+FilterPanelNoParameters::FilterPanelNoParameters()
+{
+}
+
+
+FilterPanelNoParameters::MaybeRectangle FilterPanelNoParameters::get_rectangle() const
+{
+  return boost::none;
+}
+
+
+void FilterPanelNoParameters::set_rectangle(const Rectangle& rect)
+{
+  // nothing to do
+}
+
+
+bool FilterPanelNoParameters::is_changed() const
+{
+  return false;
+}
+
+
+void FilterPanelNoParameters::set_changed(bool changed)
+{
+  // nothing to do
+}
+
+
 FilterPanelNull::FilterPanelNull()
 {
 }
@@ -43,27 +72,14 @@ fg::Filter* FilterPanelNull::get_filter() const
 }
 
 
-FilterPanelNull::MaybeRectangle FilterPanelNull::get_rectangle() const
+FilterPanelCut::FilterPanelCut()
 {
-  return boost::none;
 }
 
 
-void FilterPanelNull::set_rectangle(const Rectangle& rect)
+fg::Filter* FilterPanelCut::get_filter() const
 {
-  // nothing to do
-}
-
-
-bool FilterPanelNull::is_changed() const
-{
-  return false;
-}
-
-
-void FilterPanelNull::set_changed(bool changed)
-{
-  // nothing to do
+  return new fg::CutFilter();
 }
 
 

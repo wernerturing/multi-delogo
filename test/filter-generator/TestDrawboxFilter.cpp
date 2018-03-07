@@ -36,6 +36,13 @@ BOOST_AUTO_TEST_CASE(test_name)
 }
 
 
+BOOST_AUTO_TEST_CASE(drawbox_filter_does_not_affect_audio)
+{
+  fg::DrawboxFilter filter(9, 8, 7, 6);
+  BOOST_TEST(!filter.affects_audio());
+}
+
+
 BOOST_AUTO_TEST_CASE(test_construction)
 {
   fg::DrawboxFilter filter(1, 2, 3, 4);

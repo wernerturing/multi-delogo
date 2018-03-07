@@ -29,7 +29,8 @@ namespace fg {
   {
     NO_OP,
     DELOGO,
-    DRAWBOX
+    DRAWBOX,
+    CUT,
   };
 
 
@@ -40,6 +41,9 @@ namespace fg {
 
     virtual FilterType type() const = 0;
     virtual std::string name() const = 0;
+
+    virtual bool affects_audio() const;
+
     virtual std::string save_str() const = 0;
     virtual std::string ffmpeg_str(const std::string& between_expr) const = 0;
   };
@@ -52,6 +56,7 @@ namespace fg {
 
     FilterType type() const override;
     std::string name() const override;
+
     std::string save_str() const override;
     std::string ffmpeg_str(const std::string& between_expr) const override;
   };
@@ -91,6 +96,7 @@ namespace fg {
 
     FilterType type() const override;
     std::string name() const override;
+
     std::string save_str() const override;
     std::string ffmpeg_str(const std::string& between_expr) const override;
   };
@@ -105,6 +111,22 @@ namespace fg {
 
     FilterType type() const override;
     std::string name() const override;
+
+    std::string save_str() const override;
+    std::string ffmpeg_str(const std::string& between_expr) const override;
+  };
+
+
+  class CutFilter : public Filter
+  {
+  public:
+    static CutFilter* load(const std::string& parameters);
+
+    FilterType type() const override;
+    std::string name() const override;
+
+    bool affects_audio() const override;
+
     std::string save_str() const override;
     std::string ffmpeg_str(const std::string& between_expr) const override;
   };

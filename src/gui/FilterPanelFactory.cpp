@@ -65,6 +65,9 @@ FilterPanel* FilterPanelFactory::create(fg::Filter* filter)
   case fg::FilterType::NO_OP:
     return new FilterPanelNull();
 
+  case fg::FilterType::CUT:
+    return new FilterPanelCut();
+
   case fg::FilterType::DELOGO:
     return new FilterPanelDelogo(dynamic_cast<fg::DelogoFilter*>(filter),
                                  frame_width_, frame_height_);
@@ -85,6 +88,9 @@ FilterPanel* FilterPanelFactory::create(fg::FilterType type)
   case fg::FilterType::NO_OP:
     return new FilterPanelNull();
 
+  case fg::FilterType::CUT:
+    return new FilterPanelCut();
+
   case fg::FilterType::DELOGO:
     return new FilterPanelDelogo(frame_width_, frame_height_);
 
@@ -99,14 +105,6 @@ FilterPanel* FilterPanelFactory::create(fg::FilterType type)
 
 FilterPanel* FilterPanelFactory::convert(fg::Filter* original, fg::FilterType new_type)
 {
-  if (new_type == fg::FilterType::NO_OP) {
-    return create(fg::FilterType::NO_OP);
-  }
-
-  if (original->type() == fg::FilterType::NO_OP) {
-    return create(new_type);
-  }
-
   if (is_rectangular(original->type()) && is_rectangular(new_type)) {
     FilterPanel* panel = create(new_type);
     fg::RectangularFilter* rectangular = dynamic_cast<fg::RectangularFilter*>(original);
@@ -115,7 +113,17 @@ FilterPanel* FilterPanelFactory::convert(fg::Filter* original, fg::FilterType ne
     return panel;
   }
 
+  if (is_no_parameters(new_type) || is_no_parameters(original->type())) {
+    return create(new_type);
+  }
+
   throw std::invalid_argument("Unsupported conversion");
+}
+
+
+bool FilterPanelFactory::is_no_parameters(fg::FilterType type)
+{
+  return type == fg::FilterType::NO_OP || type == fg::FilterType::CUT;
 }
 
 

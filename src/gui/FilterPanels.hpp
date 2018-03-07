@@ -29,17 +29,35 @@
 
 
 namespace mdl {
-  class FilterPanelNull : public FilterPanel
+  class FilterPanelNoParameters : public FilterPanel
+  {
+  protected:
+    FilterPanelNoParameters();
+
+  public:
+    MaybeRectangle get_rectangle() const override;
+    void set_rectangle(const Rectangle& rect) override;
+    bool is_changed() const override;
+    void set_changed(bool changed) override;
+  };
+
+
+  class FilterPanelNull : public FilterPanelNoParameters
   {
   public:
     FilterPanelNull();
 
     bool creates_filter() const override;
     fg::Filter* get_filter() const override;
-    MaybeRectangle get_rectangle() const override;
-    void set_rectangle(const Rectangle& rect) override;
-    bool is_changed() const override;
-    void set_changed(bool changed) override;
+  };
+
+
+  class FilterPanelCut : public FilterPanelNoParameters
+  {
+  public:
+    FilterPanelCut();
+
+    fg::Filter* get_filter() const override;
   };
 
 

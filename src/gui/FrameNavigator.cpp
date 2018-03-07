@@ -155,6 +155,12 @@ int FrameNavigator::get_number_of_frames() const
 }
 
 
+double FrameNavigator::get_fps() const
+{
+  return frame_provider_->get_fps();
+}
+
+
 void FrameNavigator::change_displayed_frame(int new_frame_number)
 {
   try {

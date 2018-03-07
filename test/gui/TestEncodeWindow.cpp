@@ -23,6 +23,7 @@
 #include <gtkmm.h>
 
 #include "filter-generator/FilterData.hpp"
+#include "filter-generator/Filters.hpp"
 
 #include "EncodeWindow.hpp"
 
@@ -52,7 +53,7 @@ class EncodeWindowTestFixture
 {
 public:
   EncodeWindowTestFixture()
-    : window(std::move(std::unique_ptr<fg::FilterData>(new fg::FilterData())), 0)
+    : window(std::move(std::unique_ptr<fg::FilterData>(new fg::FilterData())), 25, 0)
   {
     window.filter_data_->set_movie_file("input.mp4");
     window.txt_file_.set_text("output.mp4");
@@ -73,14 +74,19 @@ public:
     window.txt_quality_.set_value(quality);
   }
 
-  std::vector<std::string> get_ffmpeg_cmd_line()
+  void add_filter(int start_frame, fg::Filter* filter)
   {
-    return window.get_ffmpeg_cmd_line("filters.ffm");
+    window.filter_data_->filter_list().insert(start_frame, filter);
   }
 
-  void set_total_frames(int frames)
+  std::vector<std::string> get_ffmpeg_cmd_line()
   {
-    window.total_frames_ = frames;
+    return window.get_ffmpeg_cmd_line("filters.ffm", window.get_generator());
+  }
+
+  void set_output_frames(int frames)
+  {
+    window.total_frames_output_ = frames;
   }
 
   double get_progress_percentage(const std::string& ffmpeg_stats)
@@ -109,7 +115,7 @@ public:
 
 BOOST_FIXTURE_TEST_SUITE(ffmpeg_command_line, mdl::EncodeWindowTestFixture)
 
-BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264)
+BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264_copy_audio)
 {
   set_codec_h264();
   set_quality(20);
@@ -118,16 +124,16 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264)
     "ffmpeg",
     "-y", "-v", "quiet", "-stats",
     "-i", "input.mp4",
-    "-filter_script:v", "filters.ffm",
-    "-c:v", "libx264", "-crf", "20",
-    "-c:a", "copy",
+    "-filter_complex_script", "filters.ffm",
+    "-map", "[out_v]", "-c:v", "libx264", "-crf", "20",
+    "-map", "0:a?", "-c:a", "copy",
     "output.mp4"};
   BOOST_TEST(get_ffmpeg_cmd_line() == expected,
              boost::test_tools::per_element());
 }
 
 
-BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h265)
+BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h265_copy_audio)
 {
   set_codec_h265();
   set_quality(25);
@@ -136,9 +142,27 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h265)
     "ffmpeg",
     "-y", "-v", "quiet", "-stats",
     "-i", "input.mp4",
-    "-filter_script:v", "filters.ffm",
-    "-c:v", "libx265", "-crf", "25",
-    "-c:a", "copy",
+    "-filter_complex_script", "filters.ffm",
+    "-map", "[out_v]", "-c:v", "libx265", "-crf", "25",
+    "-map", "0:a?", "-c:a", "copy",
+    "output.mp4"};
+  BOOST_TEST(get_ffmpeg_cmd_line() == expected,
+             boost::test_tools::per_element());
+}
+
+BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264_reencode_audio)
+{
+  add_filter(1000, new fg::CutFilter());
+  set_codec_h264();
+  set_quality(20);
+
+  std::vector<std::string> expected{
+    "ffmpeg",
+    "-y", "-v", "quiet", "-stats",
+    "-i", "input.mp4",
+    "-filter_complex_script", "filters.ffm",
+    "-map", "[out_v]", "-c:v", "libx264", "-crf", "20",
+    "-map", "[out_a]", "-c:a", "aac", "-b:a", "192k",
     "output.mp4"};
   BOOST_TEST(get_ffmpeg_cmd_line() == expected,
              boost::test_tools::per_element());
@@ -152,7 +176,7 @@ BOOST_FIXTURE_TEST_SUITE(progress_percentage, mdl::EncodeWindowTestFixture,
 
 BOOST_AUTO_TEST_CASE(should_calculate_progress)
 {
-  set_total_frames(15372);
+  set_output_frames(15372);
 
   double p = get_progress_percentage("frame=  4238 fps= 36 q=31.0 size=    2048kB time=00:00:19.06 bitrate= 880.1kbits/s speed=0.605x");
   BOOST_TEST(p == 0.27569);
@@ -161,7 +185,7 @@ BOOST_AUTO_TEST_CASE(should_calculate_progress)
 
 BOOST_AUTO_TEST_CASE(should_return_negative_for_invalid_line)
 {
-  set_total_frames(15372);
+  set_output_frames(15372);
 
   double p = get_progress_percentage("Some random string");
   BOOST_TEST(p < 0);

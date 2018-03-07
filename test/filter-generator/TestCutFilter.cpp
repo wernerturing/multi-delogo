@@ -22,7 +22,7 @@
 #include "Exceptions.hpp"
 
 
-#define BOOST_TEST_MODULE null filter
+#define BOOST_TEST_MODULE cut filter
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
@@ -30,56 +30,57 @@
 
 BOOST_AUTO_TEST_CASE(test_type)
 {
-  fg::NullFilter filter;
+  fg::CutFilter filter;
 
-  BOOST_CHECK_EQUAL(filter.type(), fg::FilterType::NO_OP);
+  BOOST_CHECK_EQUAL(filter.type(), fg::FilterType::CUT);
 }
 
 
 BOOST_AUTO_TEST_CASE(test_name)
 {
-  fg::NullFilter filter;
+  fg::CutFilter filter;
 
-  BOOST_CHECK_EQUAL(filter.name(), "none");
+  BOOST_CHECK_EQUAL(filter.name(), "cut");
 }
 
 
-BOOST_AUTO_TEST_CASE(null_filter_does_not_affect_audio)
+BOOST_AUTO_TEST_CASE(cut_filter_affects_audio)
 {
-  fg::NullFilter filter;
-  BOOST_TEST(!filter.affects_audio());
+  fg::CutFilter filter;
+  BOOST_TEST(filter.affects_audio());
 }
 
 
 BOOST_AUTO_TEST_CASE(test_save_str)
 {
-  fg::NullFilter filter;
+  fg::CutFilter filter;
 
   std::string serialized(filter.save_str());
 
-  BOOST_CHECK_EQUAL(serialized, "none;");
+  BOOST_CHECK_EQUAL(serialized, "cut;");
 }
 
 
 BOOST_AUTO_TEST_CASE(test_load)
 {
-  fg::NullFilter* filter = fg::NullFilter::load("");
+  fg::CutFilter* filter = fg::CutFilter::load("");
 
-  BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::NO_OP);
+  BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::CUT);
 }
 
 
 BOOST_AUTO_TEST_CASE(test_load_with_invalid_parameters)
 {
-  BOOST_CHECK_THROW(fg::NullFilter::load("1;2"), fg::InvalidParametersException);
+  BOOST_CHECK_THROW(fg::CutFilter::load("1;2"), fg::InvalidParametersException);
 }
 
 
 BOOST_AUTO_TEST_CASE(test_ffmpeg_str)
 {
-  fg::NullFilter filter;
+  fg::CutFilter filter;
 
   std::string ffmpeg(filter.ffmpeg_str("<BETWEEN>"));
 
   BOOST_CHECK_EQUAL(ffmpeg, "");
 }
+

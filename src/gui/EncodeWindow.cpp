@@ -42,9 +42,10 @@
 using namespace mdl;
 
 
-EncodeWindow::EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int total_frames)
+EncodeWindow::EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int total_frames, double fps)
   : filter_data_(std::move(filter_data))
   , total_frames_(total_frames)
+  , fps_(fps)
   , codec_(Codec::H264)
 {
   set_title(_("Encode video"));
@@ -237,9 +238,12 @@ void EncodeWindow::on_encode()
   try {
     int tmp_fd = Glib::file_open_tmp(tmp_filter_file_, "mdlfilter");
     ::close(tmp_fd);
-    generate_script(tmp_filter_file_);
+    Generator generator = get_generator();
+    generate_script(tmp_filter_file_, generator);
 
-    std::vector<std::string> cmd_line = get_ffmpeg_cmd_line(tmp_filter_file_);
+    total_frames_output_ = generator->resulting_frames(total_frames_);
+
+    std::vector<std::string> cmd_line = get_ffmpeg_cmd_line(tmp_filter_file_, generator);
 
     start_ffmpeg(cmd_line);
   } catch (Glib::FileError& e) {
@@ -258,7 +262,8 @@ void EncodeWindow::on_generate_script()
     return;
   }
 
-  generate_script(file);
+  Generator generator = get_generator();
+  generate_script(file, generator);
 
   Gtk::MessageDialog dlg(*this, _("Filter script generated"));
   dlg.run();
@@ -288,7 +293,19 @@ bool EncodeWindow::check_file(const std::string& file)
 }
 
 
-void EncodeWindow::generate_script(const std::string& file)
+EncodeWindow::Generator EncodeWindow::get_generator()
+{
+  Generator g;
+  if (chk_fuzzy_.get_active()) {
+    g = fg::FuzzyScriptGenerator::create(filter_data_->filter_list(), fps_, txt_fuzzyness_.get_value());
+  }  else {
+    g = fg::RegularScriptGenerator::create(filter_data_->filter_list(), fps_);
+  }
+  return g;
+}
+
+
+void EncodeWindow::generate_script(const std::string& file, Generator generator)
 {
   std::ofstream file_stream(file);
   if (!file_stream.is_open()) {
@@ -299,19 +316,12 @@ void EncodeWindow::generate_script(const std::string& file)
     return;
   }
 
-  std::shared_ptr<fg::ScriptGenerator> g;
-  if (chk_fuzzy_.get_active()) {
-    g = fg::FuzzyScriptGenerator::create(filter_data_->filter_list(), txt_fuzzyness_.get_value());
-  }  else {
-    g = fg::RegularScriptGenerator::create(filter_data_->filter_list());
-  }
-
-  g->generate_ffmpeg_script(file_stream);
+  generator->generate_ffmpeg_script(file_stream);
   file_stream.close();
 }
 
 
-std::vector<std::string> EncodeWindow::get_ffmpeg_cmd_line(const std::string& filter_file)
+std::vector<std::string> EncodeWindow::get_ffmpeg_cmd_line(const std::string& filter_file, Generator generator)
 {
   std::string codec_name;
   if (codec_ == Codec::H264) {
@@ -327,14 +337,37 @@ std::vector<std::string> EncodeWindow::get_ffmpeg_cmd_line(const std::string& fi
   cmd_line.push_back("-y");
   cmd_line.push_back("-v"); cmd_line.push_back("quiet");
   cmd_line.push_back("-stats");
+
   cmd_line.push_back("-i"); cmd_line.push_back(filter_data_->movie_file());
-  cmd_line.push_back("-filter_script:v"); cmd_line.push_back(filter_file);
+  cmd_line.push_back("-filter_complex_script"); cmd_line.push_back(filter_file);
+
+  cmd_line.push_back("-map"); cmd_line.push_back("[out_v]");
   cmd_line.push_back("-c:v"); cmd_line.push_back(codec_name);
   cmd_line.push_back("-crf"); cmd_line.push_back(quality);
-  cmd_line.push_back("-c:a"); cmd_line.push_back("copy");
+
+  std::vector<std::string> audio_opts = get_audio_opts(generator);
+  cmd_line.insert(cmd_line.end(), audio_opts.begin(), audio_opts.end());
+
   cmd_line.push_back(txt_file_.get_text());
 
   return cmd_line;
+}
+
+
+std::vector<std::string> EncodeWindow::get_audio_opts(Generator generator)
+{
+  std::vector<std::string> audio_opts;
+
+  if (generator->affects_audio()) {
+    audio_opts.push_back("-map"); audio_opts.push_back("[out_a]");
+    audio_opts.push_back("-c:a"); audio_opts.push_back("aac");
+    audio_opts.push_back("-b:a"); audio_opts.push_back("192k");
+  } else {
+    audio_opts.push_back("-map"); audio_opts.push_back("0:a?");
+    audio_opts.push_back("-c:a"); audio_opts.push_back("copy");
+  }
+
+  return audio_opts;
 }
 
 
@@ -423,7 +456,7 @@ EncodeWindow::Progress EncodeWindow::get_progress(const std::string& ffmpeg_stat
   std::smatch matches;
   if (std::regex_search(ffmpeg_stats, matches, r)) {
     int frames_encoded = std::stoi(matches[1].str());
-    p.percentage = (double) frames_encoded / total_frames_;
+    p.percentage = (double) frames_encoded / total_frames_output_;
   } else {
     p.percentage = -1;
   }

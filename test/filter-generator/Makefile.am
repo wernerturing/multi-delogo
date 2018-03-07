@@ -21,6 +21,7 @@ check_PROGRAMS = TestIOUtils \
                  TestNullFilter \
                  TestDelogoFilter \
                  TestDrawboxFilter \
+                 TestCutFilter \
                  TestFilterFactory \
                  TestFilterList \
                  TestRegularScriptGenerator \

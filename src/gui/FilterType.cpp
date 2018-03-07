@@ -30,13 +30,16 @@ FilterType::FilterType()
   : Gtk::Grid()
   , rad_delogo_("delogo")
   , rad_drawbox_("drawbox")
+  , rad_cut_("cut")
   , rad_none_("none")
 {
   rad_drawbox_.join_group(rad_delogo_);
+  rad_cut_.join_group(rad_delogo_);
   rad_none_.join_group(rad_delogo_);
 
   rad_delogo_.set_halign(Gtk::ALIGN_START);
   rad_drawbox_.set_halign(Gtk::ALIGN_START);
+  rad_cut_.set_halign(Gtk::ALIGN_START);
   rad_none_.set_halign(Gtk::ALIGN_START);
 
   rad_delogo_.signal_toggled().connect(
@@ -45,6 +48,9 @@ FilterType::FilterType()
   rad_drawbox_.signal_toggled().connect(
     sigc::bind<const Gtk::RadioButton&>(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
                                         rad_drawbox_));
+  rad_cut_.signal_toggled().connect(
+    sigc::bind<const Gtk::RadioButton&>(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
+                                        rad_cut_));
   rad_none_.signal_toggled().connect(
     sigc::bind<const Gtk::RadioButton&>(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
                                         rad_none_));
@@ -56,7 +62,8 @@ FilterType::FilterType()
 
   attach_next_to(rad_delogo_, *lbl, Gtk::POS_RIGHT, 1, 1);
   attach_next_to(rad_drawbox_, rad_delogo_, Gtk::POS_BOTTOM, 1, 1);
-  attach_next_to(rad_none_, rad_drawbox_, Gtk::POS_BOTTOM, 1, 1);
+  attach_next_to(rad_cut_, rad_drawbox_, Gtk::POS_BOTTOM, 1, 1);
+  attach_next_to(rad_none_, rad_cut_, Gtk::POS_BOTTOM, 1, 1);
 }
 
 
@@ -69,6 +76,10 @@ void FilterType::set(fg::FilterType type)
 
   case fg::FilterType::DRAWBOX:
     rad_drawbox_.set_active();
+    break;
+
+  case fg::FilterType::CUT:
+    rad_cut_.set_active();
     break;
 
   case fg::FilterType::NO_OP:
@@ -85,6 +96,8 @@ fg::FilterType FilterType::get() const
     return fg::FilterType::DELOGO;
   } else if (rad_drawbox_.get_active()) {
     return fg::FilterType::DRAWBOX;
+  } else if (rad_cut_.get_active()) {
+    return fg::FilterType::CUT;
   } else {
     return fg::FilterType::NO_OP;
   }

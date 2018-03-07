@@ -114,12 +114,15 @@ BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
     list.insert(get_start_frame_list(i, filter_length),
                 new DelogoFilter(i, i, i, i));
   }
-  std::shared_ptr<ScriptGenerator> g = FuzzyScriptGenerator::create(list, 2);
+  std::shared_ptr<ScriptGenerator> g = FuzzyScriptGenerator::create(list, 25, 2);
 
   std::stringstream result;
   g->generate_ffmpeg_script(result);
 
   std::string line;
+  std::getline(result, line);
+  BOOST_TEST(line == "[0:v]");
+
   for (int i = 0; i < iters - 1; ++i) {
     std::getline(result, line);
     BOOST_TEST_CONTEXT("line " << i << ": " << line) {
@@ -130,4 +133,42 @@ BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
   BOOST_TEST_CONTEXT("line " << iters - 1 << ": " << line) {
     verify_last(line, iters - 1, filter_length);
   }
+
+  std::getline(result, line);
+  BOOST_TEST(line == "[out_v]");
+}
+
+
+BOOST_AUTO_TEST_CASE(cut_positions_should_not_be_changed)
+{
+  FilterList list;
+  list.insert(1, new DelogoFilter(1, 1, 1, 1));
+  list.insert(501, new CutFilter());
+  list.insert(1001, new DelogoFilter(2, 2, 2, 2));
+  std::shared_ptr<ScriptGenerator> g = FuzzyScriptGenerator::create(list, 25, 2);
+
+  std::stringstream result;
+  g->generate_ffmpeg_script(result);
+
+  std::string line;
+
+  std::getline(result, line);
+  BOOST_TEST(line == "[0:v]");
+
+  std::getline(result, line);
+  std::regex r1("^delogo=enable='between\\(n,0,\\d+\\)':x=1:y=1:w=1:h=1,$");
+  BOOST_TEST(std::regex_search(line, r1));
+
+  std::getline(result, line);
+  std::regex r2("^delogo=enable='gte\\(n,\\d+\\)':x=2:y=2:w=2:h=2,$");
+  BOOST_TEST(std::regex_search(line, r2));
+
+  std::getline(result, line);
+  BOOST_TEST(line == "select='not(between(n,500,999))',setpts=N/FRAME_RATE/TB");
+
+  std::getline(result, line);
+  BOOST_TEST(line == "[out_v];");
+
+  std::getline(result, line);
+  BOOST_TEST(line == "[0:a]aselect='not(between(t,500/25.000000,999/25.000000))',asetpts=N/SR/TB[out_a]");
 }

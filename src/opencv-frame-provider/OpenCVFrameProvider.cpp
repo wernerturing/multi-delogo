@@ -73,3 +73,9 @@ int OpenCVFrameProvider::get_number_of_frames()
 {
   return video_->get(cv::CAP_PROP_FRAME_COUNT);
 }
+
+
+double OpenCVFrameProvider::get_fps()
+{
+  return video_->get(cv::CAP_PROP_FPS);
+}
