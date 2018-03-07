@@ -241,6 +241,8 @@ void EncodeWindow::on_encode()
     Generator generator = get_generator();
     generate_script(tmp_filter_file_, generator);
 
+    total_frames_output_ = generator->resulting_frames(total_frames_);
+
     std::vector<std::string> cmd_line = get_ffmpeg_cmd_line(tmp_filter_file_, generator);
 
     start_ffmpeg(cmd_line);
@@ -454,7 +456,7 @@ EncodeWindow::Progress EncodeWindow::get_progress(const std::string& ffmpeg_stat
   std::smatch matches;
   if (std::regex_search(ffmpeg_stats, matches, r)) {
     int frames_encoded = std::stoi(matches[1].str());
-    p.percentage = (double) frames_encoded / total_frames_;
+    p.percentage = (double) frames_encoded / total_frames_output_;
   } else {
     p.percentage = -1;
   }

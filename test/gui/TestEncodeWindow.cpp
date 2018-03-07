@@ -84,9 +84,9 @@ public:
     return window.get_ffmpeg_cmd_line("filters.ffm", window.get_generator());
   }
 
-  void set_total_frames(int frames)
+  void set_output_frames(int frames)
   {
-    window.total_frames_ = frames;
+    window.total_frames_output_ = frames;
   }
 
   double get_progress_percentage(const std::string& ffmpeg_stats)
@@ -176,7 +176,7 @@ BOOST_FIXTURE_TEST_SUITE(progress_percentage, mdl::EncodeWindowTestFixture,
 
 BOOST_AUTO_TEST_CASE(should_calculate_progress)
 {
-  set_total_frames(15372);
+  set_output_frames(15372);
 
   double p = get_progress_percentage("frame=  4238 fps= 36 q=31.0 size=    2048kB time=00:00:19.06 bitrate= 880.1kbits/s speed=0.605x");
   BOOST_TEST(p == 0.27569);
@@ -185,7 +185,7 @@ BOOST_AUTO_TEST_CASE(should_calculate_progress)
 
 BOOST_AUTO_TEST_CASE(should_return_negative_for_invalid_line)
 {
-  set_total_frames(15372);
+  set_output_frames(15372);
 
   double p = get_progress_percentage("Some random string");
   BOOST_TEST(p < 0);

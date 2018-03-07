@@ -63,6 +63,7 @@ namespace mdl {
     Glib::Pid ffmpeg_handle_;
 #endif
     std::string tmp_filter_file_;
+    int total_frames_output_;
     Glib::RefPtr<Glib::IOChannel> ffmpeg_out_;
     Glib::Timer ffmpeg_timer_;
     Gtk::Box box_progress_;

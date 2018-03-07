@@ -201,3 +201,21 @@ BOOST_AUTO_TEST_CASE(fps_should_use_dot_as_decimal_separator_regardless_of_local
 
   setlocale(LC_NUMERIC, previous_locale);
 }
+
+
+BOOST_AUTO_TEST_CASE(should_calculate_number_of_frames_in_result)
+{
+  FilterList list;
+  list.insert(1, new DelogoFilter(10, 11, 12, 13));
+  list.insert(601, new CutFilter());
+  list.insert(1001, new DrawboxFilter(20, 21, 22, 23));
+  list.insert(2001, new CutFilter());
+  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 25);
+
+  // Only works after the script has been generated
+  std::ostringstream out;
+  g->generate_ffmpeg_script(out);
+
+  int result = g->resulting_frames(3000);
+  BOOST_TEST(result == 1600);
+}

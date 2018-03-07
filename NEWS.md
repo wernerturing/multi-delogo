@@ -1,5 +1,7 @@
 ## [ongoing]
 
+* New 'cut' filter to remove parts of the video.
+
 * Fixed bug that caused FFmpeg to fail if the last filter is a "none".
 
 

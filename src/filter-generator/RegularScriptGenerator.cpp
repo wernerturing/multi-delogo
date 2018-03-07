@@ -21,6 +21,7 @@
 #include <utility>
 #include <ostream>
 #include <algorithm>
+#include <numeric>
 #include <clocale>
 
 #include <boost/algorithm/string/join.hpp>
@@ -194,4 +195,15 @@ std::string RegularScriptGenerator::get_audio_expression(int start_frame, maybe_
       + std::to_string(start_frame) + fps_
       + ")";
   }
+}
+
+
+int RegularScriptGenerator::resulting_frames(int original_frames) const
+{
+  int cut_frames = std::accumulate(cuts_.begin(), cuts_.end(), 0,
+    [original_frames](int sum, std::pair<int, maybe_int>& i) {
+      return sum + (i.second.value_or(original_frames) - i.first);
+    });
+
+  return original_frames - cut_frames;
 }

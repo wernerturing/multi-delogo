@@ -41,6 +41,7 @@ namespace fg {
 
     bool affects_audio() const override;
     void generate_ffmpeg_script(std::ostream& out) const override;
+    int resulting_frames(int original_frames) const override;
 
   protected:
     const FilterList& filter_list_;
