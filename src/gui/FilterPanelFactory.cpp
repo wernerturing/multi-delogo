@@ -65,6 +65,9 @@ FilterPanel* FilterPanelFactory::create(fg::Filter* filter)
   case fg::FilterType::NO_OP:
     return new FilterPanelNull();
 
+  case fg::FilterType::CUT:
+    return new FilterPanelCut();
+
   case fg::FilterType::DELOGO:
     return new FilterPanelDelogo(dynamic_cast<fg::DelogoFilter*>(filter),
                                  frame_width_, frame_height_);
@@ -84,6 +87,9 @@ FilterPanel* FilterPanelFactory::create(fg::FilterType type)
   switch (type) {
   case fg::FilterType::NO_OP:
     return new FilterPanelNull();
+
+  case fg::FilterType::CUT:
+    return new FilterPanelCut();
 
   case fg::FilterType::DELOGO:
     return new FilterPanelDelogo(frame_width_, frame_height_);

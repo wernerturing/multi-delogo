@@ -54,8 +54,9 @@ public:
 
   FilterPanelFactory factory;
 };
-BOOST_FIXTURE_TEST_SUITE(FilterPanelFactory, Fixture)
 
+
+BOOST_FIXTURE_TEST_SUITE(Panel_creation, Fixture)
 
 BOOST_AUTO_TEST_CASE(should_create_a_panel_for_null_filter)
 {
@@ -194,6 +195,49 @@ BOOST_AUTO_TEST_CASE(filter_panel_drawbox_should_return_a_rectangle)
 }
 
 
+BOOST_AUTO_TEST_CASE(should_create_a_panel_for_cut_filter)
+{
+  fg::CutFilter filter;
+  FilterPanel* panel = factory.create(&filter);
+  FilterPanelCut* downcasted = dynamic_cast<FilterPanelCut*>(panel);
+
+  BOOST_CHECK(downcasted != nullptr);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_create_a_panel_for_cut_filter_from_type)
+{
+  FilterPanel* panel = factory.create(fg::FilterType::CUT);
+  FilterPanelCut* downcasted = dynamic_cast<FilterPanelCut*>(panel);
+
+  BOOST_CHECK(downcasted != nullptr);
+}
+
+
+BOOST_AUTO_TEST_CASE(filter_panel_cut_should_return_a_cut_filter)
+{
+  fg::CutFilter filter;
+  FilterPanel* panel = factory.create(&filter);
+
+  fg::Filter* created_filter = panel->get_filter();
+  BOOST_CHECK_EQUAL(created_filter->type(), fg::FilterType::CUT);
+}
+
+
+BOOST_AUTO_TEST_CASE(filter_panel_cut_should_return_no_rectangle)
+{
+  fg::CutFilter filter;
+  FilterPanel* panel = factory.create(&filter);
+
+  auto rect = panel->get_rectangle();
+  BOOST_CHECK(!rect);
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+
+BOOST_FIXTURE_TEST_SUITE(Panel_conversion, Fixture)
+
 BOOST_AUTO_TEST_CASE(should_convert_from_delogo_to_null_filter)
 {
   fg::DelogoFilter filter(0, 500, 100, 30);
@@ -264,6 +308,5 @@ BOOST_AUTO_TEST_CASE(should_convert_from_drawbox_to_delogo)
   BOOST_CHECK_EQUAL(delogo->width(), 3);
   BOOST_CHECK_EQUAL(delogo->height(), 4);
 }
-
 
 BOOST_AUTO_TEST_SUITE_END()
