@@ -309,4 +309,34 @@ BOOST_AUTO_TEST_CASE(should_convert_from_drawbox_to_delogo)
   BOOST_CHECK_EQUAL(delogo->height(), 4);
 }
 
+
+BOOST_AUTO_TEST_CASE(should_convert_from_delogo_to_cut_filter)
+{
+  fg::DelogoFilter filter(0, 500, 100, 30);
+  FilterPanel* panel = factory.convert(&filter, fg::FilterType::CUT);
+  FilterPanelCut* downcasted = dynamic_cast<FilterPanelCut*>(panel);
+
+  BOOST_CHECK(downcasted != nullptr);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_convert_from_cut_filter_to_drawbox)
+{
+  fg::CutFilter filter;
+  FilterPanel* panel = factory.convert(&filter, fg::FilterType::DRAWBOX);
+  FilterPanelDrawbox* downcasted = dynamic_cast<FilterPanelDrawbox*>(panel);
+
+  BOOST_CHECK(downcasted != nullptr);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_convert_from_cut_filter_to_null_filter)
+{
+  fg::CutFilter filter;
+  FilterPanel* panel = factory.convert(&filter, fg::FilterType::NO_OP);
+  FilterPanelNull* downcasted = dynamic_cast<FilterPanelNull*>(panel);
+
+  BOOST_CHECK(downcasted != nullptr);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
