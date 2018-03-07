@@ -50,6 +50,8 @@ namespace fg {
     typedef boost::optional<int> maybe_int;
     mutable std::vector<std::pair<int, maybe_int>> cuts_;
 
+    std::string make_fps_str(double fps);
+
     void generate_ffmpeg_script_standard_filters(std::ostream& out) const;
     void generate_ffmpeg_script_cuts(std::ostream& out) const;
     void generate_ffmpeg_script_audio(std::ostream& out) const;

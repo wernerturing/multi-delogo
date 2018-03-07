@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <clocale>
 #include <memory>
 #include <string>
 #include <sstream>
@@ -176,4 +177,27 @@ BOOST_AUTO_TEST_CASE(should_generate_script_with_cut_filter_at_the_end)
     "[out_v];\n"
     "[0:a]aselect='not(gte(t,600/29.970000))',asetpts=N/SR/TB[out_a]";
   BOOST_CHECK_EQUAL(out.str(), expected);
+}
+
+
+BOOST_AUTO_TEST_CASE(fps_should_use_dot_as_decimal_separator_regardless_of_locale)
+{
+  char* previous_locale = setlocale(LC_NUMERIC, nullptr);
+  setlocale(LC_NUMERIC, "pt_BR.UTF-8");
+
+  FilterList list;
+  list.insert(501, new CutFilter());
+  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 29.97);
+
+  std::ostringstream out;
+  g->generate_ffmpeg_script(out);
+
+  std::string expected =
+    "[0:v]\n"
+    "select='not(gte(n,500))',setpts=N/FRAME_RATE/TB\n"
+    "[out_v];\n"
+    "[0:a]aselect='not(gte(t,500/29.970000))',asetpts=N/SR/TB[out_a]";
+  BOOST_CHECK_EQUAL(out.str(), expected);
+
+  setlocale(LC_NUMERIC, previous_locale);
 }

@@ -21,6 +21,7 @@
 #include <utility>
 #include <ostream>
 #include <algorithm>
+#include <clocale>
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/optional.hpp>
@@ -36,8 +37,19 @@ RegularScriptGenerator::RegularScriptGenerator(const FilterList& filter_list, do
   : filter_list_(filter_list)
   , first_filter_(true)
 {
-  fps_ = "/" + std::to_string(fps);
+  fps_ = make_fps_str(fps);
 }
+
+
+std::string RegularScriptGenerator::make_fps_str(double fps)
+{
+  char* original_locale = setlocale(LC_NUMERIC, nullptr);
+  setlocale(LC_NUMERIC, "C");
+  std::string result = "/" + std::to_string(fps);
+  setlocale(LC_NUMERIC, original_locale);
+  return result;
+}
+
 
 
 std::shared_ptr<RegularScriptGenerator> RegularScriptGenerator::create(const FilterList& filter_list, double fps)
