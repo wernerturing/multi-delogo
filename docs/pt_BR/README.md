@@ -51,7 +51,15 @@ Agora clique próximo ao canto superior esquerdo do texto, e arreste o mouse, de
 
 Observe agora o lado esquerdo da janela. Observe que há uma linha na lista dizendo **76 - delogo**. Isto é um _filtro_.
 
-Um _filtro_ é uma modificação feita no vídeo, com o objetivo de remover os logos. Dois tipos de filtro são suportados: [delogo](https://ffmpeg.org/ffmpeg-filters.html#delogo) tenta remover o logo, e o [drawbox](https://ffmpeg.org/ffmpeg-filters.html#drawbox) simplesmente desenha um retângulo preto sobre o texto. Geralmente o delogo funciona bem, mas dependendo do vídeo pode falhar ou gerar artefatos feitos. O filtro _none_ (nenhum) é usado para não aplicar nenhum filtro a uma parte do vídeo.
+Um _filtro_ é uma modificação feita no vídeo, com o objetivo de remover os logos. Os seguintes filtros são disponíveis:
+
+* _delogo_ tenta remover um logo na região marcada. Ele quase sempre funciona e remove o logo, mas dependendo do fundo pode deixar um artefato na região, como se um filtro de desfoque fosse aplicado. Para mais detalhes, veja [a documentação do ffmpeg](https://ffmpeg.org/ffmpeg-filters.html#delogo).
+
+* _drawbox_ desenha um retângulo preto sobre a região marcada. Para mais detalhes, veja [a documentação do ffmpeg](https://ffmpeg.org/ffmpeg-filters.html#drawbox).
+
+* _cut_ remove a parte do vídeo iniciando no quadro inicial do filtro até o início do próximo filtro. Se esse filtro for usado, o áudio terá que ser recodificado.
+
+* _none_ é usado para não aplicar um filtro a uma parte do vídeo.
 
 Filtros são aplicados do seu _quadro inicial_ até o início do próximo filtro, ou até o fim do vídeo se ele for o último filtro.
 
