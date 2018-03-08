@@ -237,12 +237,13 @@ FFmpegExecutor::Progress FFmpegExecutor::get_progress(const std::string& ffmpeg_
 
   std::regex r("^frame=\\s+(\\d+)");
   std::smatch matches;
-  if (std::regex_search(ffmpeg_stats, matches, r)) {
-    int frames_encoded = std::stoi(matches[1].str());
-    p.percentage = (double) frames_encoded / total_frames_output_;
-  } else {
+  if (!std::regex_search(ffmpeg_stats, matches, r)) {
     p.percentage = -1;
+    return p;
   }
+
+  int frames_encoded = std::stoi(matches[1].str());
+  p.percentage = (double) frames_encoded / total_frames_output_;
 
   p.seconds_elapsed = ffmpeg_timer_.elapsed();
   calculate_time_remaining(p);

@@ -325,8 +325,8 @@ void EncodeWindow::on_ffmpeg_progress(const FFmpegExecutor::Progress& p)
 {
   if (p.percentage >= 0) {
     progress_bar_.set_fraction(p.percentage);
+    progress_bar_.set_text(get_progress_str(p));
   }
-  progress_bar_.set_text(get_progress_str(p));
 }
 
 
@@ -353,6 +353,7 @@ void EncodeWindow::on_ffmpeg_finished(bool success, const std::string& error)
 {
   enable_widgets();
   progress_bar_.set_fraction(1);
+  progress_bar_.set_text("");
 
   if (success) {
     lbl_status_.set_text(_("Encoding finished successfully"));
