@@ -25,29 +25,29 @@ LDADD =  ../../src/filter-generator/libfilter-generator.a \
          $(BOOST_UNIT_TEST_FRAMEWORK_LIB)
 
 
-check_PROGRAMS = TestFilterListModel \
-                 TestFilterPanelFactory \
-                 TestEncodeWindow \
-                 TestSelectionRect \
-                 TestFrameNavigatorUtil
+check_PROGRAMS = FilterListModelTest \
+                 FilterPanelFactoryTest \
+                 EncodeWindowTest \
+                 SelectionRectTest \
+                 FrameNavigatorUtilTest
 
-TestFilterListModel_SOURCES = TestFilterListModel.cpp \
+FilterListModelTest_SOURCES = FilterListModelTest.cpp \
                               ../../src/gui/FilterListModel.cpp
 
-TestFilterPanelFactory_SOURCES = TestFilterPanelFactory.cpp \
+FilterPanelFactoryTest_SOURCES = FilterPanelFactoryTest.cpp \
                                  ../../src/gui/FilterPanels.cpp \
                                  ../../src/gui/FilterPanelFactory.cpp
 
-TestEncodeWindow_SOURCES = TestEncodeWindow.cpp \
+EncodeWindowTest_SOURCES = EncodeWindowTest.cpp \
                            ../../src/gui/EncodeWindow.cpp \
                            ../../src/gui/Utils.cpp
 
-TestSelectionRect_SOURCES = TestSelectionRect.cpp \
+SelectionRectTest_SOURCES = SelectionRectTest.cpp \
                             ../../src/gui/FrameView.cpp
-TestSelectionRect_CPPFLAGS = $(AM_CPPFLAGS) $(GOOCANVASMM_CFLAGS)
-TestSelectionRect_LDADD = $(LDADD) $(GOOCANVASMM_LIBS)
+SelectionRectTest_CPPFLAGS = $(AM_CPPFLAGS) $(GOOCANVASMM_CFLAGS)
+SelectionRectTest_LDADD = $(LDADD) $(GOOCANVASMM_LIBS)
 
-TestFrameNavigatorUtil_SOURCES = TestFrameNavigatorUtil.cpp \
+FrameNavigatorUtilTest_SOURCES = FrameNavigatorUtilTest.cpp \
                                  ../../src/gui/FrameNavigatorUtil.cpp
 
 TESTS = $(check_PROGRAMS)

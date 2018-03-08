@@ -17,16 +17,16 @@
 
 AM_DEFAULT_SOURCE_EXT = .cpp
 
-check_PROGRAMS = TestIOUtils \
-                 TestNullFilter \
-                 TestDelogoFilter \
-                 TestDrawboxFilter \
-                 TestCutFilter \
-                 TestFilterFactory \
-                 TestFilterList \
-                 TestRegularScriptGenerator \
-                 TestFuzzyScriptGenerator \
-                 TestFilterData
+check_PROGRAMS = IOUtilsTest \
+                 NullFilterTest \
+                 DelogoFilterTest \
+                 DrawboxFilterTest \
+                 CutFilterTest \
+                 FilterFactoryTest \
+                 FilterListTest \
+                 RegularScriptGeneratorTest \
+                 FuzzyScriptGeneratorTest \
+                 FilterDataTest
 
 TESTS = $(check_PROGRAMS)
 
