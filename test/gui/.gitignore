@@ -16,6 +16,7 @@
 # along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 
 EncodeWindowTest
+FFmpegExecutorTest
 FilterListModelTest
 FilterPanelFactoryTest
 FrameNavigatorUtilTest

@@ -19,6 +19,7 @@
 #ifndef MDL_EXCEPTIONS_H
 #define MDL_EXCEPTIONS_H
 
+#include <string>
 #include <exception>
 
 
@@ -57,6 +58,38 @@ namespace mdl {
     {
       return "Duplicate row";
     }
+  };
+
+
+  class ScriptGenerationException : public Exception
+  {
+  public:
+    ScriptGenerationException(const std::string& msg)
+      : msg_(msg) { }
+
+    const char* what() const throw() override
+    {
+      return msg_.c_str();
+    }
+
+  private:
+    std::string msg_;
+  };
+
+
+  class FFmpegStartException : public Exception
+  {
+  public:
+    FFmpegStartException(const std::string& msg)
+      : msg_(msg) { }
+
+    const char* what() const throw() override
+    {
+      return msg_.c_str();
+    }
+
+  private:
+    std::string msg_;
   };
 }
 

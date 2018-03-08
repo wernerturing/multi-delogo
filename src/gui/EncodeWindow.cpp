@@ -16,18 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <unistd.h>
-#include <cstdio>
-#include <cerrno>
 #include <memory>
 #include <string>
 #include <iomanip>
-#include <fstream>
-#include <regex>
-
-#ifdef __MINGW32__
-#  include <windows.h>
-#endif
 
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
@@ -36,7 +27,9 @@
 #include "filter-generator/RegularScriptGenerator.hpp"
 #include "filter-generator/FuzzyScriptGenerator.hpp"
 
+#include "common/Exceptions.hpp"
 #include "EncodeWindow.hpp"
+#include "FFmpegExecutor.hpp"
 #include "Utils.hpp"
 
 using namespace mdl;
@@ -44,9 +37,8 @@ using namespace mdl;
 
 EncodeWindow::EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int total_frames, double fps)
   : filter_data_(std::move(filter_data))
-  , total_frames_(total_frames)
   , fps_(fps)
-  , codec_(Codec::H264)
+  , codec_(FFmpegExecutor::Codec::H264)
 {
   set_title(_("Encode video"));
   set_border_width(8);
@@ -61,6 +53,10 @@ EncodeWindow::EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int tota
   vbox->pack_start(*create_progress(), true, true);
 
   add(*vbox);
+
+  ffmpeg_.set_total_frames(total_frames);
+  ffmpeg_.signal_progress().connect(sigc::mem_fun(*this, &EncodeWindow::on_ffmpeg_progress));
+  ffmpeg_.signal_finished().connect(sigc::mem_fun(*this, &EncodeWindow::on_ffmpeg_finished));
 }
 
 
@@ -105,14 +101,14 @@ Gtk::Box* EncodeWindow::create_codec()
   btn_h264->set_tooltip_text(_("Most compatible video format. If in doubt, use this format"));
   btn_h264->signal_toggled().connect(
     sigc::bind(sigc::mem_fun(*this, &EncodeWindow::on_codec),
-               Codec::H264));
+               FFmpegExecutor::Codec::H264));
 
   Gtk::RadioButton* btn_h265 = Gtk::manage(new Gtk::RadioButton("H.26_5", true));
   btn_h265->join_group(*btn_h264);
   btn_h265->set_tooltip_text(_("A newer format that produces smaller video files. May not work on all players"));
   btn_h265->signal_toggled().connect(
     sigc::bind(sigc::mem_fun(*this, &EncodeWindow::on_codec),
-               Codec::H265));
+               FFmpegExecutor::Codec::H265));
 
   Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 4));
   box->pack_start(*lbl, false, false);
@@ -125,13 +121,13 @@ Gtk::Box* EncodeWindow::create_codec()
 }
 
 
-void EncodeWindow::on_codec(Codec codec)
+void EncodeWindow::on_codec(FFmpegExecutor::Codec codec)
 {
   codec_ = codec;
-  if (codec_ == Codec::H264) {
-    txt_quality_.set_value(H264_DEFAULT_CRF_);
+  if (codec_ == FFmpegExecutor::Codec::H264) {
+    txt_quality_.set_value(FFmpegExecutor::H264_DEFAULT_CRF_);
   } else {
-    txt_quality_.set_value(H265_DEFAULT_CRF_);
+    txt_quality_.set_value(FFmpegExecutor::H265_DEFAULT_CRF_);
   }
 }
 
@@ -143,7 +139,7 @@ Gtk::Box* EncodeWindow::create_quality()
 
   txt_quality_.set_range(0, 51);
   txt_quality_.set_increments(1, 1);
-  txt_quality_.set_value(H264_DEFAULT_CRF_);
+  txt_quality_.set_value(FFmpegExecutor::H264_DEFAULT_CRF_);
   txt_quality_.set_tooltip_text(_("CRF value to use for encoding. Lower values generally lead to higher quality, but bigger files. If in doubt, accept the default"));
 
   Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 4));
@@ -235,21 +231,31 @@ void EncodeWindow::on_encode()
     return;
   }
 
+  Generator generator = get_generator();
+  ffmpeg_.set_generator(generator);
+  ffmpeg_.set_input_file(filter_data_->movie_file());
+  ffmpeg_.set_codec(codec_);
+  ffmpeg_.set_quality(txt_quality_.get_value_as_int());
+  ffmpeg_.set_output_file(file);
+
   try {
-    int tmp_fd = Glib::file_open_tmp(tmp_filter_file_, "mdlfilter");
-    ::close(tmp_fd);
-    Generator generator = get_generator();
-    generate_script(tmp_filter_file_, generator);
+    ffmpeg_.encode();
 
-    total_frames_output_ = generator->resulting_frames(total_frames_);
+    lbl_status_.set_text(_("Encoding in progress"));
+    progress_bar_.set_fraction(0);
+    box_progress_.set_no_show_all(false);
+    box_progress_.show_all();
 
-    std::vector<std::string> cmd_line = get_ffmpeg_cmd_line(tmp_filter_file_, generator);
-
-    start_ffmpeg(cmd_line);
-  } catch (Glib::FileError& e) {
+    disable_widgets();
+  } catch (ScriptGenerationException& e) {
     Gtk::MessageDialog dlg(*this,
                            Glib::ustring::compose(_("Error generating filter script for FFmpeg: %1"), e.what()),
                            false, Gtk::MESSAGE_ERROR);
+    dlg.run();
+  } catch (FFmpegStartException& e) {
+    auto msg = Glib::ustring::compose(_("Could not execute FFmpeg: %1"),
+                                      e.what());
+    Gtk::MessageDialog dlg(*this, msg, false, Gtk::MESSAGE_ERROR);
     dlg.run();
   }
 }
@@ -263,10 +269,20 @@ void EncodeWindow::on_generate_script()
   }
 
   Generator generator = get_generator();
-  generate_script(file, generator);
+  ffmpeg_.set_generator(generator);
 
-  Gtk::MessageDialog dlg(*this, _("Filter script generated"));
-  dlg.run();
+  try {
+    ffmpeg_.generate_script(file);
+
+    Gtk::MessageDialog dlg(*this, _("Filter script generated"));
+    dlg.run();
+  } catch (ScriptGenerationException& e) {
+    auto msg = Glib::ustring::compose(_("Could not open file %1: %2"),
+                                      file, e.what());
+    Gtk::MessageDialog dlg(*this, msg, false, Gtk::MESSAGE_ERROR);
+    dlg.run();
+    return;
+  }
 }
 
 
@@ -305,179 +321,20 @@ EncodeWindow::Generator EncodeWindow::get_generator()
 }
 
 
-void EncodeWindow::generate_script(const std::string& file, Generator generator)
+void EncodeWindow::on_ffmpeg_progress(const FFmpegExecutor::Progress& p)
 {
-  std::ofstream file_stream(file);
-  if (!file_stream.is_open()) {
-    auto msg = Glib::ustring::compose(_("Could not open file %1: %2"),
-                                      file, Glib::strerror(errno));
-    Gtk::MessageDialog dlg(*this, msg, false, Gtk::MESSAGE_ERROR);
-    dlg.run();
-    return;
-  }
-
-  generator->generate_ffmpeg_script(file_stream);
-  file_stream.close();
-}
-
-
-std::vector<std::string> EncodeWindow::get_ffmpeg_cmd_line(const std::string& filter_file, Generator generator)
-{
-  std::string codec_name;
-  if (codec_ == Codec::H264) {
-    codec_name = "libx264";
-  } else if (codec_ == Codec::H265) {
-    codec_name = "libx265";
-  }
-
-  std::string quality = std::to_string(txt_quality_.get_value_as_int());
-
-  std::vector<std::string> cmd_line;
-  cmd_line.push_back("ffmpeg");
-  cmd_line.push_back("-y");
-  cmd_line.push_back("-v"); cmd_line.push_back("quiet");
-  cmd_line.push_back("-stats");
-
-  cmd_line.push_back("-i"); cmd_line.push_back(filter_data_->movie_file());
-  cmd_line.push_back("-filter_complex_script"); cmd_line.push_back(filter_file);
-
-  cmd_line.push_back("-map"); cmd_line.push_back("[out_v]");
-  cmd_line.push_back("-c:v"); cmd_line.push_back(codec_name);
-  cmd_line.push_back("-crf"); cmd_line.push_back(quality);
-
-  std::vector<std::string> audio_opts = get_audio_opts(generator);
-  cmd_line.insert(cmd_line.end(), audio_opts.begin(), audio_opts.end());
-
-  cmd_line.push_back(txt_file_.get_text());
-
-  return cmd_line;
-}
-
-
-std::vector<std::string> EncodeWindow::get_audio_opts(Generator generator)
-{
-  std::vector<std::string> audio_opts;
-
-  if (generator->affects_audio()) {
-    audio_opts.push_back("-map"); audio_opts.push_back("[out_a]");
-    audio_opts.push_back("-c:a"); audio_opts.push_back("aac");
-    audio_opts.push_back("-b:a"); audio_opts.push_back("192k");
-  } else {
-    audio_opts.push_back("-map"); audio_opts.push_back("0:a?");
-    audio_opts.push_back("-c:a"); audio_opts.push_back("copy");
-  }
-
-  return audio_opts;
-}
-
-
-void EncodeWindow::start_ffmpeg(const std::vector<std::string>& cmd_line)
-{
-  Glib::Pid ffmpeg_pid;
-  int ffmpeg_stderr_fd;
-  try {
-    Glib::spawn_async_with_pipes("",
-                                 cmd_line,
-                                 Glib::SPAWN_SEARCH_PATH | Glib::SPAWN_DO_NOT_REAP_CHILD | Glib::SPAWN_STDOUT_TO_DEV_NULL,
-                                 Glib::SlotSpawnChildSetup(),
-                                 &ffmpeg_pid,
-                                 nullptr,
-                                 nullptr,
-                                 &ffmpeg_stderr_fd);
-  } catch (Glib::SpawnError& e) {
-    ::unlink(tmp_filter_file_.c_str());
-    auto msg = Glib::ustring::compose(_("Could not execute FFmpeg: %1"),
-                                      e.what());
-    Gtk::MessageDialog dlg(*this, msg, false, Gtk::MESSAGE_ERROR);
-    dlg.run();
-    return;
-  }
-
-  lbl_status_.set_text(_("Encoding in progress"));
-  progress_bar_.set_fraction(0);
-  box_progress_.set_no_show_all(false);
-  box_progress_.show_all();
-
-  disable_widgets();
-
-  ffmpeg_timer_.start();
-
-  Glib::signal_child_watch().connect(sigc::mem_fun(*this, &EncodeWindow::on_ffmpeg_finished),
-                                     ffmpeg_pid);
-
-  ffmpeg_out_ = Glib::IOChannel::create_from_fd(ffmpeg_stderr_fd);
-  const auto io_source = Glib::IOSource::create(ffmpeg_out_,
-                                                Glib::IO_IN | Glib::IO_HUP);
-  io_source->set_priority(Glib::PRIORITY_LOW);
-  io_source->connect(sigc::mem_fun(*this, &EncodeWindow::on_ffmpeg_output));
-  io_source->attach(Glib::MainContext::get_default());
-
-#ifdef __MINGW32__
-  ffmpeg_handle_ = ffmpeg_pid;
-#endif
-}
-
-
-bool EncodeWindow::on_ffmpeg_output(Glib::IOCondition condition)
-{
-  // Under windows this function gets called after the process has terminated
-  // and the variable has been cleared
-  if (!ffmpeg_out_) {
-    return false;
-  }
-
-  if (condition == Glib::IO_HUP) {
-    ffmpeg_out_.reset();
-    return false;
-  }
-
-  Glib::ustring line;
-  ffmpeg_out_->read_line(line);
-  auto last_char = line.size() - 1;
-  if (line[last_char] == '\r' || line[last_char] == '\n') {
-    line.erase(last_char);
-  }
-
-  Progress p = get_progress(line);
   if (p.percentage >= 0) {
     progress_bar_.set_fraction(p.percentage);
   }
   progress_bar_.set_text(get_progress_str(p));
-
-  return true;
 }
 
 
-EncodeWindow::Progress EncodeWindow::get_progress(const std::string& ffmpeg_stats)
-{
-  Progress p;
-
-  std::regex r("^frame=\\s+(\\d+)");
-  std::smatch matches;
-  if (std::regex_search(ffmpeg_stats, matches, r)) {
-    int frames_encoded = std::stoi(matches[1].str());
-    p.percentage = (double) frames_encoded / total_frames_output_;
-  } else {
-    p.percentage = -1;
-  }
-
-  p.seconds_elapsed = ffmpeg_timer_.elapsed();
-
-  return p;
-}
-
-
-std::string EncodeWindow::get_progress_str(const Progress& progress)
+std::string EncodeWindow::get_progress_str(const FFmpegExecutor::Progress& progress)
 {
   return Glib::ustring::compose(_("%1%% done, %2"),
                                 (int) (progress.percentage * 100),
-                                get_time_remaining(calculate_seconds_remaining(progress)));
-}
-
-
-int EncodeWindow::calculate_seconds_remaining(const Progress& progress)
-{
-  return progress.seconds_elapsed / progress.percentage - progress.seconds_elapsed;
+                                get_time_remaining(progress.seconds_remaining));
 }
 
 
@@ -494,21 +351,15 @@ std::string EncodeWindow::get_time_remaining(int seconds_remaining)
 }
 
 
-void EncodeWindow::on_ffmpeg_finished(Glib::Pid pid, int status)
+void EncodeWindow::on_ffmpeg_finished(bool success, const std::string& error)
 {
-  Glib::spawn_close_pid(pid);
-  ::unlink(tmp_filter_file_.c_str());
-  ffmpeg_out_.reset();
-
   enable_widgets();
   progress_bar_.set_fraction(1);
 
-  GError *error = nullptr;
-  if (g_spawn_check_exit_status(status, &error)) {
+  if (success) {
     lbl_status_.set_text(_("Encoding finished successfully"));
   } else {
-    lbl_status_.set_text(Glib::ustring::compose(_("Encoding failed: %1"), error->message));
-    g_error_free(error);
+    lbl_status_.set_text(Glib::ustring::compose(_("Encoding failed: %1"), error));
   }
 }
 
@@ -531,7 +382,7 @@ void EncodeWindow::enable_widgets()
 
 bool EncodeWindow::on_delete_event(GdkEventAny*)
 {
-  if (!ffmpeg_out_) {
+  if (!ffmpeg_.is_executing()) {
     return false;
   }
 
@@ -544,11 +395,9 @@ bool EncodeWindow::on_delete_event(GdkEventAny*)
   dlg.add_button(_("_Continue"), Gtk::RESPONSE_OK);
   bool terminate = dlg.run() == Gtk::RESPONSE_CLOSE;
 
-#ifdef __MINGW32__
   if (terminate) {
-    TerminateProcess(ffmpeg_handle_, 250);
+    ffmpeg_.terminate();
   }
-#endif
 
   return !terminate;
 }

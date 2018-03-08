@@ -53,45 +53,8 @@ class EncodeWindowTestFixture
 {
 public:
   EncodeWindowTestFixture()
-    : window(std::move(std::unique_ptr<fg::FilterData>(new fg::FilterData())), 25, 0)
+    : window(std::move(std::unique_ptr<fg::FilterData>(new fg::FilterData())), 0, 25)
   {
-    window.filter_data_->set_movie_file("input.mp4");
-    window.txt_file_.set_text("output.mp4");
-  }
-
-  void set_codec_h264()
-  {
-    window.codec_ = EncodeWindow::Codec::H264;
-  }
-
-  void set_codec_h265()
-  {
-    window.codec_ = EncodeWindow::Codec::H265;
-  }
-
-  void set_quality(int quality)
-  {
-    window.txt_quality_.set_value(quality);
-  }
-
-  void add_filter(int start_frame, fg::Filter* filter)
-  {
-    window.filter_data_->filter_list().insert(start_frame, filter);
-  }
-
-  std::vector<std::string> get_ffmpeg_cmd_line()
-  {
-    return window.get_ffmpeg_cmd_line("filters.ffm", window.get_generator());
-  }
-
-  void set_output_frames(int frames)
-  {
-    window.total_frames_output_ = frames;
-  }
-
-  double get_progress_percentage(const std::string& ffmpeg_stats)
-  {
-    return window.get_progress(ffmpeg_stats).percentage;
   }
 
   std::string get_time_remaining(int seconds_remaining)
@@ -99,108 +62,19 @@ public:
     return window.get_time_remaining(seconds_remaining);
   }
 
-  int calculate_seconds_remaining(double percentage, int seconds_elapsed)
+  std::string get_progress_str(double percentage, int seconds_remaining)
   {
-    return window.calculate_seconds_remaining({.percentage = percentage, .seconds_elapsed = seconds_elapsed});
-  }
-
-  std::string get_progress_str(double percentage, int seconds_elapsed)
-  {
-    return window.get_progress_str({.percentage = percentage, .seconds_elapsed = seconds_elapsed});
+    return window.get_progress_str({.percentage = percentage,
+                                    .seconds_elapsed = 0,
+                                    .seconds_remaining = seconds_remaining});
   }
 
   EncodeWindow window;
 };
 }
 
-BOOST_FIXTURE_TEST_SUITE(ffmpeg_command_line, mdl::EncodeWindowTestFixture)
-
-BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264_copy_audio)
-{
-  set_codec_h264();
-  set_quality(20);
-
-  std::vector<std::string> expected{
-    "ffmpeg",
-    "-y", "-v", "quiet", "-stats",
-    "-i", "input.mp4",
-    "-filter_complex_script", "filters.ffm",
-    "-map", "[out_v]", "-c:v", "libx264", "-crf", "20",
-    "-map", "0:a?", "-c:a", "copy",
-    "output.mp4"};
-  BOOST_TEST(get_ffmpeg_cmd_line() == expected,
-             boost::test_tools::per_element());
-}
-
-
-BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h265_copy_audio)
-{
-  set_codec_h265();
-  set_quality(25);
-
-  std::vector<std::string> expected{
-    "ffmpeg",
-    "-y", "-v", "quiet", "-stats",
-    "-i", "input.mp4",
-    "-filter_complex_script", "filters.ffm",
-    "-map", "[out_v]", "-c:v", "libx265", "-crf", "25",
-    "-map", "0:a?", "-c:a", "copy",
-    "output.mp4"};
-  BOOST_TEST(get_ffmpeg_cmd_line() == expected,
-             boost::test_tools::per_element());
-}
-
-BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264_reencode_audio)
-{
-  add_filter(1000, new fg::CutFilter());
-  set_codec_h264();
-  set_quality(20);
-
-  std::vector<std::string> expected{
-    "ffmpeg",
-    "-y", "-v", "quiet", "-stats",
-    "-i", "input.mp4",
-    "-filter_complex_script", "filters.ffm",
-    "-map", "[out_v]", "-c:v", "libx264", "-crf", "20",
-    "-map", "[out_a]", "-c:a", "aac", "-b:a", "192k",
-    "output.mp4"};
-  BOOST_TEST(get_ffmpeg_cmd_line() == expected,
-             boost::test_tools::per_element());
-}
-
-BOOST_AUTO_TEST_SUITE_END()
-
-
-BOOST_FIXTURE_TEST_SUITE(progress_percentage, mdl::EncodeWindowTestFixture,
-                         * boost::unit_test::tolerance(0.001))
-
-BOOST_AUTO_TEST_CASE(should_calculate_progress)
-{
-  set_output_frames(15372);
-
-  double p = get_progress_percentage("frame=  4238 fps= 36 q=31.0 size=    2048kB time=00:00:19.06 bitrate= 880.1kbits/s speed=0.605x");
-  BOOST_TEST(p == 0.27569);
-}
-
-
-BOOST_AUTO_TEST_CASE(should_return_negative_for_invalid_line)
-{
-  set_output_frames(15372);
-
-  double p = get_progress_percentage("Some random string");
-  BOOST_TEST(p < 0);
-}
-
-BOOST_AUTO_TEST_SUITE_END()
-
 
 BOOST_FIXTURE_TEST_SUITE(time_remaining, mdl::EncodeWindowTestFixture)
-
-BOOST_AUTO_TEST_CASE(should_calculate_time_remaining)
-{
-  BOOST_TEST(calculate_seconds_remaining(.13, 66) == 441);
-  BOOST_TEST(calculate_seconds_remaining(.93, 11832) == 890);
-}
 
 
 BOOST_AUTO_TEST_CASE(should_format_time_remaining)
@@ -217,8 +91,8 @@ BOOST_AUTO_TEST_CASE(should_format_time_remaining)
 
 BOOST_AUTO_TEST_CASE(should_format_progress)
 {
-  BOOST_TEST(get_progress_str(.13, 66) == "13% done, about 0:07:21 left");
-  BOOST_TEST(get_progress_str(.93, 11832) == "93% done, about 0:14:50 left");
+  BOOST_TEST(get_progress_str(.13, 7*60+21) == "13% done, about 0:07:21 left");
+  BOOST_TEST(get_progress_str(.93, 1*60*60 + 14*60 + 50) == "93% done, about 1:14:50 left");
 }
 
 

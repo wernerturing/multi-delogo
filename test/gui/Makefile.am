@@ -25,11 +25,20 @@ LDADD =  ../../src/filter-generator/libfilter-generator.a \
          $(BOOST_UNIT_TEST_FRAMEWORK_LIB)
 
 
-check_PROGRAMS = FilterListModelTest \
+check_PROGRAMS = EncodeWindowTest \
+                 FFmpegExecutorTest \
+                 FilterListModelTest \
                  FilterPanelFactoryTest \
-                 EncodeWindowTest \
-                 SelectionRectTest \
-                 FrameNavigatorUtilTest
+                 FrameNavigatorUtilTest \
+                 SelectionRectTest
+
+EncodeWindowTest_SOURCES = EncodeWindowTest.cpp \
+                           ../../src/gui/EncodeWindow.cpp \
+                           ../../src/gui/Utils.cpp \
+                           ../../src/gui/FFmpegExecutor.cpp
+
+FFmpegExecutorTest_SOURCES = FFmpegExecutorTest.cpp \
+                             ../../src/gui/FFmpegExecutor.cpp
 
 FilterListModelTest_SOURCES = FilterListModelTest.cpp \
                               ../../src/gui/FilterListModel.cpp
@@ -38,16 +47,12 @@ FilterPanelFactoryTest_SOURCES = FilterPanelFactoryTest.cpp \
                                  ../../src/gui/FilterPanels.cpp \
                                  ../../src/gui/FilterPanelFactory.cpp
 
-EncodeWindowTest_SOURCES = EncodeWindowTest.cpp \
-                           ../../src/gui/EncodeWindow.cpp \
-                           ../../src/gui/Utils.cpp
+FrameNavigatorUtilTest_SOURCES = FrameNavigatorUtilTest.cpp \
+                                 ../../src/gui/FrameNavigatorUtil.cpp
 
 SelectionRectTest_SOURCES = SelectionRectTest.cpp \
                             ../../src/gui/FrameView.cpp
 SelectionRectTest_CPPFLAGS = $(AM_CPPFLAGS) $(GOOCANVASMM_CFLAGS)
 SelectionRectTest_LDADD = $(LDADD) $(GOOCANVASMM_LIBS)
-
-FrameNavigatorUtilTest_SOURCES = FrameNavigatorUtilTest.cpp \
-                                 ../../src/gui/FrameNavigatorUtil.cpp
 
 TESTS = $(check_PROGRAMS)
