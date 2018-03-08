@@ -164,10 +164,23 @@ BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_FIXTURE_TEST_SUITE(time_remaining, mdl::FFmpegExecutorTestFixture)
 
-BOOST_AUTO_TEST_CASE(should_calculate_seconds_remaining)
+BOOST_AUTO_TEST_CASE(should_calculate_time_remaining_1)
 {
-  BOOST_TEST(calculate_time_remaining(.13, 66).seconds_remaining == 441);
-  BOOST_TEST(calculate_time_remaining(.93, 11832).seconds_remaining == 890);
+  FFmpegExecutor::Progress p = calculate_time_remaining(.13, 66);
+  BOOST_TEST(p.total_seconds_remaining == 441);
+  BOOST_TEST(p.hours_remaining == 0);
+  BOOST_TEST(p.minutes_remaining == 7);
+  BOOST_TEST(p.seconds_remaining == 21);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_calculate_time_remaining_2)
+{
+  FFmpegExecutor::Progress p = calculate_time_remaining(.53, 11832);
+  BOOST_TEST(p.total_seconds_remaining == 10492);
+  BOOST_TEST(p.hours_remaining == 2);
+  BOOST_TEST(p.minutes_remaining == 54);
+  BOOST_TEST(p.seconds_remaining == 52);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

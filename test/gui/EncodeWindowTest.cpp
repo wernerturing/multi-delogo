@@ -57,16 +57,24 @@ public:
   {
   }
 
-  std::string get_time_remaining(int seconds_remaining)
+  std::string get_time_remaining(int hours, int minutes, int seconds)
   {
-    return window.get_time_remaining(seconds_remaining);
+    return window.get_time_remaining({.percentage = 0,
+                                      .seconds_elapsed = 0,
+                                      .total_seconds_remaining = 0,
+                                      .hours_remaining = hours,
+                                      .minutes_remaining = minutes,
+                                      .seconds_remaining = seconds});
   }
 
-  std::string get_progress_str(double percentage, int seconds_remaining)
+  std::string get_progress_str(double percentage, int hours, int minutes, int seconds)
   {
     return window.get_progress_str({.percentage = percentage,
                                     .seconds_elapsed = 0,
-                                    .seconds_remaining = seconds_remaining});
+                                    .total_seconds_remaining = 0,
+                                    .hours_remaining = hours,
+                                    .minutes_remaining = minutes,
+                                    .seconds_remaining = seconds});
   }
 
   EncodeWindow window;
@@ -79,20 +87,20 @@ BOOST_FIXTURE_TEST_SUITE(time_remaining, mdl::EncodeWindowTestFixture)
 
 BOOST_AUTO_TEST_CASE(should_format_time_remaining)
 {
-  BOOST_TEST(get_time_remaining(1) == "about 0:00:01 left");
-  BOOST_TEST(get_time_remaining(59) == "about 0:00:59 left");
+  BOOST_TEST(get_time_remaining(0, 0, 1) == "about 0:00:01 left");
+  BOOST_TEST(get_time_remaining(0, 0, 59) == "about 0:00:59 left");
 
-  BOOST_TEST(get_time_remaining(3*60 + 23) == "about 0:03:23 left");
-  BOOST_TEST(get_time_remaining(59*60 + 59) == "about 0:59:59 left");
+  BOOST_TEST(get_time_remaining(0, 3, 23) == "about 0:03:23 left");
+  BOOST_TEST(get_time_remaining(0, 59, 59) == "about 0:59:59 left");
 
-  BOOST_TEST(get_time_remaining(2*60*60 + 5*60) == "about 2:05:00 left");
+  BOOST_TEST(get_time_remaining(2, 5, 0) == "about 2:05:00 left");
 }
 
 
 BOOST_AUTO_TEST_CASE(should_format_progress)
 {
-  BOOST_TEST(get_progress_str(.13, 7*60+21) == "13% done, about 0:07:21 left");
-  BOOST_TEST(get_progress_str(.93, 1*60*60 + 14*60 + 50) == "93% done, about 1:14:50 left");
+  BOOST_TEST(get_progress_str(.13, 0, 7, 21) == "13% done, about 0:07:21 left");
+  BOOST_TEST(get_progress_str(.93, 1, 14, 50) == "93% done, about 1:14:50 left");
 }
 
 

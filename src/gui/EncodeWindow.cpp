@@ -334,20 +334,18 @@ std::string EncodeWindow::get_progress_str(const FFmpegExecutor::Progress& progr
 {
   return Glib::ustring::compose(_("%1%% done, %2"),
                                 (int) (progress.percentage * 100),
-                                get_time_remaining(progress.seconds_remaining));
+                                get_time_remaining(progress));
 }
 
 
-std::string EncodeWindow::get_time_remaining(int seconds_remaining)
+std::string EncodeWindow::get_time_remaining(const FFmpegExecutor::Progress& progress)
 {
-  int hours = seconds_remaining/(60*60);
-  seconds_remaining %= 60*60;
-  int minutes = seconds_remaining/60;
-  int seconds = seconds_remaining % 60;
-
-  std::string min_str = Glib::ustring::format(std::setfill(L'0'), std::setw(2), minutes);
-  std::string sec_str = Glib::ustring::format(std::setfill(L'0'), std::setw(2), seconds);
-  return Glib::ustring::compose(_("about %1:%2:%3 left"), hours, min_str, sec_str);
+  std::string min_str = Glib::ustring::format(std::setfill(L'0'), std::setw(2),
+                                              progress.minutes_remaining);
+  std::string sec_str = Glib::ustring::format(std::setfill(L'0'), std::setw(2),
+                                              progress.seconds_remaining);
+  return Glib::ustring::compose(_("about %1:%2:%3 left"),
+                                progress.hours_remaining, min_str, sec_str);
 }
 
 

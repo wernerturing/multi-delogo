@@ -40,6 +40,9 @@ namespace mdl {
     {
       double percentage;
       int seconds_elapsed;
+      int total_seconds_remaining;
+      int hours_remaining;
+      int minutes_remaining;
       int seconds_remaining;
     };
 

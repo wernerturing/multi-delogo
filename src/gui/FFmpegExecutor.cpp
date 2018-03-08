@@ -253,7 +253,11 @@ FFmpegExecutor::Progress FFmpegExecutor::get_progress(const std::string& ffmpeg_
 
 void FFmpegExecutor::calculate_time_remaining(Progress& p)
 {
-  p.seconds_remaining = p.seconds_elapsed / p.percentage - p.seconds_elapsed;
+  p.total_seconds_remaining = p.seconds_elapsed / p.percentage - p.seconds_elapsed;
+  p.hours_remaining = p.total_seconds_remaining / (60*60);
+  int remainder = p.total_seconds_remaining % (60*60);
+  p.minutes_remaining = remainder / 60;
+  p.seconds_remaining = remainder % 60;
 }
 
 
