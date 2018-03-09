@@ -30,8 +30,7 @@ using namespace mdl;
 
 
 FilterList::FilterList(fg::FilterList& filter_list)
-  : Gtk::Box(Gtk::ORIENTATION_VERTICAL, 8)
-  , model_(FilterListModel::create(filter_list))
+  : model_(FilterListModel::create(filter_list))
   , view_(model_)
   , current_panel_(nullptr)
 {
@@ -50,9 +49,11 @@ FilterList::FilterList(fg::FilterList& filter_list)
   Gtk::ButtonBox* buttons = Gtk::manage(new Gtk::ButtonBox());
   buttons->pack_start(btn_remove_filter_, false, false);
 
-  pack_start(*scroll, false, false);
-  pack_start(*buttons, false, false);
-  pack_start(filter_type_, false, false);
+  set_orientation(Gtk::ORIENTATION_VERTICAL);
+  set_row_spacing(8);
+  add(*scroll);
+  add(*buttons);
+  add(filter_type_);
 
   selection_ = view_.get_selection();
   selection_->signal_changed().connect(sigc::mem_fun(*this, &FilterList::on_selection_changed));
@@ -97,7 +98,7 @@ void FilterList::set_filter(fg::FilterType filter_type, Gtk::Widget* panel)
     remove(*current_panel_);
   }
 
-  pack_start(*panel, true, true);
+  add(*panel);
   show_all();
   current_panel_ = panel;
 }
