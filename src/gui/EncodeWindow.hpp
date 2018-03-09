@@ -51,7 +51,7 @@ namespace mdl {
     Gtk::CheckButton chk_fuzzy_;
     Gtk::SpinButton txt_fuzzyness_;
 
-    Gtk::Box box_progress_;
+    Gtk::Grid box_progress_;
     Gtk::Label lbl_status_;
     Gtk::ProgressBar progress_bar_;
     Gtk::Button btn_log_;
@@ -60,12 +60,12 @@ namespace mdl {
 
     FFmpegExecutor ffmpeg_;
 
-    Gtk::Box* create_file_selection();
-    Gtk::Box* create_codec();
-    Gtk::Box* create_quality();
-    Gtk::Box* create_fuzzy();
-    Gtk::Box* create_buttons();
-    Gtk::Box* create_progress();
+    Gtk::Grid* create_file_selection();
+    Gtk::Grid* create_codec();
+    Gtk::Grid* create_quality();
+    Gtk::Grid* create_fuzzy();
+    Gtk::Grid* create_buttons();
+    Gtk::Grid* create_progress();
 
     void on_select_file();
     void on_codec(FFmpegExecutor::Codec codec);

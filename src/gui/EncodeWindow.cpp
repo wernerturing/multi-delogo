@@ -44,14 +44,16 @@ EncodeWindow::EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int tota
   set_title(_("Encode video"));
   set_border_width(8);
 
-  Gtk::Box* vbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 8));
+  Gtk::Grid* vbox = Gtk::manage(new Gtk::Grid());
+  vbox->set_orientation(Gtk::ORIENTATION_VERTICAL);
+  vbox->set_row_spacing(8);
 
-  vbox->pack_start(*create_file_selection(), true, true);
-  vbox->pack_start(*create_codec(), true, true);
-  vbox->pack_start(*create_quality(), true, true);
-  vbox->pack_start(*create_fuzzy(), true, true);
-  vbox->pack_start(*create_buttons(), true, true);
-  vbox->pack_start(*create_progress(), true, true);
+  vbox->add(*create_file_selection());
+  vbox->add(*create_codec());
+  vbox->add(*create_quality());
+  vbox->add(*create_fuzzy());
+  vbox->add(*create_buttons());
+  vbox->add(*create_progress());
 
   add(*vbox);
 
@@ -61,7 +63,7 @@ EncodeWindow::EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int tota
 }
 
 
-Gtk::Box* EncodeWindow::create_file_selection()
+Gtk::Grid* EncodeWindow::create_file_selection()
 {
   Gtk::Label* lbl = Gtk::manage(new Gtk::Label(_("_Output file:"), true));
   lbl->set_mnemonic_widget(txt_file_);
@@ -70,10 +72,14 @@ Gtk::Box* EncodeWindow::create_file_selection()
   btn->set_image_from_icon_name("document-open");
   btn->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_select_file));
 
-  Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 4));
-  box->pack_start(*lbl, false, false);
-  box->pack_start(txt_file_, true, true);
-  box->pack_start(*btn, false, false);
+  Gtk::Grid* box = Gtk::manage(new Gtk::Grid());
+  box->set_column_spacing(4);
+  box->set_vexpand();
+  box->set_valign(Gtk::ALIGN_CENTER);
+  box->add(*lbl);
+  txt_file_.set_hexpand();
+  box->add(txt_file_);
+  box->add(*btn);
 
   widgets_to_disable_.push_back(box);
 
@@ -94,7 +100,7 @@ void EncodeWindow::on_select_file()
 }
 
 
-Gtk::Box* EncodeWindow::create_codec()
+Gtk::Grid* EncodeWindow::create_codec()
 {
   Gtk::Label* lbl = Gtk::manage(new Gtk::Label(_("Video format:")));
 
@@ -111,10 +117,13 @@ Gtk::Box* EncodeWindow::create_codec()
     sigc::bind(sigc::mem_fun(*this, &EncodeWindow::on_codec),
                FFmpegExecutor::Codec::H265));
 
-  Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 4));
-  box->pack_start(*lbl, false, false);
-  box->pack_start(*btn_h264, false, false);
-  box->pack_start(*btn_h265, false, false);
+  Gtk::Grid* box = Gtk::manage(new Gtk::Grid());
+  box->set_column_spacing(4);
+  box->set_vexpand();
+  box->set_valign(Gtk::ALIGN_CENTER);
+  box->add(*lbl);
+  box->add(*btn_h264);
+  box->add(*btn_h265);
 
   widgets_to_disable_.push_back(box);
 
@@ -133,7 +142,7 @@ void EncodeWindow::on_codec(FFmpegExecutor::Codec codec)
 }
 
 
-Gtk::Box* EncodeWindow::create_quality()
+Gtk::Grid* EncodeWindow::create_quality()
 {
   Gtk::Label* lbl = Gtk::manage(new Gtk::Label(_("_Quality:"), true));
   lbl->set_mnemonic_widget(txt_quality_);
@@ -143,9 +152,12 @@ Gtk::Box* EncodeWindow::create_quality()
   txt_quality_.set_value(FFmpegExecutor::H264_DEFAULT_CRF_);
   txt_quality_.set_tooltip_text(_("CRF value to use for encoding. Lower values generally lead to higher quality, but bigger files. If in doubt, accept the default"));
 
-  Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 4));
-  box->pack_start(*lbl, false, false);
-  box->pack_start(txt_quality_, false, true);
+  Gtk::Grid* box = Gtk::manage(new Gtk::Grid());
+  box->set_column_spacing(4);
+  box->set_vexpand();
+  box->set_valign(Gtk::ALIGN_CENTER);
+  box->add(*lbl);
+  box->add(txt_quality_);
 
   widgets_to_disable_.push_back(box);
 
@@ -153,7 +165,7 @@ Gtk::Box* EncodeWindow::create_quality()
 }
 
 
-Gtk::Box* EncodeWindow::create_fuzzy()
+Gtk::Grid* EncodeWindow::create_fuzzy()
 {
   chk_fuzzy_.set_label(_("_Randomnly increase filter times"));
   chk_fuzzy_.set_use_underline();
@@ -162,7 +174,6 @@ Gtk::Box* EncodeWindow::create_fuzzy()
 
   Gtk::Label* lbl = Gtk::manage(new Gtk::Label(_("_Factor:"), true));
   lbl->set_mnemonic_widget(txt_fuzzyness_);
-  lbl->set_margin_start(16);
 
   txt_fuzzyness_.set_sensitive(false);
   txt_fuzzyness_.set_digits(1);
@@ -171,10 +182,14 @@ Gtk::Box* EncodeWindow::create_fuzzy()
   txt_fuzzyness_.set_value(2);
   txt_fuzzyness_.set_tooltip_text(_("Controls how much each filter's time is increased. If set to 2, then on average filters will last twice their original duration."));
 
-  Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 4));
-  box->pack_start(chk_fuzzy_, false, false);
-  box->pack_start(*lbl, false, false);
-  box->pack_start(txt_fuzzyness_, false, false);
+  Gtk::Grid* box = Gtk::manage(new Gtk::Grid());
+  box->set_column_spacing(4);
+  box->set_vexpand();
+  box->set_valign(Gtk::ALIGN_CENTER);
+  box->add(chk_fuzzy_);
+  lbl->set_margin_start(16);
+  box->add(*lbl);
+  box->add(txt_fuzzyness_);
 
   widgets_to_disable_.push_back(box);
 
@@ -188,7 +203,7 @@ void EncodeWindow::on_fuzzy_toggled()
 }
 
 
-Gtk::Box* EncodeWindow::create_buttons()
+Gtk::Grid* EncodeWindow::create_buttons()
 {
   Gtk::Button* btn_script = Gtk::manage(new Gtk::Button(_("_Generate filter script"), true));
   btn_script->set_tooltip_text(_("Generates a FFmpeg filter script file that can be used to encode the video. Use this option if you want to run FFmpeg manually with custom encoding options"));
@@ -197,9 +212,13 @@ Gtk::Box* EncodeWindow::create_buttons()
   Gtk::Button* btn_encode = Gtk::manage(new Gtk::Button(_("_Encode"), true));
   btn_encode->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_encode));
 
-  Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
-  box->pack_end(*btn_encode, false, false);
-  box->pack_end(*btn_script, false, false);
+  Gtk::Grid* box = Gtk::manage(new Gtk::Grid());
+  box->set_column_spacing(8);
+  box->set_vexpand();
+  box->set_valign(Gtk::ALIGN_CENTER);
+  box->set_halign(Gtk::ALIGN_END);
+  box->add(*btn_script);
+  box->add(*btn_encode);
 
   widgets_to_disable_.push_back(box);
 
@@ -207,24 +226,26 @@ Gtk::Box* EncodeWindow::create_buttons()
 }
 
 
-Gtk::Box* EncodeWindow::create_progress()
+Gtk::Grid* EncodeWindow::create_progress()
 {
-  lbl_status_.set_margin_top(16);
-  lbl_status_.set_halign(Gtk::ALIGN_START);
-
   progress_bar_.set_show_text();
-
-  box_progress_.set_orientation(Gtk::ORIENTATION_VERTICAL);
-  box_progress_.set_spacing(4);
-  box_progress_.set_no_show_all();
 
   btn_log_.set_label(_("View _log"));
   btn_log_.set_use_underline();
   btn_log_.signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_view_log));
 
-  box_progress_.pack_start(lbl_status_, true, true);
-  box_progress_.pack_start(progress_bar_, true, true);
-  box_progress_.pack_start(btn_log_,  false, false);
+  box_progress_.set_orientation(Gtk::ORIENTATION_VERTICAL);
+  box_progress_.set_row_spacing(4);
+  box_progress_.set_vexpand();
+  box_progress_.set_valign(Gtk::ALIGN_CENTER);
+  box_progress_.set_no_show_all();
+
+  lbl_status_.set_margin_top(16);
+  lbl_status_.set_halign(Gtk::ALIGN_START);
+  box_progress_.add(lbl_status_);
+  progress_bar_.set_hexpand();
+  box_progress_.add(progress_bar_);
+  box_progress_.add(btn_log_);
 
   return &box_progress_;
 }
