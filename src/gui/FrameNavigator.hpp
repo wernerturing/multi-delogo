@@ -28,7 +28,7 @@
 
 
 namespace mdl {
-  class FrameNavigator : public Gtk::Box
+  class FrameNavigator : public Gtk::Grid
   {
   public:
     FrameNavigator(Gtk::Window& parent_window,
@@ -69,8 +69,8 @@ namespace mdl {
     type_signal_frame_changed signal_frame_changed_;
 
 
-    Gtk::Box* create_navigation_box();
-    Gtk::Box* create_zoom_box();
+    Gtk::Grid* create_navigation_box();
+    Gtk::Grid* create_zoom_box();
 
     void on_frame_number_activate();
     bool on_frame_number_input(GdkEventFocus*);

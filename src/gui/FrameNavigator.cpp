@@ -33,28 +33,35 @@ using namespace mdl;
 
 FrameNavigator::FrameNavigator(Gtk::Window& parent_window,
                                const Glib::RefPtr<FrameProvider>& frame_provider)
-  : Gtk::Box(Gtk::ORIENTATION_VERTICAL, 4)
-  , parent_window_(parent_window)
+  : parent_window_(parent_window)
   , frame_provider_(frame_provider)
   , number_of_frames_(frame_provider->get_number_of_frames())
   , frame_view_(frame_provider->get_frame_width(), frame_provider->get_frame_height())
   , zoom_(1)
   , lbl_zoom_("100%")
 {
-  pack_start(frame_view_, true, true);
+  Gtk::Grid* bottom_box = Gtk::manage(new Gtk::Grid());
+  bottom_box->set_column_spacing(8);
+  bottom_box->add(*create_navigation_box());
+  Gtk::Label* spacer = Gtk::manage(new Gtk::Label());
+  spacer->property_margin() = 8;
+  spacer->set_hexpand();
+  bottom_box->add(*spacer);
+  bottom_box->add(*create_zoom_box());
 
-  Gtk::Box* bottom_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
-  bottom_box->pack_start(*create_navigation_box(), false, false);
-  bottom_box->pack_start(*Gtk::manage(new Gtk::Label()), true, true, 8);
-  bottom_box->pack_start(*create_zoom_box(), false, false);
-
-  pack_start(*bottom_box, false, false);
+  set_orientation(Gtk::ORIENTATION_VERTICAL);
+  set_row_spacing(4);
+  frame_view_.set_hexpand();
+  frame_view_.set_vexpand();
+  add(frame_view_);
+  add(*bottom_box);
 }
 
 
-Gtk::Box* FrameNavigator::create_navigation_box()
+Gtk::Grid* FrameNavigator::create_navigation_box()
 {
-  Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
+  Gtk::Grid* box = Gtk::manage(new Gtk::Grid());
+  box->set_column_spacing(8);
 
   txt_frame_number_.set_width_chars(6);
 
@@ -88,29 +95,27 @@ Gtk::Box* FrameNavigator::create_navigation_box()
   txt_frame_number_.signal_focus_out_event().connect(
     sigc::mem_fun(*this, &FrameNavigator::on_frame_number_input));
 
-  box->pack_start(*btn_prev_jump, false, false);
-  box->pack_start(*btn_prev, false, false);
-  box->pack_start(txt_frame_number_, false, false);
-  box->pack_start(*Gtk::manage(
-    new Gtk::Label(Glib::ustring::compose("/ %1", number_of_frames_))),
-    false, false);
-  box->pack_start(*btn_next, false, false);
-  box->pack_start(*btn_next_jump, false, false);
+  box->add(*btn_prev_jump);
+  box->add(*btn_prev);
+  box->add(txt_frame_number_);
+  box->add(*Gtk::manage(new Gtk::Label(Glib::ustring::compose("/ %1", number_of_frames_))));
+  box->add(*btn_next);
+  box->add(*btn_next_jump);
 
   Gtk::Label* lbl_jump_size = Gtk::manage(new Gtk::Label(_("_Jump size:"), true));
   lbl_jump_size->set_mnemonic_widget(txt_jump_size_);
   lbl_jump_size->set_margin_start(32);
-  box->pack_start(*lbl_jump_size, false, false);
+  box->add(*lbl_jump_size);
 
   txt_jump_size_.set_width_chars(6);
   txt_jump_size_.set_tooltip_text(_("Number of frames to jump when using << and >> buttons"));
-  box->pack_start(txt_jump_size_, false, false);
+  box->add(txt_jump_size_);
 
   return box;
 }
 
 
-Gtk::Box* FrameNavigator::create_zoom_box()
+Gtk::Grid* FrameNavigator::create_zoom_box()
 {
   Gtk::Button* btn_zoom_fit = Gtk::manage(new Gtk::Button());
   btn_zoom_fit->set_image_from_icon_name("zoom-fit-best");
@@ -138,12 +143,13 @@ Gtk::Box* FrameNavigator::create_zoom_box()
   btn_zoom_100_.signal_clicked().connect(
     sigc::mem_fun(*this, &FrameNavigator::on_zoom_100));
 
-  Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
-  box->pack_start(*btn_zoom_fit, false, false);
-  box->pack_start(btn_zoom_out_, false, false);
-  box->pack_start(lbl_zoom_);
-  box->pack_start(btn_zoom_in_, false, false);
-  box->pack_start(btn_zoom_100_, false, false);
+  Gtk::Grid* box = Gtk::manage(new Gtk::Grid());
+  box->set_column_spacing(8);
+  box->add(*btn_zoom_fit);
+  box->add(btn_zoom_out_);
+  box->add(lbl_zoom_);
+  box->add(btn_zoom_in_);
+  box->add(btn_zoom_100_);
 
   return box;
 }
