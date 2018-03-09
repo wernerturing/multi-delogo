@@ -49,15 +49,17 @@ MovieWindow::MovieWindow(const std::string& project_file,
   set_title(Glib::ustring::compose("multi-delogo: %1",
                                    Glib::path_get_basename(project_file)));
 
-  Gtk::Box* vbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-  vbox->pack_start(*create_toolbar(), false, false);
+  Gtk::Grid* vbox = Gtk::manage(new Gtk::Grid());
+  vbox->set_orientation(Gtk::ORIENTATION_VERTICAL);
+  vbox->add(*create_toolbar());
 
-  Gtk::Box* hbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
-  hbox->set_border_width(6);
-  hbox->pack_start(filter_list_, false, false);
-  hbox->pack_start(frame_navigator_, true, true);
+  Gtk::Grid* hbox = Gtk::manage(new Gtk::Grid());
+  hbox->set_column_spacing(8);
+  hbox->property_margin() = 6;
+  hbox->add(filter_list_);
+  hbox->add(frame_navigator_);
 
-  vbox->pack_start(*hbox, true, true);
+  vbox->add(*hbox);
 
   add(*vbox);
 
