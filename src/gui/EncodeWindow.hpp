@@ -77,8 +77,6 @@ namespace mdl {
     Generator get_generator();
 
     void on_ffmpeg_progress(const FFmpegExecutor::Progress& p);
-    std::string get_progress_str(const FFmpegExecutor::Progress& progress);
-    std::string get_time_remaining(const FFmpegExecutor::Progress& progress);
 
     void on_ffmpeg_finished(bool success, const std::string& error);
 
@@ -86,9 +84,6 @@ namespace mdl {
     void enable_widgets();
 
     bool on_delete_event(GdkEventAny*) override;
-
-
-    friend class EncodeWindowTestFixture;
   };
 }
 

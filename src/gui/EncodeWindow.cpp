@@ -18,7 +18,6 @@
  */
 #include <memory>
 #include <string>
-#include <iomanip>
 
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
@@ -29,6 +28,7 @@
 
 #include "common/Exceptions.hpp"
 #include "EncodeWindow.hpp"
+#include "EncodeWindowUtil.hpp"
 #include "FFmpegExecutor.hpp"
 #include "Utils.hpp"
 
@@ -327,25 +327,6 @@ void EncodeWindow::on_ffmpeg_progress(const FFmpegExecutor::Progress& p)
     progress_bar_.set_fraction(p.percentage);
     progress_bar_.set_text(get_progress_str(p));
   }
-}
-
-
-std::string EncodeWindow::get_progress_str(const FFmpegExecutor::Progress& progress)
-{
-  return Glib::ustring::compose(_("%1%% done, %2"),
-                                (int) (progress.percentage * 100),
-                                get_time_remaining(progress));
-}
-
-
-std::string EncodeWindow::get_time_remaining(const FFmpegExecutor::Progress& progress)
-{
-  std::string min_str = Glib::ustring::format(std::setfill(L'0'), std::setw(2),
-                                              progress.minutes_remaining);
-  std::string sec_str = Glib::ustring::format(std::setfill(L'0'), std::setw(2),
-                                              progress.seconds_remaining);
-  return Glib::ustring::compose(_("about %1:%2:%3 left"),
-                                progress.hours_remaining, min_str, sec_str);
 }
 
 

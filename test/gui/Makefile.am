@@ -25,17 +25,15 @@ LDADD =  ../../src/filter-generator/libfilter-generator.a \
          $(BOOST_UNIT_TEST_FRAMEWORK_LIB)
 
 
-check_PROGRAMS = EncodeWindowTest \
+check_PROGRAMS = EncodeWindowUtilTest \
                  FFmpegExecutorTest \
                  FilterListModelTest \
                  FilterPanelFactoryTest \
                  FrameNavigatorUtilTest \
                  SelectionRectTest
 
-EncodeWindowTest_SOURCES = EncodeWindowTest.cpp \
-                           ../../src/gui/EncodeWindow.cpp \
-                           ../../src/gui/Utils.cpp \
-                           ../../src/gui/FFmpegExecutor.cpp
+EncodeWindowUtilTest_SOURCES = EncodeWindowUtilTest.cpp \
+                               ../../src/gui/EncodeWindowUtil.cpp
 
 FFmpegExecutorTest_SOURCES = FFmpegExecutorTest.cpp \
                              ../../src/gui/FFmpegExecutor.cpp

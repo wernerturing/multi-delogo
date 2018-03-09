@@ -17,6 +17,7 @@
 
 src/gui/Coordinator.cpp
 src/gui/EncodeWindow.cpp
+src/gui/EncodeWindowUtil.cpp
 src/gui/FilterList.cpp
 src/gui/FilterPanelFactory.cpp
 src/gui/FilterPanels.cpp

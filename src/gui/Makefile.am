@@ -32,6 +32,7 @@ multi_delogo_SOURCES = main.cpp \
                        MovieWindow.cpp \
                        FFmpegExecutor.cpp \
                        EncodeWindow.cpp \
+                       EncodeWindowUtil.cpp \
                        Utils.cpp \
                        InitialWindow.cpp
 
@@ -52,6 +53,7 @@ noinst_HEADERS = common/Exceptions.hpp \
                  MovieWindow.hpp \
                  FFmpegExecutor.hpp \
                  EncodeWindow.hpp \
+                 EncodeWindowUtil.hpp \
                  Utils.hpp \
                  InitialWindow.hpp
 
