@@ -106,14 +106,13 @@ FilterPanelRectangular::FilterPanelRectangular(int x, int y, int width, int heig
   txt_width_.configure(create_adjustment(width, frame_width), 10, 0);
   txt_height_.configure(create_adjustment(height, frame_height), 10, 0);
 
-  Gtk::Grid* grid = Gtk::manage(new Gtk::Grid());
-  grid->set_row_spacing(6);
-  grid->set_column_spacing(4);
+  set_row_spacing(6);
+  set_column_spacing(4);
 
-  add_widget(*grid, txt_x_, _("_x:"), 0);
-  add_widget(*grid, txt_y_, _("_y:"), 1);
-  add_widget(*grid, txt_width_, _("_width:"), 2);
-  add_widget(*grid, txt_height_, _("_height:"), 3);
+  add_widget(txt_x_, _("_x:"), 0);
+  add_widget(txt_y_, _("_y:"), 1);
+  add_widget(txt_width_, _("_width:"), 2);
+  add_widget(txt_height_, _("_height:"), 3);
 
   txt_x_.signal_value_changed().connect(
     sigc::mem_fun(*this, &FilterPanelRectangular::on_coordinate_change));
@@ -123,8 +122,6 @@ FilterPanelRectangular::FilterPanelRectangular(int x, int y, int width, int heig
     sigc::mem_fun(*this, &FilterPanelRectangular::on_coordinate_change));
   txt_height_.signal_value_changed().connect(
     sigc::mem_fun(*this, &FilterPanelRectangular::on_coordinate_change));
-
-  pack_start(*grid, true, true);
 }
 
 
@@ -134,14 +131,14 @@ Glib::RefPtr<Gtk::Adjustment> FilterPanelRectangular::create_adjustment(int star
 }
 
 
-void FilterPanelRectangular::add_widget(Gtk::Grid& grid, Gtk::Widget& widget,
+void FilterPanelRectangular::add_widget(Gtk::Widget& widget,
                                         const Glib::ustring& label, int row)
 {
   Gtk::Label* l = Gtk::manage(new Gtk::Label(label, true));
   l->set_mnemonic_widget(widget);
   l->set_halign(Gtk::ALIGN_END);
-  grid.attach(*l, 0, row, 1, 1);
-  grid.attach_next_to(widget, *l, Gtk::POS_RIGHT, 1, 1);
+  attach(*l, 0, row, 1, 1);
+  attach_next_to(widget, *l, Gtk::POS_RIGHT, 1, 1);
 }
 
 

@@ -30,8 +30,8 @@ using namespace mdl;
 
 
 FilterPanel::FilterPanel()
-  : Gtk::Box(Gtk::ORIENTATION_VERTICAL)
 {
+  set_orientation(Gtk::ORIENTATION_VERTICAL);
 }
 
 
