@@ -19,6 +19,7 @@ bin_PROGRAMS = multi-delogo
 
 multi_delogo_SOURCES = main.cpp \
                        MultiDelogoApp.cpp \
+                       MultiDelogoAppWindow.cpp \
                        NumericEntry.cpp \
                        FrameView.cpp \
                        FrameNavigator.cpp \
@@ -40,6 +41,7 @@ noinst_HEADERS = common/Exceptions.hpp \
                  common/Rectangle.hpp \
                  common/FrameProvider.hpp \
                  MultiDelogoApp.hpp \
+                 MultiDelogoAppWindow.hpp \
                  NumericEntry.hpp \
                  FrameView.hpp \
                  FrameNavigator.hpp \

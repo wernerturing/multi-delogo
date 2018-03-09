@@ -2,6 +2,8 @@
 
 * New 'cut' filter to remove parts of the video.
 
+* It's possible to display the FFmpeg log after encoding finishes.
+
 * Fixed bug that caused FFmpeg to fail if the last filter is a "none".
 
 

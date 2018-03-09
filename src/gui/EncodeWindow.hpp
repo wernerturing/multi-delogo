@@ -28,11 +28,12 @@
 #include "filter-generator/FilterData.hpp"
 #include "filter-generator/ScriptGenerator.hpp"
 
+#include "MultiDelogoAppWindow.hpp"
 #include "FFmpegExecutor.hpp"
 
 
 namespace mdl {
-  class EncodeWindow : public Gtk::ApplicationWindow
+  class EncodeWindow : public MultiDelogoAppWindow
   {
   public:
     EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int total_frames, double fps);
@@ -53,6 +54,7 @@ namespace mdl {
     Gtk::Box box_progress_;
     Gtk::Label lbl_status_;
     Gtk::ProgressBar progress_bar_;
+    Gtk::Button btn_log_;
 
     std::vector<Gtk::Widget*> widgets_to_disable_;
 
@@ -80,10 +82,19 @@ namespace mdl {
 
     void on_ffmpeg_finished(bool success, const std::string& error);
 
+    void on_view_log();
+
     void disable_widgets();
     void enable_widgets();
 
     bool on_delete_event(GdkEventAny*) override;
+  };
+
+
+  class LogWindow : public MultiDelogoAppWindow
+  {
+  public:
+    LogWindow(Gtk::Window& parent, const std::string& log);
   };
 }
 

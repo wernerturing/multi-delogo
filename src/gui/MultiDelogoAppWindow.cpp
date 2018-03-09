@@ -16,20 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef MDL_INITIAL_WINDOW_H
-#define MDL_INITIAL_WINDOW_H
-
 #include <gtkmm.h>
 
 #include "MultiDelogoAppWindow.hpp"
+#include "MultiDelogoApp.hpp"
+
+using namespace mdl;
 
 
-namespace mdl {
-  class InitialWindow : public MultiDelogoAppWindow
-  {
-  public:
-    InitialWindow();
-  };
+Glib::RefPtr<MultiDelogoApp> MultiDelogoAppWindow::get_application()
+{
+  Glib::RefPtr<MultiDelogoApp> app
+    = Glib::RefPtr<MultiDelogoApp>::cast_dynamic(ApplicationWindow::get_application());
+  return app;
 }
 
-#endif // MDL_INITIAL_WINDOW_H
+
+Glib::RefPtr<const MultiDelogoApp> MultiDelogoAppWindow::get_application() const
+{
+  Glib::RefPtr<const MultiDelogoApp> app
+    = Glib::RefPtr<const MultiDelogoApp>::cast_dynamic(ApplicationWindow::get_application());
+  return app;
+}

@@ -27,6 +27,8 @@
 #  include <windows.h>
 #endif
 
+#include <boost/algorithm/string/join.hpp>
+
 #include <glibmm.h>
 
 #include "filter-generator/ScriptGenerator.hpp"
@@ -118,6 +120,12 @@ void FFmpegExecutor::terminate()
 }
 
 
+const std::string& FFmpegExecutor::get_log() const
+{
+  return log_;
+}
+
+
 std::vector<std::string> FFmpegExecutor::get_ffmpeg_cmd_line(const std::string& filter_file)
 {
   std::string codec_name;
@@ -132,7 +140,7 @@ std::vector<std::string> FFmpegExecutor::get_ffmpeg_cmd_line(const std::string& 
   std::vector<std::string> cmd_line;
   cmd_line.push_back("ffmpeg");
   cmd_line.push_back("-y");
-  cmd_line.push_back("-v"); cmd_line.push_back("quiet");
+  cmd_line.push_back("-v"); cmd_line.push_back("error");
   cmd_line.push_back("-stats");
 
   cmd_line.push_back("-i"); cmd_line.push_back(input_file_);
@@ -170,6 +178,9 @@ std::vector<std::string> FFmpegExecutor::get_audio_opts()
 
 void FFmpegExecutor::start_ffmpeg(const std::vector<std::string>& cmd_line)
 {
+  log_ = boost::algorithm::join(cmd_line, " ");
+  log_ += "\n\n";
+
   Glib::Pid ffmpeg_pid;
   int ffmpeg_stderr_fd;
   try {
@@ -226,6 +237,11 @@ bool FFmpegExecutor::on_ffmpeg_output(Glib::IOCondition condition)
 
   Progress p = get_progress(line);
   signal_progress_.emit(p);
+
+  if (p.percentage < 0) {
+    log_ += line;
+    log_ += '\n';
+  }
 
   return true;
 }

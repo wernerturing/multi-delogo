@@ -64,6 +64,8 @@ namespace mdl {
     bool is_executing() const;
     void terminate();
 
+    const std::string& get_log() const;
+
     typedef sigc::signal<void, Progress> type_signal_progress;
     type_signal_progress signal_progress();
 
@@ -87,6 +89,8 @@ namespace mdl {
 #endif
     Glib::RefPtr<Glib::IOChannel> ffmpeg_out_;
     Glib::Timer ffmpeg_timer_;
+
+    std::string log_;
 
     type_signal_progress signal_progress_;
     type_signal_finished signal_finished_;

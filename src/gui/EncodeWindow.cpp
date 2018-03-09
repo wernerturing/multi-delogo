@@ -30,6 +30,7 @@
 #include "EncodeWindow.hpp"
 #include "EncodeWindowUtil.hpp"
 #include "FFmpegExecutor.hpp"
+#include "MultiDelogoApp.hpp"
 #include "Utils.hpp"
 
 using namespace mdl;
@@ -217,8 +218,13 @@ Gtk::Box* EncodeWindow::create_progress()
   box_progress_.set_spacing(4);
   box_progress_.set_no_show_all();
 
+  btn_log_.set_label(_("View _log"));
+  btn_log_.set_use_underline();
+  btn_log_.signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_view_log));
+
   box_progress_.pack_start(lbl_status_, true, true);
   box_progress_.pack_start(progress_bar_, true, true);
+  box_progress_.pack_start(btn_log_,  false, false);
 
   return &box_progress_;
 }
@@ -247,6 +253,7 @@ void EncodeWindow::on_encode()
     box_progress_.show_all();
 
     disable_widgets();
+    btn_log_.hide();
   } catch (ScriptGenerationException& e) {
     Gtk::MessageDialog dlg(*this,
                            Glib::ustring::compose(_("Error generating filter script for FFmpeg: %1"), e.what()),
@@ -333,6 +340,8 @@ void EncodeWindow::on_ffmpeg_progress(const FFmpegExecutor::Progress& p)
 void EncodeWindow::on_ffmpeg_finished(bool success, const std::string& error)
 {
   enable_widgets();
+  btn_log_.show();
+
   progress_bar_.set_fraction(1);
   progress_bar_.set_text("");
 
@@ -360,6 +369,13 @@ void EncodeWindow::enable_widgets()
 }
 
 
+void EncodeWindow::on_view_log()
+{
+  LogWindow* window = new LogWindow(*this, ffmpeg_.get_log());
+  get_application()->register_window(window);
+}
+
+
 bool EncodeWindow::on_delete_event(GdkEventAny*)
 {
   if (!ffmpeg_.is_executing()) {
@@ -380,4 +396,21 @@ bool EncodeWindow::on_delete_event(GdkEventAny*)
   }
 
   return !terminate;
+}
+
+
+LogWindow::LogWindow(Gtk::Window& parent, const std::string& log)
+{
+  set_title(_("FFmpeg log"));
+  set_transient_for(parent);
+  set_default_size(650, 300);
+
+  Gtk::TextView* txt = Gtk::manage(new Gtk::TextView());
+  txt->get_buffer()->set_text(log);
+
+  Gtk::ScrolledWindow* scr = Gtk::manage(new Gtk::ScrolledWindow());
+  scr->set_shadow_type(Gtk::SHADOW_IN);
+  scr->add(*txt);
+
+  add(*scr);
 }

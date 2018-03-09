@@ -156,19 +156,3 @@ void MovieWindow::on_hide()
     on_save();
   }
 }
-
-
-Glib::RefPtr<MultiDelogoApp> MovieWindow::get_application()
-{
-  Glib::RefPtr<MultiDelogoApp> app
-    = Glib::RefPtr<MultiDelogoApp>::cast_dynamic(ApplicationWindow::get_application());
-  return app;
-}
-
-
-Glib::RefPtr<const MultiDelogoApp> MovieWindow::get_application() const
-{
-  Glib::RefPtr<const MultiDelogoApp> app
-    = Glib::RefPtr<const MultiDelogoApp>::cast_dynamic(ApplicationWindow::get_application());
-  return app;
-}

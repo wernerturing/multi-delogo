@@ -27,24 +27,19 @@
 #include "common/FrameProvider.hpp"
 #include "filter-generator/FilterData.hpp"
 
+#include "MultiDelogoAppWindow.hpp"
 #include "FilterList.hpp"
 #include "FrameNavigator.hpp"
 #include "Coordinator.hpp"
 
 
 namespace mdl {
-  class MultiDelogoApp;
-
-  class MovieWindow : public Gtk::ApplicationWindow
+  class MovieWindow : public MultiDelogoAppWindow
   {
   public:
     MovieWindow(const std::string& project_file,
                 std::unique_ptr<fg::FilterData> filter_data,
                 const Glib::RefPtr<FrameProvider>& frame_provider);
-
-  protected:
-    Glib::RefPtr<MultiDelogoApp> get_application();
-    Glib::RefPtr<const MultiDelogoApp> get_application() const;
 
   private:
     std::string project_file_;
