@@ -29,7 +29,7 @@
 
 
 namespace mdl {
-  class FilterPanel : public Gtk::Box
+  class FilterPanel : public Gtk::Grid
   {
   protected:
     FilterPanel();
