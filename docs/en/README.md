@@ -93,6 +93,8 @@ To remove a filter, select it and press the button with the minus sign below the
 
 To move quickly between filters, use the arrows below the filter list.
 
+If **Scroll to filter** on the toolbar is checked, when moving to a filter the frame will be scrolled if necessary so that its rectangle is displayed. If unchecked, no scrolling is performed.
+
 
 ## Encoding the video
 

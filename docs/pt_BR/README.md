@@ -93,6 +93,8 @@ Para remover um filtro, selecione-o e aperte o botão com o sinal de menos abaix
 
 Para mover rapidamente entre filtros, use as setas abaixo da lista de filtros.
 
+Se **Rolar para filtro** na barra de ferramentas estiver marcado, ao mover entre filtros o quadro será rolado se necessário para que o retângulo do filtro seja exibido. Se desmarcado, a rolagem não será feita.
+
 
 ## Convertendo o vídeo
 
