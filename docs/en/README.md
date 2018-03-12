@@ -91,6 +91,8 @@ If you are not at a filter's start frame and make any change to the filter, a ne
 
 To remove a filter, select it and press the button with the minus sign below the filter list.
 
+To move quickly between filters, use the arrows below the filter list.
+
 
 ## Encoding the video
 

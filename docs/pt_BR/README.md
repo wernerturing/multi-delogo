@@ -91,6 +91,8 @@ Se você não estiver no quadro inicial e fizer alguma alteração, um novo filt
 
 Para remover um filtro, selecione-o e aperte o botão com o sinal de menos abaixo da lista de filtros.
 
+Para mover rapidamente entre filtros, use as setas abaixo da lista de filtros.
+
 
 ## Convertendo o vídeo
 
