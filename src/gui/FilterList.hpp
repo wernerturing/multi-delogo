@@ -49,8 +49,10 @@ namespace mdl {
     typedef sigc::signal<void, int> type_signal_selection_changed;
     type_signal_selection_changed signal_selection_changed();
 
-    typedef sigc::signal<void> type_signal_remove_filter;
-    type_signal_remove_filter signal_remove_filter();
+    typedef sigc::signal<void> type_signal_button;
+    type_signal_button signal_previous_filter();
+    type_signal_button signal_next_filter();
+    type_signal_button signal_remove_filter();
 
     typedef FilterType::type_signal_type_changed type_signal_type_changed;
     type_signal_type_changed signal_type_changed();
@@ -66,8 +68,15 @@ namespace mdl {
     Gtk::Widget* current_panel_;
 
     type_signal_selection_changed signal_selection_changed_;
-    type_signal_remove_filter signal_remove_filter_;
+
+    type_signal_button signal_previous_filter_;
+    type_signal_button signal_next_filter_;
+    type_signal_button signal_remove_filter_;
+
     type_signal_type_changed signal_type_changed_;
+
+
+    Gtk::Grid* create_buttons();
 
     void on_selection_changed();
   };

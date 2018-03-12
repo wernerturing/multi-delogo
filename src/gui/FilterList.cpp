@@ -43,26 +43,50 @@ FilterList::FilterList(fg::FilterList& filter_list)
   scroll->set_min_content_height(225);
   scroll->add(view_);
 
-  btn_remove_filter_.set_image_from_icon_name("list-remove");
-  btn_remove_filter_.set_tooltip_text(_("Remove the selected filter"));
-  btn_remove_filter_.set_sensitive(false);
-  Gtk::ButtonBox* buttons = Gtk::manage(new Gtk::ButtonBox());
-  buttons->pack_start(btn_remove_filter_, false, false);
-
   set_orientation(Gtk::ORIENTATION_VERTICAL);
   set_row_spacing(8);
   add(*scroll);
-  add(*buttons);
+  add(*create_buttons());
+  filter_type_.set_margin_top(8);
   add(filter_type_);
 
   selection_ = view_.get_selection();
   selection_->signal_changed().connect(sigc::mem_fun(*this, &FilterList::on_selection_changed));
 
-  btn_remove_filter_.signal_clicked().connect(
-    sigc::mem_fun(signal_remove_filter_, &type_signal_remove_filter::emit));
-
   filter_type_.signal_type_changed().connect(
     sigc::mem_fun(signal_type_changed_, &type_signal_type_changed::emit));
+}
+
+
+Gtk::Grid* FilterList::create_buttons()
+{
+  Gtk::Button* btn_prev_filter = Gtk::manage(new Gtk::Button());
+  btn_prev_filter->set_image_from_icon_name("go-previous");
+  btn_prev_filter->set_tooltip_text(_("Jump to previous filter (c)"));
+  btn_prev_filter->signal_clicked().connect(
+    sigc::mem_fun(signal_previous_filter_, &type_signal_button::emit));
+
+  Gtk::Button* btn_next_filter = Gtk::manage(new Gtk::Button());
+  btn_next_filter->set_image_from_icon_name("go-next");
+  btn_next_filter->set_tooltip_text(_("Jump to next filter (v)"));
+  btn_next_filter->signal_clicked().connect(
+    sigc::mem_fun(signal_next_filter_, &type_signal_button::emit));
+
+  btn_remove_filter_.set_image_from_icon_name("list-remove");
+  btn_remove_filter_.set_tooltip_text(_("Remove the selected filter"));
+  btn_remove_filter_.set_sensitive(false);
+  btn_remove_filter_.signal_clicked().connect(
+    sigc::mem_fun(signal_remove_filter_, &type_signal_button::emit));
+
+  Gtk::Grid* buttons = Gtk::manage(new Gtk::Grid());
+  buttons->set_column_spacing(4);
+  buttons->set_column_homogeneous(true);
+
+  buttons->add(*btn_prev_filter);
+  buttons->add(btn_remove_filter_);
+  buttons->add(*btn_next_filter);
+
+  return buttons;
 }
 
 
@@ -116,7 +140,19 @@ FilterList::type_signal_selection_changed FilterList::signal_selection_changed()
 }
 
 
-FilterList::type_signal_remove_filter FilterList::signal_remove_filter()
+FilterList::type_signal_button FilterList::signal_previous_filter()
+{
+  return signal_previous_filter_;
+}
+
+
+FilterList::type_signal_button FilterList::signal_next_filter()
+{
+  return signal_next_filter_;
+}
+
+
+FilterList::type_signal_button FilterList::signal_remove_filter()
 {
   return signal_remove_filter_;
 }

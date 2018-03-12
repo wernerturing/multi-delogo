@@ -44,6 +44,11 @@ Coordinator::Coordinator(FilterList& filter_list,
   on_filter_selected_ = filter_list_.signal_selection_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_filter_selected));
 
+  filter_list_.signal_previous_filter().connect(
+    sigc::mem_fun(*this, &Coordinator::on_previous_filter));
+  filter_list_.signal_next_filter().connect(
+    sigc::mem_fun(*this, &Coordinator::on_next_filter));
+
   filter_list_.signal_remove_filter().connect(
     sigc::mem_fun(*this, &Coordinator::on_remove_filter));
 
@@ -57,6 +62,28 @@ Coordinator::Coordinator(FilterList& filter_list,
     sigc::mem_fun(*this, &Coordinator::on_frame_rectangle_changed));
 
   frame_navigator_.change_displayed_frame(1);
+}
+
+
+void Coordinator::on_previous_filter()
+{
+  auto iter = filter_model_->get_for_frame(current_frame_ - 1);
+  if (!iter) {
+    return;
+  }
+
+  frame_navigator_.change_displayed_frame((*iter)[filter_model_->columns.start_frame]);
+}
+
+
+void Coordinator::on_next_filter()
+{
+  auto iter = filter_model_->get_for_frame(current_frame_);
+  if (!iter || !++iter) {
+    return;
+  }
+
+  frame_navigator_.change_displayed_frame((*iter)[filter_model_->columns.start_frame]);
 }
 
 
