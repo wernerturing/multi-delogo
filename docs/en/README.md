@@ -51,7 +51,15 @@ Now click near the top left corner of the text, and drag the mouse, drawing a re
 
 Now look at the left side of the window. Notice that there is a row in the list saying **76 - delogo**. That is a _filter_.
 
-A _filter_ is a modification done to the video, in order to remove the logos. Two types of filters are supported: [delogo](https://ffmpeg.org/ffmpeg-filters.html#delogo) attempts to remove the logo, and [drawbox](https://ffmpeg.org/ffmpeg-filters.html#drawbox) simply draws a black box over the text. Generally delogo works well, but depending on the video it might fail or generate ugly artifacts. The _none_ filter is used to not apply any filter to a part of the video.
+A _filter_ is a modification done to the video, in order to remove the logos. The following filters are available:
+
+* _delogo_ attempts to remove a logo in the marked region. It almost always successfully removes the logo, but depending on the background might leave an artifact in the region, as if a blurring filter were applied. For more details, see [the ffmpeg documentation](https://ffmpeg.org/ffmpeg-filters.html#delogo).
+
+* _drawbox_ draws a black blox over the marked region. For more details, see [the ffmpeg documentation](https://ffmpeg.org/ffmpeg-filters.html#drawbox).
+
+* _cut_ removes the part of the video starting at its start frame up to the start of the next filter. Note that if this filter is used, the audio will need to be reencoded as well.
+
+* _none_ is used to not apply any filter to a part of the video.
 
 Filters are applied from their _start frame_ until the start of the next filter, or until the end of the video if it's the last filter.
 
@@ -82,6 +90,10 @@ To edit an existing filter, you have to be on that filter's start frame. You can
 If you are not at a filter's start frame and make any change to the filter, a new filter is added.
 
 To remove a filter, select it and press the button with the minus sign below the filter list.
+
+To move quickly between filters, use the arrows below the filter list.
+
+If **Scroll to filter** on the toolbar is checked, when moving to a filter the frame will be scrolled if necessary so that its rectangle is displayed. If unchecked, no scrolling is performed.
 
 
 ## Encoding the video
@@ -120,4 +132,4 @@ In Windows, a black console window appears while the video is being encoded. Thi
 
 ### Running FFmpeg manually
 
-If you want more control over the encoding process, you can run FFmpeg manually. To do that, instead of **Encode**, use **Generate filter script**. This generates a file with the description of the filters to apply, that can be passed to FFmpeg with the `-filter_script` option.
+If you want more control over the encoding process, you can run FFmpeg manually. To do that, instead of **Encode**, use **Generate filter script**. This generates a file with the description of the filters to apply, that can be passed to FFmpeg with the `-filter_complex_script` option.
