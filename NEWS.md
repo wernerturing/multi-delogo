@@ -1,4 +1,4 @@
-## [ongoing]
+## 1.2.0
 
 * New 'cut' filter to remove parts of the video.
 
