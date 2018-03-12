@@ -38,6 +38,9 @@ namespace mdl {
 
     void update_current_filter_if_necessary();
 
+    void on_previous_filter();
+    void on_next_filter();
+
   private:
     FilterList& filter_list_;
     Glib::RefPtr<FilterListModel> filter_model_;
@@ -52,8 +55,6 @@ namespace mdl {
 
     sigc::connection on_filter_selected_;
     void on_filter_selected(int start_frame);
-    void on_previous_filter();
-    void on_next_filter();
 
     void on_frame_changed(int new_frame);
 

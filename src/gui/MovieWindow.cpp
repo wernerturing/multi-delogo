@@ -124,6 +124,16 @@ bool MovieWindow::on_key_press(GdkEventKey* key_event)
   case GDK_KEY_f:
     frame_navigator_.jump_step_frame(1);
     return true;
+
+  case GDK_KEY_C:
+  case GDK_KEY_c:
+    coordinator_.on_previous_filter();
+    return true;
+
+  case GDK_KEY_V:
+  case GDK_KEY_v:
+    coordinator_.on_next_filter();
+    return true;
   }
 
   return false;
