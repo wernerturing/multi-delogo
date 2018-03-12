@@ -87,6 +87,14 @@ Gtk::Toolbar* MovieWindow::create_toolbar()
   btn_save->set_icon_name("document-save");
   gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_save->gobj()), "win.save");
 
+  Gtk::ToggleToolButton *chk_scroll_filter = Gtk::manage(new Gtk::ToggleToolButton(_("_Scroll to filter")));
+  chk_scroll_filter->set_active();
+  chk_scroll_filter->set_use_underline();
+  chk_scroll_filter->set_tooltip_text(_("Check to make the rectangle where the filter is applied to be displayed (scrolling the frame image if necessary) when moving between filters"));
+  chk_scroll_filter->signal_toggled().connect(
+    sigc::bind(sigc::mem_fun(*this, &MovieWindow::on_scroll_filter_toggled),
+               chk_scroll_filter));
+
   add_action("encode", sigc::mem_fun(*this, &MovieWindow::on_encode));
   Gtk::ToolButton* btn_encode = Gtk::manage(new Gtk::ToolButton(_("Encode")));
   btn_encode->set_tooltip_text(_("Encode current project to a video with the filters applied"));
@@ -96,6 +104,8 @@ Gtk::Toolbar* MovieWindow::create_toolbar()
   toolbar->append(*btn_new);
   toolbar->append(*btn_open);
   toolbar->append(*btn_save);
+  toolbar->append(*Gtk::manage(new Gtk::SeparatorToolItem()));
+  toolbar->append(*chk_scroll_filter);
   toolbar->append(*Gtk::manage(new Gtk::SeparatorToolItem()));
   toolbar->append(*btn_encode);
   return toolbar;
@@ -124,6 +134,16 @@ bool MovieWindow::on_key_press(GdkEventKey* key_event)
   case GDK_KEY_f:
     frame_navigator_.jump_step_frame(1);
     return true;
+
+  case GDK_KEY_C:
+  case GDK_KEY_c:
+    coordinator_.on_previous_filter();
+    return true;
+
+  case GDK_KEY_V:
+  case GDK_KEY_v:
+    coordinator_.on_next_filter();
+    return true;
   }
 
   return false;
@@ -148,6 +168,12 @@ void MovieWindow::on_encode()
   get_application()->register_window(window);
 
   hide();
+}
+
+
+void MovieWindow::on_scroll_filter_toggled(Gtk::ToggleToolButton* chk)
+{
+  coordinator_.set_scroll_filter(chk->get_active());
 }
 
 

@@ -2,6 +2,12 @@
 
 * New 'cut' filter to remove parts of the video.
 
+* Added buttons and key shortcuts to move to the previous and next
+  filters.
+
+* Added option to scroll the frame to make the filter visible when
+  moving between filters.
+
 * It's possible to display the FFmpeg log after encoding finishes.
 
 * Fixed bug that caused FFmpeg to fail if the last filter is a "none".
