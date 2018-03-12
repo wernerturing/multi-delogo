@@ -57,6 +57,8 @@ namespace mdl {
     void on_save();
     void on_encode();
 
+    void on_scroll_filter_toggled(Gtk::ToggleToolButton* chk);
+
     void on_hide() override;
   };
 }

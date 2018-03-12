@@ -40,6 +40,7 @@ namespace mdl {
 
     void show_rectangle(const Rectangle& rect);
     void hide_rectangle();
+    void scroll_to_current_rectangle();
 
     typedef sigc::signal<void, Rectangle> type_signal_rectangle_changed;
     type_signal_rectangle_changed signal_rectangle_changed();

@@ -40,6 +40,7 @@ Coordinator::Coordinator(FilterList& filter_list,
   , panel_factory_(frame_width, frame_height)
   , current_filter_panel_(nullptr)
   , current_filter_(nullptr)
+  , scroll_filter_(true)
 {
   on_filter_selected_ = filter_list_.signal_selection_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_filter_selected));
@@ -84,6 +85,12 @@ void Coordinator::on_next_filter()
   }
 
   frame_navigator_.change_displayed_frame((*iter)[filter_model_->columns.start_frame]);
+}
+
+
+void Coordinator::set_scroll_filter(bool state)
+{
+  scroll_filter_ = state;
 }
 
 
@@ -146,6 +153,9 @@ void Coordinator::change_displayed_filter(const FilterListModel::iterator& iter)
   auto rect = current_filter_panel_->get_rectangle();
   if (rect) {
     frame_view_.show_rectangle(*rect);
+    if (scroll_filter_) {
+      frame_view_.scroll_to_current_rectangle();
+    }
   } else {
     frame_view_.hide_rectangle();
   }

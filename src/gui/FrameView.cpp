@@ -82,6 +82,12 @@ void FrameView::hide_rectangle()
 }
 
 
+void FrameView::scroll_to_current_rectangle()
+{
+  canvas_.scroll_to(rect_->property_x() - 50, rect_->property_y() - 50);
+}
+
+
 FrameView::type_signal_rectangle_changed FrameView::signal_rectangle_changed()
 {
   return signal_rectangle_changed_;
