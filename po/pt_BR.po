@@ -23,8 +23,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: multi-delogo\n"
 "Report-Msgid-Bugs-To: werner.turing@protonmail.com\n"
-"POT-Creation-Date: 2018-03-03 19:03-0300\n"
-"PO-Revision-Date: 2018-03-04 08:01-0300\n"
+"POT-Creation-Date: 2018-03-12 14:12-0300\n"
+"PO-Revision-Date: 2018-03-12 14:20-0300\n"
 "Last-Translator: Werner Turing <werner.turing@protonmail.com>\n"
 "Language-Team: Werner Turing <werner.turing@protonmail.com>\n"
 "Language: pt_BR\n"
@@ -33,7 +33,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/gui/EncodeWindow.cpp:50
+#: ../src/gui/EncodeWindow.cpp:44
 msgid "Encode video"
 msgstr "Converter vídeo"
 
@@ -45,40 +45,40 @@ msgstr "_Arquivo de destino:"
 msgid "_Select"
 msgstr "_Selecionar"
 
-#: ../src/gui/EncodeWindow.cpp:88
+#: ../src/gui/EncodeWindow.cpp:92
 msgid "Select output file"
 msgstr "Selecione o arquivo de destino"
 
-#: ../src/gui/EncodeWindow.cpp:89 ../src/gui/EncodeWindow.cpp:282
+#: ../src/gui/EncodeWindow.cpp:93 ../src/gui/EncodeWindow.cpp:331
 #: ../src/gui/MultiDelogoApp.cpp:290
 msgid "_Cancel"
 msgstr "_Cancelar"
 
-#: ../src/gui/EncodeWindow.cpp:90
+#: ../src/gui/EncodeWindow.cpp:94
 msgid "_Save"
 msgstr "_Salvar"
 
-#: ../src/gui/EncodeWindow.cpp:101
+#: ../src/gui/EncodeWindow.cpp:105
 msgid "Video format:"
 msgstr "Formato do vídeo:"
 
-#: ../src/gui/EncodeWindow.cpp:104
+#: ../src/gui/EncodeWindow.cpp:108
 msgid "Most compatible video format. If in doubt, use this format"
 msgstr ""
 "Formato de vídeo mais compatível. Se estiver em dúvida, use este formato"
 
-#: ../src/gui/EncodeWindow.cpp:111
+#: ../src/gui/EncodeWindow.cpp:115
 msgid ""
 "A newer format that produces smaller video files. May not work on all players"
 msgstr ""
 "Um formato mais novo que gera arquivos menores. Pode não ser suportado por "
 "todos os players"
 
-#: ../src/gui/EncodeWindow.cpp:140
+#: ../src/gui/EncodeWindow.cpp:147
 msgid "_Quality:"
 msgstr "_Qualidade:"
 
-#: ../src/gui/EncodeWindow.cpp:146
+#: ../src/gui/EncodeWindow.cpp:153
 msgid ""
 "CRF value to use for encoding. Lower values generally lead to higher "
 "quality, but bigger files. If in doubt, accept the default"
@@ -87,11 +87,11 @@ msgstr ""
 "produzem melhor qualidade, mas arquivos maiores. Se estiver em dúvida, use o "
 "padrão"
 
-#: ../src/gui/EncodeWindow.cpp:160
+#: ../src/gui/EncodeWindow.cpp:170
 msgid "_Randomnly increase filter times"
 msgstr "A_umentar aleatoriamente a duração dos filtros"
 
-#: ../src/gui/EncodeWindow.cpp:162
+#: ../src/gui/EncodeWindow.cpp:172
 msgid ""
 "If set, each filter's duration will be randomly increated, so that two or "
 "more filters can be active at the same time."
@@ -99,11 +99,11 @@ msgstr ""
 "Se selecionado, a duração de cada filtro será aumentada aleatoriamente, de "
 "forma que dois ou mais filtros estejam ativos simultaneamente."
 
-#: ../src/gui/EncodeWindow.cpp:165
+#: ../src/gui/EncodeWindow.cpp:175
 msgid "_Factor:"
 msgstr "_Fator:"
 
-#: ../src/gui/EncodeWindow.cpp:174
+#: ../src/gui/EncodeWindow.cpp:183
 msgid ""
 "Controls how much each filter's time is increased. If set to 2, then on "
 "average filters will last twice their original duration."
@@ -111,11 +111,11 @@ msgstr ""
 "Controla quanto a duração de cada filtro é aumentada. Se tem o valor 2, "
 "então na média cada filtro durará o dobro do tempo original."
 
-#: ../src/gui/EncodeWindow.cpp:195
+#: ../src/gui/EncodeWindow.cpp:208
 msgid "_Generate filter script"
 msgstr "_Gerar script com filtros"
 
-#: ../src/gui/EncodeWindow.cpp:196
+#: ../src/gui/EncodeWindow.cpp:209
 msgid ""
 "Generates a FFmpeg filter script file that can be used to encode the video. "
 "Use this option if you want to run FFmpeg manually with custom encoding "
@@ -125,60 +125,56 @@ msgstr ""
 "converter o vídeo. Selecione esta opção se você quiser executar o FFmpeg "
 "manualmente com opções de conversão personalizadas"
 
-#: ../src/gui/EncodeWindow.cpp:199
+#: ../src/gui/EncodeWindow.cpp:212
 msgid "_Encode"
 msgstr "_Converter"
 
-#: ../src/gui/EncodeWindow.cpp:247
+#: ../src/gui/EncodeWindow.cpp:233
+msgid "View _log"
+msgstr "Ver _log"
+
+#: ../src/gui/EncodeWindow.cpp:271
+msgid "Encoding in progress"
+msgstr "Conversão sendo executada"
+
+#: ../src/gui/EncodeWindow.cpp:280
 msgid "Error generating filter script for FFmpeg: %1"
 msgstr "Erro ao gerar script de filtros para o FFmpeg: %1"
 
-#: ../src/gui/EncodeWindow.cpp:263
+#: ../src/gui/EncodeWindow.cpp:284
+msgid "Could not execute FFmpeg: %1"
+msgstr "Não foi possível executar o FFmpeg: %1"
+
+#: ../src/gui/EncodeWindow.cpp:305
 msgid "Filter script generated"
 msgstr "Script com filtros gerado"
 
-#: ../src/gui/EncodeWindow.cpp:271
-msgid "Please select the output file"
-msgstr "Por favor selecione o arquivo de destino"
-
-#: ../src/gui/EncodeWindow.cpp:278
-msgid "File %1 already exists. Overwrite?"
-msgstr "Arquivo %1 já existe. Sobrescrever?"
-
-#: ../src/gui/EncodeWindow.cpp:283
-msgid "_Overwrite"
-msgstr "_Sobrescrever"
-
-#: ../src/gui/EncodeWindow.cpp:295 ../src/gui/MultiDelogoApp.cpp:105
+#: ../src/gui/EncodeWindow.cpp:308 ../src/gui/MultiDelogoApp.cpp:105
 #: ../src/gui/MultiDelogoApp.cpp:226
 msgid "Could not open file %1: %2"
 msgstr "Não foi possível abrir o arquivo %1: %2"
 
-#: ../src/gui/EncodeWindow.cpp:356
-msgid "Could not execute FFmpeg: %1"
-msgstr "Não foi possível executar o FFmpeg: %1"
+#: ../src/gui/EncodeWindow.cpp:320
+msgid "Please select the output file"
+msgstr "Por favor selecione o arquivo de destino"
 
-#: ../src/gui/EncodeWindow.cpp:363
-msgid "Encoding in progress"
-msgstr "Conversão sendo executada"
+#: ../src/gui/EncodeWindow.cpp:327
+msgid "File %1 already exists. Overwrite?"
+msgstr "Arquivo %1 já existe. Sobrescrever?"
 
-#: ../src/gui/EncodeWindow.cpp:439
-msgid "%1%% done, %2"
-msgstr "%1%% pronto, %2"
+#: ../src/gui/EncodeWindow.cpp:332
+msgid "_Overwrite"
+msgstr "_Sobrescrever"
 
-#: ../src/gui/EncodeWindow.cpp:460
-msgid "about %1:%2:%3 left"
-msgstr "cerca de %1:%2:%3 restantes"
-
-#: ../src/gui/EncodeWindow.cpp:475
+#: ../src/gui/EncodeWindow.cpp:370
 msgid "Encoding finished successfully"
 msgstr "Conversão terminou com sucesso"
 
-#: ../src/gui/EncodeWindow.cpp:477
+#: ../src/gui/EncodeWindow.cpp:372
 msgid "Encoding failed: %1"
 msgstr "Conversão falhou: %1"
 
-#: ../src/gui/EncodeWindow.cpp:506
+#: ../src/gui/EncodeWindow.cpp:407
 msgid ""
 "Encoding is in progress. If it is cancelled now, it'll be necessary to "
 "restart encoding from the beginning. Really cancel?"
@@ -186,94 +182,114 @@ msgstr ""
 "A conversão está sendo executada. Se for cancelada agora, será necesário "
 "reiniciar a conversão do começo. Realmente deseja cancelar?"
 
-#: ../src/gui/EncodeWindow.cpp:510
+#: ../src/gui/EncodeWindow.cpp:411
 msgid "C_ancel encoding"
 msgstr "C_ancelar conversão"
 
-#: ../src/gui/EncodeWindow.cpp:511
+#: ../src/gui/EncodeWindow.cpp:412
 msgid "_Continue"
 msgstr "_Continuar"
 
-#: ../src/gui/FilterList.cpp:38
+#: ../src/gui/EncodeWindow.cpp:425
+msgid "FFmpeg log"
+msgstr "Log do FFmpeg"
+
+#: ../src/gui/EncodeWindowUtil.cpp:31
+msgid "%1%% done, %2"
+msgstr "%1%% pronto, %2"
+
+#: ../src/gui/EncodeWindowUtil.cpp:43
+msgid "about %1:%2:%3 left"
+msgstr "cerca de %1:%2:%3 restantes"
+
+#: ../src/gui/FilterList.cpp:37
 msgid "Start frame"
 msgstr "Quadro inicial"
 
-#: ../src/gui/FilterList.cpp:39
+#: ../src/gui/FilterList.cpp:38
 msgid "Filter"
 msgstr "Filtro"
 
-#: ../src/gui/FilterList.cpp:48
+#: ../src/gui/FilterList.cpp:65
+msgid "Jump to previous filter (c)"
+msgstr "Ir para o filtro anterior (c)"
+
+#: ../src/gui/FilterList.cpp:71
+msgid "Jump to next filter (v)"
+msgstr "Ir para o próximo filtro (v)"
+
+#: ../src/gui/FilterList.cpp:76
 msgid "Remove the selected filter"
 msgstr "Remover o filtro selecionado"
 
-#: ../src/gui/FilterPanels.cpp:97
+#: ../src/gui/FilterPanels.cpp:112
 msgid "_x:"
 msgstr "_x:"
 
-#: ../src/gui/FilterPanels.cpp:98
+#: ../src/gui/FilterPanels.cpp:113
 msgid "_y:"
 msgstr "_y:"
 
-#: ../src/gui/FilterPanels.cpp:99
+#: ../src/gui/FilterPanels.cpp:114
 msgid "_width:"
 msgstr "_largura:"
 
-#: ../src/gui/FilterPanels.cpp:100
+#: ../src/gui/FilterPanels.cpp:115
 msgid "_height:"
 msgstr "_altura:"
 
-#: ../src/gui/FilterType.cpp:54
+#: ../src/gui/FilterType.cpp:60
 msgid "Filter:"
 msgstr "Filtro:"
 
-#: ../src/gui/FrameNavigator.cpp:62
+#: ../src/gui/FrameNavigator.cpp:69
 msgid "Move back one frame (s)"
 msgstr "Voltar um quadro (s)"
 
-#: ../src/gui/FrameNavigator.cpp:68
+#: ../src/gui/FrameNavigator.cpp:75
 msgid "Move forward one frame (d)"
 msgstr "Avançar um quadro (d)"
 
-#: ../src/gui/FrameNavigator.cpp:74
+#: ../src/gui/FrameNavigator.cpp:81
 msgid "Jump back the number of frames specified in \"jump size\" (a)"
 msgstr ""
 "Saltar para frente o número de quadros especificado em \"tamanho do salto"
 "\" (a)"
 
-#: ../src/gui/FrameNavigator.cpp:80
+#: ../src/gui/FrameNavigator.cpp:87
 msgid "Jump forward the number of frames specified in \"jump size\" (f)"
 msgstr ""
 "Saltar para trás o número de quadros especificado em \"tamanho do salto\" (f)"
 
-#: ../src/gui/FrameNavigator.cpp:85
+#: ../src/gui/FrameNavigator.cpp:92
 msgid "Current frame number"
 msgstr "Número do quadro atual"
 
-#: ../src/gui/FrameNavigator.cpp:100
+#: ../src/gui/FrameNavigator.cpp:105
 msgid "_Jump size:"
 msgstr "_Tamanho do salto:"
 
-#: ../src/gui/FrameNavigator.cpp:106
+#: ../src/gui/FrameNavigator.cpp:111
 msgid "Number of frames to jump when using << and >> buttons"
 msgstr "Número de quadros a saltar quando os botões << e >> são utilizados"
 
-#: ../src/gui/FrameNavigator.cpp:117
+#: ../src/gui/FrameNavigator.cpp:122
 msgid "Fit the image to the window"
 msgstr "Ajustar tamanho da imagem ao da janela"
 
-#: ../src/gui/FrameNavigator.cpp:120
+#: ../src/gui/FrameNavigator.cpp:125
 msgid "Make image smaller"
 msgstr "Diminuir tamanho da imagem"
 
-#: ../src/gui/FrameNavigator.cpp:123
+#: ../src/gui/FrameNavigator.cpp:128
 msgid "Make image larger"
 msgstr "Aumentar tamanho da imagem"
 
-#: ../src/gui/FrameNavigator.cpp:127
+#: ../src/gui/FrameNavigator.cpp:132
 msgid "Zoom to original size"
 msgstr "Exibir a imagem no tamanho original"
 
-#: ../src/gui/FrameNavigator.cpp:171
+#: ../src/gui/FrameNavigator.cpp:183
 msgid "Could not get frame"
 msgstr "Não foi possível obter o frame"
 
@@ -285,31 +301,43 @@ msgstr "multi-delogo"
 msgid "What would you like to do?"
 msgstr "O que deseja fazer?"
 
-#: ../src/gui/InitialWindow.cpp:36 ../src/gui/MultiDelogoApp.cpp:144
+#: ../src/gui/InitialWindow.cpp:35 ../src/gui/MultiDelogoApp.cpp:144
 msgid "Start a _new project"
 msgstr "Começar um _novo projeto"
 
-#: ../src/gui/InitialWindow.cpp:42
+#: ../src/gui/InitialWindow.cpp:40
 msgid "_Open an existing project"
 msgstr "_Abrir um projeto existente"
 
-#: ../src/gui/MovieWindow.cpp:73
+#: ../src/gui/MovieWindow.cpp:75
 msgid "Create a new project"
 msgstr "Criar  um novo projeto"
 
-#: ../src/gui/MovieWindow.cpp:78
+#: ../src/gui/MovieWindow.cpp:80
 msgid "Open an existing project"
 msgstr "Abrir um projeto existente"
 
-#: ../src/gui/MovieWindow.cpp:84
+#: ../src/gui/MovieWindow.cpp:86
 msgid "Save current project"
 msgstr "Salvar projeto atual"
 
-#: ../src/gui/MovieWindow.cpp:89
+#: ../src/gui/MovieWindow.cpp:90
+msgid "_Scroll to filter"
+msgstr "_Rolar para filtro"
+
+#: ../src/gui/MovieWindow.cpp:93
+msgid ""
+"Check to make the rectangle where the filter is applied to be displayed "
+"(scrolling the frame image if necessary) when moving between filters"
+msgstr ""
+"Marque para fazer com que o retângulo onde o filtro é aplicado seja exibido "
+"(rolando a imagem do quadro se necessário) ao mover entre filtros"
+
+#: ../src/gui/MovieWindow.cpp:99
 msgid "Encode"
 msgstr "Converter"
 
-#: ../src/gui/MovieWindow.cpp:90
+#: ../src/gui/MovieWindow.cpp:100
 msgid "Encode current project to a video with the filters applied"
 msgstr "Converter o projeto atual para um vídeo com os filtros aplicados"
 
