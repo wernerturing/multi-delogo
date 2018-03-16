@@ -40,6 +40,7 @@ multi_delogo_SOURCES = main.cpp \
 noinst_HEADERS = common/Exceptions.hpp \
                  common/Rectangle.hpp \
                  common/FrameProvider.hpp \
+                 common/LogoFinder.hpp \
                  MultiDelogoApp.hpp \
                  MultiDelogoAppWindow.hpp \
                  NumericEntry.hpp \

@@ -15,8 +15,19 @@
 # You should have received a copy of the GNU General Public License
 # along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 
-noinst_HEADERS = TestHelpers.hpp
+noinst_LIBRARIES = libopencv-logo-finder.a
 
-SUBDIRS = filter-generator \
-          opencv-logo-finder \
-          gui
+libopencv_logo_finder_a_SOURCES = OpenCVLogoFinder.cpp
+
+noinst_HEADERS = OpenCVLogoFinder.hpp
+
+libopencv_logo_finder_a_CPPFLAGS = -I.. $(OPENCV_CFLAGS)
+
+
+noinst_PROGRAMS = matcher
+
+matcher_SOURCES = matcher.cpp
+
+matcher_CPPFLAGS = -I..
+
+matcher_LDADD = libopencv-logo-finder.a $(OPENCV_LIBS)
