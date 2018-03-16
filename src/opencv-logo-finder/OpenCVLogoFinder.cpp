@@ -25,6 +25,8 @@
 #include <opencv2/videoio.hpp>
 #include <opencv2/imgproc.hpp>
 
+#include "gui/common/Exceptions.hpp"
+
 #include "OpenCVLogoFinder.hpp"
 
 using namespace mdl::opencv;
@@ -32,11 +34,13 @@ using namespace mdl::opencv;
 
 OpenCVLogoFinder::OpenCVLogoFinder(const std::string& file, int start_frame, int frame_interval, LogoFinderCallback& callback)
   : LogoFinder(callback)
-  , cap_(file)
   , start_frame_(start_frame)
   , frame_interval_(frame_interval)
 {
-  // TODO: check cap_
+  cap_.open(file);
+  if (!cap_.isOpened()) {
+    throw mdl::VideoNotOpenedException();
+  }
 
   width_ = cap_.get(cv::CAP_PROP_FRAME_WIDTH);
   height_ = cap_.get(cv::CAP_PROP_FRAME_HEIGHT);
@@ -176,8 +180,11 @@ cv::Mat OpenCVLogoFinder::get_frame(int frame_number)
 {
   cap_.set(cv::CAP_PROP_POS_FRAMES, frame_number);
   cv::Mat frame;
-  cap_.read(frame);
-  // TODO: Check success of read
+  bool success = cap_.read(frame);
+  if (!success) {
+    throw mdl::FrameNotAvailableException();
+  }
+
   return frame;
 }
 
