@@ -58,18 +58,14 @@ namespace mdl { namespace opencv {
      * logos.
      */
     int steps_ = 2;
-    /**
-     * Step between frames used to calculate the average. Bigger makes
-     * it faster, but possibly less accurate.
-     */
-    int frame_step_ = 4;
 
     cv::Rect find_logo_in_interval(int interval_start, int interval_end);
 
     cv::Rect find_boxes(int start_frame, int end_frame);
 
     cv::Mat average_frame(int start_frame, int end_frame);
-    cv::Mat get_frame(int frame_number);
+    void go_to_frame(int frame_number);
+    cv::Mat get_next_frame();
 
     cv::Rect find_box_in_channel(const cv::Mat& haystack, int channel);
     cv::Rect select_box(const std::vector<cv::Rect>& boxes);

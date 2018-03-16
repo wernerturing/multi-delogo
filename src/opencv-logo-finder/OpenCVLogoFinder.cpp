@@ -144,21 +144,26 @@ cv::Mat OpenCVLogoFinder::average_frame(int start_frame, int end_frame)
   avg.setTo(cv::Scalar(0, 0, 0));
 
   cv::Mat temp;
-  int frames = 0;
-  for (int f = start_frame; f < end_frame; f += frame_step_) {
-    get_frame(f).convertTo(temp, CV_64FC3);
+  go_to_frame(start_frame);
+  for (int f = start_frame; f < end_frame; ++f) {
+    get_next_frame().convertTo(temp, CV_64FC3);
     avg += temp;
-    ++frames;
   }
 
+  int frames = end_frame - start_frame;
   avg.convertTo(avg, CV_8U, 1. / frames);
   return avg;
 }
 
 
-cv::Mat OpenCVLogoFinder::get_frame(int frame_number)
+void OpenCVLogoFinder::go_to_frame(int frame_number)
 {
   cap_.set(cv::CAP_PROP_POS_FRAMES, frame_number);
+}
+
+
+cv::Mat OpenCVLogoFinder::get_next_frame()
+{
   cv::Mat frame;
   bool success = cap_.read(frame);
   if (!success) {
