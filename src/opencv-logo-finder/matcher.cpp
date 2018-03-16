@@ -28,12 +28,15 @@ using namespace mdl::opencv;
 class CsvCallback : public mdl::LogoFinderCallback
 {
 public:
-  CsvCallback(const std::string& output_file);
+  CsvCallback(const std::string& output_file, int frame_interval);
   bool success(const mdl::LogoFinderResult& result) override;
   bool failure(int start_frame) override;
+  void set_end_frame(int end_frame);
 
 private:
   std::ofstream csv_;
+  int frame_interval_;
+  int end_frame_;
 };
 
 
@@ -47,15 +50,18 @@ int main(int argc, char* argv[])
   int start_frame = atoi(argv[3]) - 1;
   int frame_interval = atoi(argv[4]);
 
-  CsvCallback callback(argv[2]);
+  CsvCallback callback(argv[2], frame_interval);
 
   OpenCVLogoFinder finder(argv[1], start_frame, frame_interval, callback);
+
   int end_frame;
   if (argc == 6) {
-    end_frame = atof(argv[5]);
+    end_frame = atoi(argv[5]);
   } else {
     end_frame = finder.total_frames();
   }
+
+  callback.set_end_frame(end_frame);
 
   std::cout << "Processing video " << argv[1]
             << " from " << start_frame << " until " << end_frame
@@ -69,8 +75,9 @@ int main(int argc, char* argv[])
 }
 
 
-CsvCallback::CsvCallback(const std::string& output_file)
+CsvCallback::CsvCallback(const std::string& output_file, int frame_interval)
   : csv_(output_file)
+  , frame_interval_(frame_interval)
 {
 }
 
@@ -82,12 +89,19 @@ bool CsvCallback::success(const mdl::LogoFinderResult& result)
        << result.x << ';' << result.y << ';'
        << result.width << ';' << result.height
        << std::endl;
-  return true;
+
+  return (result.start_frame + frame_interval_) < end_frame_;
 }
 
 
 bool CsvCallback::failure(int start_frame)
 {
   std::cout << "Failure at " << start_frame << std::endl;
-  return true;
+  return (start_frame + frame_interval_) < end_frame_;
+}
+
+
+void CsvCallback::set_end_frame(int end_frame)
+{
+  end_frame_ = end_frame;
 }

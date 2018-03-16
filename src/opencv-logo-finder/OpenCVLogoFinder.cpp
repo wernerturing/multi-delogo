@@ -71,13 +71,18 @@ void OpenCVLogoFinder::find_logos()
               << box.x << " " << box.y << " "
               << box.width << " " << box.height << "]\n";
 
+    bool cont;
     if (box.x != 0) {
       LogoFinderResult result{.start_frame = interval_start,
                               .x = box.x, .y = box.y,
                               .width = box.width, .height = box.height};
-      callback_.success(result);
+      cont = callback_.success(result);
     } else {
-      callback_.failure(interval_start);
+      cont = callback_.failure(interval_start);
+    }
+
+    if (!cont) {
+      break;
     }
   }
 }
