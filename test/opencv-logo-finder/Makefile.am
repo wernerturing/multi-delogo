@@ -17,11 +17,10 @@
 
 AM_DEFAULT_SOURCE_EXT = .cpp
 
-check_PROGRAMS = OpenCVLogoFinderTest
+check_PROGRAMS = IntervalCalculatorTest
 
 TESTS = $(check_PROGRAMS)
 
-AM_CPPFLAGS = -I../../src -I../../src/opencv-logo-finder  $(OPENCV_CFLAGS)
+AM_CPPFLAGS = -I../../src/opencv-logo-finder
 LDADD = ../../src/opencv-logo-finder/libopencv-logo-finder.a \
-        $(OPENCV_LIBS) \
         $(BOOST_UNIT_TEST_FRAMEWORK_LIB)

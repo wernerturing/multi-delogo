@@ -28,6 +28,7 @@
 #include "gui/common/Exceptions.hpp"
 
 #include "OpenCVLogoFinder.hpp"
+#include "IntervalCalculator.hpp"
 
 using namespace mdl::opencv;
 
@@ -97,7 +98,7 @@ cv::Rect OpenCVLogoFinder::find_logo_in_interval(int interval_start, int interva
   int n_subintervals = 1;
   int level = 1;
   while (level <= steps_) {
-    auto subintervals = get_subintervals(interval_start, interval_end, n_subintervals);
+    auto subintervals = IntervalCalculator::get_subintervals(interval_start, interval_end, n_subintervals);
 
     std::vector<cv::Rect> subinterval_boxes;
     for (const auto& subinterval: subintervals) {
@@ -116,27 +117,6 @@ cv::Rect OpenCVLogoFinder::find_logo_in_interval(int interval_start, int interva
 
   // Not found
   return cv::Rect();
-}
-
-
-std::vector<std::pair<int, int>> OpenCVLogoFinder::get_subintervals(int interval_start, int interval_end, int n_subintervals)
-{
-  int length = ((interval_end - interval_start) / n_subintervals) + 1;
-
-  std::vector<std::pair<int, int>> subintervals;
-  for (int i = 0; i < n_subintervals; ++i) {
-    subintervals.push_back(std::make_pair(interval_start + i*length,
-                                          interval_start + (i+1)*length));
-  }
-
-  adjust_last_subinterval(subintervals, interval_end);
-  return subintervals;
-}
-
-
-void OpenCVLogoFinder::adjust_last_subinterval(std::vector<std::pair<int, int>>& subintervals, int interval_end)
-{
-  subintervals.back().second = interval_end;
 }
 
 

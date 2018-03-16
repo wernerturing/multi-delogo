@@ -17,9 +17,11 @@
 
 noinst_LIBRARIES = libopencv-logo-finder.a
 
-libopencv_logo_finder_a_SOURCES = OpenCVLogoFinder.cpp
+libopencv_logo_finder_a_SOURCES = OpenCVLogoFinder.cpp \
+                                  IntervalCalculator.cpp
 
-noinst_HEADERS = OpenCVLogoFinder.hpp
+noinst_HEADERS = OpenCVLogoFinder.hpp \
+                 IntervalCalculator.hpp
 
 libopencv_logo_finder_a_CPPFLAGS = -I.. $(OPENCV_CFLAGS)
 

@@ -19,7 +19,7 @@
 #include <vector>
 #include <utility>
 
-#include "OpenCVLogoFinder.hpp"
+#include "IntervalCalculator.hpp"
 
 using namespace mdl::opencv;
 
@@ -29,22 +29,11 @@ using namespace mdl::opencv;
 #include <boost/test/unit_test.hpp>
 
 
-namespace mdl { namespace opencv {
-class OpenCVLogoFinderTestFixture
-{
-public:
-  std::vector<std::pair<int, int>> get_subintervals(int interval_start, int interval_end, int n_subintervals)
-  {
-    return OpenCVLogoFinder::get_subintervals(interval_start, interval_end, n_subintervals);
-  }
-};
-} }
-
-BOOST_FIXTURE_TEST_SUITE(get_subintervals, mdl::opencv::OpenCVLogoFinderTestFixture)
+BOOST_AUTO_TEST_SUITE(get_subintervals)
 
 BOOST_AUTO_TEST_CASE(should_return_one_subinterval_for_first_level)
 {
-  auto subintervals = get_subintervals(1000, 1500, 1);
+  auto subintervals = IntervalCalculator::get_subintervals(1000, 1500, 1);
 
   BOOST_REQUIRE(subintervals.size() == 1);
   BOOST_TEST(subintervals[0].first == 1000);
@@ -54,7 +43,7 @@ BOOST_AUTO_TEST_CASE(should_return_one_subinterval_for_first_level)
 
 BOOST_AUTO_TEST_CASE(should_return_one_subinterval_for_second_level)
 {
-  auto subintervals = get_subintervals(1000, 1455, 2);
+  auto subintervals = IntervalCalculator::get_subintervals(1000, 1455, 2);
 
   BOOST_REQUIRE(subintervals.size() == 2);
 
@@ -68,7 +57,7 @@ BOOST_AUTO_TEST_CASE(should_return_one_subinterval_for_second_level)
 
 BOOST_AUTO_TEST_CASE(should_return_one_subinterval_for_third_level)
 {
-  auto subintervals = get_subintervals(723, 1324, 4);
+  auto subintervals = IntervalCalculator::get_subintervals(723, 1324, 4);
 
   BOOST_REQUIRE(subintervals.size() == 4);
 

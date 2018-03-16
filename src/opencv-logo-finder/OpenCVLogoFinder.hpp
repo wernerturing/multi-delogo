@@ -21,7 +21,6 @@
 
 #include <string>
 #include <vector>
-#include <utility>
 
 #include <opencv2/videoio.hpp>
 
@@ -66,9 +65,6 @@ namespace mdl { namespace opencv {
     int frame_step_ = 4;
 
     cv::Rect find_logo_in_interval(int interval_start, int interval_end);
-    // TODO: static only to help testing
-    static std::vector<std::pair<int, int>> get_subintervals(int interval_start, int interval_end, int n_subintervals);
-    static void adjust_last_subinterval(std::vector<std::pair<int, int>>& subintervals, int interval_end);
 
     cv::Rect find_boxes(int start_frame, int end_frame);
 
@@ -77,9 +73,6 @@ namespace mdl { namespace opencv {
 
     cv::Rect find_box_in_channel(const cv::Mat& haystack, int channel);
     cv::Rect select_box(const std::vector<cv::Rect>& boxes);
-
-
-    friend class OpenCVLogoFinderTestFixture;
   };
 } }
 
