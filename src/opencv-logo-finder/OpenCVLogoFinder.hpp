@@ -57,6 +57,11 @@ namespace mdl { namespace opencv {
      * logos.
      */
     int steps_ = 2;
+    /**
+     * Step between frames used to calculate the average. Bigger makes
+     * it faster, but possibly less accurate.
+     */
+    int frame_step_ = 4;
     // TODO: Search for other parameters
 
 

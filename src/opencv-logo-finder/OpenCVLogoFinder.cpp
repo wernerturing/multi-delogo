@@ -146,13 +146,18 @@ void OpenCVLogoFinder::average_frame(int start_frame, int end_frame)
   t_avg_f_.setTo(cv::Scalar(0, 0, 0));
 
   go_to_frame(start_frame);
+  int frames = 0;
   for (int f = start_frame; f < end_frame; ++f) {
     get_next_frame();
+    if (f % frame_step_ != 0) {
+      continue;
+    }
+
     t_frame_.convertTo(t_frame_f_, CV_64FC3);
     t_avg_f_ += t_frame_f_;
+    ++frames;
   }
 
-  int frames = end_frame - start_frame;
   t_avg_f_.convertTo(t_avg_, CV_8U, 1. / frames);
 }
 
