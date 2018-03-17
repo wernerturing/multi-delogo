@@ -42,14 +42,18 @@ OpenCVLogoFinder::OpenCVLogoFinder(const std::string& file, int start_frame, int
   if (!cap_.isOpened()) {
     throw mdl::VideoNotOpenedException();
   }
-
-  width_ = cap_.get(cv::CAP_PROP_FRAME_WIDTH);
-  height_ = cap_.get(cv::CAP_PROP_FRAME_HEIGHT);
-
   total_frames_ = cap_.get(cv::CAP_PROP_FRAME_COUNT);
 
   kernel_sharpen_ = cv::Mat(3, 3, CV_64F, cv::Scalar(1));
   kernel_sharpen_.at<double>(1, 1) = -7;
+
+  kernel_morphology_ = cv::Mat::ones(3, 3, CV_8U);
+
+  kernel_dilate_ = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(7, 1));
+
+  int width_ = cap_.get(cv::CAP_PROP_FRAME_WIDTH);
+  int height_ = cap_.get(cv::CAP_PROP_FRAME_HEIGHT);
+  t_avg_f_.create(height_, width_, CV_64FC3);
 }
 
 
@@ -124,35 +128,32 @@ cv::Rect OpenCVLogoFinder::find_boxes(int start_frame, int end_frame)
 {
   std::cout << "  find_boxes in [" << start_frame
             << ", " << end_frame << ")\n";
-  cv::Mat avg = average_frame(start_frame, end_frame);
+  average_frame(start_frame, end_frame);
 
-  cv::Mat sharpened;
-  cv::filter2D(avg, sharpened, -1, kernel_sharpen_);
+  cv::filter2D(t_avg_, t_sharpened_, -1, kernel_sharpen_);
 
   std::vector<cv::Rect> boxes;
   for (int channel = 0; channel <= 2; ++channel) {
-    boxes.push_back(find_box_in_channel(sharpened, channel));
+    boxes.push_back(find_box_in_channel(t_sharpened_, channel));
   }
 
   return select_box(boxes);
 }
 
 
-cv::Mat OpenCVLogoFinder::average_frame(int start_frame, int end_frame)
+void OpenCVLogoFinder::average_frame(int start_frame, int end_frame)
 {
-  cv::Mat avg(height_, width_, CV_64FC3);
-  avg.setTo(cv::Scalar(0, 0, 0));
+  t_avg_f_.setTo(cv::Scalar(0, 0, 0));
 
-  cv::Mat temp;
   go_to_frame(start_frame);
   for (int f = start_frame; f < end_frame; ++f) {
-    get_next_frame().convertTo(temp, CV_64FC3);
-    avg += temp;
+    get_next_frame();
+    t_frame_.convertTo(t_frame_f_, CV_64FC3);
+    t_avg_f_ += t_frame_f_;
   }
 
   int frames = end_frame - start_frame;
-  avg.convertTo(avg, CV_8U, 1. / frames);
-  return avg;
+  t_avg_f_.convertTo(t_avg_, CV_8U, 1. / frames);
 }
 
 
@@ -162,35 +163,27 @@ void OpenCVLogoFinder::go_to_frame(int frame_number)
 }
 
 
-cv::Mat OpenCVLogoFinder::get_next_frame()
+void OpenCVLogoFinder::get_next_frame()
 {
-  cv::Mat frame;
-  bool success = cap_.read(frame);
+  bool success = cap_.read(t_frame_);
   if (!success) {
     throw mdl::FrameNotAvailableException();
   }
-
-  return frame;
 }
 
 
 cv::Rect OpenCVLogoFinder::find_box_in_channel(const cv::Mat& average_frame, int channel)
 {
-  cv::Mat grey;
-  cv::extractChannel(average_frame, grey, channel);
+  cv::extractChannel(average_frame, t_grey_, channel);
 
-  cv::Mat kernel = cv::Mat::ones(3, 3, CV_8U);
-  cv::morphologyEx(grey, grey, cv::MORPH_GRADIENT, kernel);
+  cv::morphologyEx(t_grey_, t_grey_, cv::MORPH_GRADIENT, kernel_morphology_);
 
-  cv::Mat thresh;
-  cv::threshold(grey, thresh, 190, 255, cv::THRESH_BINARY);
+  cv::threshold(t_grey_, t_thresh_, 190, 255, cv::THRESH_BINARY);
 
-  kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(7, 1));
-  cv::Mat dilated;
-  cv::dilate(thresh, dilated, kernel, cv::Point(-1, -1), 5);
+  cv::dilate(t_thresh_, t_dilated_, kernel_dilate_, cv::Point(-1, -1), 5);
 
   std::vector<std::vector<cv::Point>> contours;
-  cv::findContours(dilated, contours, cv::RETR_CCOMP, cv::CHAIN_APPROX_NONE);
+  cv::findContours(t_dilated_, contours, cv::RETR_CCOMP, cv::CHAIN_APPROX_NONE);
 
   for (auto& contour: contours) {
     cv::Rect rect = cv::boundingRect(contour);

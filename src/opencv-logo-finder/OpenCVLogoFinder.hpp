@@ -39,15 +39,14 @@ namespace mdl { namespace opencv {
 
   private:
     cv::VideoCapture cap_;
+    int total_frames_;
 
     int start_frame_;
     int frame_interval_;
 
-    int width_;
-    int height_;
-    int total_frames_;
-
     cv::Mat kernel_sharpen_;
+    cv::Mat kernel_morphology_;
+    cv::Mat kernel_dilate_;
 
     /**
      * Number of steps to do while searching for the logo in an
@@ -58,17 +57,32 @@ namespace mdl { namespace opencv {
      * logos.
      */
     int steps_ = 2;
+    // TODO: Search for other parameters
+
 
     cv::Rect find_logo_in_interval(int interval_start, int interval_end);
 
     cv::Rect find_boxes(int start_frame, int end_frame);
 
-    cv::Mat average_frame(int start_frame, int end_frame);
+    void average_frame(int start_frame, int end_frame);
     void go_to_frame(int frame_number);
-    cv::Mat get_next_frame();
+    void get_next_frame();
 
-    cv::Rect find_box_in_channel(const cv::Mat& haystack, int channel);
+    cv::Rect find_box_in_channel(const cv::Mat& average_frame, int channel);
     cv::Rect select_box(const std::vector<cv::Rect>& boxes);
+
+
+    // Temporary variables
+    // They were made class members so that they are allocated only once
+    cv::Mat t_avg_;   // Last average frame
+    cv::Mat t_frame_; // Last frame read
+    // The ones below are used only in one function each
+    cv::Mat t_avg_f_;
+    cv::Mat t_frame_f_;
+    cv::Mat t_sharpened_;
+    cv::Mat t_grey_;
+    cv::Mat t_thresh_;
+    cv::Mat t_dilated_;
   };
 } }
 
