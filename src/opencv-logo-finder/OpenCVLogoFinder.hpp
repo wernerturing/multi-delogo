@@ -31,7 +31,7 @@ namespace mdl { namespace opencv {
   class OpenCVLogoFinder: public LogoFinder
   {
   public:
-    OpenCVLogoFinder(const std::string& file, int start_frame, int frame_interval, LogoFinderCallback& callback);
+    OpenCVLogoFinder(const std::string& file, int start_frame, int frame_interval_min, int frame_interval_max, LogoFinderCallback& callback);
 
     int total_frames();
 
@@ -42,11 +42,14 @@ namespace mdl { namespace opencv {
     int total_frames_;
 
     int start_frame_;
-    int frame_interval_;
+    int frame_interval_min_;
+    int extra_frames_;
 
     cv::Mat kernel_sharpen_;
     cv::Mat kernel_morphology_;
     cv::Mat kernel_dilate_;
+
+    int n_last_failures_;
 
     /**
      * Number of steps to do while searching for the logo in an
@@ -76,6 +79,7 @@ namespace mdl { namespace opencv {
     cv::Rect find_box_in_channel(const cv::Mat& average_frame, int channel);
     cv::Rect select_box(const std::vector<cv::Rect>& boxes);
 
+    int get_logo_transition_point(int current_frame, const cv::Rect& box);
 
     // Temporary variables
     // They were made class members so that they are allocated only once

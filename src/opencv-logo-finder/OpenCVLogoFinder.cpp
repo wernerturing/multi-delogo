@@ -33,10 +33,12 @@
 using namespace mdl::opencv;
 
 
-OpenCVLogoFinder::OpenCVLogoFinder(const std::string& file, int start_frame, int frame_interval, LogoFinderCallback& callback)
+OpenCVLogoFinder::OpenCVLogoFinder(const std::string& file, int start_frame, int frame_interval_min, int frame_interval_max, LogoFinderCallback& callback)
   : LogoFinder(callback)
   , start_frame_(start_frame)
-  , frame_interval_(frame_interval)
+  , frame_interval_min_(frame_interval_min)
+  , extra_frames_(frame_interval_max - frame_interval_min)
+  , n_last_failures_(0)
 {
   cap_.open(file);
   if (!cap_.isOpened()) {
@@ -65,10 +67,9 @@ int OpenCVLogoFinder::total_frames()
 
 void OpenCVLogoFinder::find_logos()
 {
-  for (int interval_start = start_frame_;
-       interval_start < total_frames_;
-       interval_start += frame_interval_) {
-    int interval_end = interval_start + frame_interval_;
+  int interval_start = start_frame_;
+  while (interval_start < total_frames_) {
+    int interval_end = interval_start + frame_interval_min_;
     if (interval_end > total_frames_) {
       interval_end = total_frames_;
     }
@@ -82,12 +83,20 @@ void OpenCVLogoFinder::find_logos()
 
     bool cont;
     if (box.x != 0) {
+      int new_start = get_logo_transition_point(interval_end, box);
+
       LogoFinderResult result{.start_frame = interval_start,
                               .x = box.x, .y = box.y,
                               .width = box.width, .height = box.height};
       cont = callback_.success(result);
+
+      interval_start = new_start;
+      n_last_failures_ = 0;
     } else {
       cont = callback_.failure(interval_start);
+
+      interval_start += frame_interval_min_;
+      ++n_last_failures_;
     }
 
     if (!cont) {
@@ -217,4 +226,21 @@ cv::Rect OpenCVLogoFinder::select_box(const std::vector<cv::Rect>& boxes)
     [](const auto& box1, const auto& box2) {
       return box1.x < box2.x;
     });
+}
+
+
+int OpenCVLogoFinder::get_logo_transition_point(int current_frame, const cv::Rect& box)
+{
+  int extra_frames_to_check = extra_frames_ + n_last_failures_*extra_frames_;
+  std::cout << "*start, extra = " << extra_frames_ << ", to check = " << extra_frames_to_check << std::endl;
+  if (extra_frames_to_check <= 0) {
+    return current_frame;
+  }
+
+  for (int i = 0; i < extra_frames_to_check; ++i) {
+    std::cout << "*get_logo_transition_point, checking frame " << current_frame << "\n";
+    ++current_frame;
+  }
+
+  return current_frame;
 }

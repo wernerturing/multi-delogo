@@ -43,20 +43,21 @@ private:
 int main(int argc, char* argv[])
 {
   if (argc < 5) {
-    std::cout << "Usage: matcher <video> <output> <start_frame> <frame_interval> [<end_frame>]" << std::endl;
+    std::cout << "Usage: matcher <video> <output> <start_frame> <frame_interval_min> <frame_interval_max> [<end_frame>]" << std::endl;
     return 1;
   }
 
   int start_frame = atoi(argv[3]) - 1;
-  int frame_interval = atoi(argv[4]);
+  int frame_interval_min = atoi(argv[4]);
+  int frame_interval_max = atoi(argv[5]);
 
-  CsvCallback callback(argv[2], frame_interval);
+  CsvCallback callback(argv[2], frame_interval_min);
 
-  OpenCVLogoFinder finder(argv[1], start_frame, frame_interval, callback);
+  OpenCVLogoFinder finder(argv[1], start_frame, frame_interval_min, frame_interval_max, callback);
 
   int end_frame;
-  if (argc == 6) {
-    end_frame = atoi(argv[5]);
+  if (argc == 7) {
+    end_frame = atoi(argv[6]);
   } else {
     end_frame = finder.total_frames();
   }
@@ -65,7 +66,7 @@ int main(int argc, char* argv[])
 
   std::cout << "Processing video " << argv[1]
             << " from " << start_frame << " until " << end_frame
-            << ", interval " << frame_interval
+            << ", interval " << frame_interval_min << "-" << frame_interval_max
             << ", output " << argv[2]
             << std::endl;
 
