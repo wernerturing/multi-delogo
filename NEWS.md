@@ -1,3 +1,9 @@
+## ongoing
+
+* Fixed 'Next filter' not working when the frame displayed was before
+  the first filter.
+
+
 ## 1.2.0
 
 * New 'cut' filter to remove parts of the video.

@@ -80,7 +80,13 @@ void Coordinator::on_previous_filter()
 void Coordinator::on_next_filter()
 {
   auto iter = filter_model_->get_for_frame(current_frame_);
-  if (!iter || !++iter) {
+  if (iter) {
+    ++iter;
+  } else {
+    iter = filter_model_->children().begin();
+  }
+
+  if (!iter) {
     return;
   }
 
