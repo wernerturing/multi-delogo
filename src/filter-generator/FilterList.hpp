@@ -54,6 +54,8 @@ namespace fg {
     int get_position(int start_frame) const;
     maybe_type get_filter_for_frame(int frame) const;
 
+    bool has_review_filter() const;
+
     void load(std::istream& in);
     void save(std::ostream& out) const;
 

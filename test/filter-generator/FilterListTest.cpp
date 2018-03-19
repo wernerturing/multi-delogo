@@ -270,6 +270,27 @@ BOOST_AUTO_TEST_CASE(get_filter_for_frame_on_list_with_one_element)
 }
 
 
+BOOST_AUTO_TEST_CASE(should_return_true_for_has_review_when_there_is_at_least_one_review_filter)
+{
+  FilterList list;
+  list.insert(51, new DelogoFilter(1, 2, 3, 4));
+  list.insert(101, new ReviewFilter());
+  list.insert(201, new DelogoFilter(10, 20, 30, 40));
+
+  BOOST_TEST(list.has_review_filter());
+}
+
+
+BOOST_AUTO_TEST_CASE(should_return_false_for_has_review_when_there_is_no_review_filter)
+{
+  FilterList list;
+  list.insert(51, new DelogoFilter(1, 2, 3, 4));
+  list.insert(201, new DelogoFilter(10, 20, 30, 40));
+
+  BOOST_TEST(!list.has_review_filter());
+}
+
+
 BOOST_AUTO_TEST_CASE(should_load_a_list)
 {
   std::istringstream in(
