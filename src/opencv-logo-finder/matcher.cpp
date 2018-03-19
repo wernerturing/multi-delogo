@@ -21,24 +21,24 @@
 #include <fstream>
 
 #include "filter-generator/FilterData.hpp"
-#include "filter-generator/FilterList.hpp"
-#include "filter-generator/Filters.hpp"
+
+#include "FilterListAdapter.hpp"
 
 #include "OpenCVLogoFinder.hpp"
 
 using namespace mdl::opencv;
+using namespace mdl;
 
 
-class FilterListCallback : public mdl::LogoFinderCallback
+class MatcherCallback : public LogoFinderCallback
 {
 public:
-  FilterListCallback(fg::FilterList& filter_list, int frame_interval);
-  bool success(const mdl::LogoFinderResult& result) override;
+  MatcherCallback(int frame_interval);
+  bool success(const LogoFinderResult& result) override;
   bool failure(int start_frame) override;
   void set_end_frame(int end_frame);
 
 private:
-  fg::FilterList& filter_list_;
   int frame_interval_;
   int end_frame_;
 };
@@ -59,7 +59,8 @@ int main(int argc, char* argv[])
   filter_data.set_movie_file(argv[1]);
   filter_data.set_jump_size(frame_interval_min);
 
-  FilterListCallback callback(filter_data.filter_list(), frame_interval_min);
+  MatcherCallback matcher_callback(frame_interval_min);
+  FilterListAdapter callback(filter_data.filter_list(), matcher_callback);
 
   OpenCVLogoFinder finder(filter_data.movie_file(), start_frame, frame_interval_min, frame_interval_max, callback);
 
@@ -70,7 +71,7 @@ int main(int argc, char* argv[])
     end_frame = finder.total_frames();
   }
 
-  callback.set_end_frame(end_frame);
+  matcher_callback.set_end_frame(end_frame);
 
   std::cout << "Processing video " << argv[1]
             << " from " << start_frame << " until " << end_frame
@@ -87,35 +88,27 @@ int main(int argc, char* argv[])
 }
 
 
-FilterListCallback::FilterListCallback(fg::FilterList& filter_list, int frame_interval)
-  : filter_list_(filter_list)
-  , frame_interval_(frame_interval)
+MatcherCallback::MatcherCallback(int frame_interval)
+  : frame_interval_(frame_interval)
 {
 }
 
 
-bool FilterListCallback::success(const mdl::LogoFinderResult& result)
+bool MatcherCallback::success(const LogoFinderResult& result)
 {
   std::cout << "Success at " << result.start_frame << std::endl;
-
-  filter_list_.insert(result.start_frame + 1,
-                      new fg::DelogoFilter(result.x, result.y, result.width, result.height));
-
   return (result.start_frame + frame_interval_) < end_frame_;
 }
 
 
-bool FilterListCallback::failure(int start_frame)
+bool MatcherCallback::failure(int start_frame)
 {
   std::cout << "Failure at " << start_frame << std::endl;
-
-  filter_list_.insert(start_frame + 1, new fg::ReviewFilter());
-
   return (start_frame + frame_interval_) < end_frame_;
 }
 
 
-void FilterListCallback::set_end_frame(int end_frame)
+void MatcherCallback::set_end_frame(int end_frame)
 {
   end_frame_ = end_frame;
 }

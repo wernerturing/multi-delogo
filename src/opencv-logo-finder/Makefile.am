@@ -15,15 +15,22 @@
 # You should have received a copy of the GNU General Public License
 # along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 
-noinst_LIBRARIES = libopencv-logo-finder.a
+noinst_LIBRARIES = libopencv-logo-finder.a \
+                   libfilter-list-logo-adapter.a
+
 
 libopencv_logo_finder_a_SOURCES = OpenCVLogoFinder.cpp \
-                                  IntervalCalculator.cpp
-
-noinst_HEADERS = OpenCVLogoFinder.hpp \
-                 IntervalCalculator.hpp
+                                  OpenCVLogoFinder.hpp \
+                                  IntervalCalculator.cpp \
+                                  IntervalCalculator.hpp
 
 libopencv_logo_finder_a_CPPFLAGS = -I.. $(OPENCV_CFLAGS)
+
+
+libfilter_list_logo_adapter_a_SOURCES = FilterListAdapter.cpp \
+                                        FilterListAdapter.cpp
+
+libfilter_list_logo_adapter_a_CPPFLAGS = -I.. $(OPENCV_CFLAGS)
 
 
 noinst_PROGRAMS = matcher
@@ -33,5 +40,6 @@ matcher_SOURCES = matcher.cpp
 matcher_CPPFLAGS = -I..
 
 matcher_LDADD = libopencv-logo-finder.a \
+                libfilter-list-logo-adapter.a \
                 ../filter-generator/libfilter-generator.a \
                 $(OPENCV_LIBS)
