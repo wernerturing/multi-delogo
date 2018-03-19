@@ -32,4 +32,6 @@ matcher_SOURCES = matcher.cpp
 
 matcher_CPPFLAGS = -I..
 
-matcher_LDADD = libopencv-logo-finder.a $(OPENCV_LIBS)
+matcher_LDADD = libopencv-logo-finder.a \
+                ../filter-generator/libfilter-generator.a \
+                $(OPENCV_LIBS)

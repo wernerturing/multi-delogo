@@ -20,21 +20,25 @@
 #include <iostream>
 #include <fstream>
 
+#include "filter-generator/FilterData.hpp"
+#include "filter-generator/FilterList.hpp"
+#include "filter-generator/Filters.hpp"
+
 #include "OpenCVLogoFinder.hpp"
 
 using namespace mdl::opencv;
 
 
-class CsvCallback : public mdl::LogoFinderCallback
+class FilterListCallback : public mdl::LogoFinderCallback
 {
 public:
-  CsvCallback(const std::string& output_file, int frame_interval);
+  FilterListCallback(fg::FilterList& filter_list, int frame_interval);
   bool success(const mdl::LogoFinderResult& result) override;
   bool failure(int start_frame) override;
   void set_end_frame(int end_frame);
 
 private:
-  std::ofstream csv_;
+  fg::FilterList& filter_list_;
   int frame_interval_;
   int end_frame_;
 };
@@ -51,9 +55,13 @@ int main(int argc, char* argv[])
   int frame_interval_min = atoi(argv[4]);
   int frame_interval_max = atoi(argv[5]);
 
-  CsvCallback callback(argv[2], frame_interval_min);
+  fg::FilterData filter_data;
+  filter_data.set_movie_file(argv[1]);
+  filter_data.set_jump_size(frame_interval_min);
 
-  OpenCVLogoFinder finder(argv[1], start_frame, frame_interval_min, frame_interval_max, callback);
+  FilterListCallback callback(filter_data.filter_list(), frame_interval_min);
+
+  OpenCVLogoFinder finder(filter_data.movie_file(), start_frame, frame_interval_min, frame_interval_max, callback);
 
   int end_frame;
   if (argc == 7) {
@@ -72,37 +80,40 @@ int main(int argc, char* argv[])
 
   finder.find_logos();
 
+  std::ofstream output(argv[2]);
+  filter_data.save(output);
+
   std::cout << "Finished" << std::endl;
 }
 
 
-CsvCallback::CsvCallback(const std::string& output_file, int frame_interval)
-  : csv_(output_file)
+FilterListCallback::FilterListCallback(fg::FilterList& filter_list, int frame_interval)
+  : filter_list_(filter_list)
   , frame_interval_(frame_interval)
 {
 }
 
 
-bool CsvCallback::success(const mdl::LogoFinderResult& result)
+bool FilterListCallback::success(const mdl::LogoFinderResult& result)
 {
   std::cout << "Success at " << result.start_frame << std::endl;
-  csv_ << result.start_frame << ';'
-       << result.x << ';' << result.y << ';'
-       << result.width << ';' << result.height
-       << std::endl;
+
+  filter_list_.insert(result.start_frame + 1,
+                      new fg::DelogoFilter(result.x, result.y, result.width, result.height));
 
   return (result.start_frame + frame_interval_) < end_frame_;
 }
 
 
-bool CsvCallback::failure(int start_frame)
+bool FilterListCallback::failure(int start_frame)
 {
   std::cout << "Failure at " << start_frame << std::endl;
+  // TODO: Add a marker for failure
   return (start_frame + frame_interval_) < end_frame_;
 }
 
 
-void CsvCallback::set_end_frame(int end_frame)
+void FilterListCallback::set_end_frame(int end_frame)
 {
   end_frame_ = end_frame;
 }
