@@ -22,6 +22,7 @@ check_PROGRAMS = IOUtilsTest \
                  DelogoFilterTest \
                  DrawboxFilterTest \
                  CutFilterTest \
+                 ReviewFilterTest \
                  FilterFactoryTest \
                  FilterListTest \
                  RegularScriptGeneratorTest \

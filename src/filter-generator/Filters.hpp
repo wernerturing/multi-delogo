@@ -31,6 +31,7 @@ namespace fg {
     DELOGO,
     DRAWBOX,
     CUT,
+    REVIEW,
   };
 
 
@@ -126,6 +127,19 @@ namespace fg {
     std::string name() const override;
 
     bool affects_audio() const override;
+
+    std::string save_str() const override;
+    std::string ffmpeg_str(const std::string& between_expr) const override;
+  };
+
+
+  class ReviewFilter : public Filter
+  {
+  public:
+    static ReviewFilter* load(const std::string& parameters);
+
+    FilterType type() const override;
+    std::string name() const override;
 
     std::string save_str() const override;
     std::string ffmpeg_str(const std::string& between_expr) const override;

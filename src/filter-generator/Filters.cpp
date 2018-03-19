@@ -271,3 +271,37 @@ std::string CutFilter::ffmpeg_str(const std::string& between_expr) const
 {
   return "";
 }
+
+
+ReviewFilter* ReviewFilter::load(const std::string& parameters)
+{
+  if (parameters != "") {
+    throw InvalidParametersException();
+  }
+
+  return new ReviewFilter();
+}
+
+
+FilterType ReviewFilter::type() const
+{
+  return FilterType::REVIEW;
+}
+
+
+std::string ReviewFilter::name() const
+{
+  return "review";
+}
+
+
+std::string ReviewFilter::save_str() const
+{
+  return "review;";
+}
+
+
+std::string ReviewFilter::ffmpeg_str(const std::string& between_expr) const
+{
+  return "";
+}

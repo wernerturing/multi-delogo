@@ -81,3 +81,11 @@ BOOST_AUTO_TEST_CASE(test_load_cut_filter)
 
   BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::CUT);
 }
+
+
+BOOST_AUTO_TEST_CASE(test_load_review_filter)
+{
+  fg::Filter* filter = fg::FilterFactory::load("review;");
+
+  BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::REVIEW);
+}

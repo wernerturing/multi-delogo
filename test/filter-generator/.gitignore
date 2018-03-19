@@ -21,7 +21,8 @@ DrawboxFilterTest
 FilterDataTest
 FilterFactoryTest
 FilterListTest
+FuzzyScriptGeneratorTest
 IOUtilsTest
 NullFilterTest
-FuzzyScriptGeneratorTest
 RegularScriptGeneratorTest
+ReviewFilterTest
