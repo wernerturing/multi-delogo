@@ -108,7 +108,9 @@ bool FilterListCallback::success(const mdl::LogoFinderResult& result)
 bool FilterListCallback::failure(int start_frame)
 {
   std::cout << "Failure at " << start_frame << std::endl;
-  // TODO: Add a marker for failure
+
+  filter_list_.insert(start_frame + 1, new fg::ReviewFilter());
+
   return (start_frame + frame_interval_) < end_frame_;
 }
 
