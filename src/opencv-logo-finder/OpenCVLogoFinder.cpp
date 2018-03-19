@@ -231,14 +231,27 @@ cv::Rect OpenCVLogoFinder::select_box(const std::vector<cv::Rect>& boxes)
 
 int OpenCVLogoFinder::get_logo_transition_point(int current_frame, const cv::Rect& box)
 {
+  if (current_frame >= total_frames_) {
+    return current_frame;
+  }
+
   int extra_frames_to_check = extra_frames_ + n_last_failures_*extra_frames_;
-  std::cout << "*start, extra = " << extra_frames_ << ", to check = " << extra_frames_to_check << std::endl;
   if (extra_frames_to_check <= 0) {
     return current_frame;
   }
 
   for (int i = 0; i < extra_frames_to_check; ++i) {
-    std::cout << "*get_logo_transition_point, checking frame " << current_frame << "\n";
+    cv::Mat logo = cv::Mat(t_frame_, box).clone();
+    get_next_frame();
+    cv::Mat logo_next = cv::Mat(t_frame_, box);
+
+    double n = cv::norm(logo, logo_next, cv::NORM_L2);
+    double similarity = n / (logo.rows * logo.cols);
+
+    if (similarity > similarity_threshold_) {
+      break;
+    }
+
     ++current_frame;
   }
 

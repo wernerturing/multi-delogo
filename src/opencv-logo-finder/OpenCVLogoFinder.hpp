@@ -65,6 +65,13 @@ namespace mdl { namespace opencv {
      * it faster, but possibly less accurate.
      */
     int frame_step_ = 4;
+    /**
+     * Threshold for similarity when searching for the logo in extra
+     * frames (when the frame interval is not constant). Higher might
+     * detect the logo in case the background changes a lot, but can
+     * also generate more incorrect results.
+     */
+    double similarity_threshold_ = 0.7;
     // TODO: Search for other parameters
 
 
