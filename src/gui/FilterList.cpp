@@ -36,6 +36,7 @@ FilterList::FilterList(fg::FilterList& filter_list)
 {
   view_.append_column(_("Start frame"), model_->columns.start_frame);
   view_.append_column(_("Filter"), model_->columns.filter_name);
+  view_.set_enable_search(false);
 
   Gtk::ScrolledWindow* scroll = Gtk::manage(new Gtk::ScrolledWindow());
   scroll->set_shadow_type(Gtk::SHADOW_IN);
