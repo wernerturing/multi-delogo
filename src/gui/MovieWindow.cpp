@@ -160,6 +160,12 @@ void MovieWindow::on_save()
 
 void MovieWindow::on_encode()
 {
+  if (filter_data_->filter_list().has_review_filter()) {
+    Gtk::MessageDialog dlg(*this, _("Encoding cannot be done when there are 'review' filters. Please change them to some other filter (such as 'none'), or remove them."), false, Gtk::MESSAGE_ERROR);
+    dlg.run();
+    return;
+  }
+
   on_save();
 
   EncodeWindow* window = new EncodeWindow(std::move(filter_data_),
