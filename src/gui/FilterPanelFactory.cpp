@@ -76,6 +76,9 @@ FilterPanel* FilterPanelFactory::create(fg::Filter* filter)
     return new FilterPanelDrawbox(dynamic_cast<fg::DrawboxFilter*>(filter),
                                   frame_width_, frame_height_);
 
+  case fg::FilterType::REVIEW:
+    return new FilterPanelReview();
+
   default:
     return nullptr;
   }
@@ -96,6 +99,9 @@ FilterPanel* FilterPanelFactory::create(fg::FilterType type)
 
   case fg::FilterType::DRAWBOX:
     return new FilterPanelDrawbox(frame_width_, frame_height_);
+
+  case fg::FilterType::REVIEW:
+    return new FilterPanelReview();
 
   default:
     return nullptr;
@@ -123,7 +129,9 @@ FilterPanel* FilterPanelFactory::convert(fg::Filter* original, fg::FilterType ne
 
 bool FilterPanelFactory::is_no_parameters(fg::FilterType type)
 {
-  return type == fg::FilterType::NO_OP || type == fg::FilterType::CUT;
+  return type == fg::FilterType::NO_OP
+      || type == fg::FilterType::CUT
+      || type == fg::FilterType::REVIEW;
 }
 
 

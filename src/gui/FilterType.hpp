@@ -41,6 +41,7 @@ namespace mdl {
     Gtk::RadioButton rad_drawbox_;
     Gtk::RadioButton rad_cut_;
     Gtk::RadioButton rad_none_;
+    Gtk::RadioButton rad_review_;
 
     type_signal_type_changed signal_type_changed_;
 

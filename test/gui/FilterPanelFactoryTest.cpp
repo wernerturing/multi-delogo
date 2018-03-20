@@ -233,6 +233,45 @@ BOOST_AUTO_TEST_CASE(filter_panel_cut_should_return_no_rectangle)
   BOOST_CHECK(!rect);
 }
 
+
+BOOST_AUTO_TEST_CASE(should_create_a_panel_for_review_filter)
+{
+  fg::ReviewFilter filter;
+  FilterPanel* panel = factory.create(&filter);
+  FilterPanelReview* downcasted = dynamic_cast<FilterPanelReview*>(panel);
+
+  BOOST_CHECK(downcasted != nullptr);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_create_a_panel_for_review_filter_from_type)
+{
+  FilterPanel* panel = factory.create(fg::FilterType::REVIEW);
+  FilterPanelReview* downcasted = dynamic_cast<FilterPanelReview*>(panel);
+
+  BOOST_CHECK(downcasted != nullptr);
+}
+
+
+BOOST_AUTO_TEST_CASE(filter_panel_review_should_return_a_review_filter)
+{
+  fg::ReviewFilter filter;
+  FilterPanel* panel = factory.create(&filter);
+
+  fg::Filter* created_filter = panel->get_filter();
+  BOOST_CHECK_EQUAL(created_filter->type(), fg::FilterType::REVIEW);
+}
+
+
+BOOST_AUTO_TEST_CASE(filter_panel_review_should_return_no_rectangle)
+{
+  fg::ReviewFilter filter;
+  FilterPanel* panel = factory.create(&filter);
+
+  auto rect = panel->get_rectangle();
+  BOOST_CHECK(!rect);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 
@@ -335,6 +374,16 @@ BOOST_AUTO_TEST_CASE(should_convert_from_cut_filter_to_null_filter)
   fg::CutFilter filter;
   FilterPanel* panel = factory.convert(&filter, fg::FilterType::NO_OP);
   FilterPanelNull* downcasted = dynamic_cast<FilterPanelNull*>(panel);
+
+  BOOST_CHECK(downcasted != nullptr);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_convert_from_review_filter_to_delogo)
+{
+  fg::ReviewFilter filter;
+  FilterPanel* panel = factory.convert(&filter, fg::FilterType::DELOGO);
+  FilterPanelDelogo* downcasted = dynamic_cast<FilterPanelDelogo*>(panel);
 
   BOOST_CHECK(downcasted != nullptr);
 }
