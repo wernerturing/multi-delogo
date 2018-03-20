@@ -201,7 +201,8 @@ cv::Rect OpenCVLogoFinder::find_box_in_channel(const cv::Mat& average_frame, int
 
   for (auto& contour: contours) {
     cv::Rect rect = cv::boundingRect(contour);
-    if ((rect.height > 8 && rect.height < 24) && (rect.width > 60 && rect.width < 160)) {
+    if ((rect.width >= min_logo_width_ && rect.width <= max_logo_width_)
+        && (rect.height >= min_logo_height_ && rect.height <= max_logo_height_)) {
       return rect;
     }
   }

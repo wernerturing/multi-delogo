@@ -72,7 +72,22 @@ namespace mdl { namespace opencv {
      * also generate more incorrect results.
      */
     double similarity_threshold_ = 0.7;
-    // TODO: Search for other parameters
+    /**
+     * Minimal box width to be recognized as a possible logo.
+     */
+    int min_logo_width_ = 61;
+    /**
+     * Maximal box width to be recognized as a possible logo.
+     */
+    int max_logo_width_ = 159;
+    /**
+     * Minimal box height to be recognized as a possible logo.
+     */
+    int min_logo_height_ = 9;
+    /**
+     * Maximal box height to be recognized as a possible logo.
+     */
+    int max_logo_height_ = 23;
 
 
     cv::Rect find_logo_in_interval(int interval_start, int interval_end);
