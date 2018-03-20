@@ -33,11 +33,8 @@
 using namespace mdl::opencv;
 
 
-OpenCVLogoFinder::OpenCVLogoFinder(const std::string& file, int start_frame, int frame_interval_min, int frame_interval_max, LogoFinderCallback& callback)
+OpenCVLogoFinder::OpenCVLogoFinder(const std::string& file, LogoFinderCallback& callback)
   : LogoFinder(callback)
-  , start_frame_(start_frame)
-  , frame_interval_min_(frame_interval_min)
-  , extra_frames_(frame_interval_max - frame_interval_min)
   , n_last_failures_(0)
 {
   cap_.open(file);

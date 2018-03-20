@@ -62,7 +62,10 @@ int main(int argc, char* argv[])
   MatcherCallback matcher_callback(frame_interval_min);
   FilterListAdapter callback(filter_data.filter_list(), matcher_callback);
 
-  OpenCVLogoFinder finder(filter_data.movie_file(), start_frame, frame_interval_min, frame_interval_max, callback);
+  OpenCVLogoFinder finder(filter_data.movie_file(), callback);
+  finder.set_start_frame(start_frame);
+  finder.set_frame_interval_min(frame_interval_min);
+  finder.set_extra_frames(frame_interval_max - frame_interval_min);
 
   int end_frame;
   if (argc == 7) {

@@ -31,7 +31,7 @@ namespace mdl { namespace opencv {
   class OpenCVLogoFinder: public LogoFinder
   {
   public:
-    OpenCVLogoFinder(const std::string& file, int start_frame, int frame_interval_min, int frame_interval_max, LogoFinderCallback& callback);
+    OpenCVLogoFinder(const std::string& file, LogoFinderCallback& callback);
 
     int total_frames();
 
@@ -40,10 +40,6 @@ namespace mdl { namespace opencv {
   private:
     cv::VideoCapture cap_;
     int total_frames_;
-
-    int start_frame_;
-    int frame_interval_min_;
-    int extra_frames_;
 
     cv::Mat kernel_sharpen_;
     cv::Mat kernel_morphology_;
@@ -72,22 +68,6 @@ namespace mdl { namespace opencv {
      * also generate more incorrect results.
      */
     double similarity_threshold_ = 0.7;
-    /**
-     * Minimal box width to be recognized as a possible logo.
-     */
-    int min_logo_width_ = 61;
-    /**
-     * Maximal box width to be recognized as a possible logo.
-     */
-    int max_logo_width_ = 159;
-    /**
-     * Minimal box height to be recognized as a possible logo.
-     */
-    int min_logo_height_ = 9;
-    /**
-     * Maximal box height to be recognized as a possible logo.
-     */
-    int max_logo_height_ = 23;
 
 
     cv::Rect find_logo_in_interval(int interval_start, int interval_end);

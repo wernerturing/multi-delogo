@@ -47,9 +47,43 @@ namespace mdl {
       : callback_(callback) { };
     virtual ~LogoFinder() { };
 
+    void set_start_frame(int start_frame) {
+      start_frame_ = start_frame;
+    }
+
+    void set_frame_interval_min(int frame_interval_min) {
+      frame_interval_min_ = frame_interval_min;
+    }
+
+    void set_extra_frames(int extra_frames) {
+      extra_frames_ = extra_frames;
+    }
+
     virtual void find_logos() = 0;
 
   protected:
+    int start_frame_;
+    int frame_interval_min_;
+    int extra_frames_;
+
+    /**
+     * Minimal box width to be recognized as a possible logo.
+     */
+    int min_logo_width_ = 61;
+    /**
+     * Maximal box width to be recognized as a possible logo.
+     */
+    int max_logo_width_ = 159;
+    /**
+     * Minimal box height to be recognized as a possible logo.
+     */
+    int min_logo_height_ = 9;
+    /**
+     * Maximal box height to be recognized as a possible logo.
+     */
+    int max_logo_height_ = 23;
+
+
     LogoFinderCallback& callback_;
   };
 }
