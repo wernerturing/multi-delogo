@@ -17,6 +17,8 @@
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <cstdlib>
+#include <limits>
+#include <memory>
 #include <iostream>
 #include <fstream>
 
@@ -24,9 +26,6 @@
 
 #include "FilterListAdapter.hpp"
 
-#include "OpenCVLogoFinder.hpp"
-
-using namespace mdl::opencv;
 using namespace mdl;
 
 
@@ -60,18 +59,18 @@ int main(int argc, char* argv[])
   filter_data.set_jump_size(frame_interval_min);
 
   MatcherCallback matcher_callback(frame_interval_min);
-  FilterListAdapter callback(filter_data.filter_list(), matcher_callback);
 
-  OpenCVLogoFinder finder(filter_data.movie_file(), callback);
-  finder.set_start_frame(start_frame);
-  finder.set_frame_interval_min(frame_interval_min);
-  finder.set_extra_frames(frame_interval_max - frame_interval_min);
+  std::shared_ptr<LogoFinder> finder
+    = create_logo_finder(filter_data, matcher_callback);
+  finder->set_start_frame(start_frame);
+  finder->set_frame_interval_min(frame_interval_min);
+  finder->set_extra_frames(frame_interval_max - frame_interval_min);
 
   int end_frame;
   if (argc == 7) {
     end_frame = atoi(argv[6]);
   } else {
-    end_frame = finder.total_frames();
+    end_frame = std::numeric_limits<int>::max();
   }
 
   matcher_callback.set_end_frame(end_frame);
@@ -82,7 +81,7 @@ int main(int argc, char* argv[])
             << ", output " << argv[2]
             << std::endl;
 
-  finder.find_logos();
+  finder->find_logos();
 
   std::ofstream output(argv[2]);
   filter_data.save(output);

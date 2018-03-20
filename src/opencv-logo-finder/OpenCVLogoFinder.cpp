@@ -56,12 +56,6 @@ OpenCVLogoFinder::OpenCVLogoFinder(const std::string& file, LogoFinderCallback& 
 }
 
 
-int OpenCVLogoFinder::total_frames()
-{
-  return total_frames_;
-}
-
-
 void OpenCVLogoFinder::find_logos()
 {
   int interval_start = start_frame_;

@@ -33,8 +33,6 @@ namespace mdl { namespace opencv {
   public:
     OpenCVLogoFinder(const std::string& file, LogoFinderCallback& callback);
 
-    int total_frames();
-
     void find_logos() override;
 
   private:

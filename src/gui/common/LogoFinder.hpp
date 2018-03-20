@@ -35,6 +35,8 @@ namespace mdl {
   class LogoFinderCallback
   {
   public:
+    virtual ~LogoFinderCallback() { };
+
     virtual bool success(const LogoFinderResult& result) = 0;
     virtual bool failure(int start_frame) = 0;
   };

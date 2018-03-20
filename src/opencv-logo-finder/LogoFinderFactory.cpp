@@ -16,33 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef MDL_FILTER_LIST_ADAPATER_H
-#define MDL_FILTER_LIST_ADAPATER_H
-
 #include <memory>
 
 #include "filter-generator/FilterData.hpp"
-#include "filter-generator/FilterList.hpp"
 
 #include "gui/common/LogoFinder.hpp"
+#include "OpenCVLogoFinder.hpp"
+
+#include "FilterListAdapter.hpp"
 
 
-namespace mdl {
-  class FilterListAdapter : public mdl::LogoFinderCallback
-  {
-  public:
-    FilterListAdapter(fg::FilterList& filter_list, LogoFinderCallback& callback);
-    bool success(const mdl::LogoFinderResult& result) override;
-    bool failure(int start_frame) override;
-
-  private:
-    fg::FilterList& filter_list_;
-    LogoFinderCallback& callback_;
-  };
-
-
-  std::shared_ptr<LogoFinder> create_logo_finder(fg::FilterData& filter_data, LogoFinderCallback& callback);
+std::shared_ptr<mdl::LogoFinder> mdl::create_logo_finder(fg::FilterData& filter_data, mdl::LogoFinderCallback& callback)
+{
+  mdl::FilterListAdapter* adapter = new mdl::FilterListAdapter(filter_data.filter_list(), callback);
+  return std::shared_ptr<mdl::LogoFinder>(
+    new mdl::opencv::OpenCVLogoFinder(filter_data.movie_file(), *adapter),
+    [adapter](mdl::LogoFinder* logo_finder) {
+      delete logo_finder;
+      delete adapter;
+    });
 }
-
-
-#endif // MDL_FILTER_LIST_ADAPATER_H
