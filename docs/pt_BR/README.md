@@ -61,6 +61,8 @@ Um _filtro_ é uma modificação feita no vídeo, com o objetivo de remover os l
 
 * _none_ é usado para não aplicar um filtro a uma parte do vídeo.
 
+* _review_ não é um verdadeiro filtro. Ele é criado pelo detector automático de logos para indicar partes do vídeo em que o logo não pode ser detectado, e que precisam ser revisadas manualmente. Não é possível converter o vídeo enquanto houver filtros review. Você terá que mudá-los para outro tipo (indicando manualmente a posição do logo, ou se não há logo, mudar para _none_, ou removê-los antes da conversão.
+
 Filtros são aplicados do seu _quadro inicial_ até o início do próximo filtro, ou até o fim do vídeo se ele for o último filtro.
 
 

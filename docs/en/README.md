@@ -61,6 +61,8 @@ A _filter_ is a modification done to the video, in order to remove the logos. Th
 
 * _none_ is used to not apply any filter to a part of the video.
 
+* _review_ isn't really a filter. It's created by the automatic logo detector to indicate parts of the video where the logo couldn't be detected, and that need to be manually reviewed. It's not possible to encode a video while there are review filters. You'll need to change them to another type (manually indicate the logo position, or if there's really no logo, change them to _none_), or remove them before encoding the video.
+
 Filters are applied from their _start frame_ until the start of the next filter, or until the end of the video if it's the last filter.
 
 
