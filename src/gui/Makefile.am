@@ -31,6 +31,7 @@ multi_delogo_SOURCES = main.cpp \
                        FilterList.cpp \
                        Coordinator.cpp \
                        MovieWindow.cpp \
+                       FindLogosWindow.cpp \
                        FFmpegExecutor.cpp \
                        EncodeWindow.cpp \
                        EncodeWindowUtil.cpp \
@@ -54,6 +55,7 @@ noinst_HEADERS = common/Exceptions.hpp \
                  FilterList.hpp \
                  Coordinator.hpp \
                  MovieWindow.hpp \
+                 FindLogosWindow.hpp \
                  FFmpegExecutor.hpp \
                  EncodeWindow.hpp \
                  EncodeWindowUtil.hpp \

@@ -16,52 +16,31 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef MDL_MOVIE_WINDOW_H
-#define MDL_MOVIE_WINDOW_H
+#ifndef MDL_FIND_LOGOS_WINDOW_H
+#define MDL_FIND_LOGOS_WINDOW_H
 
-#include <string>
 #include <memory>
 
 #include <gtkmm.h>
 
-#include "common/FrameProvider.hpp"
 #include "filter-generator/FilterData.hpp"
 
 #include "MultiDelogoAppWindow.hpp"
-#include "FilterList.hpp"
-#include "FrameNavigator.hpp"
-#include "Coordinator.hpp"
 
 
 namespace mdl {
-  class MovieWindow : public MultiDelogoAppWindow
+  class FindLogosWindow : public MultiDelogoAppWindow
   {
   public:
-    MovieWindow(const std::string& project_file,
-                std::unique_ptr<fg::FilterData> filter_data,
-                const Glib::RefPtr<FrameProvider>& frame_provider);
+    FindLogosWindow(fg::FilterData& filter_data, int total_frames);
 
   private:
-    std::string project_file_;
-    std::unique_ptr<fg::FilterData> filter_data_;
-
-    FilterList filter_list_;
-    FrameNavigator frame_navigator_;
-    Coordinator coordinator_;
+    fg::FilterData& filter_data_;
+    int total_frames_;
 
 
-    Gtk::Toolbar* create_toolbar();
-
-    bool on_key_press(GdkEventKey* key_event);
-
-    void on_save();
-    void on_find_logos();
-    void on_encode();
-
-    void on_scroll_filter_toggled(Gtk::ToggleToolButton* chk);
-
-    void on_hide() override;
+    Gtk::Grid* create_buttons();
   };
 }
 
-#endif // MDL_MOVIE_WINDOW_H
+#endif // MDL_FIND_LOGOS_WINDOW_H
