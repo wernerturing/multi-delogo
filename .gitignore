@@ -59,3 +59,6 @@ test-driver
 test/**/test-suite.log
 test/**/*.log
 test/**/*.trs
+
+# Tag file for editor jumping
+TAGS
