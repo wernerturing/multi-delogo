@@ -38,6 +38,12 @@ namespace fg {
     typedef std::map<int, Filter*>::size_type size_type;
     typedef std::map<int, Filter*>::const_iterator const_iterator;
 
+    FilterList() = default;
+
+    // No copying
+    FilterList (const FilterList&) = delete;
+    FilterList& operator=(const FilterList&) = delete;
+
     ~FilterList();
 
     void insert(int start_frame, Filter* filter);
