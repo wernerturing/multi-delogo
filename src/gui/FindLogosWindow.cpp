@@ -24,6 +24,8 @@
 
 #include "filter-generator/FilterData.hpp"
 
+#include "opencv-logo-finder/FilterListAdapter.hpp"
+
 #include "FindLogosWindow.hpp"
 
 using namespace mdl;
@@ -34,6 +36,8 @@ FindLogosWindow::FindLogosWindow(fg::FilterData& filter_data,
   : filter_data_(filter_data)
   , total_frames_(total_frames)
 {
+  logo_finder_ = create_logo_finder(filter_data_, callback_);
+
   set_title(_("Find logos"));
   set_border_width(8);
 
@@ -80,11 +84,13 @@ Gtk::Grid* FindLogosWindow::create_parameters()
   configure_spin(txt_min_logo_width_);
   txt_min_logo_width_.set_tooltip_text(_("Minimum width of the possible logos to consider"));
   lbl_min_logo_width->set_mnemonic_widget(txt_min_logo_width_);
+  txt_min_logo_width_.set_value(logo_finder_->get_min_logo_width());
 
   Gtk::Label* lbl_max_logo_width = Gtk::manage(new Gtk::Label(_("ma_x:"), true));
   configure_spin(txt_max_logo_width_);
   txt_max_logo_width_.set_tooltip_text(_("Maximum width of the possible logos to consider"));
   lbl_max_logo_width->set_mnemonic_widget(txt_max_logo_width_);
+  txt_max_logo_width_.set_value(logo_finder_->get_max_logo_width());
 
   Gtk::Label* lbl_logo_height = Gtk::manage(new Gtk::Label(_("Logo height:")));
 
@@ -92,11 +98,13 @@ Gtk::Grid* FindLogosWindow::create_parameters()
   configure_spin(txt_min_logo_height_);
   txt_min_logo_height_.set_tooltip_text(_("Minimum height of the possible logos to consider"));
   lbl_min_logo_height->set_mnemonic_widget(txt_min_logo_height_);
+  txt_min_logo_height_.set_value(logo_finder_->get_min_logo_height());
 
   Gtk::Label* lbl_max_logo_height = Gtk::manage(new Gtk::Label(_("m_ax:"), true));
   configure_spin(txt_max_logo_height_);
   txt_max_logo_height_.set_tooltip_text(_("Maximum height of the possible logos to consider"));
   lbl_max_logo_height->set_mnemonic_widget(txt_max_logo_height_);
+  txt_max_logo_height_.set_value(logo_finder_->get_max_logo_height());
 
   Gtk::Grid* box = Gtk::manage(new Gtk::Grid());
   box->set_column_spacing(8);
@@ -188,4 +196,18 @@ void FindLogosWindow::configure_spin(Gtk::SpinButton& spin)
 void FindLogosWindow::on_find_logos()
 {
   printf("Finding logos...\n");
+}
+
+
+bool FindLogosWindow::ProgressCallback::success(const mdl::LogoFinderResult& result)
+{
+  printf("Logo finder success\n");
+  return true;
+}
+
+
+bool FindLogosWindow::ProgressCallback::failure(int start_frame)
+{
+  printf("Logo finder failure\n");
+  return true;
 }

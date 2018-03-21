@@ -25,6 +25,8 @@
 
 #include "filter-generator/FilterData.hpp"
 
+#include "common/LogoFinder.hpp"
+
 #include "MultiDelogoAppWindow.hpp"
 
 
@@ -38,6 +40,7 @@ namespace mdl {
   private:
     fg::FilterData& filter_data_;
     int total_frames_;
+    std::shared_ptr<LogoFinder> logo_finder_;
 
     Gtk::SpinButton txt_initial_frame_;
     Gtk::SpinButton txt_min_frame_interval_;
@@ -57,6 +60,15 @@ namespace mdl {
     void configure_spin(Gtk::SpinButton& spin);
 
     void on_find_logos();
+
+
+    class ProgressCallback : public mdl::LogoFinderCallback
+    {
+      bool success(const mdl::LogoFinderResult& result) override;
+      bool failure(int start_frame) override;
+    };
+
+    ProgressCallback callback_;
   };
 }
 

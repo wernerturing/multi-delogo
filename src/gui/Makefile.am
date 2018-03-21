@@ -73,6 +73,8 @@ multi_delogo_CPPFLAGS = -DLOCALEDIR=\"$(localedir)\" \
 frame_provider_lib = ../opencv-frame-provider/libopencv-frame-provider.a $(OPENCV_LIBS)
 
 multi_delogo_LDADD = ../filter-generator/libfilter-generator.a \
+                     ../opencv-logo-finder/libfilter-list-logo-adapter.a \
+                     ../opencv-logo-finder/libopencv-logo-finder.a \
                      $(frame_provider_lib) \
                      $(GTKMM_LIBS) \
                      $(GOOCANVASMM_LIBS) \
