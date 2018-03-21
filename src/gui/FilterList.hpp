@@ -46,6 +46,8 @@ namespace mdl {
 
     fg::FilterType get_selected_type() const;
 
+    void refresh_list();
+
     typedef sigc::signal<void, int> type_signal_selection_changed;
     type_signal_selection_changed signal_selection_changed();
 

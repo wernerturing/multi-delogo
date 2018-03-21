@@ -195,7 +195,26 @@ void FindLogosWindow::configure_spin(Gtk::SpinButton& spin)
 
 void FindLogosWindow::on_find_logos()
 {
-  printf("Finding logos...\n");
+  int min_frame_interval = txt_min_frame_interval_.get_value_as_int();
+  int max_frame_interval = txt_max_frame_interval_.get_value_as_int();
+  if (max_frame_interval < min_frame_interval) {
+    Gtk::MessageDialog dlg(*this,
+                           _("Invalid logo duration: maximum duration must be greater than or than the minimum duration"),
+                           false, Gtk::MESSAGE_ERROR);
+    dlg.run();
+    return;
+  }
+
+  logo_finder_->set_start_frame(txt_initial_frame_.get_value_as_int() - 1);
+  logo_finder_->set_frame_interval_min(min_frame_interval);
+  logo_finder_->set_extra_frames(max_frame_interval - min_frame_interval);
+
+  logo_finder_->set_min_logo_width(txt_min_logo_width_.get_value_as_int());
+  logo_finder_->set_max_logo_width(txt_max_logo_width_.get_value_as_int());
+  logo_finder_->set_min_logo_height(txt_min_logo_height_.get_value_as_int());
+  logo_finder_->set_max_logo_height(txt_max_logo_height_.get_value_as_int());
+
+  logo_finder_->find_logos();
 }
 
 

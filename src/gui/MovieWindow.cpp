@@ -175,6 +175,7 @@ void MovieWindow::on_find_logos()
                           frame_navigator_.get_jump_size());
   window->set_transient_for(*this);
   window->set_modal();
+  window->signal_hide().connect(sigc::mem_fun(filter_list_, &FilterList::refresh_list));
 
   get_application()->register_window(window);
 }
