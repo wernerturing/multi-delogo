@@ -168,7 +168,11 @@ void MovieWindow::on_save()
 
 void MovieWindow::on_find_logos()
 {
-  FindLogosWindow* window = new FindLogosWindow(*filter_data_, frame_navigator_.get_number_of_frames());
+  FindLogosWindow* window
+    = new FindLogosWindow(*filter_data_,
+                          frame_navigator_.get_number_of_frames(),
+                          coordinator_.get_current_frame(),
+                          frame_navigator_.get_jump_size());
   window->set_transient_for(*this);
   window->set_modal();
 

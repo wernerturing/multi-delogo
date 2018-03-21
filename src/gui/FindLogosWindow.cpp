@@ -17,6 +17,7 @@
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <memory>
+#include <limits>
 
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
@@ -28,21 +29,131 @@
 using namespace mdl;
 
 
-FindLogosWindow::FindLogosWindow(fg::FilterData& filter_data, int total_frames)
+FindLogosWindow::FindLogosWindow(fg::FilterData& filter_data,
+                                 int total_frames, int start_frame, int jump_size)
   : filter_data_(filter_data)
   , total_frames_(total_frames)
 {
   set_title(_("Find logos"));
   set_border_width(8);
 
+  configure_spin(txt_initial_frame_);
+  txt_initial_frame_.set_value(start_frame);
+
+  configure_spin(txt_min_frame_interval_);
+  txt_min_frame_interval_.set_value(jump_size);
+  configure_spin(txt_max_frame_interval_);
+  txt_max_frame_interval_.set_value(jump_size);
+
   Gtk::Grid* vbox = Gtk::manage(new Gtk::Grid());
   vbox->set_orientation(Gtk::ORIENTATION_VERTICAL);
   vbox->set_row_spacing(8);
 
-  vbox->add(*Gtk::manage(new Gtk::Label("logo finder")));
+  vbox->add(*create_parameters());
+  vbox->add(*create_progress());
   vbox->add(*create_buttons());
 
   add(*vbox);
+}
+
+
+Gtk::Grid* FindLogosWindow::create_parameters()
+{
+  Gtk::Label* lbl_initial_frame = Gtk::manage(new Gtk::Label(_("Initial _frame:"), true));
+
+  txt_initial_frame_.set_tooltip_text(_("The frame at which to start to search"));
+  lbl_initial_frame->set_mnemonic_widget(txt_initial_frame_);
+
+  Gtk::Label* lbl_frame_interval = Gtk::manage(new Gtk::Label(_("Logo duration:")));
+
+  Gtk::Label* lbl_min_frame_interval = Gtk::manage(new Gtk::Label(_("_between:"), true));
+  txt_min_frame_interval_.set_tooltip_text(_("Minimum number of frames that the logos last"));
+  lbl_min_frame_interval->set_mnemonic_widget(txt_min_frame_interval_);
+
+  Gtk::Label* lbl_max_frame_interval = Gtk::manage(new Gtk::Label(_("an_d:"), true));
+  txt_max_frame_interval_.set_tooltip_text(_("Maximum number of frames that the logos last"));
+  lbl_max_frame_interval->set_mnemonic_widget(txt_max_frame_interval_);
+
+  Gtk::Label* lbl_logo_width = Gtk::manage(new Gtk::Label(_("Logo width:")));
+
+  Gtk::Label* lbl_min_logo_width = Gtk::manage(new Gtk::Label(_("_min:"), true));
+  configure_spin(txt_min_logo_width_);
+  txt_min_logo_width_.set_tooltip_text(_("Minimum width of the possible logos to consider"));
+  lbl_min_logo_width->set_mnemonic_widget(txt_min_logo_width_);
+
+  Gtk::Label* lbl_max_logo_width = Gtk::manage(new Gtk::Label(_("ma_x:"), true));
+  configure_spin(txt_max_logo_width_);
+  txt_max_logo_width_.set_tooltip_text(_("Maximum width of the possible logos to consider"));
+  lbl_max_logo_width->set_mnemonic_widget(txt_max_logo_width_);
+
+  Gtk::Label* lbl_logo_height = Gtk::manage(new Gtk::Label(_("Logo height:")));
+
+  Gtk::Label* lbl_min_logo_height = Gtk::manage(new Gtk::Label(_("m_in:"), true));
+  configure_spin(txt_min_logo_height_);
+  txt_min_logo_height_.set_tooltip_text(_("Minimum height of the possible logos to consider"));
+  lbl_min_logo_height->set_mnemonic_widget(txt_min_logo_height_);
+
+  Gtk::Label* lbl_max_logo_height = Gtk::manage(new Gtk::Label(_("m_ax:"), true));
+  configure_spin(txt_max_logo_height_);
+  txt_max_logo_height_.set_tooltip_text(_("Maximum height of the possible logos to consider"));
+  lbl_max_logo_height->set_mnemonic_widget(txt_max_logo_height_);
+
+  Gtk::Grid* box = Gtk::manage(new Gtk::Grid());
+  box->set_column_spacing(8);
+  box->set_row_spacing(8);
+  box->set_valign(Gtk::ALIGN_CENTER);
+  box->set_vexpand();
+
+  lbl_initial_frame->set_halign(Gtk::ALIGN_END);
+  box->attach(*lbl_initial_frame, 0, 0, 1, 1);
+  box->attach_next_to(txt_initial_frame_, *lbl_initial_frame, Gtk::POS_RIGHT, 2, 1);
+
+  lbl_frame_interval->set_halign(Gtk::ALIGN_END);
+  box->attach_next_to(*lbl_frame_interval, *lbl_initial_frame, Gtk::POS_BOTTOM, 1, 1);
+  lbl_min_frame_interval->set_halign(Gtk::ALIGN_END);
+  box->attach_next_to(*lbl_min_frame_interval, *lbl_frame_interval, Gtk::POS_RIGHT, 1, 1);
+  box->attach_next_to(txt_min_frame_interval_, *lbl_min_frame_interval, Gtk::POS_RIGHT, 1, 1);
+  lbl_max_frame_interval->set_halign(Gtk::ALIGN_END);
+  box->attach_next_to(*lbl_max_frame_interval, txt_min_frame_interval_, Gtk::POS_RIGHT, 1, 1);
+  box->attach_next_to(txt_max_frame_interval_, *lbl_max_frame_interval, Gtk::POS_RIGHT, 1, 1);
+
+  lbl_logo_width->set_halign(Gtk::ALIGN_END);
+  box->attach_next_to(*lbl_logo_width, *lbl_frame_interval, Gtk::POS_BOTTOM, 1, 1);
+  lbl_min_logo_width->set_halign(Gtk::ALIGN_END);
+  box->attach_next_to(*lbl_min_logo_width, *lbl_logo_width, Gtk::POS_RIGHT, 1, 1);
+  box->attach_next_to(txt_min_logo_width_, *lbl_min_logo_width, Gtk::POS_RIGHT, 1, 1);
+  lbl_max_logo_width->set_halign(Gtk::ALIGN_END);
+  box->attach_next_to(*lbl_max_logo_width, txt_min_logo_width_, Gtk::POS_RIGHT, 1, 1);
+  box->attach_next_to(txt_max_logo_width_, *lbl_max_logo_width, Gtk::POS_RIGHT, 1, 1);
+
+  lbl_logo_height->set_halign(Gtk::ALIGN_END);
+  box->attach_next_to(*lbl_logo_height, *lbl_logo_width, Gtk::POS_BOTTOM, 1, 1);
+  lbl_min_logo_height->set_halign(Gtk::ALIGN_END);
+  box->attach_next_to(*lbl_min_logo_height, *lbl_logo_height, Gtk::POS_RIGHT, 1, 1);
+  box->attach_next_to(txt_min_logo_height_, *lbl_min_logo_height, Gtk::POS_RIGHT, 1, 1);
+  lbl_max_logo_height->set_halign(Gtk::ALIGN_END);
+  box->attach_next_to(*lbl_max_logo_height, txt_min_logo_height_, Gtk::POS_RIGHT, 1, 1);
+  box->attach_next_to(txt_max_logo_height_, *lbl_max_logo_height, Gtk::POS_RIGHT, 1, 1);
+
+  return box;
+}
+
+
+Gtk::Grid* FindLogosWindow::create_progress()
+{
+  progress_bar_.set_show_text();
+
+  Gtk::Grid* box_progress = Gtk::manage(new Gtk::Grid());
+  box_progress->set_orientation(Gtk::ORIENTATION_VERTICAL);
+  box_progress->set_vexpand();
+  box_progress->set_valign(Gtk::ALIGN_CENTER);
+
+  box_progress->set_margin_top(12);
+  box_progress->set_margin_bottom(12);
+  progress_bar_.set_hexpand();
+  box_progress->add(progress_bar_);
+
+  return box_progress;
 }
 
 
@@ -51,12 +162,30 @@ Gtk::Grid* FindLogosWindow::create_buttons()
   Gtk::Button* btn_close = Gtk::manage(new Gtk::Button(_("_Close"), true));
   btn_close->signal_clicked().connect(sigc::mem_fun(*this, &Widget::hide));
 
+  Gtk::Button* btn_find_logos = Gtk::manage(new Gtk::Button(_("Find _logos"), true));
+  btn_find_logos->signal_clicked().connect(sigc::mem_fun(*this, &FindLogosWindow::on_find_logos));
+
   Gtk::Grid* box = Gtk::manage(new Gtk::Grid());
   box->set_column_spacing(8);
+  box->set_hexpand();
   box->set_vexpand();
   box->set_valign(Gtk::ALIGN_CENTER);
   box->set_halign(Gtk::ALIGN_END);
+  box->add(*btn_find_logos);
   box->add(*btn_close);
 
   return box;
+}
+
+
+void FindLogosWindow::configure_spin(Gtk::SpinButton& spin)
+{
+  spin.set_range(1, std::numeric_limits<int>::max());
+  spin.set_increments(1, 10);
+}
+
+
+void FindLogosWindow::on_find_logos()
+{
+  printf("Finding logos...\n");
 }
