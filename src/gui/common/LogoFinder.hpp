@@ -37,8 +37,8 @@ namespace mdl {
   public:
     virtual ~LogoFinderCallback() { };
 
-    virtual bool success(const LogoFinderResult& result) = 0;
-    virtual bool failure(int start_frame) = 0;
+    virtual void success(const LogoFinderResult& result) = 0;
+    virtual void failure(int start_frame) = 0;
   };
 
 
@@ -98,6 +98,7 @@ namespace mdl {
 
 
     virtual void find_logos() = 0;
+    virtual void stop() = 0;
 
   protected:
     int start_frame_;

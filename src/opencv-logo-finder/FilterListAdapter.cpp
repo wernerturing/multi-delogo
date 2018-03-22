@@ -31,18 +31,18 @@ FilterListAdapter::FilterListAdapter(fg::FilterList& filter_list, LogoFinderCall
 }
 
 
-bool FilterListAdapter::success(const mdl::LogoFinderResult& result)
+void FilterListAdapter::success(const mdl::LogoFinderResult& result)
 {
   filter_list_.insert(result.start_frame + 1,
                       new fg::DelogoFilter(result.x, result.y, result.width, result.height));
 
-  return callback_.success(result);
+  callback_.success(result);
 }
 
 
-bool FilterListAdapter::failure(int start_frame)
+void FilterListAdapter::failure(int start_frame)
 {
   filter_list_.insert(start_frame + 1, new fg::ReviewFilter());
 
-  return callback_.failure(start_frame);
+  callback_.failure(start_frame);
 }

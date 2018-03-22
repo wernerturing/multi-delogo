@@ -33,13 +33,15 @@ class MatcherCallback : public LogoFinderCallback
 {
 public:
   MatcherCallback(int frame_interval);
-  bool success(const LogoFinderResult& result) override;
-  bool failure(int start_frame) override;
+  void success(const LogoFinderResult& result) override;
+  void failure(int start_frame) override;
   void set_end_frame(int end_frame);
+  void set_finder(LogoFinder* finder);
 
 private:
   int frame_interval_;
   int end_frame_;
+  LogoFinder* finder_;
 };
 
 
@@ -74,6 +76,7 @@ int main(int argc, char* argv[])
   }
 
   matcher_callback.set_end_frame(end_frame);
+  matcher_callback.set_finder(finder.get());
 
   std::cout << "Processing video " << argv[1]
             << " from " << start_frame << " until " << end_frame
@@ -96,21 +99,31 @@ MatcherCallback::MatcherCallback(int frame_interval)
 }
 
 
-bool MatcherCallback::success(const LogoFinderResult& result)
+void MatcherCallback::success(const LogoFinderResult& result)
 {
   std::cout << "Success at " << result.start_frame << std::endl;
-  return (result.start_frame + frame_interval_) < end_frame_;
+  if ((result.start_frame + frame_interval_) > end_frame_) {
+    finder_->stop();
+  }
 }
 
 
-bool MatcherCallback::failure(int start_frame)
+void MatcherCallback::failure(int start_frame)
 {
   std::cout << "Failure at " << start_frame << std::endl;
-  return (start_frame + frame_interval_) < end_frame_;
+  if ((start_frame + frame_interval_) > end_frame_) {
+    finder_->stop();
+  }
 }
 
 
 void MatcherCallback::set_end_frame(int end_frame)
 {
   end_frame_ = end_frame;
+}
+
+
+void MatcherCallback::set_finder(LogoFinder* finder)
+{
+  finder_ = finder;
 }

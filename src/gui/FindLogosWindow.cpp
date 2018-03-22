@@ -235,15 +235,13 @@ FindLogosWindow::~FindLogosWindow()
 }
 
 
-bool FindLogosWindow::ProgressCallback::success(const mdl::LogoFinderResult& result)
+void FindLogosWindow::ProgressCallback::success(const mdl::LogoFinderResult& result)
 {
   printf("Logo finder success\n");
-  return true;
 }
 
 
-bool FindLogosWindow::ProgressCallback::failure(int start_frame)
+void FindLogosWindow::ProgressCallback::failure(int start_frame)
 {
   printf("Logo finder failure\n");
-  return true;
 }

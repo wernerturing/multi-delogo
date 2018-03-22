@@ -36,6 +36,7 @@ using namespace mdl::opencv;
 OpenCVLogoFinder::OpenCVLogoFinder(const std::string& file, LogoFinderCallback& callback)
   : LogoFinder(callback)
   , n_last_failures_(0)
+  , stop_requested_(false)
 {
   cap_.open(file);
   if (!cap_.isOpened()) {
@@ -72,26 +73,25 @@ void OpenCVLogoFinder::find_logos()
               << box.x << " " << box.y << " "
               << box.width << " " << box.height << "]\n";
 
-    bool cont;
+    if (stop_requested_) {
+      break;
+    }
+
     if (box.x != 0) {
       int new_start = get_logo_transition_point(interval_end, box);
 
       LogoFinderResult result{.start_frame = interval_start,
                               .x = box.x, .y = box.y,
                               .width = box.width, .height = box.height};
-      cont = callback_.success(result);
+      callback_.success(result);
 
       interval_start = new_start;
       n_last_failures_ = 0;
     } else {
-      cont = callback_.failure(interval_start);
+      callback_.failure(interval_start);
 
       interval_start += frame_interval_min_;
       ++n_last_failures_;
-    }
-
-    if (!cont) {
-      break;
     }
   }
 }
@@ -117,6 +117,10 @@ cv::Rect OpenCVLogoFinder::find_logo_in_interval(int interval_start, int interva
     // Subdivide each interval in two and try again
     n_subintervals *= 2;
     ++level;
+
+    if (stop_requested_) {
+      break;
+    }
   }
 
   // Not found
@@ -156,6 +160,10 @@ void OpenCVLogoFinder::average_frame(int start_frame, int end_frame)
     t_frame_.convertTo(t_frame_f_, CV_64FC3);
     t_avg_f_ += t_frame_f_;
     ++frames;
+
+    if (stop_requested_) {
+      break;
+    }
   }
 
   t_avg_f_.convertTo(t_avg_, CV_8U, 1. / frames);
@@ -248,4 +256,10 @@ int OpenCVLogoFinder::get_logo_transition_point(int current_frame, const cv::Rec
   }
 
   return current_frame;
+}
+
+
+void OpenCVLogoFinder::stop()
+{
+  stop_requested_ = true;
 }
