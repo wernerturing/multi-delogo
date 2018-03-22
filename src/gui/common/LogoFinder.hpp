@@ -107,11 +107,11 @@ namespace mdl {
     /**
      * Minimal box width to be recognized as a possible logo.
      */
-    int min_logo_width_ = 61;
+    int min_logo_width_ = 47;
     /**
      * Maximal box width to be recognized as a possible logo.
      */
-    int max_logo_width_ = 159;
+    int max_logo_width_ = 135;
     /**
      * Minimal box height to be recognized as a possible logo.
      */
