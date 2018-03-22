@@ -48,7 +48,7 @@ OpenCVLogoFinder::OpenCVLogoFinder(const std::string& file, LogoFinderCallback& 
 
   kernel_morphology_ = cv::Mat::ones(3, 3, CV_8U);
 
-  kernel_dilate_ = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(7, 1));
+  kernel_close_ = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(7, 1));
 
   int width_ = cap_.get(cv::CAP_PROP_FRAME_WIDTH);
   int height_ = cap_.get(cv::CAP_PROP_FRAME_HEIGHT);
@@ -185,10 +185,10 @@ cv::Rect OpenCVLogoFinder::find_box_in_channel(const cv::Mat& average_frame, int
 
   cv::threshold(t_grey_, t_thresh_, 190, 255, cv::THRESH_BINARY);
 
-  cv::dilate(t_thresh_, t_dilated_, kernel_dilate_, cv::Point(-1, -1), 5);
+  cv::morphologyEx(t_thresh_, t_closed_, cv::MORPH_CLOSE, kernel_close_, cv::Point(-1, -1), close_steps_);
 
   std::vector<std::vector<cv::Point>> contours;
-  cv::findContours(t_dilated_, contours, cv::RETR_CCOMP, cv::CHAIN_APPROX_NONE);
+  cv::findContours(t_closed_, contours, cv::RETR_CCOMP, cv::CHAIN_APPROX_NONE);
 
   for (auto& contour: contours) {
     cv::Rect rect = cv::boundingRect(contour);

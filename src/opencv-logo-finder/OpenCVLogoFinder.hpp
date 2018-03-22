@@ -41,7 +41,7 @@ namespace mdl { namespace opencv {
 
     cv::Mat kernel_sharpen_;
     cv::Mat kernel_morphology_;
-    cv::Mat kernel_dilate_;
+    cv::Mat kernel_close_;
 
     int n_last_failures_;
 
@@ -59,6 +59,10 @@ namespace mdl { namespace opencv {
      * it faster, but possibly less accurate.
      */
     int frame_step_ = 4;
+    /**
+     * Number of times to apply CLOSE morphology.
+     */
+    int close_steps_ = 3;
     /**
      * Threshold for similarity when searching for the logo in extra
      * frames (when the frame interval is not constant). Higher might
@@ -91,7 +95,7 @@ namespace mdl { namespace opencv {
     cv::Mat t_sharpened_;
     cv::Mat t_grey_;
     cv::Mat t_thresh_;
-    cv::Mat t_dilated_;
+    cv::Mat t_closed_;
   };
 } }
 
