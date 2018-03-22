@@ -20,6 +20,7 @@
 #define MDL_FIND_LOGOS_WINDOW_H
 
 #include <memory>
+#include <thread>
 
 #include <gtkmm.h>
 
@@ -36,6 +37,7 @@ namespace mdl {
   public:
     FindLogosWindow(fg::FilterData& filter_data,
                     int total_frames, int start_frame, int jump_size);
+    ~FindLogosWindow();
 
   private:
     fg::FilterData& filter_data_;
@@ -52,6 +54,10 @@ namespace mdl {
     Gtk::SpinButton txt_max_logo_height_;
 
     Gtk::ProgressBar progress_bar_;
+
+    Gtk::Button btn_find_logos_;
+
+    std::thread* worker_thread_;
 
 
     Gtk::Grid* create_parameters();

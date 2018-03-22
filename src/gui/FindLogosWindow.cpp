@@ -18,6 +18,7 @@
  */
 #include <memory>
 #include <limits>
+#include <thread>
 
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
@@ -35,6 +36,7 @@ FindLogosWindow::FindLogosWindow(fg::FilterData& filter_data,
                                  int total_frames, int start_frame, int jump_size)
   : filter_data_(filter_data)
   , total_frames_(total_frames)
+  , worker_thread_(nullptr)
 {
   logo_finder_ = create_logo_finder(filter_data_, callback_);
 
@@ -170,8 +172,9 @@ Gtk::Grid* FindLogosWindow::create_buttons()
   Gtk::Button* btn_close = Gtk::manage(new Gtk::Button(_("_Close"), true));
   btn_close->signal_clicked().connect(sigc::mem_fun(*this, &Widget::hide));
 
-  Gtk::Button* btn_find_logos = Gtk::manage(new Gtk::Button(_("Find _logos"), true));
-  btn_find_logos->signal_clicked().connect(sigc::mem_fun(*this, &FindLogosWindow::on_find_logos));
+  btn_find_logos_.set_label(_("Find _logos"));
+  btn_find_logos_.set_use_underline();
+  btn_find_logos_.signal_clicked().connect(sigc::mem_fun(*this, &FindLogosWindow::on_find_logos));
 
   Gtk::Grid* box = Gtk::manage(new Gtk::Grid());
   box->set_column_spacing(8);
@@ -179,7 +182,7 @@ Gtk::Grid* FindLogosWindow::create_buttons()
   box->set_vexpand();
   box->set_valign(Gtk::ALIGN_CENTER);
   box->set_halign(Gtk::ALIGN_END);
-  box->add(*btn_find_logos);
+  box->add(btn_find_logos_);
   box->add(*btn_close);
 
   return box;
@@ -214,7 +217,21 @@ void FindLogosWindow::on_find_logos()
   logo_finder_->set_min_logo_height(txt_min_logo_height_.get_value_as_int());
   logo_finder_->set_max_logo_height(txt_max_logo_height_.get_value_as_int());
 
-  logo_finder_->find_logos();
+  worker_thread_ = new std::thread([this] {
+    logo_finder_->find_logos();
+  });
+  btn_find_logos_.set_sensitive(false);
+}
+
+
+FindLogosWindow::~FindLogosWindow()
+{
+  if (worker_thread_) {
+    if (worker_thread_->joinable()) {
+      worker_thread_->join();
+    }
+    delete worker_thread_;
+  }
 }
 
 

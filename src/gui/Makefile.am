@@ -67,6 +67,7 @@ localedir = $(datadir)/locale
 
 multi_delogo_CPPFLAGS = -DLOCALEDIR=\"$(localedir)\" \
                         -I.. \
+                        $(PTHREAD_CFLAGS) \
                         $(GTKMM_CFLAGS) \
                         $(GOOCANVASMM_CFLAGS)
 
@@ -76,6 +77,7 @@ multi_delogo_LDADD = ../filter-generator/libfilter-generator.a \
                      ../opencv-logo-finder/libfilter-list-logo-adapter.a \
                      ../opencv-logo-finder/libopencv-logo-finder.a \
                      $(frame_provider_lib) \
+                     $(PTHREAD_CFLAGS) $(PTHREAD_LIBS) \
                      $(GTKMM_LIBS) \
                      $(GOOCANVASMM_LIBS) \
                      $(WINDOWS_LDFLAGS)
