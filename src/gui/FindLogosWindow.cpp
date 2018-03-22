@@ -37,6 +37,7 @@ FindLogosWindow::FindLogosWindow(fg::FilterData& filter_data,
   : filter_data_(filter_data)
   , total_frames_(total_frames)
   , worker_thread_(nullptr)
+  , search_in_progress_(false)
 {
   logo_finder_ = create_logo_finder(filter_data_, callback_);
 
@@ -170,7 +171,7 @@ Gtk::Grid* FindLogosWindow::create_progress()
 Gtk::Grid* FindLogosWindow::create_buttons()
 {
   Gtk::Button* btn_close = Gtk::manage(new Gtk::Button(_("_Close"), true));
-  btn_close->signal_clicked().connect(sigc::mem_fun(*this, &Widget::hide));
+  btn_close->signal_clicked().connect(sigc::mem_fun(*this, &FindLogosWindow::on_close));
 
   btn_find_logos_.set_label(_("Find _logos"));
   btn_find_logos_.set_use_underline();
@@ -217,10 +218,52 @@ void FindLogosWindow::on_find_logos()
   logo_finder_->set_min_logo_height(txt_min_logo_height_.get_value_as_int());
   logo_finder_->set_max_logo_height(txt_max_logo_height_.get_value_as_int());
 
+  search_in_progress_ = true;
   worker_thread_ = new std::thread([this] {
     logo_finder_->find_logos();
+    search_in_progress_ = false;
   });
   btn_find_logos_.set_sensitive(false);
+}
+
+
+void FindLogosWindow::on_close()
+{
+  if (confirm_stop()) {
+    hide();
+  }
+}
+
+
+bool FindLogosWindow::on_delete_event(GdkEventAny*)
+{
+  bool stop = confirm_stop();
+  // Returning false calls the default handler (which closes the window)
+  return stop == false;
+}
+
+
+bool FindLogosWindow::confirm_stop()
+{
+  if (!search_in_progress_) {
+    return true;
+  }
+
+  Gtk::MessageDialog dlg(*this,
+                         _("Do you really want to stop finding logos?"),
+                         false,
+                         Gtk::MESSAGE_QUESTION,
+                         Gtk::BUTTONS_NONE);
+  dlg.add_button(_("_Stop"), Gtk::RESPONSE_CLOSE);
+  dlg.add_button(_("_Continue"), Gtk::RESPONSE_OK);
+  dlg.set_default_response(Gtk::RESPONSE_OK);
+  bool terminate = dlg.run() == Gtk::RESPONSE_CLOSE;
+
+  if (terminate) {
+    logo_finder_->stop();
+  }
+
+  return terminate;
 }
 
 
@@ -228,6 +271,7 @@ FindLogosWindow::~FindLogosWindow()
 {
   if (worker_thread_) {
     if (worker_thread_->joinable()) {
+      printf("Joining worker thread\n");
       worker_thread_->join();
     }
     delete worker_thread_;

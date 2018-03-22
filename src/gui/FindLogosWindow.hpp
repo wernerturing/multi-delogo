@@ -58,6 +58,7 @@ namespace mdl {
     Gtk::Button btn_find_logos_;
 
     std::thread* worker_thread_;
+    bool search_in_progress_;
 
 
     Gtk::Grid* create_parameters();
@@ -66,6 +67,10 @@ namespace mdl {
     void configure_spin(Gtk::SpinButton& spin);
 
     void on_find_logos();
+
+    void on_close();
+    bool on_delete_event(GdkEventAny*) override;
+    bool confirm_stop();
 
 
     class ProgressCallback : public mdl::LogoFinderCallback
