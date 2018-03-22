@@ -328,8 +328,9 @@ bool EncodeWindow::check_file(const std::string& file)
                            false,
                            Gtk::MESSAGE_QUESTION,
                            Gtk::BUTTONS_NONE);
-    dlg.add_button(_("_Cancel"), Gtk::RESPONSE_NO);
     dlg.add_button(_("_Overwrite"), Gtk::RESPONSE_YES);
+    dlg.add_button(_("_Cancel"), Gtk::RESPONSE_NO);
+    dlg.set_default_response(Gtk::RESPONSE_NO);
     return dlg.run() == Gtk::RESPONSE_YES;
   }
 
@@ -410,6 +411,7 @@ bool EncodeWindow::on_delete_event(GdkEventAny*)
                          Gtk::BUTTONS_NONE);
   dlg.add_button(_("C_ancel encoding"), Gtk::RESPONSE_CLOSE);
   dlg.add_button(_("_Continue"), Gtk::RESPONSE_OK);
+  dlg.set_default_response(Gtk::RESPONSE_OK);
   bool terminate = dlg.run() == Gtk::RESPONSE_CLOSE;
 
   if (terminate) {
