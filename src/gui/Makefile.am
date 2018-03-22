@@ -21,6 +21,7 @@ multi_delogo_SOURCES = main.cpp \
                        MultiDelogoApp.cpp \
                        MultiDelogoAppWindow.cpp \
                        NumericEntry.cpp \
+                       ETRProgressBar.cpp \
                        FrameView.cpp \
                        FrameNavigator.cpp \
                        FrameNavigatorUtil.cpp \
@@ -34,7 +35,6 @@ multi_delogo_SOURCES = main.cpp \
                        FindLogosWindow.cpp \
                        FFmpegExecutor.cpp \
                        EncodeWindow.cpp \
-                       EncodeWindowUtil.cpp \
                        Utils.cpp \
                        InitialWindow.cpp
 
@@ -45,6 +45,7 @@ noinst_HEADERS = common/Exceptions.hpp \
                  MultiDelogoApp.hpp \
                  MultiDelogoAppWindow.hpp \
                  NumericEntry.hpp \
+                 ETRProgressBar.hpp \
                  FrameView.hpp \
                  FrameNavigator.hpp \
                  FrameNavigatorUtil.hpp \
@@ -58,7 +59,6 @@ noinst_HEADERS = common/Exceptions.hpp \
                  FindLogosWindow.hpp \
                  FFmpegExecutor.hpp \
                  EncodeWindow.hpp \
-                 EncodeWindowUtil.hpp \
                  Utils.hpp \
                  InitialWindow.hpp
 

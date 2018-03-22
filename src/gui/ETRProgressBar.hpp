@@ -16,17 +16,44 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef MDL_ENCODE_WINDOW_UTIL_H
-#define MDL_ENCODE_WINDOW_UTIL_H
+#ifndef MDL_ETR_PROGRESS_BAR_H
+#define MDL_ETR_PROGRESS_BAR_H
 
 #include <string>
 
-#include "FFmpegExecutor.hpp"
+#include <gtkmm.h>
 
 
 namespace mdl {
-  std::string get_progress_str(const FFmpegExecutor::Progress& progress);
-  std::string get_time_remaining(const FFmpegExecutor::Progress& progress);
+  class Progress
+  {
+  public:
+    double percentage;
+    int seconds_elapsed;
+    int total_seconds_remaining;
+    int hours_remaining;
+    int minutes_remaining;
+    int seconds_remaining;
+
+    void calculate_time_remaining();
+  };
+
+  class ETRProgressBar : public Gtk::ProgressBar
+  {
+  public:
+    ETRProgressBar();
+
+    void set_progress(const Progress& progress);
+    void reset();
+    void set_finished();
+
+  private:
+    std::string get_progress_str(const Progress& progress);
+    std::string get_time_remaining(const Progress& progress);
+
+
+    friend class ETRProgressBarTestFixture;
+  };
 }
 
-#endif // MDL_ENCODE_WINDOW_UTIL_H
+#endif // MDL_ETR_PROGRESS_BAR_H

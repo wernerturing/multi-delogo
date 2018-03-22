@@ -27,8 +27,8 @@
 #include "filter-generator/FuzzyScriptGenerator.hpp"
 
 #include "common/Exceptions.hpp"
+#include "ETRProgressBar.hpp"
 #include "EncodeWindow.hpp"
-#include "EncodeWindowUtil.hpp"
 #include "FFmpegExecutor.hpp"
 #include "MultiDelogoApp.hpp"
 #include "Utils.hpp"
@@ -58,7 +58,7 @@ EncodeWindow::EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int tota
   add(*vbox);
 
   ffmpeg_.set_total_frames(total_frames);
-  ffmpeg_.signal_progress().connect(sigc::mem_fun(*this, &EncodeWindow::on_ffmpeg_progress));
+  ffmpeg_.signal_progress().connect(sigc::mem_fun(progress_bar_, &ETRProgressBar::set_progress));
   ffmpeg_.signal_finished().connect(sigc::mem_fun(*this, &EncodeWindow::on_ffmpeg_finished));
 }
 
@@ -228,8 +228,6 @@ Gtk::Grid* EncodeWindow::create_buttons()
 
 Gtk::Grid* EncodeWindow::create_progress()
 {
-  progress_bar_.set_show_text();
-
   btn_log_.set_label(_("View _log"));
   btn_log_.set_use_underline();
   btn_log_.signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_view_log));
@@ -269,7 +267,7 @@ void EncodeWindow::on_encode()
     ffmpeg_.encode();
 
     lbl_status_.set_text(_("Encoding in progress"));
-    progress_bar_.set_fraction(0);
+    progress_bar_.reset();
     box_progress_.set_no_show_all(false);
     box_progress_.show_all();
 
@@ -349,22 +347,12 @@ EncodeWindow::Generator EncodeWindow::get_generator()
 }
 
 
-void EncodeWindow::on_ffmpeg_progress(const FFmpegExecutor::Progress& p)
-{
-  if (p.percentage >= 0) {
-    progress_bar_.set_fraction(p.percentage);
-    progress_bar_.set_text(get_progress_str(p));
-  }
-}
-
-
 void EncodeWindow::on_ffmpeg_finished(bool success, const std::string& error)
 {
   enable_widgets();
   btn_log_.show();
 
-  progress_bar_.set_fraction(1);
-  progress_bar_.set_text("");
+  progress_bar_.set_finished();
 
   if (success) {
     lbl_status_.set_text(_("Encoding finished successfully"));
