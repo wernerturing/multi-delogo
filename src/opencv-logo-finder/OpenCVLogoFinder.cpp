@@ -180,11 +180,8 @@ void OpenCVLogoFinder::get_next_frame()
 cv::Rect OpenCVLogoFinder::find_box_in_channel(const cv::Mat& average_frame, int channel)
 {
   cv::extractChannel(average_frame, t_grey_, channel);
-
-  cv::morphologyEx(t_grey_, t_grey_, cv::MORPH_GRADIENT, kernel_morphology_);
-
-  cv::threshold(t_grey_, t_thresh_, 190, 255, cv::THRESH_BINARY);
-
+  cv::morphologyEx(t_grey_, t_gradient_, cv::MORPH_GRADIENT, kernel_morphology_);
+  cv::threshold(t_gradient_, t_thresh_, 190, 255, cv::THRESH_BINARY);
   cv::morphologyEx(t_thresh_, t_closed_, cv::MORPH_CLOSE, kernel_close_, cv::Point(-1, -1), close_steps_);
 
   std::vector<std::vector<cv::Point>> contours;

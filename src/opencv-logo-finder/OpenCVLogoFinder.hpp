@@ -94,6 +94,7 @@ namespace mdl { namespace opencv {
     cv::Mat t_frame_f_;
     cv::Mat t_sharpened_;
     cv::Mat t_grey_;
+    cv::Mat t_gradient_;
     cv::Mat t_thresh_;
     cv::Mat t_closed_;
   };
