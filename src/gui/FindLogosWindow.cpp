@@ -285,7 +285,7 @@ void FindLogosWindow::ProgressCallback::success(const mdl::LogoFinderResult& res
 }
 
 
-void FindLogosWindow::ProgressCallback::failure(int start_frame)
+void FindLogosWindow::ProgressCallback::failure(int start_frame, int end_frame)
 {
   printf("Logo finder failure\n");
 }

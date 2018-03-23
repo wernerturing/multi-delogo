@@ -25,6 +25,7 @@ namespace mdl {
   {
   public:
     int start_frame;
+    int end_frame;
     int x;
     int y;
     int width;
@@ -38,7 +39,7 @@ namespace mdl {
     virtual ~LogoFinderCallback() { };
 
     virtual void success(const LogoFinderResult& result) = 0;
-    virtual void failure(int start_frame) = 0;
+    virtual void failure(int start_frame, int end_frame) = 0;
   };
 
 

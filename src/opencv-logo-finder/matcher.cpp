@@ -34,7 +34,7 @@ class MatcherCallback : public LogoFinderCallback
 public:
   MatcherCallback(int frame_interval);
   void success(const LogoFinderResult& result) override;
-  void failure(int start_frame) override;
+  void failure(int start_frame, int end_frame) override;
   void set_end_frame(int end_frame);
   void set_finder(LogoFinder* finder);
 
@@ -101,16 +101,18 @@ MatcherCallback::MatcherCallback(int frame_interval)
 
 void MatcherCallback::success(const LogoFinderResult& result)
 {
-  std::cout << "Success at " << result.start_frame << std::endl;
+  std::cout << "Success at "
+            << result.start_frame << "-" << result.end_frame << std::endl;
   if ((result.start_frame + frame_interval_) > end_frame_) {
     finder_->stop();
   }
 }
 
 
-void MatcherCallback::failure(int start_frame)
+void MatcherCallback::failure(int start_frame, int end_frame)
 {
-  std::cout << "Failure at " << start_frame << std::endl;
+  std::cout << "Failure at "
+            << start_frame << "-" << end_frame << std::endl;
   if ((start_frame + frame_interval_) > end_frame_) {
     finder_->stop();
   }

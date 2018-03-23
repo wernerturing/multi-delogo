@@ -76,7 +76,7 @@ namespace mdl {
     class ProgressCallback : public mdl::LogoFinderCallback
     {
       void success(const mdl::LogoFinderResult& result) override;
-      void failure(int start_frame) override;
+      void failure(int start_frame, int end_frame) override;
     };
 
     ProgressCallback callback_;

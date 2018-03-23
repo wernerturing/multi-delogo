@@ -81,6 +81,7 @@ void OpenCVLogoFinder::find_logos()
       int new_start = get_logo_transition_point(interval_end, box);
 
       LogoFinderResult result{.start_frame = interval_start,
+                              .end_frame = new_start - 1,
                               .x = box.x, .y = box.y,
                               .width = box.width, .height = box.height};
       callback_.success(result);
@@ -88,7 +89,7 @@ void OpenCVLogoFinder::find_logos()
       interval_start = new_start;
       n_last_failures_ = 0;
     } else {
-      callback_.failure(interval_start);
+      callback_.failure(interval_start, interval_end - 1);
 
       interval_start += frame_interval_min_;
       ++n_last_failures_;

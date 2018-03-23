@@ -40,9 +40,9 @@ void FilterListAdapter::success(const mdl::LogoFinderResult& result)
 }
 
 
-void FilterListAdapter::failure(int start_frame)
+void FilterListAdapter::failure(int start_frame, int end_frame)
 {
   filter_list_.insert(start_frame + 1, new fg::ReviewFilter());
 
-  callback_.failure(start_frame);
+  callback_.failure(start_frame, end_frame);
 }
