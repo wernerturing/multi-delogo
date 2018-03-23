@@ -1,3 +1,9 @@
+## [ongoing]
+
+* New automatic logo detector that can find most logos in the video
+  automatically.
+
+
 ## 1.2.0
 
 * New 'cut' filter to remove parts of the video.
