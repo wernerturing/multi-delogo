@@ -37,7 +37,7 @@ Para saltar um número maior de quadros para trás ou para frente, use os botõe
 Você também pode ir diretamente para um quadro digitando o número dele e apertando Enter.
 
 
-## Definindo um filtro
+## Definindo um filtro manualmente
 
 No vídeo de exemplo, o texto não é exibido nos quadros iniciais. Temos que navegar até o primeiro quadro em que o texto aparece.
 
@@ -61,7 +61,7 @@ Um _filtro_ é uma modificação feita no vídeo, com o objetivo de remover os l
 
 * _none_ é usado para não aplicar um filtro a uma parte do vídeo.
 
-* _review_ não é um verdadeiro filtro. Ele é criado pelo detector automático de logos para indicar partes do vídeo em que o logo não pode ser detectado, e que precisam ser revisadas manualmente. Não é possível converter o vídeo enquanto houver filtros review. Você terá que mudá-los para outro tipo (indicando manualmente a posição do logo, ou se não há logo, mudar para _none_, ou removê-los antes da conversão.
+* _review_ não é um verdadeiro filtro. Ele é criado pelo detector automático (veja [Detectando logos automaticamente](#detectando-logos-automaticamente)) de logos para indicar partes do vídeo em que o logo não pode ser detectado, e que precisam ser revisadas manualmente. Não é possível converter o vídeo enquanto houver filtros review. Você terá que mudá-los para outro tipo (indicando manualmente a posição do logo, ou se não há logo, mudar para _none_, ou removê-los antes da conversão.
 
 Filtros são aplicados do seu _quadro inicial_ até o início do próximo filtro, ou até o fim do vídeo se ele for o último filtro.
 
@@ -81,6 +81,35 @@ Observe o novo filtro adicionado, iniciando no quadro 151.
 Agora apenas repita o processo, marcando cada nova posição do logo. Em nosso curto exemplo, há apenas quatro posições:
 
 ![Todos os filtros adicionados](images/all-filters.png)
+
+
+## Detectando logos automaticamente
+
+Todo o trabalho feito anteriormente talvez não fosse necessário, já que em muitos casos o multi-delogo consegue automaticamente encontrar os logos nos vídeos e criar filtros para eles.
+
+Para usar essa funcionalidade, clique no botão com a lupa na barra de ferramentas. Você verá uma tela como essa:
+
+![Janela de procura por logos](images/find-logos-window.png)
+
+Você deverá definir alguns parâmetros:
+
+* *Quadro inicial*: O quadro onde iniciar a busca por logos. No nosso caso, seria 76, já que é o primeiro quadro onde aparece um logo.
+
+* *Duração do logo*: Aqui deve ser informado por quantos frames cada logo é exibido. No nosso caso, é 75 em ambos os campos, já que todos os logos são exibidos por exatamente 75 quadros. Em alguns vídeos os logos podem ser exibidos por de 100 a 105 quadros, então informe estes valores nos campos.
+
+* *Largura do logo* e *altura do logo*: Aqui devem ser especificados os tamanhos mínimo e máximo dos retângulos com os logos.
+
+Quando os parâmetros estiverem definidos, clique o botão *Procurar logos* para iniciar a busca. Esse processo pode demorar, e o estado da busca será exibido na barra de progresso.
+
+Observe que a detecção dos logos não é 100% eficaz. Alguns logos podem não ser detectados. Quando um logo não for encontrado, um filtro do tipo _review_ será inserido para indicar a posição onde a detecção falhou. Você terá que revisar os pontos onde esta detecção falhou, e adicionar um filtro manualmente (ou definir o tipo do filtro como _none_ se não existir um logo).
+
+Além disso, em alguns casos mesmo quando um logo é detectado, o resultado pode não estar certo: o quadro inicial pode estar alguns quadros atrás do valor correto, talvez apenas parte do logo tenha sido reconhecida, ou algum outro artefato do vídeo foi considerado incorretamente como um logo. Por causa disso, é recomendável revisar os resultados antes de converter o vídeo.
+
+### Interrompendo e continuando a deteção de logos
+
+É possível interromper a detecção de logos clicando o botão *Fechar*. Os logos já detectados não serão perdidos.
+
+Para continuar a busca, apenas execute o detector de logos novamente, usando como *Quadro inicial* o primeiro quadro de um logo após o último detectado.
 
 
 ## Editando filtros
