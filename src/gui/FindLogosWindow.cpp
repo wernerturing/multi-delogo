@@ -282,7 +282,6 @@ FindLogosWindow::~FindLogosWindow()
 {
   if (worker_thread_) {
     if (worker_thread_->joinable()) {
-      printf("Joining worker thread\n");
       worker_thread_->join();
     }
     delete worker_thread_;
