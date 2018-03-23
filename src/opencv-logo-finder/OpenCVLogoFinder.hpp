@@ -35,6 +35,8 @@ namespace mdl { namespace opencv {
 
     void find_logos() override;
 
+    void stop() override;
+
   private:
     cv::VideoCapture cap_;
     int total_frames_;
@@ -44,6 +46,8 @@ namespace mdl { namespace opencv {
     cv::Mat kernel_close_;
 
     int n_last_failures_;
+
+    bool stop_requested_;
 
     /**
      * Number of steps to do while searching for the logo in an

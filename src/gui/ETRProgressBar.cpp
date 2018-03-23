@@ -19,14 +19,54 @@
 #include <string>
 #include <iomanip>
 
-#include <glibmm.h>
+#include <gtkmm.h>
 #include <glibmm/i18n.h>
 
-#include "EncodeWindowUtil.hpp"
-#include "FFmpegExecutor.hpp"
+#include "ETRProgressBar.hpp"
+
+using namespace mdl;
 
 
-std::string mdl::get_progress_str(const FFmpegExecutor::Progress& progress)
+void Progress::calculate_time_remaining()
+{
+  total_seconds_remaining = seconds_elapsed / percentage - seconds_elapsed;
+  hours_remaining = total_seconds_remaining / (60*60);
+  int remainder = total_seconds_remaining % (60*60);
+  minutes_remaining = remainder / 60;
+  seconds_remaining = remainder % 60;
+}
+
+
+ETRProgressBar::ETRProgressBar()
+{
+  set_show_text();
+}
+
+
+void ETRProgressBar::set_progress(const Progress& progress)
+{
+  if (progress.percentage >= 0) {
+    set_fraction(progress.percentage);
+    set_text(get_progress_str(progress));
+  }
+}
+
+
+void ETRProgressBar::reset()
+{
+  set_fraction(0);
+  set_text("");
+}
+
+
+void ETRProgressBar::set_finished()
+{
+  set_fraction(1);
+  set_text(_("100% done"));
+}
+
+
+std::string ETRProgressBar::get_progress_str(const Progress& progress)
 {
   return Glib::ustring::compose(_("%1%% done, %2"),
                                 (int) (progress.percentage * 100),
@@ -34,7 +74,7 @@ std::string mdl::get_progress_str(const FFmpegExecutor::Progress& progress)
 }
 
 
-std::string mdl::get_time_remaining(const FFmpegExecutor::Progress& progress)
+std::string ETRProgressBar::get_time_remaining(const Progress& progress)
 {
   std::string min_str = Glib::ustring::format(std::setfill(L'0'), std::setw(2),
                                               progress.minutes_remaining);
@@ -43,3 +83,6 @@ std::string mdl::get_time_remaining(const FFmpegExecutor::Progress& progress)
   return Glib::ustring::compose(_("about %1:%2:%3 left"),
                                 progress.hours_remaining, min_str, sec_str);
 }
+
+
+

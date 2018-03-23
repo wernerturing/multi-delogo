@@ -55,6 +55,7 @@ namespace mdl {
     bool on_key_press(GdkEventKey* key_event);
 
     void on_save();
+    void on_find_logos();
     void on_encode();
 
     void on_scroll_filter_toggled(Gtk::ToggleToolButton* chk);

@@ -32,8 +32,8 @@ namespace mdl {
   {
   public:
     FilterListAdapter(fg::FilterList& filter_list, LogoFinderCallback& callback);
-    bool success(const mdl::LogoFinderResult& result) override;
-    bool failure(int start_frame) override;
+    void success(const mdl::LogoFinderResult& result) override;
+    void failure(int start_frame, int end_frame) override;
 
   private:
     fg::FilterList& filter_list_;
