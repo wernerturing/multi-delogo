@@ -47,7 +47,7 @@ OpenCVLogoFinder::OpenCVLogoFinder(const std::string& file, LogoFinderCallback& 
   kernel_sharpen_ = cv::Mat(3, 3, CV_64F, cv::Scalar(1));
   kernel_sharpen_.at<double>(1, 1) = -7;
 
-  kernel_morphology_ = cv::Mat::ones(3, 3, CV_8U);
+  kernel_gradient_ = cv::Mat::ones(3, 3, CV_8U);
 
   kernel_close_ = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(7, 1));
 
@@ -189,7 +189,7 @@ void OpenCVLogoFinder::get_next_frame()
 cv::Rect OpenCVLogoFinder::find_box_in_channel(const cv::Mat& average_frame, int channel)
 {
   cv::extractChannel(average_frame, t_grey_, channel);
-  cv::morphologyEx(t_grey_, t_gradient_, cv::MORPH_GRADIENT, kernel_morphology_);
+  cv::morphologyEx(t_grey_, t_gradient_, cv::MORPH_GRADIENT, kernel_gradient_);
   cv::threshold(t_gradient_, t_thresh_, 190, 255, cv::THRESH_BINARY);
   cv::morphologyEx(t_thresh_, t_closed_, cv::MORPH_CLOSE, kernel_close_, cv::Point(-1, -1), close_steps_);
 
@@ -243,10 +243,10 @@ int OpenCVLogoFinder::get_logo_transition_point(int current_frame, const cv::Rec
     get_next_frame();
     cv::Mat logo_next = cv::Mat(t_frame_, box);
 
-    double n = cv::norm(logo, logo_next, cv::NORM_L2);
-    double similarity = n / (logo.rows * logo.cols);
+    double norm = cv::norm(logo, logo_next, cv::NORM_L2);
+    double difference = norm / (logo.rows * logo.cols);
 
-    if (similarity > similarity_threshold_) {
+    if (difference > similarity_threshold_) {
       break;
     }
 

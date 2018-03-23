@@ -42,7 +42,7 @@ namespace mdl { namespace opencv {
     int total_frames_;
 
     cv::Mat kernel_sharpen_;
-    cv::Mat kernel_morphology_;
+    cv::Mat kernel_gradient_;
     cv::Mat kernel_close_;
 
     int n_last_failures_;
