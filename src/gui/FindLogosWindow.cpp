@@ -19,6 +19,7 @@
 #include <memory>
 #include <limits>
 #include <thread>
+#include <mutex>
 
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
@@ -28,6 +29,7 @@
 #include "opencv-logo-finder/FilterListAdapter.hpp"
 
 #include "FindLogosWindow.hpp"
+#include "ETRProgressBar.hpp"
 
 using namespace mdl;
 
@@ -35,11 +37,13 @@ using namespace mdl;
 FindLogosWindow::FindLogosWindow(fg::FilterData& filter_data,
                                  int total_frames, int start_frame, int jump_size)
   : filter_data_(filter_data)
-  , total_frames_(total_frames)
   , worker_thread_(nullptr)
   , search_in_progress_(false)
+  , callback_(total_frames, finder_progress_dispatcher_)
 {
   logo_finder_ = create_logo_finder(filter_data_, callback_);
+  finder_progress_dispatcher_.connect(sigc::mem_fun(*this, &FindLogosWindow::on_progress));
+  finder_finished_dispatcher_.connect(sigc::mem_fun(progress_bar_, &ETRProgressBar::set_finished));
 
   set_title(_("Find logos"));
   set_border_width(8);
@@ -152,8 +156,6 @@ Gtk::Grid* FindLogosWindow::create_parameters()
 
 Gtk::Grid* FindLogosWindow::create_progress()
 {
-  progress_bar_.set_show_text();
-
   Gtk::Grid* box_progress = Gtk::manage(new Gtk::Grid());
   box_progress->set_orientation(Gtk::ORIENTATION_VERTICAL);
   box_progress->set_vexpand();
@@ -219,9 +221,11 @@ void FindLogosWindow::on_find_logos()
   logo_finder_->set_max_logo_height(txt_max_logo_height_.get_value_as_int());
 
   search_in_progress_ = true;
+  callback_.start();
   worker_thread_ = new std::thread([this] {
     logo_finder_->find_logos();
     search_in_progress_ = false;
+    finder_finished_dispatcher_.emit();
   });
   btn_find_logos_.set_sensitive(false);
 }
@@ -267,6 +271,13 @@ bool FindLogosWindow::confirm_stop()
 }
 
 
+void FindLogosWindow::on_progress()
+{
+  Progress p = callback_.get_progress();
+  progress_bar_.set_progress(p);
+}
+
+
 FindLogosWindow::~FindLogosWindow()
 {
   if (worker_thread_) {
@@ -279,13 +290,46 @@ FindLogosWindow::~FindLogosWindow()
 }
 
 
+FindLogosWindow::ProgressCallback::ProgressCallback(int total_frames, Glib::Dispatcher& dispatcher)
+  : total_frames_(total_frames)
+  , dispatcher_(dispatcher)
+{
+}
+
+
 void FindLogosWindow::ProgressCallback::success(const mdl::LogoFinderResult& result)
 {
-  printf("Logo finder success\n");
+  std::lock_guard<std::mutex> lock(mutex_progress_);
+
+  progress_.percentage = (double) result.end_frame / total_frames_;
+  progress_.seconds_elapsed = timer_.elapsed();
+  progress_.calculate_time_remaining();
+
+  dispatcher_.emit();
 }
 
 
 void FindLogosWindow::ProgressCallback::failure(int start_frame, int end_frame)
 {
-  printf("Logo finder failure\n");
+  std::lock_guard<std::mutex> lock(mutex_progress_);
+
+  progress_.percentage = (double) end_frame / total_frames_;
+  progress_.seconds_elapsed = timer_.elapsed();
+  progress_.calculate_time_remaining();
+
+  dispatcher_.emit();
+}
+
+
+void FindLogosWindow::ProgressCallback::start()
+{
+  timer_.start();
+}
+
+
+Progress FindLogosWindow::ProgressCallback::get_progress() const
+{
+  std::lock_guard<std::mutex> lock(mutex_progress_);
+
+  return progress_;
 }

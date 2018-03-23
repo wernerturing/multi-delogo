@@ -21,6 +21,7 @@
 
 #include <memory>
 #include <thread>
+#include <mutex>
 
 #include <gtkmm.h>
 
@@ -28,6 +29,7 @@
 
 #include "common/LogoFinder.hpp"
 
+#include "ETRProgressBar.hpp"
 #include "MultiDelogoAppWindow.hpp"
 
 
@@ -41,7 +43,6 @@ namespace mdl {
 
   private:
     fg::FilterData& filter_data_;
-    int total_frames_;
     std::shared_ptr<LogoFinder> logo_finder_;
 
     Gtk::SpinButton txt_initial_frame_;
@@ -53,12 +54,14 @@ namespace mdl {
     Gtk::SpinButton txt_min_logo_height_;
     Gtk::SpinButton txt_max_logo_height_;
 
-    Gtk::ProgressBar progress_bar_;
+    ETRProgressBar progress_bar_;
 
     Gtk::Button btn_find_logos_;
 
     std::thread* worker_thread_;
     bool search_in_progress_;
+    Glib::Dispatcher finder_progress_dispatcher_;
+    Glib::Dispatcher finder_finished_dispatcher_;
 
 
     Gtk::Grid* create_parameters();
@@ -72,11 +75,28 @@ namespace mdl {
     bool on_delete_event(GdkEventAny*) override;
     bool confirm_stop();
 
+    void on_progress();
+
 
     class ProgressCallback : public mdl::LogoFinderCallback
     {
+    public:
+      ProgressCallback(int total_frames, Glib::Dispatcher& dispatcher);
       void success(const mdl::LogoFinderResult& result) override;
       void failure(int start_frame, int end_frame) override;
+
+      void start();
+      Progress get_progress() const;
+
+    private:
+      Progress progress_;
+      mutable std::mutex mutex_progress_;
+
+      int total_frames_;
+
+      Glib::Timer timer_;
+
+      Glib::Dispatcher& dispatcher_;
     };
 
     ProgressCallback callback_;
