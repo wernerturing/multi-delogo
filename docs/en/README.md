@@ -37,7 +37,7 @@ To move a larger number of frames backward or forward, use the << and >> buttons
 You can also go directly to a frame by entering its number and pressing Enter.
 
 
-## Defining a filter
+## Defining a filter manually
 
 In the example video, the text is not displayed in the first frames. We'll have to navigate to the first frame in which the text appears.
 
@@ -61,6 +61,8 @@ A _filter_ is a modification done to the video, in order to remove the logos. Th
 
 * _none_ is used to not apply any filter to a part of the video.
 
+* _review_ isn't really a filter. It's created by the automatic logo detector (see [Automatically detecting logos](#automatically-detecting-logos)) to indicate parts of the video where the logo couldn't be detected, and that need to be manually reviewed. It's not possible to encode a video while there are review filters. You'll need to change them to another type (manually indicate the logo position, or if there's really no logo, change them to _none_), or remove them before encoding the video.
+
 Filters are applied from their _start frame_ until the start of the next filter, or until the end of the video if it's the last filter.
 
 
@@ -79,6 +81,37 @@ Note the new filter added to the list, starting at frame 151.
 Now just repeat the process, marking each new position for the logo. In our short sample, there are just four positions:
 
 ![All filters added](images/all-filters.png)
+
+
+## Automatically detecting logos
+
+All the work done previously might not have been necessary, as in many cases multi-delogo can automatically find logos in your videos and create filters for them.
+
+To use that feature, click the magnifier icon in the toolbar. You'll be presented with a screen like this:
+
+![Find logos window](images/find-logos-window.png)
+
+You'll need to define a few parameters:
+
+* *Search interval*: The frame at which to start the search for logos, and the frame at which to stop the search for logos. By default, unless the video is very short, the end point will not be configured to the end of the video (but you can change it to be the last frame if you wish). It is recommended not to run the logo detection for the whole movie at once, but rather to do it in parts. That's because the logo detection is not 100% accurate, so it's preferable to search for logos in a part of the video, review the results, and then run the detection again for the next part.
+
+  In our case, the start frame is 76, as it's the first frame with a logo. Since the video is very short, there's no need to change to end frame.
+
+* *Logo duration*: Here you must specify for how many frames each logo is displayed. In our case, it's 75 in both text boxes, since all logos are displayed for exactly 75 frames. In some videos some logos might be displayed from 100 to 105 frames, so enter those numbers in the text boxes.
+
+* *Logo width* and *Logo height*: Here you must specify the minimum and maximum sizes of the boxes with the logos.
+
+Once the parameters are set, press the *Find logos* button to start the search. This process might take some time, and the status of the search will be reported in the progress bar.
+
+Note that the logo detection is not 100% effective. Some logos will not be able to be detected. When a logo could not be found, a _review_ filter will be inserted to indicate the position where detection failed. You should check the places where this detection failed, and manually add a filter (or set the filter type to _none_ if there is no logo).
+
+Moreover, in a few cases even when a logo is detected, the result might not be correct: the start frame might be off by a few frames, perhaps only part of the logo has been detected, or some other feature of the video was incorrectly considered a logo. Therefore it's recommended to review the results before encoding the video.
+
+### Interrupting and continuing the logo detection
+
+It's possible to stop the logo detection by pressing the *Close* button. The logos already detected will not be lost.
+
+To continue the search, just run the logo detector again, using as *Initial frame* the first frame of a logo after the last one detected.
 
 
 ## Editing filters

@@ -2,6 +2,8 @@
 
 multi-delogo é um programa que lhe ajuda a remover logos ou marcas-d'água de vídeos. Mesmo se a posição do logo muda de tempos em tempos, multi-delogo lhe permite marcar todas as posições e gerar um vídeo sem os logos.
 
+Existe uma funcionalidade para detecção automática de logos e suas posições, especialmente logos formados por textos.
+
 Para mais detalhes e instruções de uso, veja [aqui](docs/pt_BR/README.md).
 
 
