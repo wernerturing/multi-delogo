@@ -46,6 +46,7 @@ namespace mdl {
     std::shared_ptr<LogoFinder> logo_finder_;
 
     Gtk::SpinButton txt_initial_frame_;
+    Gtk::SpinButton txt_final_frame_;
     Gtk::SpinButton txt_min_frame_interval_;
     Gtk::SpinButton txt_max_frame_interval_;
 
@@ -68,6 +69,7 @@ namespace mdl {
     Gtk::Grid* create_progress();
     Gtk::Grid* create_buttons();
     void configure_spin(Gtk::SpinButton& spin);
+    void configure_spin(Gtk::SpinButton& spin, int max);
 
     void on_find_logos();
 
@@ -81,22 +83,30 @@ namespace mdl {
     class ProgressCallback : public mdl::LogoFinderCallback
     {
     public:
-      ProgressCallback(int total_frames, Glib::Dispatcher& dispatcher);
+      ProgressCallback(Glib::Dispatcher& dispatcher);
+
       void success(const mdl::LogoFinderResult& result) override;
       void failure(int start_frame, int end_frame) override;
 
-      void start();
+      void set_finder(LogoFinder* finder);
+      void start(int initial_frame, int final_frame);
       Progress get_progress() const;
 
     private:
+      LogoFinder* finder_;
+
       Progress progress_;
       mutable std::mutex mutex_progress_;
 
-      int total_frames_;
+      int initial_frame_;
+      int final_frame_;
 
       Glib::Timer timer_;
 
       Glib::Dispatcher& dispatcher_;
+
+
+      void calculate_progress(int end_frame);
     };
 
     ProgressCallback callback_;

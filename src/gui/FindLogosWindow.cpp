@@ -20,6 +20,7 @@
 #include <limits>
 #include <thread>
 #include <mutex>
+#include <algorithm>
 
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
@@ -39,17 +40,20 @@ FindLogosWindow::FindLogosWindow(fg::FilterData& filter_data,
   : filter_data_(filter_data)
   , worker_thread_(nullptr)
   , search_in_progress_(false)
-  , callback_(total_frames, finder_progress_dispatcher_)
+  , callback_(finder_progress_dispatcher_)
 {
   logo_finder_ = create_logo_finder(filter_data_, callback_);
   finder_progress_dispatcher_.connect(sigc::mem_fun(*this, &FindLogosWindow::on_progress));
   finder_finished_dispatcher_.connect(sigc::mem_fun(progress_bar_, &ETRProgressBar::set_finished));
+  callback_.set_finder(logo_finder_.get());
 
   set_title(_("Find logos"));
   set_border_width(8);
 
-  configure_spin(txt_initial_frame_);
+  configure_spin(txt_initial_frame_, total_frames - 1);
   txt_initial_frame_.set_value(start_frame);
+  configure_spin(txt_final_frame_, total_frames);
+  txt_final_frame_.set_value(std::min(start_frame + 36000, total_frames));
 
   configure_spin(txt_min_frame_interval_);
   txt_min_frame_interval_.set_value(jump_size);
@@ -70,10 +74,16 @@ FindLogosWindow::FindLogosWindow(fg::FilterData& filter_data,
 
 Gtk::Grid* FindLogosWindow::create_parameters()
 {
-  Gtk::Label* lbl_initial_frame = Gtk::manage(new Gtk::Label(_("Initial _frame:"), true));
+  Gtk::Label* lbl_search_interval = Gtk::manage(new Gtk::Label(_("Search interval:")));
 
+  Gtk::Label* lbl_initial_frame = Gtk::manage(new Gtk::Label(_("_start:"), true));
   txt_initial_frame_.set_tooltip_text(_("The frame at which to start to search"));
   lbl_initial_frame->set_mnemonic_widget(txt_initial_frame_);
+
+  Gtk::Label* lbl_final_frame = Gtk::manage(new Gtk::Label(_("_end:"), true));
+  txt_final_frame_.set_tooltip_text(_("The frame at which to end to search"));
+  lbl_final_frame->set_mnemonic_widget(txt_final_frame_);
+
 
   Gtk::Label* lbl_frame_interval = Gtk::manage(new Gtk::Label(_("Logo duration:")));
 
@@ -84,6 +94,7 @@ Gtk::Grid* FindLogosWindow::create_parameters()
   Gtk::Label* lbl_max_frame_interval = Gtk::manage(new Gtk::Label(_("an_d:"), true));
   txt_max_frame_interval_.set_tooltip_text(_("Maximum number of frames that the logos last"));
   lbl_max_frame_interval->set_mnemonic_widget(txt_max_frame_interval_);
+
 
   Gtk::Label* lbl_logo_width = Gtk::manage(new Gtk::Label(_("Logo width:")));
 
@@ -99,6 +110,7 @@ Gtk::Grid* FindLogosWindow::create_parameters()
   lbl_max_logo_width->set_mnemonic_widget(txt_max_logo_width_);
   txt_max_logo_width_.set_value(logo_finder_->get_max_logo_width());
 
+
   Gtk::Label* lbl_logo_height = Gtk::manage(new Gtk::Label(_("Logo height:")));
 
   Gtk::Label* lbl_min_logo_height = Gtk::manage(new Gtk::Label(_("m_in:"), true));
@@ -113,18 +125,24 @@ Gtk::Grid* FindLogosWindow::create_parameters()
   lbl_max_logo_height->set_mnemonic_widget(txt_max_logo_height_);
   txt_max_logo_height_.set_value(logo_finder_->get_max_logo_height());
 
+
   Gtk::Grid* box = Gtk::manage(new Gtk::Grid());
   box->set_column_spacing(8);
   box->set_row_spacing(8);
   box->set_valign(Gtk::ALIGN_CENTER);
   box->set_vexpand();
 
+  lbl_search_interval->set_halign(Gtk::ALIGN_END);
+  box->attach(*lbl_search_interval, 0, 0, 1, 1);
   lbl_initial_frame->set_halign(Gtk::ALIGN_END);
-  box->attach(*lbl_initial_frame, 0, 0, 1, 1);
-  box->attach_next_to(txt_initial_frame_, *lbl_initial_frame, Gtk::POS_RIGHT, 2, 1);
+  box->attach_next_to(*lbl_initial_frame, *lbl_search_interval, Gtk::POS_RIGHT, 1, 1);
+  box->attach_next_to(txt_initial_frame_, *lbl_initial_frame, Gtk::POS_RIGHT, 1, 1);
+  lbl_final_frame->set_halign(Gtk::ALIGN_END);
+  box->attach_next_to(*lbl_final_frame, txt_initial_frame_, Gtk::POS_RIGHT, 1, 1);
+  box->attach_next_to(txt_final_frame_, *lbl_final_frame, Gtk::POS_RIGHT, 1, 1);
 
   lbl_frame_interval->set_halign(Gtk::ALIGN_END);
-  box->attach_next_to(*lbl_frame_interval, *lbl_initial_frame, Gtk::POS_BOTTOM, 1, 1);
+  box->attach_next_to(*lbl_frame_interval, *lbl_search_interval, Gtk::POS_BOTTOM, 1, 1);
   lbl_min_frame_interval->set_halign(Gtk::ALIGN_END);
   box->attach_next_to(*lbl_min_frame_interval, *lbl_frame_interval, Gtk::POS_RIGHT, 1, 1);
   box->attach_next_to(txt_min_frame_interval_, *lbl_min_frame_interval, Gtk::POS_RIGHT, 1, 1);
@@ -194,7 +212,13 @@ Gtk::Grid* FindLogosWindow::create_buttons()
 
 void FindLogosWindow::configure_spin(Gtk::SpinButton& spin)
 {
-  spin.set_range(1, std::numeric_limits<int>::max());
+  configure_spin(spin, std::numeric_limits<int>::max());
+}
+
+
+void FindLogosWindow::configure_spin(Gtk::SpinButton& spin, int max)
+{
+  spin.set_range(1, max);
   spin.set_increments(1, 10);
 }
 
@@ -211,7 +235,10 @@ void FindLogosWindow::on_find_logos()
     return;
   }
 
-  logo_finder_->set_start_frame(txt_initial_frame_.get_value_as_int() - 1);
+  int initial_frame = txt_initial_frame_.get_value_as_int() - 1;
+  int final_frame = txt_final_frame_.get_value_as_int() - 1;
+
+  logo_finder_->set_start_frame(initial_frame);
   logo_finder_->set_frame_interval_min(min_frame_interval);
   logo_finder_->set_extra_frames(max_frame_interval - min_frame_interval);
 
@@ -221,7 +248,7 @@ void FindLogosWindow::on_find_logos()
   logo_finder_->set_max_logo_height(txt_max_logo_height_.get_value_as_int());
 
   search_in_progress_ = true;
-  callback_.start();
+  callback_.start(initial_frame, final_frame);
   worker_thread_ = new std::thread([this] {
     logo_finder_->find_logos();
     search_in_progress_ = false;
@@ -289,30 +316,43 @@ FindLogosWindow::~FindLogosWindow()
 }
 
 
-FindLogosWindow::ProgressCallback::ProgressCallback(int total_frames, Glib::Dispatcher& dispatcher)
-  : total_frames_(total_frames)
-  , dispatcher_(dispatcher)
+FindLogosWindow::ProgressCallback::ProgressCallback(Glib::Dispatcher& dispatcher)
+  : dispatcher_(dispatcher)
 {
 }
 
 
 void FindLogosWindow::ProgressCallback::success(const mdl::LogoFinderResult& result)
 {
-  std::lock_guard<std::mutex> lock(mutex_progress_);
-
-  progress_.percentage = (double) result.end_frame / total_frames_;
-  progress_.seconds_elapsed = timer_.elapsed();
-  progress_.calculate_time_remaining();
-
-  dispatcher_.emit();
+  calculate_progress(result.end_frame);
 }
 
 
 void FindLogosWindow::ProgressCallback::failure(int start_frame, int end_frame)
 {
+  calculate_progress(end_frame);
+}
+
+
+void FindLogosWindow::ProgressCallback::set_finder(LogoFinder* finder)
+{
+  finder_ = finder;
+}
+
+
+void FindLogosWindow::ProgressCallback::calculate_progress(int end_frame)
+{
+  if (end_frame > final_frame_) {
+    finder_->stop();
+    return;
+  }
+
+  int total_frames = final_frame_ - initial_frame_;
+  int elapsed = end_frame - initial_frame_;
+
   std::lock_guard<std::mutex> lock(mutex_progress_);
 
-  progress_.percentage = (double) end_frame / total_frames_;
+  progress_.percentage = (double) elapsed / total_frames;
   progress_.seconds_elapsed = timer_.elapsed();
   progress_.calculate_time_remaining();
 
@@ -320,8 +360,10 @@ void FindLogosWindow::ProgressCallback::failure(int start_frame, int end_frame)
 }
 
 
-void FindLogosWindow::ProgressCallback::start()
+void FindLogosWindow::ProgressCallback::start(int initial_frame, int final_frame)
 {
+  initial_frame_ = initial_frame;
+  final_frame_ = final_frame;
   timer_.start();
 }
 
