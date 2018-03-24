@@ -33,6 +33,11 @@
 using namespace mdl::opencv;
 
 
+#define INFO(msg) ({if (verbose_) { std::cout << msg; }})
+#define RECT_STR(rect) "[" << rect.x << " " << rect.y << " " \
+                           << rect.width << " " << rect.height << "]"
+
+
 OpenCVLogoFinder::OpenCVLogoFinder(const std::string& file, LogoFinderCallback& callback)
   : LogoFinder(callback)
   , n_last_failures_(0)
@@ -66,12 +71,10 @@ void OpenCVLogoFinder::find_logos()
       interval_end = total_frames_;
     }
 
-    std::cout << "find_logos iteration for [" << interval_start
-              << ", " << interval_end << ")" << std::endl;
+    INFO("find_logos iteration for [" << interval_start
+         << ", " << interval_end << ")" << std::endl);
     cv::Rect box = find_logo_in_interval(interval_start, interval_end);
-    std::cout << "  logo found = ["
-              << box.x << " " << box.y << " "
-              << box.width << " " << box.height << "]\n";
+    INFO("  logo found = " << RECT_STR(box) << std::endl);
 
     if (stop_requested_) {
       break;
@@ -115,6 +118,7 @@ cv::Rect OpenCVLogoFinder::find_logo_in_interval(int interval_start, int interva
       return interval_box;
     }
 
+    INFO("  Not found in level " << level << std::endl);
     // Subdivide each interval in two and try again
     n_subintervals *= 2;
     ++level;
@@ -131,8 +135,7 @@ cv::Rect OpenCVLogoFinder::find_logo_in_interval(int interval_start, int interva
 
 cv::Rect OpenCVLogoFinder::find_boxes(int start_frame, int end_frame)
 {
-  std::cout << "  find_boxes in [" << start_frame
-            << ", " << end_frame << ")\n";
+  INFO("  find_boxes in [" << start_frame << ", " << end_frame << ")" << std::endl);
   average_frame(start_frame, end_frame);
 
   cv::filter2D(t_avg_, t_sharpened_, -1, kernel_sharpen_);
@@ -200,10 +203,12 @@ cv::Rect OpenCVLogoFinder::find_box_in_channel(const cv::Mat& average_frame, int
     cv::Rect rect = cv::boundingRect(contour);
     if ((rect.width >= min_logo_width_ && rect.width <= max_logo_width_)
         && (rect.height >= min_logo_height_ && rect.height <= max_logo_height_)) {
+      INFO("    find_box_in_channel " << channel << " = " << RECT_STR(rect) << std::endl);
       return rect;
     }
   }
 
+  INFO("    find_box_in_channel " << channel << " = not found" << std::endl);
   return cv::Rect(0, 0, 0, 0);
 }
 
@@ -245,6 +250,8 @@ int OpenCVLogoFinder::get_logo_transition_point(int current_frame, const cv::Rec
 
     double norm = cv::norm(logo, logo_next, cv::NORM_L2);
     double difference = norm / (logo.rows * logo.cols);
+
+    INFO("  extra frame " << current_frame << " difference = " << difference << std::endl);
 
     if (difference > similarity_threshold_) {
       break;

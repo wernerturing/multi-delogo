@@ -67,6 +67,7 @@ int main(int argc, char* argv[])
   finder->set_start_frame(start_frame);
   finder->set_frame_interval_min(frame_interval_min);
   finder->set_extra_frames(frame_interval_max - frame_interval_min);
+  finder->set_verbose();
 
   int end_frame;
   if (argc == 7) {
