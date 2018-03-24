@@ -93,7 +93,9 @@ Para usar essa funcionalidade, clique no botão com a lupa na barra de ferrament
 
 Você deverá definir alguns parâmetros:
 
-* *Quadro inicial*: O quadro onde iniciar a busca por logos. No nosso caso, seria 76, já que é o primeiro quadro onde aparece um logo.
+* *Intervalo de busca*: O quadro onde será inicia a busca pelos logos, e o quadro onde ela termina. Por padrão, exceto para vídeos muito curtos, o quadro de término não estará pré-configurado para o fim do vídeo (mas você pode alterar para que seja o último quadro se quiser). Recomenda-se não executar a detecção de logos para o vídeo inteiro de uma vez, mas para executá-la em partes menores do vídeo de cada vez. Isso porque a detecção não é 100% precisa, então é melhor procurar por logos em uma parte, revisar os resultados, e rodar a detecção novamente para a próxima parte.
+
+  No nosso caso, o quadro inicial é 76, que é o primeiro quadro do vídeo com um logo. Como o vídeo é bastante curto, não há necessidade de mudar o quadro final.
 
 * *Duração do logo*: Aqui deve ser informado por quantos frames cada logo é exibido. No nosso caso, é 75 em ambos os campos, já que todos os logos são exibidos por exatamente 75 quadros. Em alguns vídeos os logos podem ser exibidos por de 100 a 105 quadros, então informe estes valores nos campos.
 

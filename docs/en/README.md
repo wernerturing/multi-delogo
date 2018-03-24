@@ -93,7 +93,9 @@ To use that feature, click the magnifier icon in the toolbar. You'll be presente
 
 You'll need to define a few parameters:
 
-* *Initial frame*: The frame at which to start the search for logos. In our case, it would be 76, as it's the first frame with a logo.
+* *Search interval*: The frame at which to start the search for logos, and the frame at which to stop the search for logos. By default, unless the video is very short, the end point will not be configured to the end of the video (but you can change it to be the last frame if you wish). It is recommended not to run the logo detection for the whole movie at once, but rather to do it in parts. That's because the logo detection is not 100% accurate, so it's preferable to search for logos in a part of the video, review the results, and then run the detection again for the next part.
+
+  In our case, the start frame is 76, as it's the first frame with a logo. Since the video is very short, there's no need to change to end frame.
 
 * *Logo duration*: Here you must specify for how many frames each logo is displayed. In our case, it's 75 in both text boxes, since all logos are displayed for exactly 75 frames. In some videos some logos might be displayed from 100 to 105 frames, so enter those numbers in the text boxes.
 
