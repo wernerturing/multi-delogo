@@ -1,4 +1,4 @@
-## ongoing
+## 2.0.0
 
 * New automatic logo detector that can find most logos in the video
   automatically.
