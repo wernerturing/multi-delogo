@@ -53,8 +53,8 @@ src/filter-generator/libfilter-generator.a
 src/opencv-frame-provider/libopencv-frame-provider.a
 src/opencv-logo-finder/libopencv-logo-finder.a
 src/opencv-logo-finder/libfilter-list-logo-adapter.a
-src/opencv-logo-finder/matcher
-src/opencv-logo-finder/matcher.exe
+src/opencv-logo-finder/logo-finder
+src/opencv-logo-finder/logo-finder.exe
 src/gui/multi-delogo
 src/gui/multi-delogo.exe
 

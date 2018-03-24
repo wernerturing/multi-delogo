@@ -34,14 +34,14 @@ libfilter_list_logo_adapter_a_SOURCES = FilterListAdapter.cpp \
 libfilter_list_logo_adapter_a_CPPFLAGS = -I..
 
 
-noinst_PROGRAMS = matcher
+noinst_PROGRAMS = logo-finder
 
-matcher_SOURCES = matcher.cpp
+logo_finder_SOURCES = logo-finder.cpp
 
-matcher_CPPFLAGS = -I..
+logo_finder_CPPFLAGS = -I..
 
-matcher_LDADD = libfilter-list-logo-adapter.a \
-                libopencv-logo-finder.a \
-                libfilter-list-logo-adapter.a \
-                ../filter-generator/libfilter-generator.a \
-                $(OPENCV_LIBS)
+logo_finder_LDADD = libfilter-list-logo-adapter.a \
+                    libopencv-logo-finder.a \
+                    libfilter-list-logo-adapter.a \
+                    ../filter-generator/libfilter-generator.a \
+                    $(OPENCV_LIBS)
