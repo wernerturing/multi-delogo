@@ -34,6 +34,7 @@
 #include "filter-generator/ScriptGenerator.hpp"
 
 #include "common/Exceptions.hpp"
+#include "ETRProgressBar.hpp"
 #include "FFmpegExecutor.hpp"
 
 using namespace mdl;
@@ -247,7 +248,7 @@ bool FFmpegExecutor::on_ffmpeg_output(Glib::IOCondition condition)
 }
 
 
-FFmpegExecutor::Progress FFmpegExecutor::get_progress(const std::string& ffmpeg_stats)
+Progress FFmpegExecutor::get_progress(const std::string& ffmpeg_stats)
 {
   Progress p;
 
@@ -262,19 +263,9 @@ FFmpegExecutor::Progress FFmpegExecutor::get_progress(const std::string& ffmpeg_
   p.percentage = (double) frames_encoded / total_frames_output_;
 
   p.seconds_elapsed = ffmpeg_timer_.elapsed();
-  calculate_time_remaining(p);
+  p.calculate_time_remaining();
 
   return p;
-}
-
-
-void FFmpegExecutor::calculate_time_remaining(Progress& p)
-{
-  p.total_seconds_remaining = p.seconds_elapsed / p.percentage - p.seconds_elapsed;
-  p.hours_remaining = p.total_seconds_remaining / (60*60);
-  int remainder = p.total_seconds_remaining % (60*60);
-  p.minutes_remaining = remainder / 60;
-  p.seconds_remaining = remainder % 60;
 }
 
 

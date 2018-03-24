@@ -21,6 +21,7 @@ multi_delogo_SOURCES = main.cpp \
                        MultiDelogoApp.cpp \
                        MultiDelogoAppWindow.cpp \
                        NumericEntry.cpp \
+                       ETRProgressBar.cpp \
                        FrameView.cpp \
                        FrameNavigator.cpp \
                        FrameNavigatorUtil.cpp \
@@ -31,18 +32,20 @@ multi_delogo_SOURCES = main.cpp \
                        FilterList.cpp \
                        Coordinator.cpp \
                        MovieWindow.cpp \
+                       FindLogosWindow.cpp \
                        FFmpegExecutor.cpp \
                        EncodeWindow.cpp \
-                       EncodeWindowUtil.cpp \
                        Utils.cpp \
                        InitialWindow.cpp
 
 noinst_HEADERS = common/Exceptions.hpp \
                  common/Rectangle.hpp \
                  common/FrameProvider.hpp \
+                 common/LogoFinder.hpp \
                  MultiDelogoApp.hpp \
                  MultiDelogoAppWindow.hpp \
                  NumericEntry.hpp \
+                 ETRProgressBar.hpp \
                  FrameView.hpp \
                  FrameNavigator.hpp \
                  FrameNavigatorUtil.hpp \
@@ -53,9 +56,9 @@ noinst_HEADERS = common/Exceptions.hpp \
                  FilterList.hpp \
                  Coordinator.hpp \
                  MovieWindow.hpp \
+                 FindLogosWindow.hpp \
                  FFmpegExecutor.hpp \
                  EncodeWindow.hpp \
-                 EncodeWindowUtil.hpp \
                  Utils.hpp \
                  InitialWindow.hpp
 
@@ -64,13 +67,17 @@ localedir = $(datadir)/locale
 
 multi_delogo_CPPFLAGS = -DLOCALEDIR=\"$(localedir)\" \
                         -I.. \
+                        $(PTHREAD_CFLAGS) \
                         $(GTKMM_CFLAGS) \
                         $(GOOCANVASMM_CFLAGS)
 
 frame_provider_lib = ../opencv-frame-provider/libopencv-frame-provider.a $(OPENCV_LIBS)
 
 multi_delogo_LDADD = ../filter-generator/libfilter-generator.a \
+                     ../opencv-logo-finder/libfilter-list-logo-adapter.a \
+                     ../opencv-logo-finder/libopencv-logo-finder.a \
                      $(frame_provider_lib) \
+                     $(PTHREAD_CFLAGS) $(PTHREAD_LIBS) \
                      $(GTKMM_LIBS) \
                      $(GOOCANVASMM_LIBS) \
                      $(WINDOWS_LDFLAGS)

@@ -16,37 +16,33 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef MDL_FILTER_TYPE_H
-#define MDL_FILTER_TYPE_H
-
-#include <gtkmm.h>
-
+#include "filter-generator/FilterList.hpp"
 #include "filter-generator/Filters.hpp"
 
+#include "FilterListAdapter.hpp"
 
-namespace mdl {
-  class FilterType : public Gtk::Grid
-  {
-  public:
-    FilterType();
+using namespace mdl;
 
-    void set(fg::FilterType type);
-    fg::FilterType get() const;
 
-    typedef sigc::signal<void, fg::FilterType> type_signal_type_changed;
-    type_signal_type_changed signal_type_changed();
-
-  private:
-    Gtk::RadioButton rad_delogo_;
-    Gtk::RadioButton rad_drawbox_;
-    Gtk::RadioButton rad_cut_;
-    Gtk::RadioButton rad_none_;
-    Gtk::RadioButton rad_review_;
-
-    type_signal_type_changed signal_type_changed_;
-
-    void on_radio_toggled(const Gtk::RadioButton& radio);
-  };
+FilterListAdapter::FilterListAdapter(fg::FilterList& filter_list, LogoFinderCallback& callback)
+  : filter_list_(filter_list)
+  , callback_(callback)
+{
 }
 
-#endif // MDL_FILTER_TYPE_H
+
+void FilterListAdapter::success(const mdl::LogoFinderResult& result)
+{
+  filter_list_.insert(result.start_frame + 1,
+                      new fg::DelogoFilter(result.x, result.y, result.width, result.height));
+
+  callback_.success(result);
+}
+
+
+void FilterListAdapter::failure(int start_frame, int end_frame)
+{
+  filter_list_.insert(start_frame + 1, new fg::ReviewFilter());
+
+  callback_.failure(start_frame, end_frame);
+}

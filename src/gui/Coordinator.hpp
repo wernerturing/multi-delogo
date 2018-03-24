@@ -43,6 +43,8 @@ namespace mdl {
 
     void set_scroll_filter(bool state);
 
+    int get_current_frame();
+
   private:
     FilterList& filter_list_;
     Glib::RefPtr<FilterListModel> filter_model_;

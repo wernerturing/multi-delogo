@@ -83,6 +83,17 @@ fg::Filter* FilterPanelCut::get_filter() const
 }
 
 
+FilterPanelReview::FilterPanelReview()
+{
+}
+
+
+fg::Filter* FilterPanelReview::get_filter() const
+{
+  return new fg::ReviewFilter();
+}
+
+
 FilterPanelRectangular::FilterPanelRectangular(int frame_width, int frame_height)
   : FilterPanelRectangular(0, 0, 0, 0, frame_width, frame_height)
 {

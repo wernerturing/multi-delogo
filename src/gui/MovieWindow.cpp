@@ -30,6 +30,7 @@
 #include "FrameNavigator.hpp"
 #include "Coordinator.hpp"
 #include "MultiDelogoApp.hpp"
+#include "FindLogosWindow.hpp"
 #include "EncodeWindow.hpp"
 
 using namespace mdl;
@@ -95,6 +96,12 @@ Gtk::Toolbar* MovieWindow::create_toolbar()
     sigc::bind(sigc::mem_fun(*this, &MovieWindow::on_scroll_filter_toggled),
                chk_scroll_filter));
 
+  add_action("find-logos", sigc::mem_fun(*this, &MovieWindow::on_find_logos));
+  Gtk::ToolButton* btn_find_logos = Gtk::manage(new Gtk::ToolButton());
+  btn_find_logos->set_tooltip_text(_("Try to automatically find logos in the video"));
+  btn_find_logos->set_icon_name("edit-find");
+  gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_find_logos->gobj()), "win.find-logos");
+
   add_action("encode", sigc::mem_fun(*this, &MovieWindow::on_encode));
   Gtk::ToolButton* btn_encode = Gtk::manage(new Gtk::ToolButton(_("Encode")));
   btn_encode->set_tooltip_text(_("Encode current project to a video with the filters applied"));
@@ -107,6 +114,7 @@ Gtk::Toolbar* MovieWindow::create_toolbar()
   toolbar->append(*Gtk::manage(new Gtk::SeparatorToolItem()));
   toolbar->append(*chk_scroll_filter);
   toolbar->append(*Gtk::manage(new Gtk::SeparatorToolItem()));
+  toolbar->append(*btn_find_logos);
   toolbar->append(*btn_encode);
   return toolbar;
 }
@@ -158,8 +166,29 @@ void MovieWindow::on_save()
 }
 
 
+void MovieWindow::on_find_logos()
+{
+  FindLogosWindow* window
+    = new FindLogosWindow(*filter_data_,
+                          frame_navigator_.get_number_of_frames(),
+                          coordinator_.get_current_frame(),
+                          frame_navigator_.get_jump_size());
+  window->set_transient_for(*this);
+  window->set_modal();
+  window->signal_hide().connect(sigc::mem_fun(filter_list_, &FilterList::refresh_list));
+
+  get_application()->register_window(window);
+}
+
+
 void MovieWindow::on_encode()
 {
+  if (filter_data_->filter_list().has_review_filter()) {
+    Gtk::MessageDialog dlg(*this, _("Encoding cannot be done when there are 'review' filters. Please change them to some other filter (such as 'none'), or remove them."), false, Gtk::MESSAGE_ERROR);
+    dlg.run();
+    return;
+  }
+
   on_save();
 
   EncodeWindow* window = new EncodeWindow(std::move(filter_data_),

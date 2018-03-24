@@ -32,15 +32,18 @@ FilterType::FilterType()
   , rad_drawbox_("drawbox")
   , rad_cut_("cut")
   , rad_none_("none")
+  , rad_review_("review")
 {
   rad_drawbox_.join_group(rad_delogo_);
   rad_cut_.join_group(rad_delogo_);
   rad_none_.join_group(rad_delogo_);
+  rad_review_.join_group(rad_delogo_);
 
   rad_delogo_.set_halign(Gtk::ALIGN_START);
   rad_drawbox_.set_halign(Gtk::ALIGN_START);
   rad_cut_.set_halign(Gtk::ALIGN_START);
   rad_none_.set_halign(Gtk::ALIGN_START);
+  rad_review_.set_halign(Gtk::ALIGN_START);
 
   rad_delogo_.signal_toggled().connect(
     sigc::bind<const Gtk::RadioButton&>(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
@@ -54,6 +57,9 @@ FilterType::FilterType()
   rad_none_.signal_toggled().connect(
     sigc::bind<const Gtk::RadioButton&>(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
                                         rad_none_));
+  rad_review_.signal_toggled().connect(
+    sigc::bind<const Gtk::RadioButton&>(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
+                                        rad_review_));
 
   set_column_spacing(4);
 
@@ -64,6 +70,7 @@ FilterType::FilterType()
   attach_next_to(rad_drawbox_, rad_delogo_, Gtk::POS_BOTTOM, 1, 1);
   attach_next_to(rad_cut_, rad_drawbox_, Gtk::POS_BOTTOM, 1, 1);
   attach_next_to(rad_none_, rad_cut_, Gtk::POS_BOTTOM, 1, 1);
+  attach_next_to(rad_review_, rad_none_, Gtk::POS_BOTTOM, 1, 1);
 }
 
 
@@ -82,6 +89,10 @@ void FilterType::set(fg::FilterType type)
     rad_cut_.set_active();
     break;
 
+  case fg::FilterType::REVIEW:
+    rad_review_.set_active();
+    break;
+
   case fg::FilterType::NO_OP:
   default: // Avoid compiler warning
     rad_none_.set_active();
@@ -98,7 +109,9 @@ fg::FilterType FilterType::get() const
     return fg::FilterType::DRAWBOX;
   } else if (rad_cut_.get_active()) {
     return fg::FilterType::CUT;
-  } else {
+  } else if (rad_review_.get_active()) {
+    return fg::FilterType::REVIEW;
+ } else {
     return fg::FilterType::NO_OP;
   }
 }

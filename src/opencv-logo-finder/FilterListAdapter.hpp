@@ -16,37 +16,33 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef MDL_FILTER_TYPE_H
-#define MDL_FILTER_TYPE_H
+#ifndef MDL_FILTER_LIST_ADAPATER_H
+#define MDL_FILTER_LIST_ADAPATER_H
 
-#include <gtkmm.h>
+#include <memory>
 
-#include "filter-generator/Filters.hpp"
+#include "filter-generator/FilterData.hpp"
+#include "filter-generator/FilterList.hpp"
+
+#include "gui/common/LogoFinder.hpp"
 
 
 namespace mdl {
-  class FilterType : public Gtk::Grid
+  class FilterListAdapter : public mdl::LogoFinderCallback
   {
   public:
-    FilterType();
-
-    void set(fg::FilterType type);
-    fg::FilterType get() const;
-
-    typedef sigc::signal<void, fg::FilterType> type_signal_type_changed;
-    type_signal_type_changed signal_type_changed();
+    FilterListAdapter(fg::FilterList& filter_list, LogoFinderCallback& callback);
+    void success(const mdl::LogoFinderResult& result) override;
+    void failure(int start_frame, int end_frame) override;
 
   private:
-    Gtk::RadioButton rad_delogo_;
-    Gtk::RadioButton rad_drawbox_;
-    Gtk::RadioButton rad_cut_;
-    Gtk::RadioButton rad_none_;
-    Gtk::RadioButton rad_review_;
-
-    type_signal_type_changed signal_type_changed_;
-
-    void on_radio_toggled(const Gtk::RadioButton& radio);
+    fg::FilterList& filter_list_;
+    LogoFinderCallback& callback_;
   };
+
+
+  std::shared_ptr<LogoFinder> create_logo_finder(fg::FilterData& filter_data, LogoFinderCallback& callback);
 }
 
-#endif // MDL_FILTER_TYPE_H
+
+#endif // MDL_FILTER_LIST_ADAPATER_H

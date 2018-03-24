@@ -68,13 +68,6 @@ public:
     return ffmpeg.get_progress(ffmpeg_stats).percentage;
   }
 
-  FFmpegExecutor::Progress calculate_time_remaining(double percentage, int seconds_elapsed)
-  {
-    FFmpegExecutor::Progress p{.percentage = percentage, .seconds_elapsed = seconds_elapsed};
-    ffmpeg.calculate_time_remaining(p);
-    return p;
-  }
-
   fg::FilterList filters;
   FFmpegExecutor ffmpeg;
 };
@@ -160,28 +153,3 @@ BOOST_AUTO_TEST_CASE(should_return_negative_for_invalid_line)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
-
-
-BOOST_FIXTURE_TEST_SUITE(time_remaining, mdl::FFmpegExecutorTestFixture)
-
-BOOST_AUTO_TEST_CASE(should_calculate_time_remaining_1)
-{
-  FFmpegExecutor::Progress p = calculate_time_remaining(.13, 66);
-  BOOST_TEST(p.total_seconds_remaining == 441);
-  BOOST_TEST(p.hours_remaining == 0);
-  BOOST_TEST(p.minutes_remaining == 7);
-  BOOST_TEST(p.seconds_remaining == 21);
-}
-
-
-BOOST_AUTO_TEST_CASE(should_calculate_time_remaining_2)
-{
-  FFmpegExecutor::Progress p = calculate_time_remaining(.53, 11832);
-  BOOST_TEST(p.total_seconds_remaining == 10492);
-  BOOST_TEST(p.hours_remaining == 2);
-  BOOST_TEST(p.minutes_remaining == 54);
-  BOOST_TEST(p.seconds_remaining == 52);
-}
-
-BOOST_AUTO_TEST_SUITE_END()
-

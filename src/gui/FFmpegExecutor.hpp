@@ -27,6 +27,8 @@
 
 #include "filter-generator/ScriptGenerator.hpp"
 
+#include "ETRProgressBar.hpp"
+
 
 namespace mdl {
   class FFmpegExecutor
@@ -35,16 +37,6 @@ namespace mdl {
     enum class Codec { H264, H265 };
     static const int H264_DEFAULT_CRF_ = 23;
     static const int H265_DEFAULT_CRF_ = 28;
-
-    struct Progress
-    {
-      double percentage;
-      int seconds_elapsed;
-      int total_seconds_remaining;
-      int hours_remaining;
-      int minutes_remaining;
-      int seconds_remaining;
-    };
 
     typedef std::shared_ptr<fg::ScriptGenerator> Generator;
 
@@ -103,7 +95,6 @@ namespace mdl {
 
     bool on_ffmpeg_output(Glib::IOCondition condition);
     Progress get_progress(const std::string& ffmpeg_stats);
-    void calculate_time_remaining(Progress& p);
 
     void on_ffmpeg_finished(Glib::Pid pid, int status);
 

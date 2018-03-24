@@ -135,6 +135,13 @@ fg::FilterType FilterList::get_selected_type() const
 }
 
 
+void FilterList::refresh_list()
+{
+  view_.unset_model();
+  view_.set_model(model_);
+}
+
+
 FilterList::type_signal_selection_changed FilterList::signal_selection_changed()
 {
   return signal_selection_changed_;

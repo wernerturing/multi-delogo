@@ -1,5 +1,8 @@
 ## ongoing
 
+* New automatic logo detector that can find most logos in the video
+  automatically.
+
 * Fixed 'Next filter' not working when the frame displayed was before
   the first filter.
 

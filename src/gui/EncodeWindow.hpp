@@ -28,6 +28,7 @@
 #include "filter-generator/FilterData.hpp"
 #include "filter-generator/ScriptGenerator.hpp"
 
+#include "ETRProgressBar.hpp"
 #include "MultiDelogoAppWindow.hpp"
 #include "FFmpegExecutor.hpp"
 
@@ -53,7 +54,7 @@ namespace mdl {
 
     Gtk::Grid box_progress_;
     Gtk::Label lbl_status_;
-    Gtk::ProgressBar progress_bar_;
+    ETRProgressBar progress_bar_;
     Gtk::Button btn_log_;
 
     std::vector<Gtk::Widget*> widgets_to_disable_;
@@ -77,8 +78,6 @@ namespace mdl {
     bool check_file(const std::string& file);
 
     Generator get_generator();
-
-    void on_ffmpeg_progress(const FFmpegExecutor::Progress& p);
 
     void on_ffmpeg_finished(bool success, const std::string& error);
 

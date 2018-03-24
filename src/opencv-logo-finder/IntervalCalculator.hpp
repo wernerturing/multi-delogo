@@ -16,37 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef MDL_FILTER_TYPE_H
-#define MDL_FILTER_TYPE_H
+#ifndef MDL_OPENCV_INTERVAL_CALCULATOR_H
+#define MDL_OPENCV_INTERVAL_CALCULATOR_H
 
-#include <gtkmm.h>
+#include <vector>
+#include <utility>
 
-#include "filter-generator/Filters.hpp"
 
-
-namespace mdl {
-  class FilterType : public Gtk::Grid
+namespace mdl { namespace opencv {
+  class IntervalCalculator
   {
   public:
-    FilterType();
-
-    void set(fg::FilterType type);
-    fg::FilterType get() const;
-
-    typedef sigc::signal<void, fg::FilterType> type_signal_type_changed;
-    type_signal_type_changed signal_type_changed();
+    static std::vector<std::pair<int, int>> get_subintervals(int interval_start, int interval_end, int n_subintervals);
 
   private:
-    Gtk::RadioButton rad_delogo_;
-    Gtk::RadioButton rad_drawbox_;
-    Gtk::RadioButton rad_cut_;
-    Gtk::RadioButton rad_none_;
-    Gtk::RadioButton rad_review_;
-
-    type_signal_type_changed signal_type_changed_;
-
-    void on_radio_toggled(const Gtk::RadioButton& radio);
+    static void adjust_last_subinterval(std::vector<std::pair<int, int>>& subintervals, int interval_end);
   };
-}
+} }
 
-#endif // MDL_FILTER_TYPE_H
+
+#endif // MDL_OPENCV_INTERVAL_CALCULATOR_H

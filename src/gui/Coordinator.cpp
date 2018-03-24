@@ -100,6 +100,12 @@ void Coordinator::set_scroll_filter(bool state)
 }
 
 
+int Coordinator::get_current_frame()
+{
+  return current_frame_;
+}
+
+
 void Coordinator::on_filter_selected(int start_frame)
 {
   frame_navigator_.change_displayed_frame(start_frame);

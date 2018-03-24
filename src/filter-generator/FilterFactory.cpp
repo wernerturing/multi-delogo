@@ -50,6 +50,8 @@ Filter* FilterFactory::create(const std::string& type, const std::string& parame
     return DrawboxFilter::load(parameters);
   } else if (type == "cut") {
     return CutFilter::load(parameters);
+  } else if (type == "review") {
+    return ReviewFilter::load(parameters);
   } else {
     throw UnknownFilterException();
   }

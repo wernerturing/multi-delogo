@@ -61,6 +61,15 @@ namespace mdl {
   };
 
 
+  class FilterPanelReview : public FilterPanelNoParameters
+  {
+  public:
+    FilterPanelReview();
+
+    fg::Filter* get_filter() const override;
+  };
+
+
   class FilterPanelRectangular : public FilterPanel
   {
   protected:

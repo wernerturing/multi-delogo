@@ -18,4 +18,5 @@
 noinst_HEADERS = TestHelpers.hpp
 
 SUBDIRS = filter-generator \
+          opencv-logo-finder \
           gui

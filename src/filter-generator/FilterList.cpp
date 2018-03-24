@@ -21,6 +21,7 @@
 #include <istream>
 #include <ostream>
 #include <limits>
+#include <algorithm>
 
 #include <boost/optional.hpp>
 
@@ -142,6 +143,14 @@ FilterList::maybe_type FilterList::get_filter_for_frame(int frame) const
   }
 
   return boost::none;
+}
+
+
+bool FilterList::has_review_filter() const
+{
+  return std::any_of(begin(), end(), [](auto& f) {
+      return f.second->type() == FilterType::REVIEW;
+    });
 }
 
 

@@ -16,17 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef MDL_ENCODE_WINDOW_UTIL_H
-#define MDL_ENCODE_WINDOW_UTIL_H
+#include <memory>
 
-#include <string>
+#include "filter-generator/FilterData.hpp"
 
-#include "FFmpegExecutor.hpp"
+#include "gui/common/LogoFinder.hpp"
+#include "OpenCVLogoFinder.hpp"
+
+#include "FilterListAdapter.hpp"
 
 
-namespace mdl {
-  std::string get_progress_str(const FFmpegExecutor::Progress& progress);
-  std::string get_time_remaining(const FFmpegExecutor::Progress& progress);
+std::shared_ptr<mdl::LogoFinder> mdl::create_logo_finder(fg::FilterData& filter_data, mdl::LogoFinderCallback& callback)
+{
+  mdl::FilterListAdapter* adapter = new mdl::FilterListAdapter(filter_data.filter_list(), callback);
+  return std::shared_ptr<mdl::LogoFinder>(
+    new mdl::opencv::OpenCVLogoFinder(filter_data.movie_file(), *adapter),
+    [adapter](mdl::LogoFinder* logo_finder) {
+      delete logo_finder;
+      delete adapter;
+    });
 }
-
-#endif // MDL_ENCODE_WINDOW_UTIL_H

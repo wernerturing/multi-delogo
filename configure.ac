@@ -31,6 +31,8 @@ AX_CXX_COMPILE_STDCXX_11
 
 AC_PROG_RANLIB
 
+AX_PTHREAD
+
 PKG_CHECK_MODULES([GTKMM], [gtkmm-3.0 >= 3.12])
 AC_SUBST([GTKMM_CFLAGS])
 AC_SUBST([GTKMM_LIBS])
@@ -82,9 +84,11 @@ AC_CONFIG_FILES([Makefile
                  src/Makefile
                  src/filter-generator/Makefile
                  src/opencv-frame-provider/Makefile
+                 src/opencv-logo-finder/Makefile
                  src/gui/Makefile
                  test/Makefile
                  test/filter-generator/Makefile
+                 test/opencv-logo-finder/Makefile
                  test/gui/Makefile
                  po/Makefile.in
                  docs/Makefile])

@@ -16,37 +16,44 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef MDL_FILTER_TYPE_H
-#define MDL_FILTER_TYPE_H
+#ifndef MDL_ETR_PROGRESS_BAR_H
+#define MDL_ETR_PROGRESS_BAR_H
+
+#include <string>
 
 #include <gtkmm.h>
 
-#include "filter-generator/Filters.hpp"
-
 
 namespace mdl {
-  class FilterType : public Gtk::Grid
+  class Progress
   {
   public:
-    FilterType();
+    double percentage;
+    int seconds_elapsed;
+    int total_seconds_remaining;
+    int hours_remaining;
+    int minutes_remaining;
+    int seconds_remaining;
 
-    void set(fg::FilterType type);
-    fg::FilterType get() const;
+    void calculate_time_remaining();
+  };
 
-    typedef sigc::signal<void, fg::FilterType> type_signal_type_changed;
-    type_signal_type_changed signal_type_changed();
+  class ETRProgressBar : public Gtk::ProgressBar
+  {
+  public:
+    ETRProgressBar();
+
+    void set_progress(const Progress& progress);
+    void reset();
+    void set_finished();
 
   private:
-    Gtk::RadioButton rad_delogo_;
-    Gtk::RadioButton rad_drawbox_;
-    Gtk::RadioButton rad_cut_;
-    Gtk::RadioButton rad_none_;
-    Gtk::RadioButton rad_review_;
+    std::string get_progress_str(const Progress& progress);
+    std::string get_time_remaining(const Progress& progress);
 
-    type_signal_type_changed signal_type_changed_;
 
-    void on_radio_toggled(const Gtk::RadioButton& radio);
+    friend class ETRProgressBarTestFixture;
   };
 }
 
-#endif // MDL_FILTER_TYPE_H
+#endif // MDL_ETR_PROGRESS_BAR_H

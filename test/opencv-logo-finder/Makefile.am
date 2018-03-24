@@ -17,20 +17,10 @@
 
 AM_DEFAULT_SOURCE_EXT = .cpp
 
-check_PROGRAMS = IOUtilsTest \
-                 NullFilterTest \
-                 DelogoFilterTest \
-                 DrawboxFilterTest \
-                 CutFilterTest \
-                 ReviewFilterTest \
-                 FilterFactoryTest \
-                 FilterListTest \
-                 RegularScriptGeneratorTest \
-                 FuzzyScriptGeneratorTest \
-                 FilterDataTest
+check_PROGRAMS = IntervalCalculatorTest
 
 TESTS = $(check_PROGRAMS)
 
-AM_CPPFLAGS = -I../../src/filter-generator
-LDADD = ../../src/filter-generator/libfilter-generator.a \
+AM_CPPFLAGS = -I../../src/opencv-logo-finder
+LDADD = ../../src/opencv-logo-finder/libopencv-logo-finder.a \
         $(BOOST_UNIT_TEST_FRAMEWORK_LIB)

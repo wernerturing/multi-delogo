@@ -15,4 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 
-SUBDIRS = filter-generator opencv-frame-provider gui
+SUBDIRS = filter-generator \
+          opencv-frame-provider \
+          opencv-logo-finder \
+          gui

@@ -15,22 +15,4 @@
 # You should have received a copy of the GNU General Public License
 # along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 
-AM_DEFAULT_SOURCE_EXT = .cpp
-
-check_PROGRAMS = IOUtilsTest \
-                 NullFilterTest \
-                 DelogoFilterTest \
-                 DrawboxFilterTest \
-                 CutFilterTest \
-                 ReviewFilterTest \
-                 FilterFactoryTest \
-                 FilterListTest \
-                 RegularScriptGeneratorTest \
-                 FuzzyScriptGeneratorTest \
-                 FilterDataTest
-
-TESTS = $(check_PROGRAMS)
-
-AM_CPPFLAGS = -I../../src/filter-generator
-LDADD = ../../src/filter-generator/libfilter-generator.a \
-        $(BOOST_UNIT_TEST_FRAMEWORK_LIB)
+IntervalCalculatorTest
