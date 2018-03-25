@@ -1,3 +1,8 @@
+## ongoing
+
+* The automatic logo detection should be slightly faster.
+
+
 ## 2.0.0
 
 * New automatic logo detector that can find most logos in the video

@@ -156,11 +156,12 @@ void OpenCVLogoFinder::average_frame(int start_frame, int end_frame)
   go_to_frame(start_frame);
   int frames = 0;
   for (int f = start_frame; f < end_frame; ++f) {
-    get_next_frame();
+    advance_frame();
     if (f % frame_step_ != 0) {
       continue;
     }
 
+    get_frame();
     t_frame_.convertTo(t_frame_f_, CV_64FC3);
     t_avg_f_ += t_frame_f_;
     ++frames;
@@ -180,9 +181,18 @@ void OpenCVLogoFinder::go_to_frame(int frame_number)
 }
 
 
-void OpenCVLogoFinder::get_next_frame()
+void OpenCVLogoFinder::advance_frame()
 {
-  bool success = cap_.read(t_frame_);
+  bool success = cap_.grab();
+  if (!success) {
+    throw mdl::FrameNotAvailableException();
+  }
+}
+
+
+void OpenCVLogoFinder::get_frame()
+{
+  bool success = cap_.retrieve(t_frame_);
   if (!success) {
     throw mdl::FrameNotAvailableException();
   }
@@ -243,9 +253,11 @@ int OpenCVLogoFinder::get_logo_transition_point(int current_frame, const cv::Rec
     return current_frame;
   }
 
+  get_frame();
   for (int i = 0; i < extra_frames_to_check; ++i) {
     cv::Mat logo = cv::Mat(t_frame_, box).clone();
-    get_next_frame();
+    advance_frame();
+    get_frame();
     cv::Mat logo_next = cv::Mat(t_frame_, box);
 
     double norm = cv::norm(logo, logo_next, cv::NORM_L2);

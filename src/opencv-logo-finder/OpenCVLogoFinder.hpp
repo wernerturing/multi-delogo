@@ -82,7 +82,8 @@ namespace mdl { namespace opencv {
 
     void average_frame(int start_frame, int end_frame);
     void go_to_frame(int frame_number);
-    void get_next_frame();
+    void advance_frame();
+    void get_frame();
 
     cv::Rect find_box_in_channel(const cv::Mat& average_frame, int channel);
     cv::Rect select_box(const std::vector<cv::Rect>& boxes);
