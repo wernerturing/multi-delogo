@@ -126,6 +126,65 @@ BOOST_AUTO_TEST_CASE(remove_should_do_nothing_if_item_does_not_exist)
 }
 
 
+BOOST_AUTO_TEST_CASE(should_change_start_frame)
+{
+  FilterList list;
+  list.insert(101, new DrawboxFilter(11, 22, 33, 44));
+  list.insert(201, new NullFilter());
+  list.insert(301, new DelogoFilter(99, 88, 77, 66));
+
+  list.change_start_frame(201, 401);
+
+  BOOST_CHECK_EQUAL(list.size(), 3);
+  auto it = list.begin();
+  BOOST_CHECK_EQUAL(it->first, 101);
+  BOOST_CHECK_EQUAL(it->second->type(), FilterType::DRAWBOX);
+  ++it;
+  BOOST_CHECK_EQUAL(it->first, 301);
+  BOOST_CHECK_EQUAL(it->second->type(), FilterType::DELOGO);
+  ++it;
+  BOOST_CHECK_EQUAL(it->first, 401);
+  BOOST_CHECK_EQUAL(it->second->type(), FilterType::NO_OP);
+}
+
+
+BOOST_AUTO_TEST_CASE(change_start_frame_should_overwrite_an_existing_filter)
+{
+  FilterList list;
+  list.insert(101, new DrawboxFilter(11, 22, 33, 44));
+  list.insert(201, new NullFilter());
+  list.insert(301, new DelogoFilter(99, 88, 77, 66));
+
+  list.change_start_frame(201, 301);
+
+  BOOST_CHECK_EQUAL(list.size(), 2);
+  auto it = list.begin();
+  BOOST_CHECK_EQUAL(it->first, 101);
+  BOOST_CHECK_EQUAL(it->second->type(), FilterType::DRAWBOX);
+  ++it;
+  BOOST_CHECK_EQUAL(it->first, 301);
+  BOOST_CHECK_EQUAL(it->second->type(), FilterType::NO_OP);
+}
+
+
+BOOST_AUTO_TEST_CASE(change_start_frame_should_do_nothing_if_item_does_not_exist)
+{
+  FilterList list;
+  list.insert(101, new NullFilter());
+  list.insert(201, new DrawboxFilter(11, 22, 33, 44));
+
+  list.change_start_frame(151, 201);
+
+  BOOST_CHECK_EQUAL(list.size(), 2);
+  auto it = list.begin();
+  BOOST_CHECK_EQUAL(it->first, 101);
+  BOOST_CHECK_EQUAL(it->second->type(), FilterType::NO_OP);
+  ++it;
+  BOOST_CHECK_EQUAL(it->first, 201);
+  BOOST_CHECK_EQUAL(it->second->type(), FilterType::DRAWBOX);
+}
+
+
 BOOST_AUTO_TEST_CASE(get_by_frame_returning_an_item)
 {
   FilterList list;

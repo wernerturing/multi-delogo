@@ -59,6 +59,19 @@ void FilterList::remove(int start_frame)
 }
 
 
+void FilterList::change_start_frame(int old_start_frame, int new_start_frame)
+{
+  auto iter = filters_.find(old_start_frame);
+  if (iter == end()) {
+    return;
+  }
+
+  remove(new_start_frame);
+  filters_.insert(std::pair<int, Filter*>(new_start_frame, iter->second));
+  filters_.erase(old_start_frame); // remove() is not used because we must not delete the filter
+}
+
+
 bool FilterList::empty() const
 {
   return filters_.empty();
