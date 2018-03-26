@@ -62,7 +62,7 @@ namespace mdl { namespace opencv {
      * Step between frames used to calculate the average. Bigger makes
      * it faster, but possibly less accurate.
      */
-    int frame_step_ = 4;
+    int frame_step_ = 10;
     /**
      * Number of times to apply CLOSE morphology.
      */
