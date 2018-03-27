@@ -56,6 +56,10 @@ public:
     list.insert(101, new fg::NullFilter());
 
     model = mdl::FilterListModel::create(list);
+
+    model->signal_row_inserted().connect(sigc::mem_fun(*this, &FilterModelFixture::test_inserted_or_changed_signal_callback));
+    model->signal_row_changed().connect(sigc::mem_fun(*this, &FilterModelFixture::test_inserted_or_changed_signal_callback));
+    model->signal_row_deleted().connect(sigc::mem_fun(*this, &FilterModelFixture::test_deleted_signal_callback));
   }
 
 
@@ -248,8 +252,6 @@ BOOST_AUTO_TEST_CASE(test_get_by_start_frame_in_empty_model)
 
 BOOST_AUTO_TEST_CASE(test_insert)
 {
-  model->signal_row_inserted().connect(sigc::mem_fun(*this, &FilterModelFixture::test_inserted_or_changed_signal_callback));
-
   auto iter_from_before_insert = model->children().begin();
   auto returned_iter = model->insert(151, new fg::DelogoFilter(10, 20, 30, 40));
   auto iter_from_after_insert = model->children().begin();
@@ -278,8 +280,6 @@ BOOST_AUTO_TEST_CASE(test_insert_for_row_that_already_exists)
 
 BOOST_AUTO_TEST_CASE(test_delete_row)
 {
-  model->signal_row_deleted().connect(sigc::mem_fun(*this, &FilterModelFixture::test_deleted_signal_callback));
-
   auto iter_before = model->children()[1];
   auto path_before = model->get_path(iter_before);
   model->remove(iter_before);
@@ -298,9 +298,6 @@ BOOST_AUTO_TEST_CASE(test_delete_row)
 
 BOOST_AUTO_TEST_CASE(should_change_start_frame)
 {
-  model->signal_row_deleted().connect(sigc::mem_fun(*this, &FilterModelFixture::test_deleted_signal_callback));
-  model->signal_row_inserted().connect(sigc::mem_fun(*this, &FilterModelFixture::test_inserted_or_changed_signal_callback));
-
   auto iter_before = model->children()[1];
   auto path_before = model->get_path(iter_before);
 
@@ -321,9 +318,6 @@ BOOST_AUTO_TEST_CASE(should_change_start_frame)
 
 BOOST_AUTO_TEST_CASE(should_change_start_frame_overwriting_existing_filter)
 {
-  model->signal_row_deleted().connect(sigc::mem_fun(*this, &FilterModelFixture::test_deleted_signal_callback));
-  model->signal_row_inserted().connect(sigc::mem_fun(*this, &FilterModelFixture::test_inserted_or_changed_signal_callback));
-
   auto iter_before = model->children()[1];
   auto path_before = model->get_path(iter_before);
   auto path_overwritten = model->get_path(model->children()[2]);
@@ -355,8 +349,6 @@ BOOST_AUTO_TEST_CASE(should_not_allow_changing_name)
 
 BOOST_AUTO_TEST_CASE(should_allow_changing_the_filter)
 {
-  model->signal_row_changed().connect(sigc::mem_fun(*this, &FilterModelFixture::test_inserted_or_changed_signal_callback));
-
   auto iter_before = model->children()[1];
   auto row = *iter_before;
 
