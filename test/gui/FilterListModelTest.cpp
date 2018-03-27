@@ -16,6 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <vector>
+
 #include <gtkmm.h>
 
 #include "filter-generator/Filters.hpp"
@@ -65,7 +67,7 @@ public:
 
   void test_deleted_signal_callback(const Gtk::TreeModel::Path& path)
   {
-    saved_path = path;
+    deleted_paths.push_back(path);
   }
 
 
@@ -73,7 +75,7 @@ public:
   Glib::RefPtr<mdl::FilterListModel> model;
 
   Gtk::TreeModel::iterator saved_iter;
-  Gtk::TreeModel::Path saved_path;
+  std::vector<Gtk::TreeModel::Path> deleted_paths;
 };
 BOOST_FIXTURE_TEST_SUITE(filterlist_model, FilterModelFixture)
 
@@ -287,18 +289,58 @@ BOOST_AUTO_TEST_CASE(test_delete_row)
   BOOST_CHECK_EQUAL(list.get_by_position(0)->first, 1);
   BOOST_CHECK_EQUAL(list.get_by_position(1)->first, 201);
 
-  BOOST_CHECK_EQUAL(saved_path, path_before);
+  BOOST_TEST(deleted_paths == std::vector<Gtk::TreeModel::Path>{path_before},
+             boost::test_tools::per_element());
   BOOST_CHECK_NE(iter_before.get_stamp(),
                  iter_after.get_stamp()); // iters become invalid
 }
 
 
-BOOST_AUTO_TEST_CASE(should_not_allow_changing_start_frame)
+BOOST_AUTO_TEST_CASE(should_change_start_frame)
 {
-  auto iter = model->children()[1];
-  auto row = *iter;
+  model->signal_row_deleted().connect(sigc::mem_fun(*this, &FilterModelFixture::test_deleted_signal_callback));
+  model->signal_row_inserted().connect(sigc::mem_fun(*this, &FilterModelFixture::test_inserted_or_changed_signal_callback));
 
-  BOOST_CHECK_THROW(row[model->columns.start_frame] = 501, std::invalid_argument);
+  auto iter_before = model->children()[1];
+  auto path_before = model->get_path(iter_before);
+
+  auto row = *iter_before;
+  row[model->columns.start_frame] = 301;
+  auto iter_after = model->children()[1];
+
+  BOOST_TEST(list.size() == 3);
+  BOOST_TEST(list.get_by_start_frame(301)->second->type() == fg::FilterType::NO_OP);
+  BOOST_TEST(iter_before.get_stamp() != iter_after.get_stamp()); // iters become invalid
+
+  BOOST_TEST(deleted_paths == std::vector<Gtk::TreeModel::Path>{path_before},
+             boost::test_tools::per_element());
+  auto changed_row = *saved_iter;
+  BOOST_TEST(changed_row[model->columns.start_frame] == 301);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_change_start_frame_overwriting_existing_filter)
+{
+  model->signal_row_deleted().connect(sigc::mem_fun(*this, &FilterModelFixture::test_deleted_signal_callback));
+  model->signal_row_inserted().connect(sigc::mem_fun(*this, &FilterModelFixture::test_inserted_or_changed_signal_callback));
+
+  auto iter_before = model->children()[1];
+  auto path_before = model->get_path(iter_before);
+  auto path_overwritten = model->get_path(model->children()[2]);
+
+  auto row = *iter_before;
+  row[model->columns.start_frame] = 201;
+  auto iter_after = model->children()[1];
+
+  BOOST_TEST(list.size() == 2);
+  BOOST_TEST(list.get_by_start_frame(201)->second->type() == fg::FilterType::NO_OP);
+  BOOST_TEST(iter_before.get_stamp() != iter_after.get_stamp()); // iters become invalid
+
+  std::vector<Gtk::TreeModel::Path> expected_deleted{path_before, path_overwritten};
+  BOOST_TEST(deleted_paths == expected_deleted,
+             boost::test_tools::per_element());
+  auto changed_row = *saved_iter;
+  BOOST_TEST(changed_row[model->columns.start_frame] == 201);
 }
 
 
