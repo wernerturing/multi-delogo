@@ -32,7 +32,7 @@ namespace mdl {
   class FilterPanelNoParameters : public FilterPanel
   {
   protected:
-    FilterPanelNoParameters();
+    FilterPanelNoParameters(int start_frame, int max_frame);
 
   public:
     MaybeRectangle get_rectangle() const override;
@@ -45,7 +45,7 @@ namespace mdl {
   class FilterPanelNull : public FilterPanelNoParameters
   {
   public:
-    FilterPanelNull();
+    FilterPanelNull(int start_frame, int max_frame);
 
     bool creates_filter() const override;
     fg::Filter* get_filter() const override;
@@ -55,7 +55,7 @@ namespace mdl {
   class FilterPanelCut : public FilterPanelNoParameters
   {
   public:
-    FilterPanelCut();
+    FilterPanelCut(int start_frame, int max_frame);
 
     fg::Filter* get_filter() const override;
   };
@@ -64,7 +64,7 @@ namespace mdl {
   class FilterPanelReview : public FilterPanelNoParameters
   {
   public:
-    FilterPanelReview();
+    FilterPanelReview(int start_frame, int max_frame);
 
     fg::Filter* get_filter() const override;
   };
@@ -73,10 +73,13 @@ namespace mdl {
   class FilterPanelRectangular : public FilterPanel
   {
   protected:
-    FilterPanelRectangular(int frame_width, int frame_height);
-    FilterPanelRectangular(fg::RectangularFilter* filter,
+    FilterPanelRectangular(int start_frame, int max_frame,
                            int frame_width, int frame_height);
-    FilterPanelRectangular(int x, int y, int width, int height,
+    FilterPanelRectangular(int start_frame, int max_frame,
+                           fg::RectangularFilter* filter,
+                           int frame_width, int frame_height);
+    FilterPanelRectangular(int start_frame, int max_frame,
+                           int x, int y, int width, int height,
                            int frame_width, int frame_height);
 
   public:
@@ -105,8 +108,10 @@ namespace mdl {
   class FilterPanelDelogo : public FilterPanelRectangular
   {
   public:
-    FilterPanelDelogo(int frame_width, int frame_height);
-    FilterPanelDelogo(fg::DelogoFilter* filter,
+    FilterPanelDelogo(int start_frame, int max_frame,
+                      int frame_width, int frame_height);
+    FilterPanelDelogo(int start_frame, int max_frame,
+                      fg::DelogoFilter* filter,
                       int frame_width, int frame_height);
 
     fg::Filter* get_filter() const override;
@@ -116,8 +121,10 @@ namespace mdl {
   class FilterPanelDrawbox : public FilterPanelRectangular
   {
   public:
-    FilterPanelDrawbox(int frame_width, int frame_height);
-    FilterPanelDrawbox(fg::DrawboxFilter* filter,
+    FilterPanelDrawbox(int start_frame, int max_frame,
+                       int frame_width, int frame_height);
+    FilterPanelDrawbox(int start_frame, int max_frame,
+                       fg::DrawboxFilter* filter,
                        int frame_width, int frame_height);
 
     fg::Filter* get_filter() const override;

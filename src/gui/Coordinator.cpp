@@ -37,7 +37,8 @@ Coordinator::Coordinator(FilterList& filter_list,
   , filter_model_(filter_list.get_model())
   , frame_navigator_(frame_navigator)
   , frame_view_(frame_navigator_.get_frame_view())
-  , panel_factory_(frame_width, frame_height)
+  , panel_factory_(frame_navigator_.get_number_of_frames(),
+                   frame_width, frame_height)
   , current_filter_panel_(nullptr)
   , current_filter_(nullptr)
   , scroll_filter_(true)
@@ -154,13 +155,14 @@ void Coordinator::change_displayed_filter(const FilterListModel::iterator& iter)
     return;
   }
 
+  int start_frame = (*iter)[filter_model_->columns.start_frame];
   fg::Filter* filter = (*iter)[filter_model_->columns.filter];
   if (filter == current_filter_) {
     return;
   }
   current_filter_ = filter;
 
-  update_displayed_panel(filter->type(), panel_factory_.create(filter));
+  update_displayed_panel(filter->type(), panel_factory_.create(start_frame, filter));
 
   auto rect = current_filter_panel_->get_rectangle();
   if (rect) {
@@ -196,7 +198,7 @@ void Coordinator::on_filter_type_changed(fg::FilterType new_type)
   update_current_filter_if_necessary();
   add_new_filter_if_not_on_filter_starting_frame(true);
 
-  FilterPanel* new_panel = panel_factory_.convert(current_filter_, new_type);
+  FilterPanel* new_panel = panel_factory_.convert(current_frame_, current_filter_, new_type);
   update_displayed_panel(new_type, new_panel);
   update_current_filter(true);
 }
@@ -229,7 +231,7 @@ void Coordinator::on_panel_rectangle_changed(Rectangle rect)
 void Coordinator::create_new_filter_panel()
 {
   fg::FilterType filter_type = filter_list_.get_selected_type();
-  update_displayed_panel(filter_type, panel_factory_.create(filter_type));
+  update_displayed_panel(filter_type, panel_factory_.create(current_frame_, filter_type));
 }
 
 
@@ -266,6 +268,7 @@ void Coordinator::add_new_filter_if_not_on_filter_starting_frame(bool always_add
   current_filter_ = current_filter_panel_->get_filter();
   auto inserted_row = filter_model_->insert(current_frame_, current_filter_);
   current_filter_panel_->set_changed(false);
+  current_filter_panel_->set_start_frame(current_frame_);
 
   select_row(inserted_row);
 }
