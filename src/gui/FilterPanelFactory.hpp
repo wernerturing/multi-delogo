@@ -45,10 +45,17 @@ namespace mdl {
     virtual bool is_changed() const = 0;
     virtual void set_changed(bool changed) = 0;
 
+    typedef sigc::signal<void, int> type_signal_start_frame_changed;
+    virtual type_signal_start_frame_changed signal_start_frame_changed();
+
     typedef sigc::signal<void, Rectangle> type_signal_rectangle_changed;
     virtual type_signal_rectangle_changed signal_rectangle_changed();
 
   protected:
+    Gtk::Label lbl_start_frame_;
+    Gtk::SpinButton txt_start_frame_;
+
+    type_signal_start_frame_changed signal_start_frame_changed_;
     type_signal_rectangle_changed signal_rectangle_changed_;
   };
 

@@ -26,6 +26,45 @@
 using namespace mdl;
 
 
+FilterPanel::FilterPanel()
+{
+  set_orientation(Gtk::ORIENTATION_VERTICAL);
+  set_row_spacing(6);
+  set_column_spacing(4);
+
+  lbl_start_frame_.set_label(_("_Start frame:"));
+  lbl_start_frame_.set_use_underline();
+  lbl_start_frame_.set_mnemonic_widget(txt_start_frame_);
+
+  lbl_start_frame_.set_halign(Gtk::ALIGN_END);
+  attach(lbl_start_frame_, 0, -1, 1, 1);
+  attach_next_to(txt_start_frame_, lbl_start_frame_, Gtk::POS_RIGHT, 1, 1);
+}
+
+
+FilterPanel::~FilterPanel()
+{
+}
+
+
+bool FilterPanel::creates_filter() const
+{
+  return true;
+}
+
+
+FilterPanel::type_signal_start_frame_changed FilterPanel::signal_start_frame_changed()
+{
+  return signal_start_frame_changed_;
+}
+
+
+FilterPanel::type_signal_rectangle_changed FilterPanel::signal_rectangle_changed()
+{
+  return signal_rectangle_changed_;
+}
+
+
 FilterPanelNoParameters::FilterPanelNoParameters()
 {
 }
@@ -116,9 +155,6 @@ FilterPanelRectangular::FilterPanelRectangular(int x, int y, int width, int heig
   txt_y_.configure(create_adjustment(y, frame_height - 1), 10, 0);
   txt_width_.configure(create_adjustment(width, frame_width), 10, 0);
   txt_height_.configure(create_adjustment(height, frame_height), 10, 0);
-
-  set_row_spacing(6);
-  set_column_spacing(4);
 
   add_widget(txt_x_, _("_x:"), 0);
   add_widget(txt_y_, _("_y:"), 1);
