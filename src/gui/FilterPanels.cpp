@@ -37,6 +37,8 @@ FilterPanel::FilterPanel(int start_frame, int max_frame)
   lbl_start_frame_.set_mnemonic_widget(txt_start_frame_);
 
   txt_start_frame_.configure(Gtk::Adjustment::create(start_frame, 1, max_frame), 10, 0);
+  txt_start_frame_.signal_value_changed().connect(
+    sigc::mem_fun(*this, &FilterPanel::on_start_frame_change));
 
   lbl_start_frame_.set_halign(Gtk::ALIGN_END);
   attach(lbl_start_frame_, 0, -1, 1, 1);
@@ -70,6 +72,12 @@ FilterPanel::type_signal_start_frame_changed FilterPanel::signal_start_frame_cha
 FilterPanel::type_signal_rectangle_changed FilterPanel::signal_rectangle_changed()
 {
   return signal_rectangle_changed_;
+}
+
+
+void FilterPanel::on_start_frame_change()
+{
+  signal_start_frame_changed_.emit(txt_start_frame_.get_value_as_int());
 }
 
 

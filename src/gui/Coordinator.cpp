@@ -161,6 +161,7 @@ void Coordinator::change_displayed_filter(const FilterListModel::iterator& iter)
     return;
   }
   current_filter_ = filter;
+  current_filter_start_frame_ = start_frame;
 
   update_displayed_panel(filter->type(), panel_factory_.create(start_frame, filter));
 
@@ -186,6 +187,8 @@ void Coordinator::update_displayed_panel(fg::FilterType type, FilterPanel* panel
 
   on_panel_rectangle_changed_ = current_filter_panel_->signal_rectangle_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_panel_rectangle_changed));
+  on_start_frame_changed_ = current_filter_panel_->signal_start_frame_changed().connect(
+    sigc::mem_fun(*this, &Coordinator::on_start_frame_changed));
 }
 
 
@@ -228,6 +231,18 @@ void Coordinator::on_panel_rectangle_changed(Rectangle rect)
 }
 
 
+void Coordinator::on_start_frame_changed(int start_frame)
+{
+  auto iter = filter_model_->get_by_start_frame(current_filter_start_frame_);
+
+  on_filter_selected_.block();
+  (*iter)[filter_model_->columns.start_frame] = start_frame;
+  on_filter_selected_.block(false);
+
+  current_filter_start_frame_ = start_frame;
+}
+
+
 void Coordinator::create_new_filter_panel()
 {
   fg::FilterType filter_type = filter_list_.get_selected_type();
@@ -239,6 +254,7 @@ void Coordinator::update_current_filter_if_necessary()
 {
   update_current_filter(false);
 }
+
 
 void Coordinator::update_current_filter(bool force_update)
 {
@@ -266,9 +282,13 @@ void Coordinator::add_new_filter_if_not_on_filter_starting_frame(bool always_add
   }
 
   current_filter_ = current_filter_panel_->get_filter();
+  current_filter_start_frame_ = current_frame_;
   auto inserted_row = filter_model_->insert(current_frame_, current_filter_);
   current_filter_panel_->set_changed(false);
+
+  on_start_frame_changed_.block();
   current_filter_panel_->set_start_frame(current_frame_);
+  on_start_frame_changed_.block(false);
 
   select_row(inserted_row);
 }

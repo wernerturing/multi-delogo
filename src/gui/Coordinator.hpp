@@ -55,6 +55,7 @@ namespace mdl {
 
     FilterPanelFactory panel_factory_;
     FilterPanel* current_filter_panel_;
+    int current_filter_start_frame_;
     fg::Filter* current_filter_;
     bool scroll_filter_;
 
@@ -76,6 +77,9 @@ namespace mdl {
     void on_frame_rectangle_changed(Rectangle rect);
     sigc::connection on_panel_rectangle_changed_;
     void on_panel_rectangle_changed(Rectangle rect);
+
+    sigc::connection on_start_frame_changed_;
+    void on_start_frame_changed(int start_frame);
 
     void create_new_filter_panel();
     void update_current_filter(bool force_updated);

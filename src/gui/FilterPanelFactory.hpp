@@ -58,6 +58,8 @@ namespace mdl {
 
     type_signal_start_frame_changed signal_start_frame_changed_;
     type_signal_rectangle_changed signal_rectangle_changed_;
+
+    void on_start_frame_change();
   };
 
 
