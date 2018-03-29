@@ -330,7 +330,7 @@ BOOST_AUTO_TEST_CASE(should_change_start_frame_overwriting_existing_filter)
   BOOST_TEST(list.get_by_start_frame(201)->second->type() == fg::FilterType::NO_OP);
   BOOST_TEST(iter_before.get_stamp() != iter_after.get_stamp()); // iters become invalid
 
-  std::vector<Gtk::TreeModel::Path> expected_deleted{path_before, path_overwritten};
+  std::vector<Gtk::TreeModel::Path> expected_deleted{path_overwritten, path_before};
   BOOST_TEST(deleted_paths == expected_deleted,
              boost::test_tools::per_element());
   auto changed_row = *saved_iter;

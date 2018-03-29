@@ -301,15 +301,17 @@ void FilterListModel::set_value_start_frame(const iterator& iter, const Glib::Va
   int new_start_frame = start_frame_value.get();
   int current_start_frame = (*iter)[columns.start_frame];
 
-  row_deleted(get_path(iter));
-
   auto existing = get_by_start_frame(new_start_frame);
   if (existing) {
     remove(existing);
   }
 
+  auto removed_path = get_path(get_by_start_frame(current_start_frame));
+
   filter_list_.change_start_frame(current_start_frame, new_start_frame);
   ++stamp_;
+
+  row_deleted(removed_path);
 
   auto new_iter = get_by_start_frame(new_start_frame);
   row_inserted(get_path(new_iter), new_iter);
