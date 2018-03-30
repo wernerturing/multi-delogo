@@ -32,7 +32,8 @@ namespace mdl {
   class Coordinator
   {
   public:
-    Coordinator(FilterList& filter_list,
+    Coordinator(Gtk::Window& parent_window,
+                FilterList& filter_list,
                 FrameNavigator& frame_navigator,
                 int frame_width, int frame_height);
 
@@ -46,6 +47,8 @@ namespace mdl {
     int get_current_frame();
 
   private:
+    Gtk::Window& parent_window_;
+
     FilterList& filter_list_;
     Glib::RefPtr<FilterListModel> filter_model_;
 
@@ -80,6 +83,7 @@ namespace mdl {
 
     sigc::connection on_start_frame_changed_;
     void on_start_frame_changed(int start_frame);
+    bool confirm_overwrite_by_start_frame_change(int start_frame);
     void set_start_frame_in_filter_panel(int start_frame);
 
     void create_new_filter_panel();

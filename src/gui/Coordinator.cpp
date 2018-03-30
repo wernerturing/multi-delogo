@@ -30,10 +30,12 @@
 using namespace mdl;
 
 
-Coordinator::Coordinator(FilterList& filter_list,
+Coordinator::Coordinator(Gtk::Window& parent_window,
+                         FilterList& filter_list,
                          FrameNavigator& frame_navigator,
                          int frame_width, int frame_height)
-  : filter_list_(filter_list)
+  : parent_window_(parent_window)
+  , filter_list_(filter_list)
   , filter_model_(filter_list.get_model())
   , frame_navigator_(frame_navigator)
   , frame_view_(frame_navigator_.get_frame_view())
@@ -233,6 +235,11 @@ void Coordinator::on_panel_rectangle_changed(Rectangle rect)
 
 void Coordinator::on_start_frame_changed(int start_frame)
 {
+  if (!confirm_overwrite_by_start_frame_change(start_frame)) {
+    set_start_frame_in_filter_panel(current_filter_start_frame_);
+    return;
+  }
+
   auto iter = filter_model_->get_by_start_frame(current_filter_start_frame_);
 
   on_filter_selected_.block();
@@ -254,6 +261,24 @@ void Coordinator::set_start_frame_in_filter_panel(int start_frame)
       on_start_frame_changed_.block(false);
       return false;
     });
+}
+
+
+bool Coordinator::confirm_overwrite_by_start_frame_change(int start_frame)
+{
+  if (!filter_model_->get_by_start_frame(start_frame)) {
+    return true;
+  }
+
+  Gtk::MessageDialog dlg(parent_window_,
+                         Glib::ustring::compose(_("Overwrite filter starting at frame %1?"), start_frame),
+                         false,
+                         Gtk::MESSAGE_QUESTION,
+                         Gtk::BUTTONS_NONE);
+  dlg.add_button(_("_Overwrite"), Gtk::RESPONSE_YES);
+  dlg.add_button(_("_Don't overwrite"), Gtk::RESPONSE_NO);
+  dlg.set_default_response(Gtk::RESPONSE_NO);
+  return dlg.run() == Gtk::RESPONSE_YES;
 }
 
 
