@@ -122,6 +122,8 @@ To edit an existing filter, you have to be on that filter's start frame. You can
 
 If you are not at a filter's start frame and make any change to the filter, a new filter is added.
 
+You can change the starting frame of a filter by using the *start frame* field.
+
 To remove a filter, select it and press the button with the minus sign below the filter list.
 
 To move quickly between filters, use the arrows below the filter list.
