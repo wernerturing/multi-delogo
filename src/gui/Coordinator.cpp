@@ -238,6 +238,7 @@ void Coordinator::on_start_frame_changed(int start_frame)
   on_filter_selected_.block();
   (*iter)[filter_model_->columns.start_frame] = start_frame;
   on_filter_selected_.block(false);
+  unselect_rows();
 
   current_filter_start_frame_ = start_frame;
 }
