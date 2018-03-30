@@ -80,6 +80,7 @@ namespace mdl {
 
     sigc::connection on_start_frame_changed_;
     void on_start_frame_changed(int start_frame);
+    void set_start_frame_in_filter_panel(int start_frame);
 
     void create_new_filter_panel();
     void update_current_filter(bool force_updated);

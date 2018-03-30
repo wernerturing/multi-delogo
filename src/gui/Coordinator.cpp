@@ -244,6 +244,19 @@ void Coordinator::on_start_frame_changed(int start_frame)
 }
 
 
+void Coordinator::set_start_frame_in_filter_panel(int start_frame)
+{
+  on_start_frame_changed_.block();
+  current_filter_panel_->set_start_frame(start_frame);
+  // For some reason must set to be called in the future.
+  // Calling block(false) directly causes a signal to be emitted.
+  Glib::signal_idle().connect([&] {
+      on_start_frame_changed_.block(false);
+      return false;
+    });
+}
+
+
 void Coordinator::create_new_filter_panel()
 {
   fg::FilterType filter_type = filter_list_.get_selected_type();
@@ -287,9 +300,7 @@ void Coordinator::add_new_filter_if_not_on_filter_starting_frame(bool always_add
   auto inserted_row = filter_model_->insert(current_frame_, current_filter_);
   current_filter_panel_->set_changed(false);
 
-  on_start_frame_changed_.block();
-  current_filter_panel_->set_start_frame(current_frame_);
-  on_start_frame_changed_.block(false);
+  set_start_frame_in_filter_panel(current_frame_);
 
   select_row(inserted_row);
 }
