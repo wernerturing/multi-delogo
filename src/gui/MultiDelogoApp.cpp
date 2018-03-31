@@ -136,17 +136,12 @@ MultiDelogoApp::maybe_Project MultiDelogoApp::open_project(const std::string& pr
 MultiDelogoApp::maybe_Project MultiDelogoApp::create_project(const std::string& movie_file)
 {
   std::string project_file = movie_file + "." + EXTENSION_;
-  if (file_exists(project_file)) {
-    Gtk::MessageDialog dlg(Glib::ustring::compose(_("There is already a project corresponding to movie %1. If you start a new project all your previous work will be lost."), movie_file),
-                           false,
-                           Gtk::MESSAGE_QUESTION,
-                           Gtk::BUTTONS_NONE);
-    dlg.add_button(_("Start a _new project"), Gtk::RESPONSE_YES);
-    dlg.add_button(_("_Continue existing project"), Gtk::RESPONSE_NO);
-    if (dlg.run() != Gtk::RESPONSE_YES) {
-      open_file(project_file);
-      return boost::none;
-    }
+  if (file_exists(project_file)
+      && !confirmation_dialog(_("There is already a project corresponding to movie %1. If you start a new project all your previous work will be lost."),
+                              _("Start a _new project"),
+                              _("_Continue existing project"))) {
+    open_file(project_file);
+    return boost::none;
   }
 
   std::unique_ptr<fg::FilterData> filter_data(new fg::FilterData());

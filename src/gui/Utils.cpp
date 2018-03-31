@@ -17,13 +17,47 @@
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <string>
+#include <utility>
 
-#include <glibmm.h>
+#include <gtkmm.h>
 
 #include "Utils.hpp"
+
+
+namespace mdl {
+  static bool confirmation_dialog(Gtk::MessageDialog&& dlg, const Glib::ustring& txt_destructive, const Glib::ustring& txt_safe);
+}
 
 
 bool mdl::file_exists(const std::string& file)
 {
   return Glib::file_test(file, Glib::FILE_TEST_EXISTS);
+}
+
+
+bool mdl::confirmation_dialog(const Glib::ustring& msg,
+                              const Glib::ustring& txt_destructive,
+                              const Glib::ustring& txt_safe)
+{
+  Gtk::MessageDialog dlg(msg, false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE);
+  return confirmation_dialog(std::move(dlg), txt_destructive, txt_safe);
+}
+
+
+bool mdl::confirmation_dialog(Gtk::Window& parent,
+                              const Glib::ustring& msg,
+                              const Glib::ustring& txt_destructive,
+                              const Glib::ustring& txt_safe)
+{
+  Gtk::MessageDialog dlg(parent, msg, false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE);
+  return confirmation_dialog(std::move(dlg), txt_destructive, txt_safe);
+}
+
+
+bool mdl::confirmation_dialog(Gtk::MessageDialog&& dlg, const Glib::ustring& txt_destructive, const Glib::ustring& txt_safe)
+{
+  dlg.add_button(txt_destructive, Gtk::RESPONSE_YES);
+  dlg.add_button(txt_safe, Gtk::RESPONSE_NO);
+  dlg.set_default_response(Gtk::RESPONSE_NO);
+  return dlg.run() == Gtk::RESPONSE_YES;
 }

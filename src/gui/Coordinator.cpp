@@ -26,6 +26,7 @@
 #include "FrameNavigator.hpp"
 #include "FrameView.hpp"
 #include "FilterPanelFactory.hpp"
+#include "Utils.hpp"
 
 using namespace mdl;
 
@@ -270,15 +271,9 @@ bool Coordinator::confirm_overwrite_by_start_frame_change(int start_frame)
     return true;
   }
 
-  Gtk::MessageDialog dlg(parent_window_,
-                         Glib::ustring::compose(_("Overwrite filter starting at frame %1?"), start_frame),
-                         false,
-                         Gtk::MESSAGE_QUESTION,
-                         Gtk::BUTTONS_NONE);
-  dlg.add_button(_("_Overwrite"), Gtk::RESPONSE_YES);
-  dlg.add_button(_("_Don't overwrite"), Gtk::RESPONSE_NO);
-  dlg.set_default_response(Gtk::RESPONSE_NO);
-  return dlg.run() == Gtk::RESPONSE_YES;
+  return confirmation_dialog(parent_window_,
+                             Glib::ustring::compose(_("Overwrite filter starting at frame %1?"), start_frame),
+                             _("_Overwrite"), _("_Don't overwrite"));
 }
 
 
