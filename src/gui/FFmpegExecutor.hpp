@@ -80,6 +80,7 @@ namespace mdl {
     Glib::Pid ffmpeg_handle_;
 #endif
     Glib::RefPtr<Glib::IOChannel> ffmpeg_out_;
+    sigc::connection ffmpeg_out_signal_;
     Glib::Timer ffmpeg_timer_;
 
     std::string log_;

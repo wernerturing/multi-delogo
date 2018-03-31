@@ -115,6 +115,7 @@ bool FFmpegExecutor::is_executing() const
 
 void FFmpegExecutor::terminate()
 {
+  ffmpeg_out_signal_.disconnect();
 #ifdef __MINGW32__
   TerminateProcess(ffmpeg_handle_, 250);
 #endif
@@ -207,7 +208,7 @@ void FFmpegExecutor::start_ffmpeg(const std::vector<std::string>& cmd_line)
   const auto io_source = Glib::IOSource::create(ffmpeg_out_,
                                                 Glib::IO_IN | Glib::IO_HUP);
   io_source->set_priority(Glib::PRIORITY_LOW);
-  io_source->connect(sigc::mem_fun(*this, &FFmpegExecutor::on_ffmpeg_output));
+  ffmpeg_out_signal_ = io_source->connect(sigc::mem_fun(*this, &FFmpegExecutor::on_ffmpeg_output));
   io_source->attach(Glib::MainContext::get_default());
 
 #ifdef __MINGW32__

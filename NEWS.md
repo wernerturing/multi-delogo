@@ -2,6 +2,8 @@
 
 * The automatic logo detection should be slightly faster.
 
+* Fixed crash when encoding was cancelled.
+
 
 ## 2.0.0
 
