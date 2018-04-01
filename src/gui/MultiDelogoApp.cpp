@@ -137,7 +137,7 @@ MultiDelogoApp::maybe_Project MultiDelogoApp::create_project(const std::string& 
 {
   std::string project_file = movie_file + "." + EXTENSION_;
   if (file_exists(project_file)
-      && !confirmation_dialog(_("There is already a project corresponding to movie %1. If you start a new project all your previous work will be lost."),
+      && !confirmation_dialog(Glib::ustring::compose(_("There is already a project corresponding to movie %1. If you start a new project all your previous work will be lost."), movie_file),
                               _("Start a _new project"),
                               _("_Continue existing project"))) {
     open_file(project_file);
