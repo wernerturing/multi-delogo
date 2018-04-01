@@ -34,7 +34,6 @@ namespace fg {
   class FilterList
   {
   public:
-    typedef std::shared_ptr<Filter> filter_ptr;
     typedef std::map<int, filter_ptr>::value_type value_type;
     typedef boost::optional<value_type> maybe_type;
     typedef std::map<int, filter_ptr>::size_type size_type;

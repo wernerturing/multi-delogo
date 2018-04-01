@@ -34,7 +34,7 @@ namespace mdl {
   {
   public:
     Gtk::TreeModelColumn<int> start_frame;
-    Gtk::TreeModelColumn<fg::FilterList::filter_ptr> filter;
+    Gtk::TreeModelColumn<fg::filter_ptr> filter;
     Gtk::TreeModelColumn<Glib::ustring> filter_name;
 
     FilterListColumns();
@@ -50,12 +50,10 @@ namespace mdl {
   public:
     static Glib::RefPtr<FilterListModel> create(fg::FilterList& filter_list);
 
-    typedef fg::FilterList::filter_ptr filter_ptr;
-
     iterator get_for_frame(int frame);
     iterator get_by_start_frame(int start_frame);
 
-    iterator insert(int start_frame, filter_ptr filter);
+    iterator insert(int start_frame, fg::filter_ptr filter);
     void remove(const iterator& iter);
 
     static FilterListColumns columns;

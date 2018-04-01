@@ -34,7 +34,7 @@ FilterListAdapter::FilterListAdapter(fg::FilterList& filter_list, LogoFinderCall
 void FilterListAdapter::success(const mdl::LogoFinderResult& result)
 {
   filter_list_.insert(result.start_frame + 1,
-                      fg::FilterList::filter_ptr(new fg::DelogoFilter(result.x, result.y, result.width, result.height)));
+                      fg::filter_ptr(new fg::DelogoFilter(result.x, result.y, result.width, result.height)));
 
   callback_.success(result);
 }
@@ -42,7 +42,7 @@ void FilterListAdapter::success(const mdl::LogoFinderResult& result)
 
 void FilterListAdapter::failure(int start_frame, int end_frame)
 {
-  filter_list_.insert(start_frame + 1, fg::FilterList::filter_ptr(new fg::ReviewFilter()));
+  filter_list_.insert(start_frame + 1, fg::filter_ptr(new fg::ReviewFilter()));
 
   callback_.failure(start_frame, end_frame);
 }

@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_CASE(test_empty)
 
   BOOST_TEST(list.empty());
 
-  list.insert(1, FilterList::filter_ptr(new NullFilter()));
+  list.insert(1, filter_ptr(new NullFilter()));
   BOOST_TEST(!list.empty());
 }
 
@@ -48,11 +48,11 @@ BOOST_AUTO_TEST_CASE(insert_should_keep_the_filters_ordered)
   FilterList list;
 
   DelogoFilter* filter1 = new DelogoFilter(10, 15, 100, 20);
-  list.insert(1, FilterList::filter_ptr(filter1));
+  list.insert(1, filter_ptr(filter1));
   DrawboxFilter* filter2 = new DrawboxFilter(1, 2, 3, 4);
-  list.insert(1001, FilterList::filter_ptr(filter2));
+  list.insert(1001, filter_ptr(filter2));
   NullFilter* filter3 = new NullFilter();
-  list.insert(401, FilterList::filter_ptr(filter3));
+  list.insert(401, filter_ptr(filter3));
 
   BOOST_CHECK_EQUAL(list.size(), 3);
   auto it = list.begin();
@@ -72,12 +72,12 @@ BOOST_AUTO_TEST_CASE(insert_should_replace_an_existing_filter)
   FilterList list;
 
   NullFilter* filter1 = new NullFilter();
-  list.insert(1, FilterList::filter_ptr(filter1));
+  list.insert(1, filter_ptr(filter1));
   DrawboxFilter* filter2 = new DrawboxFilter(1, 2, 3, 4);
-  list.insert(501, FilterList::filter_ptr(filter2));
+  list.insert(501, filter_ptr(filter2));
 
   DelogoFilter* filter3 = new DelogoFilter(10, 15, 100, 20);
-  list.insert(501, FilterList::filter_ptr(filter3));
+  list.insert(501, filter_ptr(filter3));
 
   BOOST_CHECK_EQUAL(list.size(), 2);
   auto it = list.begin();
@@ -92,9 +92,9 @@ BOOST_AUTO_TEST_CASE(insert_should_replace_an_existing_filter)
 BOOST_AUTO_TEST_CASE(remove_should_remove_an_item)
 {
   FilterList list;
-  list.insert(401, FilterList::filter_ptr(new DelogoFilter(1, 2, 3, 4)));
-  list.insert(201, FilterList::filter_ptr(new DrawboxFilter(11, 22, 33, 44)));
-  list.insert(101, FilterList::filter_ptr(new NullFilter()));
+  list.insert(401, filter_ptr(new DelogoFilter(1, 2, 3, 4)));
+  list.insert(201, filter_ptr(new DrawboxFilter(11, 22, 33, 44)));
+  list.insert(101, filter_ptr(new NullFilter()));
 
   list.remove(201);
 
@@ -111,8 +111,8 @@ BOOST_AUTO_TEST_CASE(remove_should_remove_an_item)
 BOOST_AUTO_TEST_CASE(remove_should_do_nothing_if_item_does_not_exist)
 {
   FilterList list;
-  list.insert(101, FilterList::filter_ptr(new NullFilter()));
-  list.insert(201, FilterList::filter_ptr(new DrawboxFilter(11, 22, 33, 44)));
+  list.insert(101, filter_ptr(new NullFilter()));
+  list.insert(201, filter_ptr(new DrawboxFilter(11, 22, 33, 44)));
 
   list.remove(151);
 
@@ -129,9 +129,9 @@ BOOST_AUTO_TEST_CASE(remove_should_do_nothing_if_item_does_not_exist)
 BOOST_AUTO_TEST_CASE(should_change_start_frame)
 {
   FilterList list;
-  list.insert(101, FilterList::filter_ptr(new DrawboxFilter(11, 22, 33, 44)));
-  list.insert(201, FilterList::filter_ptr(new NullFilter()));
-  list.insert(301, FilterList::filter_ptr(new DelogoFilter(99, 88, 77, 66)));
+  list.insert(101, filter_ptr(new DrawboxFilter(11, 22, 33, 44)));
+  list.insert(201, filter_ptr(new NullFilter()));
+  list.insert(301, filter_ptr(new DelogoFilter(99, 88, 77, 66)));
 
   list.change_start_frame(201, 401);
 
@@ -151,9 +151,9 @@ BOOST_AUTO_TEST_CASE(should_change_start_frame)
 BOOST_AUTO_TEST_CASE(change_start_frame_should_overwrite_an_existing_filter)
 {
   FilterList list;
-  list.insert(101, FilterList::filter_ptr(new DrawboxFilter(11, 22, 33, 44)));
-  list.insert(201, FilterList::filter_ptr(new NullFilter()));
-  list.insert(301, FilterList::filter_ptr(new DelogoFilter(99, 88, 77, 66)));
+  list.insert(101, filter_ptr(new DrawboxFilter(11, 22, 33, 44)));
+  list.insert(201, filter_ptr(new NullFilter()));
+  list.insert(301, filter_ptr(new DelogoFilter(99, 88, 77, 66)));
 
   list.change_start_frame(201, 301);
 
@@ -170,8 +170,8 @@ BOOST_AUTO_TEST_CASE(change_start_frame_should_overwrite_an_existing_filter)
 BOOST_AUTO_TEST_CASE(change_start_frame_should_do_nothing_if_item_does_not_exist)
 {
   FilterList list;
-  list.insert(101, FilterList::filter_ptr(new NullFilter()));
-  list.insert(201, FilterList::filter_ptr(new DrawboxFilter(11, 22, 33, 44)));
+  list.insert(101, filter_ptr(new NullFilter()));
+  list.insert(201, filter_ptr(new DrawboxFilter(11, 22, 33, 44)));
 
   list.change_start_frame(151, 201);
 
@@ -188,7 +188,7 @@ BOOST_AUTO_TEST_CASE(change_start_frame_should_do_nothing_if_item_does_not_exist
 BOOST_AUTO_TEST_CASE(get_by_frame_returning_an_item)
 {
   FilterList list;
-  list.insert(101, FilterList::filter_ptr(new NullFilter()));
+  list.insert(101, filter_ptr(new NullFilter()));
 
   auto maybe = list.get_by_start_frame(101);
   BOOST_REQUIRE(maybe);
@@ -200,7 +200,7 @@ BOOST_AUTO_TEST_CASE(get_by_frame_returning_an_item)
 BOOST_AUTO_TEST_CASE(get_by_frame_returning_none)
 {
   FilterList list;
-  list.insert(101, FilterList::filter_ptr(new NullFilter()));
+  list.insert(101, filter_ptr(new NullFilter()));
 
   auto maybe = list.get_by_start_frame(201);
   BOOST_CHECK(!maybe);
@@ -210,10 +210,10 @@ BOOST_AUTO_TEST_CASE(get_by_frame_returning_none)
 BOOST_AUTO_TEST_CASE(get_by_position_returning_an_item)
 {
   FilterList list;
-  list.insert(1, FilterList::filter_ptr(new DelogoFilter(1, 2, 3, 4)));
-  list.insert(201, FilterList::filter_ptr(new DrawboxFilter(11, 22, 33, 44)));
-  list.insert(101, FilterList::filter_ptr(new NullFilter()));
-  list.insert(401, FilterList::filter_ptr(new DelogoFilter(99, 88, 77, 66)));
+  list.insert(1, filter_ptr(new DelogoFilter(1, 2, 3, 4)));
+  list.insert(201, filter_ptr(new DrawboxFilter(11, 22, 33, 44)));
+  list.insert(101, filter_ptr(new NullFilter()));
+  list.insert(401, filter_ptr(new DelogoFilter(99, 88, 77, 66)));
 
   auto maybe0 = list.get_by_position(0);
   BOOST_REQUIRE(maybe0);
@@ -230,7 +230,7 @@ BOOST_AUTO_TEST_CASE(get_by_position_returning_an_item)
 BOOST_AUTO_TEST_CASE(get_by_position_returning_none)
 {
   FilterList list;
-  list.insert(101, FilterList::filter_ptr(new NullFilter()));
+  list.insert(101, filter_ptr(new NullFilter()));
 
   auto maybe1 = list.get_by_position(1);
   BOOST_CHECK(!maybe1);
@@ -258,9 +258,9 @@ BOOST_AUTO_TEST_CASE(get_by_position_on_empty_list)
 BOOST_AUTO_TEST_CASE(get_position_for_existing_item)
 {
   FilterList list;
-  list.insert(1, FilterList::filter_ptr(new NullFilter()));
-  list.insert(401, FilterList::filter_ptr(new NullFilter()));
-  list.insert(251, FilterList::filter_ptr(new NullFilter()));
+  list.insert(1, filter_ptr(new NullFilter()));
+  list.insert(401, filter_ptr(new NullFilter()));
+  list.insert(251, filter_ptr(new NullFilter()));
 
   BOOST_CHECK_EQUAL(list.get_position(1), 0);
   BOOST_CHECK_EQUAL(list.get_position(251), 1);
@@ -271,7 +271,7 @@ BOOST_AUTO_TEST_CASE(get_position_for_existing_item)
 BOOST_AUTO_TEST_CASE(get_position_for_non_existing)
 {
   FilterList list;
-  list.insert(201, FilterList::filter_ptr(new NullFilter()));
+  list.insert(201, filter_ptr(new NullFilter()));
 
   BOOST_CHECK_EQUAL(list.get_position(100), -1);
 }
@@ -280,10 +280,10 @@ BOOST_AUTO_TEST_CASE(get_position_for_non_existing)
 BOOST_AUTO_TEST_CASE(get_filter_for_frame_returns_filter_applied_to_that_frame)
 {
   FilterList list;
-  list.insert(101, FilterList::filter_ptr(new NullFilter()));
-  list.insert(401, FilterList::filter_ptr(new NullFilter()));
-  list.insert(251, FilterList::filter_ptr(new NullFilter()));
-  list.insert(651, FilterList::filter_ptr(new NullFilter()));
+  list.insert(101, filter_ptr(new NullFilter()));
+  list.insert(401, filter_ptr(new NullFilter()));
+  list.insert(251, filter_ptr(new NullFilter()));
+  list.insert(651, filter_ptr(new NullFilter()));
 
   auto maybe30 = list.get_filter_for_frame(30);
   BOOST_CHECK(!maybe30);
@@ -318,7 +318,7 @@ BOOST_AUTO_TEST_CASE(get_filter_for_frame_on_empty_list)
 BOOST_AUTO_TEST_CASE(get_filter_for_frame_on_list_with_one_element)
 {
   FilterList list;
-  list.insert(101, FilterList::filter_ptr(new NullFilter()));
+  list.insert(101, filter_ptr(new NullFilter()));
 
   auto maybe50 = list.get_filter_for_frame(50);
   BOOST_CHECK(!maybe50);
@@ -332,9 +332,9 @@ BOOST_AUTO_TEST_CASE(get_filter_for_frame_on_list_with_one_element)
 BOOST_AUTO_TEST_CASE(should_return_true_for_has_review_when_there_is_at_least_one_review_filter)
 {
   FilterList list;
-  list.insert(51, FilterList::filter_ptr(new DelogoFilter(1, 2, 3, 4)));
-  list.insert(101, FilterList::filter_ptr(new ReviewFilter()));
-  list.insert(201, FilterList::filter_ptr(new DelogoFilter(10, 20, 30, 40)));
+  list.insert(51, filter_ptr(new DelogoFilter(1, 2, 3, 4)));
+  list.insert(101, filter_ptr(new ReviewFilter()));
+  list.insert(201, filter_ptr(new DelogoFilter(10, 20, 30, 40)));
 
   BOOST_TEST(list.has_review_filter());
 }
@@ -343,8 +343,8 @@ BOOST_AUTO_TEST_CASE(should_return_true_for_has_review_when_there_is_at_least_on
 BOOST_AUTO_TEST_CASE(should_return_false_for_has_review_when_there_is_no_review_filter)
 {
   FilterList list;
-  list.insert(51, FilterList::filter_ptr(new DelogoFilter(1, 2, 3, 4)));
-  list.insert(201, FilterList::filter_ptr(new DelogoFilter(10, 20, 30, 40)));
+  list.insert(51, filter_ptr(new DelogoFilter(1, 2, 3, 4)));
+  list.insert(201, filter_ptr(new DelogoFilter(10, 20, 30, 40)));
 
   BOOST_TEST(!list.has_review_filter());
 }
@@ -428,10 +428,10 @@ BOOST_AUTO_TEST_CASE(should_fail_for_invalid_filter)
 BOOST_AUTO_TEST_CASE(should_save_the_list)
 {
   FilterList list;
-  list.insert(1, FilterList::filter_ptr(new DelogoFilter(1, 2, 3, 4)));
-  list.insert(501, FilterList::filter_ptr(new DrawboxFilter(11, 22, 33, 44)));
-  list.insert(1501, FilterList::filter_ptr(new NullFilter()));
-  list.insert(1001, FilterList::filter_ptr(new DrawboxFilter(111, 222, 333, 444)));
+  list.insert(1, filter_ptr(new DelogoFilter(1, 2, 3, 4)));
+  list.insert(501, filter_ptr(new DrawboxFilter(11, 22, 33, 44)));
+  list.insert(1501, filter_ptr(new NullFilter()));
+  list.insert(1001, filter_ptr(new DrawboxFilter(111, 222, 333, 444)));
 
   std::ostringstream out;
   list.save(out);

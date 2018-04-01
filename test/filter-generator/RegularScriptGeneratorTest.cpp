@@ -37,9 +37,9 @@ using namespace fg;
 BOOST_AUTO_TEST_CASE(affects_audio_without_audio_affecting_filters)
 {
   FilterList list;
-  list.insert(1, FilterList::filter_ptr(new DelogoFilter(10, 11, 12, 13)));
-  list.insert(501, FilterList::filter_ptr(new DrawboxFilter(20, 21, 22, 23)));
-  list.insert(1001, FilterList::filter_ptr(new NullFilter()));
+  list.insert(1, filter_ptr(new DelogoFilter(10, 11, 12, 13)));
+  list.insert(501, filter_ptr(new DrawboxFilter(20, 21, 22, 23)));
+  list.insert(1001, filter_ptr(new NullFilter()));
   std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 1);
 
   BOOST_TEST(!g->affects_audio());
@@ -49,9 +49,9 @@ BOOST_AUTO_TEST_CASE(affects_audio_without_audio_affecting_filters)
 BOOST_AUTO_TEST_CASE(affects_audio_with_audio_affecting_filters)
 {
   FilterList list;
-  list.insert(1, FilterList::filter_ptr(new DelogoFilter(10, 11, 12, 13)));
-  list.insert(501, FilterList::filter_ptr(new CutFilter()));
-  list.insert(1001, FilterList::filter_ptr(new NullFilter()));
+  list.insert(1, filter_ptr(new DelogoFilter(10, 11, 12, 13)));
+  list.insert(501, filter_ptr(new CutFilter()));
+  list.insert(1001, filter_ptr(new NullFilter()));
   std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 1);
 
   BOOST_TEST(g->affects_audio());
@@ -61,11 +61,11 @@ BOOST_AUTO_TEST_CASE(affects_audio_with_audio_affecting_filters)
 BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
 {
   FilterList list;
-  list.insert(1, FilterList::filter_ptr(new DelogoFilter(10, 11, 12, 13)));
-  list.insert(501, FilterList::filter_ptr(new DrawboxFilter(20, 21, 22, 23)));
-  list.insert(1001, FilterList::filter_ptr(new NullFilter()));
-  list.insert(1301, FilterList::filter_ptr(new DrawboxFilter(30, 31, 32, 33)));
-  list.insert(2001, FilterList::filter_ptr(new DrawboxFilter(40, 41, 42, 43)));
+  list.insert(1, filter_ptr(new DelogoFilter(10, 11, 12, 13)));
+  list.insert(501, filter_ptr(new DrawboxFilter(20, 21, 22, 23)));
+  list.insert(1001, filter_ptr(new NullFilter()));
+  list.insert(1301, filter_ptr(new DrawboxFilter(30, 31, 32, 33)));
+  list.insert(2001, filter_ptr(new DrawboxFilter(40, 41, 42, 43)));
   std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 1);
 
   std::ostringstream out;
@@ -85,8 +85,8 @@ BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
 BOOST_AUTO_TEST_CASE(should_discard_a_null_filter_at_the_end)
 {
   FilterList list;
-  list.insert(1, FilterList::filter_ptr(new DelogoFilter(10, 11, 12, 13)));
-  list.insert(1001, FilterList::filter_ptr(new NullFilter()));
+  list.insert(1, filter_ptr(new DelogoFilter(10, 11, 12, 13)));
+  list.insert(1001, filter_ptr(new NullFilter()));
   std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 1);
 
   std::ostringstream out;
@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE(should_discard_a_null_filter_at_the_end)
 BOOST_AUTO_TEST_CASE(should_work_for_a_one_filter_list)
 {
   FilterList list;
-  list.insert(50, FilterList::filter_ptr(new DelogoFilter(10, 11, 12, 13)));
+  list.insert(50, filter_ptr(new DelogoFilter(10, 11, 12, 13)));
   std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 1);
 
   std::ostringstream out;
@@ -120,9 +120,9 @@ BOOST_AUTO_TEST_CASE(should_work_for_a_one_filter_list)
 BOOST_AUTO_TEST_CASE(should_generate_script_with_cut_filter)
 {
   FilterList list;
-  list.insert(1, FilterList::filter_ptr(new DelogoFilter(10, 11, 12, 13)));
-  list.insert(601, FilterList::filter_ptr(new CutFilter()));
-  list.insert(1001, FilterList::filter_ptr(new DrawboxFilter(20, 21, 22, 23)));
+  list.insert(1, filter_ptr(new DelogoFilter(10, 11, 12, 13)));
+  list.insert(601, filter_ptr(new CutFilter()));
+  list.insert(1001, filter_ptr(new DrawboxFilter(20, 21, 22, 23)));
   std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 25);
 
   std::ostringstream out;
@@ -142,10 +142,10 @@ BOOST_AUTO_TEST_CASE(should_generate_script_with_cut_filter)
 BOOST_AUTO_TEST_CASE(should_generate_script_with_only_cut_filters)
 {
   FilterList list;
-  list.insert(101, FilterList::filter_ptr(new CutFilter()));
-  list.insert(201, FilterList::filter_ptr(new NullFilter()));
-  list.insert(501, FilterList::filter_ptr(new CutFilter()));
-  list.insert(1001, FilterList::filter_ptr(new NullFilter()));
+  list.insert(101, filter_ptr(new CutFilter()));
+  list.insert(201, filter_ptr(new NullFilter()));
+  list.insert(501, filter_ptr(new CutFilter()));
+  list.insert(1001, filter_ptr(new NullFilter()));
   std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 24);
 
   std::ostringstream out;
@@ -163,8 +163,8 @@ BOOST_AUTO_TEST_CASE(should_generate_script_with_only_cut_filters)
 BOOST_AUTO_TEST_CASE(should_generate_script_with_cut_filter_at_the_end)
 {
   FilterList list;
-  list.insert(1, FilterList::filter_ptr(new DelogoFilter(10, 11, 12, 13)));
-  list.insert(601, FilterList::filter_ptr(new CutFilter()));
+  list.insert(1, filter_ptr(new DelogoFilter(10, 11, 12, 13)));
+  list.insert(601, filter_ptr(new CutFilter()));
   std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 29.97);
 
   std::ostringstream out;
@@ -186,7 +186,7 @@ BOOST_AUTO_TEST_CASE(fps_should_use_dot_as_decimal_separator_regardless_of_local
   setlocale(LC_NUMERIC, "pt_BR.UTF-8");
 
   FilterList list;
-  list.insert(501, FilterList::filter_ptr(new CutFilter()));
+  list.insert(501, filter_ptr(new CutFilter()));
   std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 29.97);
 
   std::ostringstream out;
@@ -206,10 +206,10 @@ BOOST_AUTO_TEST_CASE(fps_should_use_dot_as_decimal_separator_regardless_of_local
 BOOST_AUTO_TEST_CASE(should_calculate_number_of_frames_in_result)
 {
   FilterList list;
-  list.insert(1, FilterList::filter_ptr(new DelogoFilter(10, 11, 12, 13)));
-  list.insert(601, FilterList::filter_ptr(new CutFilter()));
-  list.insert(1001, FilterList::filter_ptr(new DrawboxFilter(20, 21, 22, 23)));
-  list.insert(2001, FilterList::filter_ptr(new CutFilter()));
+  list.insert(1, filter_ptr(new DelogoFilter(10, 11, 12, 13)));
+  list.insert(601, filter_ptr(new CutFilter()));
+  list.insert(1001, filter_ptr(new DrawboxFilter(20, 21, 22, 23)));
+  list.insert(2001, filter_ptr(new CutFilter()));
   std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 25);
 
   // Only works after the script has been generated
