@@ -236,6 +236,10 @@ void FindLogosWindow::on_find_logos()
     return;
   }
 
+  if (already_has_filters() && !confirm_search_with_existing_filters()) {
+    return;
+  }
+
   int initial_frame = txt_initial_frame_.get_value_as_int() - 1;
   int final_frame = txt_final_frame_.get_value_as_int() - 1;
 
@@ -256,6 +260,29 @@ void FindLogosWindow::on_find_logos()
     finder_finished_dispatcher_.emit();
   });
   btn_find_logos_.set_sensitive(false);
+}
+
+
+bool FindLogosWindow::already_has_filters()
+{
+  int initial_frame = txt_initial_frame_.get_value_as_int();
+  int final_frame = txt_final_frame_.get_value_as_int();
+
+  auto filter = filter_data_.filter_list().get_filter_for_frame(final_frame);
+  int filter_start_frame = 0;
+  if (filter) {
+    filter_start_frame = filter->first;
+  }
+
+  return filter_start_frame >= initial_frame;
+}
+
+
+bool FindLogosWindow::confirm_search_with_existing_filters()
+{
+  return confirmation_dialog(*this,
+                             _("There are already logos in the range specified for the search. Do you want really want to continue?"),
+                             _("_Find logos"), _("Cancel"));
 }
 
 

@@ -72,6 +72,8 @@ namespace mdl {
     void configure_spin(Gtk::SpinButton& spin, int max);
 
     void on_find_logos();
+    bool already_has_filters();
+    bool confirm_search_with_existing_filters();
 
     void on_close();
     bool on_delete_event(GdkEventAny*) override;
