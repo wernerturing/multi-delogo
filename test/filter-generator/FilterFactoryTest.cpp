@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE(test_load_with_unknown_filter)
 
 BOOST_AUTO_TEST_CASE(test_load_null_filter)
 {
-  fg::Filter* filter = fg::FilterFactory::load("none;");
+  fg::filter_ptr filter = fg::FilterFactory::load("none;");
 
   BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::NO_OP);
 }
@@ -51,10 +51,10 @@ BOOST_AUTO_TEST_CASE(test_load_null_filter)
 
 BOOST_AUTO_TEST_CASE(test_load_delogo_filter)
 {
-  fg::Filter* filter = fg::FilterFactory::load("delogo;10;20;30;40");
+  fg::filter_ptr filter = fg::FilterFactory::load("delogo;10;20;30;40");
 
   BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::DELOGO);
-  fg::DelogoFilter* dfilter = dynamic_cast<fg::DelogoFilter*>(filter);
+  fg::DelogoFilter* dfilter = dynamic_cast<fg::DelogoFilter*>(filter.get());
   BOOST_CHECK_EQUAL(dfilter->x(), 10);
   BOOST_CHECK_EQUAL(dfilter->y(), 20);
   BOOST_CHECK_EQUAL(dfilter->width(), 30);
@@ -64,10 +64,10 @@ BOOST_AUTO_TEST_CASE(test_load_delogo_filter)
 
 BOOST_AUTO_TEST_CASE(test_load_drawbox_filter)
 {
-  fg::Filter* filter = fg::FilterFactory::load("drawbox;200;100;30;15");
+  fg::filter_ptr filter = fg::FilterFactory::load("drawbox;200;100;30;15");
 
   BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::DRAWBOX);
-  fg::DrawboxFilter* dfilter = dynamic_cast<fg::DrawboxFilter*>(filter);
+  fg::DrawboxFilter* dfilter = dynamic_cast<fg::DrawboxFilter*>(filter.get());
   BOOST_CHECK_EQUAL(dfilter->x(), 200);
   BOOST_CHECK_EQUAL(dfilter->y(), 100);
   BOOST_CHECK_EQUAL(dfilter->width(), 30);
@@ -77,7 +77,7 @@ BOOST_AUTO_TEST_CASE(test_load_drawbox_filter)
 
 BOOST_AUTO_TEST_CASE(test_load_cut_filter)
 {
-  fg::Filter* filter = fg::FilterFactory::load("cut;");
+  fg::filter_ptr filter = fg::FilterFactory::load("cut;");
 
   BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::CUT);
 }
@@ -85,7 +85,7 @@ BOOST_AUTO_TEST_CASE(test_load_cut_filter)
 
 BOOST_AUTO_TEST_CASE(test_load_review_filter)
 {
-  fg::Filter* filter = fg::FilterFactory::load("review;");
+  fg::filter_ptr filter = fg::FilterFactory::load("review;");
 
   BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::REVIEW);
 }

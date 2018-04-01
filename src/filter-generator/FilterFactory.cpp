@@ -26,7 +26,7 @@
 using namespace fg;
 
 
-Filter* FilterFactory::load(const std::string& serialized)
+filter_ptr FilterFactory::load(const std::string& serialized)
 {
   auto pos = serialized.find_first_of(';');
   if (pos == std::string::npos) {
@@ -40,7 +40,7 @@ Filter* FilterFactory::load(const std::string& serialized)
 }
 
 
-Filter* FilterFactory::create(const std::string& type, const std::string& parameters)
+filter_ptr FilterFactory::create(const std::string& type, const std::string& parameters)
 {
   if (type == "none") {
     return NullFilter::load(parameters);

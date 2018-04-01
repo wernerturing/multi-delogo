@@ -27,10 +27,10 @@ namespace fg {
   class FilterFactory
   {
   public:
-    static Filter* load(const std::string& serialized);
+    static filter_ptr load(const std::string& serialized);
 
   private:
-    static Filter* create(const std::string& type, const std::string& parameters);
+    static filter_ptr create(const std::string& type, const std::string& parameters);
   };
 }
 

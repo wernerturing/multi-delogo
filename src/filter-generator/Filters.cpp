@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <memory>
 #include <string>
 #include <stdexcept>
 
@@ -38,13 +39,13 @@ bool Filter::affects_audio() const
 }
 
 
-NullFilter* NullFilter::load(const std::string& parameters)
+std::shared_ptr<NullFilter> NullFilter::load(const std::string& parameters)
 {
   if (parameters != "") {
     throw InvalidParametersException();
   }
 
-  return new NullFilter();
+  return std::shared_ptr<NullFilter>(new NullFilter());
 }
 
 
@@ -150,12 +151,12 @@ DelogoFilter::DelogoFilter(int x, int y, int width, int height)
 }
 
 
-DelogoFilter* DelogoFilter::load(const std::string& parameters)
+std::shared_ptr<DelogoFilter> DelogoFilter::load(const std::string& parameters)
 {
   int x, y, width, height;
 
   load_rectangle(parameters, x, y, width, height);
-  return new DelogoFilter(x, y, width, height);
+  return std::shared_ptr<DelogoFilter>(new DelogoFilter(x, y, width, height));
 }
 
 
@@ -194,12 +195,12 @@ DrawboxFilter::DrawboxFilter(int x, int y, int width, int height)
 }
 
 
-DrawboxFilter* DrawboxFilter::load(const std::string& parameters)
+std::shared_ptr<DrawboxFilter> DrawboxFilter::load(const std::string& parameters)
 {
   int x, y, width, height;
 
   load_rectangle(parameters, x, y, width, height);
-  return new DrawboxFilter(x, y, width, height);
+  return std::shared_ptr<DrawboxFilter>(new DrawboxFilter(x, y, width, height));
 }
 
 
@@ -233,13 +234,13 @@ std::string DrawboxFilter::ffmpeg_str(const std::string& between_expr) const
 }
 
 
-CutFilter* CutFilter::load(const std::string& parameters)
+std::shared_ptr<CutFilter> CutFilter::load(const std::string& parameters)
 {
   if (parameters != "") {
     throw InvalidParametersException();
   }
 
-  return new CutFilter();
+  return std::shared_ptr<CutFilter>(new CutFilter());
 }
 
 
@@ -273,13 +274,13 @@ std::string CutFilter::ffmpeg_str(const std::string& between_expr) const
 }
 
 
-ReviewFilter* ReviewFilter::load(const std::string& parameters)
+std::shared_ptr<ReviewFilter> ReviewFilter::load(const std::string& parameters)
 {
   if (parameters != "") {
     throw InvalidParametersException();
   }
 
-  return new ReviewFilter();
+  return std::shared_ptr<ReviewFilter>(new ReviewFilter());
 }
 
 
