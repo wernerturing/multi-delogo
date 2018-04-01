@@ -107,6 +107,8 @@ Observe que a detecção dos logos não é 100% eficaz. Alguns logos podem não 
 
 Além disso, em alguns casos mesmo quando um logo é detectado, o resultado pode não estar certo: o quadro inicial pode estar alguns quadros atrás do valor correto, talvez apenas parte do logo tenha sido reconhecida, ou algum outro artefato do vídeo foi considerado incorretamente como um logo. Por causa disso, é recomendável revisar os resultados antes de converter o vídeo.
 
+Se já existem filtros definidos no intervalo de busca especificado, você terá que confirmar se realmente deseja procurar por logos automaticamente. Os filtros já existentes serão ignorados na busca, mas não serão removidos, apenas filtros novos serão adicionados. A única exceção é se o detector automático de logos encontrar um logo iniciando num quadro que já é o quadro inicial de um filtro. Nesse caso o filtro para o logo automaticamente detectado sobrescreverá o já existente. Por causa desse comportamento, é recomendado evitar procurar por logos em intervalos onde já existem filtros definidos.
+
 ### Interrompendo e continuando a deteção de logos
 
 É possível interromper a detecção de logos clicando o botão *Fechar*. Os logos já detectados não serão perdidos.
