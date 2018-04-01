@@ -160,13 +160,13 @@ void Coordinator::change_displayed_filter(const FilterListModel::iterator& iter)
 
   int start_frame = (*iter)[filter_model_->columns.start_frame];
   fg::filter_ptr filter = (*iter)[filter_model_->columns.filter];
-  if (filter.get() == current_filter_) {
+  if (filter == current_filter_) {
     return;
   }
-  current_filter_ = filter.get();
+  current_filter_ = filter;
   current_filter_start_frame_ = start_frame;
 
-  update_displayed_panel(filter->type(), panel_factory_.create(start_frame, filter.get()));
+  update_displayed_panel(filter->type(), panel_factory_.create(start_frame, filter));
 
   auto rect = current_filter_panel_->get_rectangle();
   if (rect) {
@@ -317,7 +317,7 @@ void Coordinator::add_new_filter_if_not_on_filter_starting_frame(bool always_add
 
   current_filter_ = current_filter_panel_->get_filter();
   current_filter_start_frame_ = current_frame_;
-  auto inserted_row = filter_model_->insert(current_frame_, fg::filter_ptr(current_filter_));
+  auto inserted_row = filter_model_->insert(current_frame_, current_filter_);
   current_filter_panel_->set_changed(false);
 
   set_start_frame_in_filter_panel(current_frame_);

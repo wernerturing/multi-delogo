@@ -59,7 +59,7 @@ namespace mdl {
     FilterPanelFactory panel_factory_;
     FilterPanel* current_filter_panel_;
     int current_filter_start_frame_;
-    fg::Filter* current_filter_;
+    fg::filter_ptr current_filter_;
     bool scroll_filter_;
 
     sigc::connection on_filter_selected_;

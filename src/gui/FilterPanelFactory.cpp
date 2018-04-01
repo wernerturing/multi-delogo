@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <memory>
 #include <stdexcept>
 
 #include <gtkmm.h>
@@ -37,7 +38,7 @@ FilterPanelFactory::FilterPanelFactory(int max_frame, int frame_width, int frame
 }
 
 
-FilterPanel* FilterPanelFactory::create(int start_frame, fg::Filter* filter)
+FilterPanel* FilterPanelFactory::create(int start_frame, fg::filter_ptr filter)
 {
   switch (filter->type()) {
   case fg::FilterType::NO_OP:
@@ -48,12 +49,12 @@ FilterPanel* FilterPanelFactory::create(int start_frame, fg::Filter* filter)
 
   case fg::FilterType::DELOGO:
     return new FilterPanelDelogo(start_frame, max_frame_,
-                                 dynamic_cast<fg::DelogoFilter*>(filter),
+                                 std::dynamic_pointer_cast<fg::DelogoFilter>(filter),
                                  frame_width_, frame_height_);
 
   case fg::FilterType::DRAWBOX:
     return new FilterPanelDrawbox(start_frame, max_frame_,
-                                  dynamic_cast<fg::DrawboxFilter*>(filter),
+                                  std::dynamic_pointer_cast<fg::DrawboxFilter>(filter),
                                   frame_width_, frame_height_);
 
   case fg::FilterType::REVIEW:
@@ -91,11 +92,11 @@ FilterPanel* FilterPanelFactory::create(int start_frame, fg::FilterType type)
 }
 
 
-FilterPanel* FilterPanelFactory::convert(int start_frame, fg::Filter* original, fg::FilterType new_type)
+FilterPanel* FilterPanelFactory::convert(int start_frame, fg::filter_ptr original, fg::FilterType new_type)
 {
   if (is_rectangular(original->type()) && is_rectangular(new_type)) {
     FilterPanel* panel = create(start_frame, new_type);
-    fg::RectangularFilter* rectangular = dynamic_cast<fg::RectangularFilter*>(original);
+    std::shared_ptr<fg::RectangularFilter> rectangular = std::dynamic_pointer_cast<fg::RectangularFilter>(original);
     panel->set_rectangle({.x = (gdouble) rectangular->x(), .y = (gdouble) rectangular->y(),
                           .width = (gdouble) rectangular->width(), .height = (gdouble) rectangular->height()});
     return panel;
