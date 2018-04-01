@@ -26,18 +26,22 @@
 #include "FrameNavigator.hpp"
 #include "FrameView.hpp"
 #include "FilterPanelFactory.hpp"
+#include "Utils.hpp"
 
 using namespace mdl;
 
 
-Coordinator::Coordinator(FilterList& filter_list,
+Coordinator::Coordinator(Gtk::Window& parent_window,
+                         FilterList& filter_list,
                          FrameNavigator& frame_navigator,
                          int frame_width, int frame_height)
-  : filter_list_(filter_list)
+  : parent_window_(parent_window)
+  , filter_list_(filter_list)
   , filter_model_(filter_list.get_model())
   , frame_navigator_(frame_navigator)
   , frame_view_(frame_navigator_.get_frame_view())
-  , panel_factory_(frame_width, frame_height)
+  , panel_factory_(frame_navigator_.get_number_of_frames(),
+                   frame_width, frame_height)
   , current_filter_panel_(nullptr)
   , current_filter_(nullptr)
   , scroll_filter_(true)
@@ -154,13 +158,15 @@ void Coordinator::change_displayed_filter(const FilterListModel::iterator& iter)
     return;
   }
 
+  int start_frame = (*iter)[filter_model_->columns.start_frame];
   fg::Filter* filter = (*iter)[filter_model_->columns.filter];
   if (filter == current_filter_) {
     return;
   }
   current_filter_ = filter;
+  current_filter_start_frame_ = start_frame;
 
-  update_displayed_panel(filter->type(), panel_factory_.create(filter));
+  update_displayed_panel(filter->type(), panel_factory_.create(start_frame, filter));
 
   auto rect = current_filter_panel_->get_rectangle();
   if (rect) {
@@ -184,6 +190,8 @@ void Coordinator::update_displayed_panel(fg::FilterType type, FilterPanel* panel
 
   on_panel_rectangle_changed_ = current_filter_panel_->signal_rectangle_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_panel_rectangle_changed));
+  on_start_frame_changed_ = current_filter_panel_->signal_start_frame_changed().connect(
+    sigc::mem_fun(*this, &Coordinator::on_start_frame_changed));
 }
 
 
@@ -196,7 +204,7 @@ void Coordinator::on_filter_type_changed(fg::FilterType new_type)
   update_current_filter_if_necessary();
   add_new_filter_if_not_on_filter_starting_frame(true);
 
-  FilterPanel* new_panel = panel_factory_.convert(current_filter_, new_type);
+  FilterPanel* new_panel = panel_factory_.convert(current_frame_, current_filter_, new_type);
   update_displayed_panel(new_type, new_panel);
   update_current_filter(true);
 }
@@ -226,10 +234,53 @@ void Coordinator::on_panel_rectangle_changed(Rectangle rect)
 }
 
 
+void Coordinator::on_start_frame_changed(int start_frame)
+{
+  if (!confirm_overwrite_by_start_frame_change(start_frame)) {
+    set_start_frame_in_filter_panel(current_filter_start_frame_);
+    return;
+  }
+
+  auto iter = filter_model_->get_by_start_frame(current_filter_start_frame_);
+
+  on_filter_selected_.block();
+  (*iter)[filter_model_->columns.start_frame] = start_frame;
+  on_filter_selected_.block(false);
+  unselect_rows();
+
+  current_filter_start_frame_ = start_frame;
+}
+
+
+void Coordinator::set_start_frame_in_filter_panel(int start_frame)
+{
+  on_start_frame_changed_.block();
+  current_filter_panel_->set_start_frame(start_frame);
+  // For some reason must set to be called in the future.
+  // Calling block(false) directly causes a signal to be emitted.
+  Glib::signal_idle().connect([&] {
+      on_start_frame_changed_.block(false);
+      return false;
+    });
+}
+
+
+bool Coordinator::confirm_overwrite_by_start_frame_change(int start_frame)
+{
+  if (!filter_model_->get_by_start_frame(start_frame)) {
+    return true;
+  }
+
+  return confirmation_dialog(parent_window_,
+                             Glib::ustring::compose(_("Overwrite filter starting at frame %1?"), start_frame),
+                             _("_Overwrite"), _("_Don't overwrite"));
+}
+
+
 void Coordinator::create_new_filter_panel()
 {
   fg::FilterType filter_type = filter_list_.get_selected_type();
-  update_displayed_panel(filter_type, panel_factory_.create(filter_type));
+  update_displayed_panel(filter_type, panel_factory_.create(current_frame_, filter_type));
 }
 
 
@@ -237,6 +288,7 @@ void Coordinator::update_current_filter_if_necessary()
 {
   update_current_filter(false);
 }
+
 
 void Coordinator::update_current_filter(bool force_update)
 {
@@ -264,8 +316,11 @@ void Coordinator::add_new_filter_if_not_on_filter_starting_frame(bool always_add
   }
 
   current_filter_ = current_filter_panel_->get_filter();
+  current_filter_start_frame_ = current_frame_;
   auto inserted_row = filter_model_->insert(current_frame_, current_filter_);
   current_filter_panel_->set_changed(false);
+
+  set_start_frame_in_filter_panel(current_frame_);
 
   select_row(inserted_row);
 }

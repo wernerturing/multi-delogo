@@ -48,6 +48,7 @@ namespace fg {
 
     void insert(int start_frame, Filter* filter);
     void remove(int start_frame);
+    void change_start_frame(int old_start_frame, int new_start_frame);
 
     bool empty() const;
     size_type size() const;

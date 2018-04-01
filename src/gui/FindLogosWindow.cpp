@@ -31,6 +31,7 @@
 
 #include "FindLogosWindow.hpp"
 #include "ETRProgressBar.hpp"
+#include "Utils.hpp"
 
 using namespace mdl;
 
@@ -280,15 +281,9 @@ bool FindLogosWindow::confirm_stop()
     return true;
   }
 
-  Gtk::MessageDialog dlg(*this,
-                         _("Do you really want to stop finding logos?"),
-                         false,
-                         Gtk::MESSAGE_QUESTION,
-                         Gtk::BUTTONS_NONE);
-  dlg.add_button(_("_Stop"), Gtk::RESPONSE_CLOSE);
-  dlg.add_button(_("_Continue"), Gtk::RESPONSE_OK);
-  dlg.set_default_response(Gtk::RESPONSE_OK);
-  bool terminate = dlg.run() == Gtk::RESPONSE_CLOSE;
+  bool terminate = confirmation_dialog(*this,
+                                       _("Do you really want to stop finding logos?"),
+                                       _("_Stop"), _("_Continue"));
 
   if (terminate) {
     logo_finder_->stop();

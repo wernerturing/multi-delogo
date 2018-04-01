@@ -2,6 +2,8 @@
 
 * The automatic logo detection should be slightly faster.
 
+* It's now possible to change a filter's starting frame.
+
 * Fixed crash when encoding was cancelled.
 
 

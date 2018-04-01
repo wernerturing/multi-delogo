@@ -29,55 +29,35 @@
 using namespace mdl;
 
 
-FilterPanel::FilterPanel()
-{
-  set_orientation(Gtk::ORIENTATION_VERTICAL);
-}
-
-
-FilterPanel::~FilterPanel()
-{
-}
-
-
-bool FilterPanel::creates_filter() const
-{
-  return true;
-}
-
-
-FilterPanel::type_signal_rectangle_changed FilterPanel::signal_rectangle_changed()
-{
-  return signal_rectangle_changed_;
-}
-
-
-FilterPanelFactory::FilterPanelFactory(int frame_width, int frame_height)
-  : frame_width_(frame_width)
+FilterPanelFactory::FilterPanelFactory(int max_frame, int frame_width, int frame_height)
+  : max_frame_(max_frame)
+  , frame_width_(frame_width)
   , frame_height_(frame_height)
 {
 }
 
 
-FilterPanel* FilterPanelFactory::create(fg::Filter* filter)
+FilterPanel* FilterPanelFactory::create(int start_frame, fg::Filter* filter)
 {
   switch (filter->type()) {
   case fg::FilterType::NO_OP:
-    return new FilterPanelNull();
+    return new FilterPanelNull(start_frame, max_frame_);
 
   case fg::FilterType::CUT:
-    return new FilterPanelCut();
+    return new FilterPanelCut(start_frame, max_frame_);
 
   case fg::FilterType::DELOGO:
-    return new FilterPanelDelogo(dynamic_cast<fg::DelogoFilter*>(filter),
+    return new FilterPanelDelogo(start_frame, max_frame_,
+                                 dynamic_cast<fg::DelogoFilter*>(filter),
                                  frame_width_, frame_height_);
 
   case fg::FilterType::DRAWBOX:
-    return new FilterPanelDrawbox(dynamic_cast<fg::DrawboxFilter*>(filter),
+    return new FilterPanelDrawbox(start_frame, max_frame_,
+                                  dynamic_cast<fg::DrawboxFilter*>(filter),
                                   frame_width_, frame_height_);
 
   case fg::FilterType::REVIEW:
-    return new FilterPanelReview();
+    return new FilterPanelReview(start_frame, max_frame_);
 
   default:
     return nullptr;
@@ -85,23 +65,25 @@ FilterPanel* FilterPanelFactory::create(fg::Filter* filter)
 }
 
 
-FilterPanel* FilterPanelFactory::create(fg::FilterType type)
+FilterPanel* FilterPanelFactory::create(int start_frame, fg::FilterType type)
 {
   switch (type) {
   case fg::FilterType::NO_OP:
-    return new FilterPanelNull();
+    return new FilterPanelNull(start_frame, max_frame_);
 
   case fg::FilterType::CUT:
-    return new FilterPanelCut();
+    return new FilterPanelCut(start_frame, max_frame_);
 
   case fg::FilterType::DELOGO:
-    return new FilterPanelDelogo(frame_width_, frame_height_);
+    return new FilterPanelDelogo(start_frame, max_frame_,
+                                 frame_width_, frame_height_);
 
   case fg::FilterType::DRAWBOX:
-    return new FilterPanelDrawbox(frame_width_, frame_height_);
+    return new FilterPanelDrawbox(start_frame, max_frame_,
+                                  frame_width_, frame_height_);
 
   case fg::FilterType::REVIEW:
-    return new FilterPanelReview();
+    return new FilterPanelReview(start_frame, max_frame_);
 
   default:
     return nullptr;
@@ -109,10 +91,10 @@ FilterPanel* FilterPanelFactory::create(fg::FilterType type)
 }
 
 
-FilterPanel* FilterPanelFactory::convert(fg::Filter* original, fg::FilterType new_type)
+FilterPanel* FilterPanelFactory::convert(int start_frame, fg::Filter* original, fg::FilterType new_type)
 {
   if (is_rectangular(original->type()) && is_rectangular(new_type)) {
-    FilterPanel* panel = create(new_type);
+    FilterPanel* panel = create(start_frame, new_type);
     fg::RectangularFilter* rectangular = dynamic_cast<fg::RectangularFilter*>(original);
     panel->set_rectangle({.x = (gdouble) rectangular->x(), .y = (gdouble) rectangular->y(),
                           .width = (gdouble) rectangular->width(), .height = (gdouble) rectangular->height()});
@@ -120,7 +102,7 @@ FilterPanel* FilterPanelFactory::convert(fg::Filter* original, fg::FilterType ne
   }
 
   if (is_no_parameters(new_type) || is_no_parameters(original->type())) {
-    return create(new_type);
+    return create(start_frame, new_type);
   }
 
   throw std::invalid_argument("Unsupported conversion");

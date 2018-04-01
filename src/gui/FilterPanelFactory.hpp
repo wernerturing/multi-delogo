@@ -32,7 +32,7 @@ namespace mdl {
   class FilterPanel : public Gtk::Grid
   {
   protected:
-    FilterPanel();
+    FilterPanel(int start_frame, int max_frame);
     virtual ~FilterPanel();
 
   public:
@@ -40,29 +40,40 @@ namespace mdl {
 
     virtual bool creates_filter() const;
     virtual fg::Filter* get_filter() const = 0;
+    virtual void set_start_frame(int start_frame);
     virtual MaybeRectangle get_rectangle() const = 0;
     virtual void set_rectangle(const Rectangle& rect) = 0;
     virtual bool is_changed() const = 0;
     virtual void set_changed(bool changed) = 0;
 
+    typedef sigc::signal<void, int> type_signal_start_frame_changed;
+    virtual type_signal_start_frame_changed signal_start_frame_changed();
+
     typedef sigc::signal<void, Rectangle> type_signal_rectangle_changed;
     virtual type_signal_rectangle_changed signal_rectangle_changed();
 
   protected:
+    Gtk::Label lbl_start_frame_;
+    Gtk::SpinButton txt_start_frame_;
+
+    type_signal_start_frame_changed signal_start_frame_changed_;
     type_signal_rectangle_changed signal_rectangle_changed_;
+
+    void on_start_frame_change();
   };
 
 
   class FilterPanelFactory
   {
   public:
-    FilterPanelFactory(int frame_width, int frame_height);
+    FilterPanelFactory(int max_frame, int frame_width, int frame_height);
 
-    FilterPanel* create(fg::Filter* filter);
-    FilterPanel* create(fg::FilterType type);
-    FilterPanel* convert(fg::Filter* original, fg::FilterType new_type);
+    FilterPanel* create(int start_frame, fg::Filter* filter);
+    FilterPanel* create(int start_frame, fg::FilterType type);
+    FilterPanel* convert(int start_frame, fg::Filter* original, fg::FilterType new_type);
 
   private:
+    int max_frame_;
     int frame_width_;
     int frame_height_;
 

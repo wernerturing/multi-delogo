@@ -77,7 +77,11 @@ namespace mdl {
     bool get_iter_vfunc(const Path& path, iterator& iter) const override;
 
     void get_value_vfunc(const const_iterator& iter, int column, Glib::ValueBase& value) const override;
+
     void set_value_impl(const iterator& iter, int column, const Glib::ValueBase& value) override;
+    void set_value_start_frame(const iterator& iter, const Glib::ValueBase& value);
+    void set_value_filter(const iterator& iter, const Glib::ValueBase& value);
+
 
   private:
     fg::FilterList& filter_list_;

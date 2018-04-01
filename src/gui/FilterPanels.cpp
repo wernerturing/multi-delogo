@@ -26,7 +26,63 @@
 using namespace mdl;
 
 
-FilterPanelNoParameters::FilterPanelNoParameters()
+FilterPanel::FilterPanel(int start_frame, int max_frame)
+{
+  set_orientation(Gtk::ORIENTATION_VERTICAL);
+  set_row_spacing(6);
+  set_column_spacing(4);
+
+  lbl_start_frame_.set_label(_("_Start frame:"));
+  lbl_start_frame_.set_use_underline();
+  lbl_start_frame_.set_mnemonic_widget(txt_start_frame_);
+
+  txt_start_frame_.configure(Gtk::Adjustment::create(start_frame, 1, max_frame), 10, 0);
+  txt_start_frame_.signal_value_changed().connect(
+    sigc::mem_fun(*this, &FilterPanel::on_start_frame_change));
+
+  lbl_start_frame_.set_halign(Gtk::ALIGN_END);
+  attach(lbl_start_frame_, 0, -1, 1, 1);
+  attach_next_to(txt_start_frame_, lbl_start_frame_, Gtk::POS_RIGHT, 1, 1);
+}
+
+
+FilterPanel::~FilterPanel()
+{
+}
+
+
+bool FilterPanel::creates_filter() const
+{
+  return true;
+}
+
+
+void FilterPanel::set_start_frame(int start_frame)
+{
+  txt_start_frame_.set_value(start_frame);
+}
+
+
+FilterPanel::type_signal_start_frame_changed FilterPanel::signal_start_frame_changed()
+{
+  return signal_start_frame_changed_;
+}
+
+
+FilterPanel::type_signal_rectangle_changed FilterPanel::signal_rectangle_changed()
+{
+  return signal_rectangle_changed_;
+}
+
+
+void FilterPanel::on_start_frame_change()
+{
+  signal_start_frame_changed_.emit(txt_start_frame_.get_value_as_int());
+}
+
+
+FilterPanelNoParameters::FilterPanelNoParameters(int start_frame, int max_frame)
+  : FilterPanel(start_frame, max_frame)
 {
 }
 
@@ -55,7 +111,8 @@ void FilterPanelNoParameters::set_changed(bool changed)
 }
 
 
-FilterPanelNull::FilterPanelNull()
+FilterPanelNull::FilterPanelNull(int start_frame, int max_frame)
+  : FilterPanelNoParameters(start_frame, max_frame)
 {
 }
 
@@ -72,7 +129,8 @@ fg::Filter* FilterPanelNull::get_filter() const
 }
 
 
-FilterPanelCut::FilterPanelCut()
+FilterPanelCut::FilterPanelCut(int start_frame, int max_frame)
+  : FilterPanelNoParameters(start_frame, max_frame)
 {
 }
 
@@ -83,7 +141,8 @@ fg::Filter* FilterPanelCut::get_filter() const
 }
 
 
-FilterPanelReview::FilterPanelReview()
+FilterPanelReview::FilterPanelReview(int start_frame, int max_frame)
+  : FilterPanelNoParameters(start_frame, max_frame)
 {
 }
 
@@ -94,31 +153,35 @@ fg::Filter* FilterPanelReview::get_filter() const
 }
 
 
-FilterPanelRectangular::FilterPanelRectangular(int frame_width, int frame_height)
-  : FilterPanelRectangular(0, 0, 0, 0, frame_width, frame_height)
-{
-}
-
-
-FilterPanelRectangular::FilterPanelRectangular(fg::RectangularFilter* filter,
+FilterPanelRectangular::FilterPanelRectangular(int start_frame, int max_frame,
                                                int frame_width, int frame_height)
-  : FilterPanelRectangular(filter->x(), filter->y(), filter->width(), filter->height(),
+  : FilterPanelRectangular(start_frame, max_frame,
+                           0, 0, 0, 0,
                            frame_width, frame_height)
 {
 }
 
 
-FilterPanelRectangular::FilterPanelRectangular(int x, int y, int width, int height,
+FilterPanelRectangular::FilterPanelRectangular(int start_frame, int max_frame,
+                                               fg::RectangularFilter* filter,
                                                int frame_width, int frame_height)
-  : is_changed_(false)
+  : FilterPanelRectangular(start_frame, max_frame,
+                           filter->x(), filter->y(), filter->width(), filter->height(),
+                           frame_width, frame_height)
+{
+}
+
+
+FilterPanelRectangular::FilterPanelRectangular(int start_frame, int max_frame,
+                                               int x, int y, int width, int height,
+                                               int frame_width, int frame_height)
+  : FilterPanel(start_frame, max_frame)
+  , is_changed_(false)
 {
   txt_x_.configure(create_adjustment(x, frame_width - 1), 10, 0);
   txt_y_.configure(create_adjustment(y, frame_height - 1), 10, 0);
   txt_width_.configure(create_adjustment(width, frame_width), 10, 0);
   txt_height_.configure(create_adjustment(height, frame_height), 10, 0);
-
-  set_row_spacing(6);
-  set_column_spacing(4);
 
   add_widget(txt_x_, _("_x:"), 0);
   add_widget(txt_y_, _("_y:"), 1);
@@ -191,15 +254,17 @@ void FilterPanelRectangular::on_coordinate_change()
 }
 
 
-FilterPanelDelogo::FilterPanelDelogo(int frame_width, int frame_height)
-  : FilterPanelRectangular(frame_width, frame_height)
+FilterPanelDelogo::FilterPanelDelogo(int start_frame, int max_frame,
+                                     int frame_width, int frame_height)
+  : FilterPanelRectangular(start_frame, max_frame, frame_width, frame_height)
 {
 }
 
 
-FilterPanelDelogo::FilterPanelDelogo(fg::DelogoFilter* filter,
+FilterPanelDelogo::FilterPanelDelogo(int start_frame, int max_frame,
+                                     fg::DelogoFilter* filter,
                                      int frame_width, int frame_height)
-  : FilterPanelRectangular(filter, frame_width, frame_height)
+  : FilterPanelRectangular(start_frame, max_frame, filter, frame_width, frame_height)
 {
 }
 
@@ -213,15 +278,17 @@ fg::Filter* FilterPanelDelogo::get_filter() const
 }
 
 
-FilterPanelDrawbox::FilterPanelDrawbox(int frame_width, int frame_height)
-  : FilterPanelRectangular(frame_width, frame_height)
+FilterPanelDrawbox::FilterPanelDrawbox(int start_frame, int max_frame,
+                                       int frame_width, int frame_height)
+  : FilterPanelRectangular(start_frame, max_frame, frame_width, frame_height)
 {
 }
 
 
-FilterPanelDrawbox::FilterPanelDrawbox(fg::DrawboxFilter* filter,
+FilterPanelDrawbox::FilterPanelDrawbox(int start_frame, int max_frame,
+                                       fg::DrawboxFilter* filter,
                                        int frame_width, int frame_height)
-  : FilterPanelRectangular(filter, frame_width, frame_height)
+  : FilterPanelRectangular(start_frame, max_frame, filter, frame_width, frame_height)
 {
 }
 

@@ -321,18 +321,12 @@ bool EncodeWindow::check_file(const std::string& file)
   }
 
   if (file_exists(file)) {
-    Gtk::MessageDialog dlg(*this,
-                           Glib::ustring::compose(_("File %1 already exists. Overwrite?"), file),
-                           false,
-                           Gtk::MESSAGE_QUESTION,
-                           Gtk::BUTTONS_NONE);
-    dlg.add_button(_("_Overwrite"), Gtk::RESPONSE_YES);
-    dlg.add_button(_("_Cancel"), Gtk::RESPONSE_NO);
-    dlg.set_default_response(Gtk::RESPONSE_NO);
-    return dlg.run() == Gtk::RESPONSE_YES;
+    return confirmation_dialog(*this,
+                               Glib::ustring::compose(_("File %1 already exists. Overwrite?"), file),
+                               _("_Overwrite"),  _("_Cancel"));
+  } else {
+    return true;
   }
-
-  return true;
 }
 
 
@@ -392,15 +386,9 @@ bool EncodeWindow::on_delete_event(GdkEventAny*)
     return false;
   }
 
-  Gtk::MessageDialog dlg(*this,
-                         _("Encoding is in progress. If it is cancelled now, it'll be necessary to restart encoding from the beginning. Really cancel?"),
-                         false,
-                         Gtk::MESSAGE_QUESTION,
-                         Gtk::BUTTONS_NONE);
-  dlg.add_button(_("C_ancel encoding"), Gtk::RESPONSE_CLOSE);
-  dlg.add_button(_("_Continue"), Gtk::RESPONSE_OK);
-  dlg.set_default_response(Gtk::RESPONSE_OK);
-  bool terminate = dlg.run() == Gtk::RESPONSE_CLOSE;
+  bool terminate = confirmation_dialog(*this,
+                                       _("Encoding is in progress. If it is cancelled now, it'll be necessary to restart encoding from the beginning. Really cancel?"),
+                                       _("C_ancel encoding"), _("_Continue"));
 
   if (terminate) {
     ffmpeg_.terminate();

@@ -21,9 +21,19 @@
 
 #include <string>
 
+#include <gtkmm.h>
+
 
 namespace mdl {
   bool file_exists(const std::string& file);
+
+  bool confirmation_dialog(const Glib::ustring& msg,
+                           const Glib::ustring& txt_destructive,
+                           const Glib::ustring& txt_safe);
+  bool confirmation_dialog(Gtk::Window& parent,
+                           const Glib::ustring& msg,
+                           const Glib::ustring& txt_destructive,
+                           const Glib::ustring& txt_safe);
 }
 
 #endif // MDL_UTILS_H

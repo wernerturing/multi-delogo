@@ -48,7 +48,7 @@ class Fixture
 {
 public:
   Fixture()
-    : factory(1000, 1000)
+    : factory(5000, 1000, 1000)
   {
   }
 
@@ -61,7 +61,7 @@ BOOST_FIXTURE_TEST_SUITE(Panel_creation, Fixture)
 BOOST_AUTO_TEST_CASE(should_create_a_panel_for_null_filter)
 {
   fg::NullFilter filter;
-  FilterPanel* panel = factory.create(&filter);
+  FilterPanel* panel = factory.create(1, &filter);
   FilterPanelNull* downcasted = dynamic_cast<FilterPanelNull*>(panel);
 
   BOOST_CHECK(downcasted != nullptr);
@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_CASE(should_create_a_panel_for_null_filter)
 
 BOOST_AUTO_TEST_CASE(should_create_a_panel_for_null_filter_from_type)
 {
-  FilterPanel* panel = factory.create(fg::FilterType::NO_OP);
+  FilterPanel* panel = factory.create(1, fg::FilterType::NO_OP);
   FilterPanelNull* downcasted = dynamic_cast<FilterPanelNull*>(panel);
 
   BOOST_CHECK(downcasted != nullptr);
@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE(should_create_a_panel_for_null_filter_from_type)
 BOOST_AUTO_TEST_CASE(filter_panel_null_should_return_a_null_filter)
 {
   fg::NullFilter filter;
-  FilterPanel* panel = factory.create(&filter);
+  FilterPanel* panel = factory.create(1, &filter);
 
   fg::Filter* created_filter = panel->get_filter();
   BOOST_CHECK_EQUAL(created_filter->type(), fg::FilterType::NO_OP);
@@ -90,7 +90,7 @@ BOOST_AUTO_TEST_CASE(filter_panel_null_should_return_a_null_filter)
 BOOST_AUTO_TEST_CASE(filter_panel_null_should_return_no_rectangle)
 {
   fg::NullFilter filter;
-  FilterPanel* panel = factory.create(&filter);
+  FilterPanel* panel = factory.create(1, &filter);
 
   auto rect = panel->get_rectangle();
   BOOST_CHECK(!rect);
@@ -100,7 +100,7 @@ BOOST_AUTO_TEST_CASE(filter_panel_null_should_return_no_rectangle)
 BOOST_AUTO_TEST_CASE(should_create_a_panel_for_delogo_filter)
 {
   fg::DelogoFilter filter(1, 2, 3, 4);
-  FilterPanel* panel = factory.create(&filter);
+  FilterPanel* panel = factory.create(1, &filter);
   FilterPanelDelogo* downcasted = dynamic_cast<FilterPanelDelogo*>(panel);
 
   BOOST_CHECK(downcasted != nullptr);
@@ -109,7 +109,7 @@ BOOST_AUTO_TEST_CASE(should_create_a_panel_for_delogo_filter)
 
 BOOST_AUTO_TEST_CASE(should_create_a_panel_for_delogo_filter_from_type)
 {
-  FilterPanel* panel = factory.create(fg::FilterType::DELOGO);
+  FilterPanel* panel = factory.create(1, fg::FilterType::DELOGO);
   FilterPanelDelogo* downcasted = dynamic_cast<FilterPanelDelogo*>(panel);
 
   BOOST_CHECK(downcasted != nullptr);
@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_CASE(should_create_a_panel_for_delogo_filter_from_type)
 BOOST_AUTO_TEST_CASE(filter_panel_delogo_should_return_a_delogo_filter)
 {
   fg::DelogoFilter filter(1, 2, 3, 4);
-  FilterPanel* panel = factory.create(&filter);
+  FilterPanel* panel = factory.create(1, &filter);
 
   fg::Filter* created_filter = panel->get_filter();
   BOOST_REQUIRE_EQUAL(created_filter->type(), fg::FilterType::DELOGO);
@@ -135,7 +135,7 @@ BOOST_AUTO_TEST_CASE(filter_panel_delogo_should_return_a_delogo_filter)
 BOOST_AUTO_TEST_CASE(filter_panel_delogo_should_return_a_rectangle)
 {
   fg::DelogoFilter filter(15, 20, 80, 40);
-  FilterPanel* panel = factory.create(&filter);
+  FilterPanel* panel = factory.create(1, &filter);
 
   auto rect = panel->get_rectangle();
   BOOST_REQUIRE(rect);
@@ -149,7 +149,7 @@ BOOST_AUTO_TEST_CASE(filter_panel_delogo_should_return_a_rectangle)
 BOOST_AUTO_TEST_CASE(should_create_a_panel_for_drawbox_filter)
 {
   fg::DrawboxFilter filter(11, 22, 33, 44);
-  FilterPanel* panel = factory.create(&filter);
+  FilterPanel* panel = factory.create(1, &filter);
   FilterPanelDrawbox* downcasted = dynamic_cast<FilterPanelDrawbox*>(panel);
 
   BOOST_CHECK(downcasted != nullptr);
@@ -158,7 +158,7 @@ BOOST_AUTO_TEST_CASE(should_create_a_panel_for_drawbox_filter)
 
 BOOST_AUTO_TEST_CASE(should_create_a_panel_for_drawbox_filter_from_type)
 {
-  FilterPanel* panel = factory.create(fg::FilterType::DRAWBOX);
+  FilterPanel* panel = factory.create(1, fg::FilterType::DRAWBOX);
   FilterPanelDrawbox* downcasted = dynamic_cast<FilterPanelDrawbox*>(panel);
 
   BOOST_CHECK(downcasted != nullptr);
@@ -168,7 +168,7 @@ BOOST_AUTO_TEST_CASE(should_create_a_panel_for_drawbox_filter_from_type)
 BOOST_AUTO_TEST_CASE(filter_panel_drawbox_should_return_a_drawbox_filter)
 {
   fg::DrawboxFilter filter(11, 22, 33, 44);
-  FilterPanel* panel = factory.create(&filter);
+  FilterPanel* panel = factory.create(1, &filter);
 
   fg::Filter* created_filter = panel->get_filter();
   BOOST_REQUIRE_EQUAL(created_filter->type(), fg::FilterType::DRAWBOX);
@@ -184,7 +184,7 @@ BOOST_AUTO_TEST_CASE(filter_panel_drawbox_should_return_a_drawbox_filter)
 BOOST_AUTO_TEST_CASE(filter_panel_drawbox_should_return_a_rectangle)
 {
   fg::DrawboxFilter filter(0, 500, 100, 30);
-  FilterPanel* panel = factory.create(&filter);
+  FilterPanel* panel = factory.create(1, &filter);
 
   auto rect = panel->get_rectangle();
   BOOST_REQUIRE(rect);
@@ -198,7 +198,7 @@ BOOST_AUTO_TEST_CASE(filter_panel_drawbox_should_return_a_rectangle)
 BOOST_AUTO_TEST_CASE(should_create_a_panel_for_cut_filter)
 {
   fg::CutFilter filter;
-  FilterPanel* panel = factory.create(&filter);
+  FilterPanel* panel = factory.create(1, &filter);
   FilterPanelCut* downcasted = dynamic_cast<FilterPanelCut*>(panel);
 
   BOOST_CHECK(downcasted != nullptr);
@@ -207,7 +207,7 @@ BOOST_AUTO_TEST_CASE(should_create_a_panel_for_cut_filter)
 
 BOOST_AUTO_TEST_CASE(should_create_a_panel_for_cut_filter_from_type)
 {
-  FilterPanel* panel = factory.create(fg::FilterType::CUT);
+  FilterPanel* panel = factory.create(1, fg::FilterType::CUT);
   FilterPanelCut* downcasted = dynamic_cast<FilterPanelCut*>(panel);
 
   BOOST_CHECK(downcasted != nullptr);
@@ -217,7 +217,7 @@ BOOST_AUTO_TEST_CASE(should_create_a_panel_for_cut_filter_from_type)
 BOOST_AUTO_TEST_CASE(filter_panel_cut_should_return_a_cut_filter)
 {
   fg::CutFilter filter;
-  FilterPanel* panel = factory.create(&filter);
+  FilterPanel* panel = factory.create(1, &filter);
 
   fg::Filter* created_filter = panel->get_filter();
   BOOST_CHECK_EQUAL(created_filter->type(), fg::FilterType::CUT);
@@ -227,7 +227,7 @@ BOOST_AUTO_TEST_CASE(filter_panel_cut_should_return_a_cut_filter)
 BOOST_AUTO_TEST_CASE(filter_panel_cut_should_return_no_rectangle)
 {
   fg::CutFilter filter;
-  FilterPanel* panel = factory.create(&filter);
+  FilterPanel* panel = factory.create(1, &filter);
 
   auto rect = panel->get_rectangle();
   BOOST_CHECK(!rect);
@@ -237,7 +237,7 @@ BOOST_AUTO_TEST_CASE(filter_panel_cut_should_return_no_rectangle)
 BOOST_AUTO_TEST_CASE(should_create_a_panel_for_review_filter)
 {
   fg::ReviewFilter filter;
-  FilterPanel* panel = factory.create(&filter);
+  FilterPanel* panel = factory.create(1, &filter);
   FilterPanelReview* downcasted = dynamic_cast<FilterPanelReview*>(panel);
 
   BOOST_CHECK(downcasted != nullptr);
@@ -246,7 +246,7 @@ BOOST_AUTO_TEST_CASE(should_create_a_panel_for_review_filter)
 
 BOOST_AUTO_TEST_CASE(should_create_a_panel_for_review_filter_from_type)
 {
-  FilterPanel* panel = factory.create(fg::FilterType::REVIEW);
+  FilterPanel* panel = factory.create(1, fg::FilterType::REVIEW);
   FilterPanelReview* downcasted = dynamic_cast<FilterPanelReview*>(panel);
 
   BOOST_CHECK(downcasted != nullptr);
@@ -256,7 +256,7 @@ BOOST_AUTO_TEST_CASE(should_create_a_panel_for_review_filter_from_type)
 BOOST_AUTO_TEST_CASE(filter_panel_review_should_return_a_review_filter)
 {
   fg::ReviewFilter filter;
-  FilterPanel* panel = factory.create(&filter);
+  FilterPanel* panel = factory.create(1, &filter);
 
   fg::Filter* created_filter = panel->get_filter();
   BOOST_CHECK_EQUAL(created_filter->type(), fg::FilterType::REVIEW);
@@ -266,7 +266,7 @@ BOOST_AUTO_TEST_CASE(filter_panel_review_should_return_a_review_filter)
 BOOST_AUTO_TEST_CASE(filter_panel_review_should_return_no_rectangle)
 {
   fg::ReviewFilter filter;
-  FilterPanel* panel = factory.create(&filter);
+  FilterPanel* panel = factory.create(1, &filter);
 
   auto rect = panel->get_rectangle();
   BOOST_CHECK(!rect);
@@ -280,7 +280,7 @@ BOOST_FIXTURE_TEST_SUITE(Panel_conversion, Fixture)
 BOOST_AUTO_TEST_CASE(should_convert_from_delogo_to_null_filter)
 {
   fg::DelogoFilter filter(0, 500, 100, 30);
-  FilterPanel* panel = factory.convert(&filter, fg::FilterType::NO_OP);
+  FilterPanel* panel = factory.convert(1, &filter, fg::FilterType::NO_OP);
   FilterPanelNull* downcasted = dynamic_cast<FilterPanelNull*>(panel);
 
   BOOST_CHECK(downcasted != nullptr);
@@ -290,7 +290,7 @@ BOOST_AUTO_TEST_CASE(should_convert_from_delogo_to_null_filter)
 BOOST_AUTO_TEST_CASE(should_convert_from_drawbox_to_null_filter)
 {
   fg::DelogoFilter filter(0, 0, 10, 10);
-  FilterPanel* panel = factory.convert(&filter, fg::FilterType::NO_OP);
+  FilterPanel* panel = factory.convert(1, &filter, fg::FilterType::NO_OP);
   FilterPanelNull* downcasted = dynamic_cast<FilterPanelNull*>(panel);
 
   BOOST_CHECK(downcasted != nullptr);
@@ -300,7 +300,7 @@ BOOST_AUTO_TEST_CASE(should_convert_from_drawbox_to_null_filter)
 BOOST_AUTO_TEST_CASE(should_convert_from_null_filter_to_delogo)
 {
   fg::NullFilter filter;
-  FilterPanel* panel = factory.convert(&filter, fg::FilterType::DELOGO);
+  FilterPanel* panel = factory.convert(1, &filter, fg::FilterType::DELOGO);
   FilterPanelDelogo* downcasted = dynamic_cast<FilterPanelDelogo*>(panel);
 
   BOOST_CHECK(downcasted != nullptr);
@@ -310,7 +310,7 @@ BOOST_AUTO_TEST_CASE(should_convert_from_null_filter_to_delogo)
 BOOST_AUTO_TEST_CASE(should_convert_from_null_filter_to_drawbox)
 {
   fg::NullFilter filter;
-  FilterPanel* panel = factory.convert(&filter, fg::FilterType::DRAWBOX);
+  FilterPanel* panel = factory.convert(1, &filter, fg::FilterType::DRAWBOX);
   FilterPanelDrawbox* downcasted = dynamic_cast<FilterPanelDrawbox*>(panel);
 
   BOOST_CHECK(downcasted != nullptr);
@@ -320,7 +320,7 @@ BOOST_AUTO_TEST_CASE(should_convert_from_null_filter_to_drawbox)
 BOOST_AUTO_TEST_CASE(should_convert_from_delogo_to_drawbox)
 {
   fg::DelogoFilter filter(9, 8, 7, 6);
-  FilterPanel* panel = factory.convert(&filter, fg::FilterType::DRAWBOX);
+  FilterPanel* panel = factory.convert(1, &filter, fg::FilterType::DRAWBOX);
 
   FilterPanelDrawbox* downcasted = dynamic_cast<FilterPanelDrawbox*>(panel);
   BOOST_CHECK(downcasted != nullptr);
@@ -336,7 +336,7 @@ BOOST_AUTO_TEST_CASE(should_convert_from_delogo_to_drawbox)
 BOOST_AUTO_TEST_CASE(should_convert_from_drawbox_to_delogo)
 {
   fg::DrawboxFilter filter(1, 2, 3, 4);
-  FilterPanel* panel = factory.convert(&filter, fg::FilterType::DELOGO);
+  FilterPanel* panel = factory.convert(1, &filter, fg::FilterType::DELOGO);
 
   FilterPanelDelogo* downcasted = dynamic_cast<FilterPanelDelogo*>(panel);
   BOOST_CHECK(downcasted != nullptr);
@@ -352,7 +352,7 @@ BOOST_AUTO_TEST_CASE(should_convert_from_drawbox_to_delogo)
 BOOST_AUTO_TEST_CASE(should_convert_from_delogo_to_cut_filter)
 {
   fg::DelogoFilter filter(0, 500, 100, 30);
-  FilterPanel* panel = factory.convert(&filter, fg::FilterType::CUT);
+  FilterPanel* panel = factory.convert(1, &filter, fg::FilterType::CUT);
   FilterPanelCut* downcasted = dynamic_cast<FilterPanelCut*>(panel);
 
   BOOST_CHECK(downcasted != nullptr);
@@ -362,7 +362,7 @@ BOOST_AUTO_TEST_CASE(should_convert_from_delogo_to_cut_filter)
 BOOST_AUTO_TEST_CASE(should_convert_from_cut_filter_to_drawbox)
 {
   fg::CutFilter filter;
-  FilterPanel* panel = factory.convert(&filter, fg::FilterType::DRAWBOX);
+  FilterPanel* panel = factory.convert(1, &filter, fg::FilterType::DRAWBOX);
   FilterPanelDrawbox* downcasted = dynamic_cast<FilterPanelDrawbox*>(panel);
 
   BOOST_CHECK(downcasted != nullptr);
@@ -372,7 +372,7 @@ BOOST_AUTO_TEST_CASE(should_convert_from_cut_filter_to_drawbox)
 BOOST_AUTO_TEST_CASE(should_convert_from_cut_filter_to_null_filter)
 {
   fg::CutFilter filter;
-  FilterPanel* panel = factory.convert(&filter, fg::FilterType::NO_OP);
+  FilterPanel* panel = factory.convert(1, &filter, fg::FilterType::NO_OP);
   FilterPanelNull* downcasted = dynamic_cast<FilterPanelNull*>(panel);
 
   BOOST_CHECK(downcasted != nullptr);
@@ -382,7 +382,7 @@ BOOST_AUTO_TEST_CASE(should_convert_from_cut_filter_to_null_filter)
 BOOST_AUTO_TEST_CASE(should_convert_from_review_filter_to_delogo)
 {
   fg::ReviewFilter filter;
-  FilterPanel* panel = factory.convert(&filter, fg::FilterType::DELOGO);
+  FilterPanel* panel = factory.convert(1, &filter, fg::FilterType::DELOGO);
   FilterPanelDelogo* downcasted = dynamic_cast<FilterPanelDelogo*>(panel);
 
   BOOST_CHECK(downcasted != nullptr);

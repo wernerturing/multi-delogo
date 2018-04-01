@@ -285,23 +285,53 @@ void FilterListModel::set_value_impl(const iterator& iter, int column, const Gli
   }
 
   if (column == columns.start_frame.index()) {
-    throw std::invalid_argument("Impossible to change start frame");
+    set_value_start_frame(iter, value);
+  } else if (column == columns.filter.index()) {
+    set_value_filter(iter, value);
   } else if (column == columns.filter_name.index()) {
     throw std::invalid_argument("Impossible to change filter name");
-  } else if (column == columns.filter.index()) {
-    Glib::Value<fg::Filter*> filter_value;
-    filter_value.init(value.gobj());
-
-    fg::FilterList::maybe_type filter = get_filter_by_iter(iter);
-    if (!filter) {
-      g_warning("FilterListModel::set_value_impl: filter_not_found");
-      return;
-    }
-
-    filter_list_.insert(filter->first, filter_value.get());
-
-    row_changed(get_path(iter), iter);
   }
+}
+
+
+void FilterListModel::set_value_start_frame(const iterator& iter, const Glib::ValueBase& value)
+{
+  Glib::Value<int> start_frame_value;
+  start_frame_value.init(value.gobj());
+  int new_start_frame = start_frame_value.get();
+  int current_start_frame = (*iter)[columns.start_frame];
+
+  auto existing = get_by_start_frame(new_start_frame);
+  if (existing) {
+    remove(existing);
+  }
+
+  auto removed_path = get_path(get_by_start_frame(current_start_frame));
+
+  filter_list_.change_start_frame(current_start_frame, new_start_frame);
+  ++stamp_;
+
+  row_deleted(removed_path);
+
+  auto new_iter = get_by_start_frame(new_start_frame);
+  row_inserted(get_path(new_iter), new_iter);
+}
+
+
+void FilterListModel::set_value_filter(const iterator& iter, const Glib::ValueBase& value)
+{
+  Glib::Value<fg::Filter*> filter_value;
+  filter_value.init(value.gobj());
+
+  fg::FilterList::maybe_type filter = get_filter_by_iter(iter);
+  if (!filter) {
+    g_warning("FilterListModel::set_value_impl: filter_not_found");
+    return;
+  }
+
+  filter_list_.insert(filter->first, filter_value.get());
+
+  row_changed(get_path(iter), iter);
 }
 
 
