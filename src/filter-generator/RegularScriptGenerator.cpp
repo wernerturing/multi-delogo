@@ -87,7 +87,7 @@ void RegularScriptGenerator::generate_ffmpeg_script_standard_filters(std::ostrea
   while (i != filter_list_.end()) {
     auto& current = *i++;
 
-    fg::Filter* filter = current.second;
+    FilterList::filter_ptr filter = current.second;
 
     int start = current.first - 1;
     maybe_int next_start;
@@ -105,7 +105,7 @@ void RegularScriptGenerator::generate_ffmpeg_script_standard_filters(std::ostrea
 }
 
 
-void RegularScriptGenerator::process_standard_filter(fg::Filter* filter,
+void RegularScriptGenerator::process_standard_filter(FilterList::filter_ptr filter,
                                                      int start_frame, maybe_int next_start_frame,
                                                      std::ostream& out) const
 {

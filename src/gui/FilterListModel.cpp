@@ -89,7 +89,7 @@ FilterListModel::iterator FilterListModel::get_by_start_frame(int start_frame)
 }
 
 
-FilterListModel::iterator FilterListModel::insert(int start_frame, fg::Filter* filter)
+FilterListModel::iterator FilterListModel::insert(int start_frame, filter_ptr filter)
 {
   if (filter_list_.get_by_start_frame(start_frame)) {
     throw DuplicateRowException();
@@ -268,7 +268,10 @@ void FilterListModel::get_value_vfunc(const const_iterator& iter, int column, Gl
   if (column == columns.start_frame.index()) {
     g_value_set_int(value.gobj(), filter->first);
   } else if (column == columns.filter.index()) {
-    g_value_set_pointer(value.gobj(), filter->second);
+    Glib::Value<filter_ptr> value_specific;
+    value_specific.init(Glib::Value<filter_ptr>::value_type());
+    value_specific.set(filter->second);
+    value = value_specific;
   } else if (column == columns.filter_name.index()) {
     g_value_set_string(value.gobj(), filter->second->name().c_str());
   }
@@ -320,7 +323,7 @@ void FilterListModel::set_value_start_frame(const iterator& iter, const Glib::Va
 
 void FilterListModel::set_value_filter(const iterator& iter, const Glib::ValueBase& value)
 {
-  Glib::Value<fg::Filter*> filter_value;
+  Glib::Value<filter_ptr> filter_value;
   filter_value.init(value.gobj());
 
   fg::FilterList::maybe_type filter = get_filter_by_iter(iter);

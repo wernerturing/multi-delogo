@@ -184,8 +184,8 @@ BOOST_AUTO_TEST_CASE(test_save)
   FilterData filters;
   filters.set_movie_file("/home/user/videos/test.mp4");
   filters.set_jump_size(360);
-  filters.filter_list().insert(1, new DelogoFilter(1, 2, 3, 4));
-  filters.filter_list().insert(251, new DelogoFilter(9, 8, 7, 6));
+  filters.filter_list().insert(1, FilterList::filter_ptr(new DelogoFilter(1, 2, 3, 4)));
+  filters.filter_list().insert(251, FilterList::filter_ptr(new DelogoFilter(9, 8, 7, 6)));
 
   std::ostringstream out;
   filters.save(out);

@@ -58,7 +58,7 @@ namespace fg {
     void generate_ffmpeg_script_audio(std::ostream& out) const;
     std::string separator() const;
 
-    void process_standard_filter(fg::Filter* filter,
+    void process_standard_filter(FilterList::filter_ptr filter,
                                  int start_frame, maybe_int next_start_frame,
                                  std::ostream& out) const;
     void process_cut_filter(int start_frame, maybe_int next_start_frame) const;
