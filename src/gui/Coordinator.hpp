@@ -26,6 +26,7 @@
 #include "FrameNavigator.hpp"
 #include "FrameView.hpp"
 #include "FilterPanelFactory.hpp"
+#include "UndoManager.hpp"
 
 
 namespace mdl {
@@ -47,6 +48,8 @@ namespace mdl {
     int get_current_frame();
 
   private:
+    UndoManager undo_manager_;
+
     Gtk::Window& parent_window_;
 
     FilterList& filter_list_;
@@ -61,6 +64,7 @@ namespace mdl {
     int current_filter_start_frame_;
     fg::filter_ptr current_filter_;
     bool scroll_filter_;
+
 
     sigc::connection on_filter_selected_;
     void on_filter_selected(int start_frame);

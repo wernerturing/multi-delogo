@@ -36,7 +36,8 @@ Coordinator::Coordinator(Gtk::Window& parent_window,
                          FilterList& filter_list,
                          FrameNavigator& frame_navigator,
                          int frame_width, int frame_height)
-  : parent_window_(parent_window)
+  : undo_manager_(*this)
+  , parent_window_(parent_window)
   , filter_list_(filter_list)
   , filter_model_(filter_list.get_model())
   , frame_navigator_(frame_navigator)
@@ -333,7 +334,7 @@ void Coordinator::on_remove_filter()
   fg::filter_ptr filter = (*iter)[filter_model_->columns.filter];
 
   edit_action_ptr remove_action = edit_action_ptr(new RemoveFilterAction(current_frame_, filter));
-  remove_action->execute(*this);
+  undo_manager_.execute_action(remove_action);
 }
 
 
