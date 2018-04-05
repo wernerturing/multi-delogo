@@ -328,7 +328,7 @@ void Coordinator::add_new_filter_if_not_on_filter_starting_frame(bool always_add
 
 void Coordinator::on_remove_filter()
 {
-  auto iter = filter_model_->get_by_start_frame(current_frame_);
+  auto iter = filter_list_.get_selected();
   on_filter_selected_.block();
   filter_model_->remove(iter);
   on_filter_selected_.block(false);
