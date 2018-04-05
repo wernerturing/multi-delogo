@@ -91,6 +91,10 @@ namespace mdl {
     void add_new_filter_if_not_on_filter_starting_frame(bool always_add = false);
 
     void on_remove_filter();
+    void remove_filter(int start_frame);
+
+
+    friend class RemoveFilterAction;
   };
 }
 

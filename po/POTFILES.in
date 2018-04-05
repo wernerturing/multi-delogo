@@ -16,6 +16,7 @@
 # along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 
 src/gui/Coordinator.cpp
+src/gui/EditAction.cpp
 src/gui/EncodeWindow.cpp
 src/gui/ETRProgressBar.cpp
 src/gui/FilterList.cpp

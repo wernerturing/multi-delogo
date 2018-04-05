@@ -26,6 +26,7 @@
 #include "FrameNavigator.hpp"
 #include "FrameView.hpp"
 #include "FilterPanelFactory.hpp"
+#include "EditAction.hpp"
 #include "Utils.hpp"
 
 using namespace mdl;
@@ -329,6 +330,16 @@ void Coordinator::add_new_filter_if_not_on_filter_starting_frame(bool always_add
 void Coordinator::on_remove_filter()
 {
   auto iter = filter_list_.get_selected();
+  fg::filter_ptr filter = (*iter)[filter_model_->columns.filter];
+
+  edit_action_ptr remove_action = edit_action_ptr(new RemoveFilterAction(current_frame_, filter));
+  remove_action->execute(*this);
+}
+
+
+void Coordinator::remove_filter(int start_frame)
+{
+  auto iter = filter_model_->get_by_start_frame(start_frame);
   on_filter_selected_.block();
   filter_model_->remove(iter);
   on_filter_selected_.block(false);
