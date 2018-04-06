@@ -35,6 +35,7 @@ namespace mdl {
 
     void execute_action(edit_action_ptr action);
     void undo_last_action();
+    void redo_last_action();
 
   private:
     std::deque<edit_action_ptr> undo_list_;
@@ -46,6 +47,7 @@ namespace mdl {
     void add_to_undo_list(edit_action_ptr action);
     void clear_redo_list();
     void move_to_redo_list(edit_action_ptr action);
+    void move_to_undo_list(edit_action_ptr action);
   };
 }
 

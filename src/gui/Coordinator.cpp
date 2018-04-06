@@ -114,7 +114,7 @@ void Coordinator::undo()
 
 void Coordinator::redo()
 {
-  printf("Redo requested\n");
+  undo_manager_.redo_last_action();
 }
 
 

@@ -69,3 +69,20 @@ void UndoManager::move_to_redo_list(edit_action_ptr action)
   redo_list_.push_front(action);
   undo_list_.pop_front();
 }
+
+
+void UndoManager::redo_last_action()
+{
+  printf("UndoManager: redo\n");
+  edit_action_ptr action = redo_list_.front();
+  action->execute(coordinator_);
+  move_to_undo_list(action);
+}
+
+
+void UndoManager::move_to_undo_list(edit_action_ptr action)
+{
+  printf("Moving action to undo list\n");
+  undo_list_.push_front(action);
+  redo_list_.pop_front();
+}
