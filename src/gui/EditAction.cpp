@@ -54,9 +54,10 @@ std::string RemoveFilterAction::get_description() const
 }
 
 
-ChangeStartFrameAction::ChangeStartFrameAction(int old_start_frame, int new_start_frame)
+ChangeStartFrameAction::ChangeStartFrameAction(int old_start_frame, int new_start_frame, fg::filter_ptr previous_filter)
   : old_start_frame_(old_start_frame)
   , new_start_frame_(new_start_frame)
+  , previous_filter_(previous_filter)
 {
 }
 
@@ -70,6 +71,9 @@ void ChangeStartFrameAction::execute(Coordinator& coordinator)
 void ChangeStartFrameAction::undo(Coordinator& coordinator)
 {
   coordinator.change_start_frame(new_start_frame_, old_start_frame_);
+  if (previous_filter_) {
+    coordinator.insert_filter(new_start_frame_, previous_filter_);
+  }
 }
 
 

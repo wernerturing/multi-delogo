@@ -244,7 +244,13 @@ void Coordinator::on_start_frame_changed(int start_frame)
     return;
   }
 
-  edit_action_ptr action = edit_action_ptr(new ChangeStartFrameAction(current_filter_start_frame_, start_frame));
+  fg::filter_ptr previous_filter;
+  auto previous_filter_iter = filter_model_->get_by_start_frame(start_frame);
+  if (previous_filter_iter) {
+    previous_filter = (*previous_filter_iter)[filter_model_->columns.filter];
+  }
+
+  edit_action_ptr action = edit_action_ptr(new ChangeStartFrameAction(current_filter_start_frame_, start_frame, previous_filter));
   undo_manager_.execute_action(action);
 }
 

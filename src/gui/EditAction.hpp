@@ -62,7 +62,7 @@ namespace mdl {
   class ChangeStartFrameAction : public EditAction
   {
   public:
-    ChangeStartFrameAction(int old_start_frame, int new_start_frame);
+    ChangeStartFrameAction(int old_start_frame, int new_start_frame, fg::filter_ptr previous_filter);
 
     void execute(Coordinator& coordinator) override;
     void undo(Coordinator& coordinator) override;
@@ -71,6 +71,7 @@ namespace mdl {
   private:
     int old_start_frame_;
     int new_start_frame_;
+    fg::filter_ptr previous_filter_;
   };
 }
 
