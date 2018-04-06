@@ -19,6 +19,7 @@
 #include <deque>
 
 #include <gtkmm.h>
+#include <glibmm/i18n.h>
 
 #include "EditAction.hpp"
 #include "Coordinator.hpp"
@@ -102,7 +103,19 @@ void UndoManager::move_to_undo_list(edit_action_ptr action)
 
 void UndoManager::update_buttons()
 {
-  btn_undo_.set_sensitive(!undo_list_.empty());
-  btn_redo_.set_sensitive(!redo_list_.empty());
+  update_button(btn_undo_, undo_list_, _("Undo \"%1\""));
+  update_button(btn_redo_, redo_list_, _("Redo \"%1\""));
 }
 
+
+void UndoManager::update_button(Gtk::ToolButton& button, std::deque<edit_action_ptr>& list, const std::string base_text)
+{
+  if (list.empty()) {
+    button.set_sensitive(false);
+    button.set_tooltip_text("");
+  } else {
+    button.set_sensitive(true);
+    edit_action_ptr action = list.front();
+    button.set_tooltip_text(Glib::ustring::compose(base_text, action->get_description()));
+  }
+}

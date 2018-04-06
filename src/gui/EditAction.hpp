@@ -20,6 +20,7 @@
 #define MDL_EDIT_ACTION_H
 
 #include <memory>
+#include <string>
 
 #include "filter-generator/Filters.hpp"
 
@@ -36,6 +37,7 @@ namespace mdl {
   public:
     virtual void execute(Coordinator& coordinator) = 0;
     virtual void undo(Coordinator& coordinator) = 0;
+    virtual std::string get_description() const = 0;
   };
 
 
@@ -49,6 +51,7 @@ namespace mdl {
 
     void execute(Coordinator& coordinator) override;
     void undo(Coordinator& coordinator) override;
+    std::string get_description() const override;
 
   private:
     int start_frame_;

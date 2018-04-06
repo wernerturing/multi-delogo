@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <glibmm.h>
 #include <glibmm/i18n.h>
 
 #include "filter-generator/Filters.hpp"
@@ -44,4 +45,10 @@ void RemoveFilterAction::undo(Coordinator& coordinator)
 {
   printf("Undoing RemoveFilter %d\n", start_frame_);
   coordinator.insert_filter(start_frame_, filter_);
+}
+
+
+std::string RemoveFilterAction::get_description() const
+{
+  return Glib::ustring::compose(_("Remove filter at %1"), start_frame_);
 }

@@ -55,6 +55,7 @@ namespace mdl {
     void move_to_undo_list(edit_action_ptr action);
 
     void update_buttons();
+    void update_button(Gtk::ToolButton& button, std::deque<edit_action_ptr>& list, const std::string base_text);
   };
 }
 
