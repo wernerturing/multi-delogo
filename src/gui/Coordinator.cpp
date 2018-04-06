@@ -106,6 +106,18 @@ void Coordinator::set_scroll_filter(bool state)
 }
 
 
+void Coordinator::undo()
+{
+  undo_manager_.undo_last_action();
+}
+
+
+void Coordinator::redo()
+{
+  printf("Redo requested\n");
+}
+
+
 int Coordinator::get_current_frame()
 {
   return current_frame_;
@@ -317,14 +329,7 @@ void Coordinator::add_new_filter_if_not_on_filter_starting_frame(bool always_add
     return;
   }
 
-  current_filter_ = current_filter_panel_->get_filter();
-  current_filter_start_frame_ = current_frame_;
-  auto inserted_row = filter_model_->insert(current_frame_, current_filter_);
-  current_filter_panel_->set_changed(false);
-
-  set_start_frame_in_filter_panel(current_frame_);
-
-  select_row(inserted_row);
+  insert_filter(current_frame_, current_filter_panel_->get_filter());
 }
 
 
@@ -345,4 +350,17 @@ void Coordinator::remove_filter(int start_frame)
   filter_model_->remove(iter);
   on_filter_selected_.block(false);
   on_frame_changed(current_frame_);
+}
+
+
+void Coordinator::insert_filter(int start_frame, fg::filter_ptr filter)
+{
+  current_filter_ = filter;
+  current_filter_start_frame_ = start_frame;
+  auto inserted_row = filter_model_->insert(start_frame, filter);
+  current_filter_panel_->set_changed(false);
+
+  set_start_frame_in_filter_panel(start_frame);
+
+  select_row(inserted_row);
 }

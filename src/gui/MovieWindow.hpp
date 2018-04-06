@@ -55,6 +55,8 @@ namespace mdl {
     bool on_key_press(GdkEventKey* key_event);
 
     void on_save();
+    void on_undo();
+    void on_redo();
     void on_find_logos();
     void on_encode();
 

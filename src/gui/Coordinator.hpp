@@ -45,6 +45,9 @@ namespace mdl {
 
     void set_scroll_filter(bool state);
 
+    void undo();
+    void redo();
+
     int get_current_frame();
 
   private:
@@ -95,7 +98,9 @@ namespace mdl {
     void add_new_filter_if_not_on_filter_starting_frame(bool always_add = false);
 
     void on_remove_filter();
+
     void remove_filter(int start_frame);
+    void insert_filter(int start_frame, fg::filter_ptr filter);
 
 
     friend class RemoveFilterAction;

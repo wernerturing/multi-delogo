@@ -88,6 +88,16 @@ Gtk::Toolbar* MovieWindow::create_toolbar()
   btn_save->set_icon_name("document-save");
   gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_save->gobj()), "win.save");
 
+  add_action("undo", sigc::mem_fun(*this, &MovieWindow::on_undo));
+  Gtk::ToolButton* btn_undo = Gtk::manage(new Gtk::ToolButton());
+  btn_undo->set_icon_name("edit-undo");
+  gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_undo->gobj()), "win.undo");
+
+  add_action("redo", sigc::mem_fun(*this, &MovieWindow::on_redo));
+  Gtk::ToolButton* btn_redo = Gtk::manage(new Gtk::ToolButton());
+  btn_redo->set_icon_name("edit-redo");
+  gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_redo->gobj()), "win.redo");
+
   Gtk::ToggleToolButton *chk_scroll_filter = Gtk::manage(new Gtk::ToggleToolButton(_("_Scroll to filter")));
   chk_scroll_filter->set_active();
   chk_scroll_filter->set_use_underline();
@@ -111,6 +121,9 @@ Gtk::Toolbar* MovieWindow::create_toolbar()
   toolbar->append(*btn_new);
   toolbar->append(*btn_open);
   toolbar->append(*btn_save);
+  toolbar->append(*Gtk::manage(new Gtk::SeparatorToolItem()));
+  toolbar->append(*btn_undo);
+  toolbar->append(*btn_redo);
   toolbar->append(*Gtk::manage(new Gtk::SeparatorToolItem()));
   toolbar->append(*chk_scroll_filter);
   toolbar->append(*Gtk::manage(new Gtk::SeparatorToolItem()));
@@ -163,6 +176,18 @@ void MovieWindow::on_save()
   coordinator_.update_current_filter_if_necessary();
   filter_data_->set_jump_size(frame_navigator_.get_jump_size());
   get_application()->save_project(project_file_, *filter_data_);
+}
+
+
+void MovieWindow::on_undo()
+{
+  coordinator_.undo();
+}
+
+
+void MovieWindow::on_redo()
+{
+  coordinator_.redo();
 }
 
 

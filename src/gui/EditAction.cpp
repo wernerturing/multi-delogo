@@ -43,5 +43,5 @@ void RemoveFilterAction::execute(Coordinator& coordinator)
 void RemoveFilterAction::undo(Coordinator& coordinator)
 {
   printf("Undoing RemoveFilter %d\n", start_frame_);
-  // TODO
+  coordinator.insert_filter(start_frame_, filter_);
 }
