@@ -42,6 +42,9 @@ namespace mdl {
                 const Glib::RefPtr<FrameProvider>& frame_provider);
 
   private:
+    Gtk::ToolButton btn_undo_;
+    Gtk::ToolButton btn_redo_;
+
     std::string project_file_;
     std::unique_ptr<fg::FilterData> filter_data_;
 
@@ -55,8 +58,6 @@ namespace mdl {
     bool on_key_press(GdkEventKey* key_event);
 
     void on_save();
-    void on_undo();
-    void on_redo();
     void on_find_logos();
     void on_encode();
 

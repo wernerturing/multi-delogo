@@ -36,7 +36,8 @@ namespace mdl {
     Coordinator(Gtk::Window& parent_window,
                 FilterList& filter_list,
                 FrameNavigator& frame_navigator,
-                int frame_width, int frame_height);
+                int frame_width, int frame_height,
+                Gtk::ToolButton& btn_undo, Gtk::ToolButton& btn_redo);
 
     void update_current_filter_if_necessary();
 
@@ -44,9 +45,6 @@ namespace mdl {
     void on_next_filter();
 
     void set_scroll_filter(bool state);
-
-    void undo();
-    void redo();
 
     int get_current_frame();
 

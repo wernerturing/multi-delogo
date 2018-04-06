@@ -18,15 +18,24 @@
  */
 #include <deque>
 
+#include <gtkmm.h>
+
 #include "EditAction.hpp"
 #include "Coordinator.hpp"
 
 using namespace mdl;
 
 
-UndoManager::UndoManager(Coordinator& coordinator)
+UndoManager::UndoManager(Coordinator& coordinator, Gtk::ToolButton& btn_undo, Gtk::ToolButton& btn_redo)
   : coordinator_(coordinator)
+  , btn_undo_(btn_undo)
+  , btn_redo_(btn_redo)
 {
+  btn_undo_.set_sensitive(false);
+  btn_redo_.set_sensitive(false);
+
+  btn_undo_.signal_clicked().connect(sigc::mem_fun(*this, &UndoManager::undo_last_action));
+  btn_redo_.signal_clicked().connect(sigc::mem_fun(*this, &UndoManager::redo_last_action));
 }
 
 
@@ -44,6 +53,7 @@ void UndoManager::add_to_undo_list(edit_action_ptr action)
 {
   printf("UndoManager: adding action to undo list\n");
   undo_list_.push_front(action);
+  update_buttons();
 }
 
 
@@ -68,6 +78,7 @@ void UndoManager::move_to_redo_list(edit_action_ptr action)
   printf("Moving action to redo list\n");
   redo_list_.push_front(action);
   undo_list_.pop_front();
+  update_buttons();
 }
 
 
@@ -85,4 +96,13 @@ void UndoManager::move_to_undo_list(edit_action_ptr action)
   printf("Moving action to undo list\n");
   undo_list_.push_front(action);
   redo_list_.pop_front();
+  update_buttons();
 }
+
+
+void UndoManager::update_buttons()
+{
+  btn_undo_.set_sensitive(!undo_list_.empty());
+  btn_redo_.set_sensitive(!redo_list_.empty());
+}
+

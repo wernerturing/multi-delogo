@@ -21,6 +21,8 @@
 
 #include <deque>
 
+#include <gtkmm.h>
+
 #include "EditAction.hpp"
 
 
@@ -31,23 +33,28 @@ namespace mdl {
   class UndoManager
   {
   public:
-    UndoManager(Coordinator& coordinator);
+    UndoManager(Coordinator& coordinator, Gtk::ToolButton& btn_undo, Gtk::ToolButton& btn_redo);
 
     void execute_action(edit_action_ptr action);
-    void undo_last_action();
-    void redo_last_action();
 
   private:
     std::deque<edit_action_ptr> undo_list_;
     std::deque<edit_action_ptr> redo_list_;
 
     Coordinator& coordinator_;
+    Gtk::ToolButton& btn_undo_;
+    Gtk::ToolButton& btn_redo_;
 
+
+    void undo_last_action();
+    void redo_last_action();
 
     void add_to_undo_list(edit_action_ptr action);
     void clear_redo_list();
     void move_to_redo_list(edit_action_ptr action);
     void move_to_undo_list(edit_action_ptr action);
+
+    void update_buttons();
   };
 }
 

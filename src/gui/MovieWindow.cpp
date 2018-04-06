@@ -44,7 +44,8 @@ MovieWindow::MovieWindow(const std::string& project_file,
   , filter_list_(filter_data_->filter_list())
   , frame_navigator_(*this, frame_provider)
   , coordinator_(*this, filter_list_, frame_navigator_,
-                 frame_provider->get_frame_width(), frame_provider->get_frame_height())
+                 frame_provider->get_frame_width(), frame_provider->get_frame_height(),
+                 btn_undo_, btn_redo_)
 {
   set_default_size(1000, 600);
   set_title(Glib::ustring::compose("multi-delogo: %1",
@@ -88,15 +89,9 @@ Gtk::Toolbar* MovieWindow::create_toolbar()
   btn_save->set_icon_name("document-save");
   gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_save->gobj()), "win.save");
 
-  add_action("undo", sigc::mem_fun(*this, &MovieWindow::on_undo));
-  Gtk::ToolButton* btn_undo = Gtk::manage(new Gtk::ToolButton());
-  btn_undo->set_icon_name("edit-undo");
-  gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_undo->gobj()), "win.undo");
+  btn_undo_.set_icon_name("edit-undo");
 
-  add_action("redo", sigc::mem_fun(*this, &MovieWindow::on_redo));
-  Gtk::ToolButton* btn_redo = Gtk::manage(new Gtk::ToolButton());
-  btn_redo->set_icon_name("edit-redo");
-  gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_redo->gobj()), "win.redo");
+  btn_redo_.set_icon_name("edit-redo");
 
   Gtk::ToggleToolButton *chk_scroll_filter = Gtk::manage(new Gtk::ToggleToolButton(_("_Scroll to filter")));
   chk_scroll_filter->set_active();
@@ -122,8 +117,8 @@ Gtk::Toolbar* MovieWindow::create_toolbar()
   toolbar->append(*btn_open);
   toolbar->append(*btn_save);
   toolbar->append(*Gtk::manage(new Gtk::SeparatorToolItem()));
-  toolbar->append(*btn_undo);
-  toolbar->append(*btn_redo);
+  toolbar->append(btn_undo_);
+  toolbar->append(btn_redo_);
   toolbar->append(*Gtk::manage(new Gtk::SeparatorToolItem()));
   toolbar->append(*chk_scroll_filter);
   toolbar->append(*Gtk::manage(new Gtk::SeparatorToolItem()));
@@ -176,18 +171,6 @@ void MovieWindow::on_save()
   coordinator_.update_current_filter_if_necessary();
   filter_data_->set_jump_size(frame_navigator_.get_jump_size());
   get_application()->save_project(project_file_, *filter_data_);
-}
-
-
-void MovieWindow::on_undo()
-{
-  coordinator_.undo();
-}
-
-
-void MovieWindow::on_redo()
-{
-  coordinator_.redo();
 }
 
 

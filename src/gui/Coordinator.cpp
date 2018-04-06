@@ -35,8 +35,9 @@ using namespace mdl;
 Coordinator::Coordinator(Gtk::Window& parent_window,
                          FilterList& filter_list,
                          FrameNavigator& frame_navigator,
-                         int frame_width, int frame_height)
-  : undo_manager_(*this)
+                         int frame_width, int frame_height,
+                         Gtk::ToolButton& btn_undo, Gtk::ToolButton& btn_redo)
+  : undo_manager_(*this, btn_undo, btn_redo)
   , parent_window_(parent_window)
   , filter_list_(filter_list)
   , filter_model_(filter_list.get_model())
@@ -103,18 +104,6 @@ void Coordinator::on_next_filter()
 void Coordinator::set_scroll_filter(bool state)
 {
   scroll_filter_ = state;
-}
-
-
-void Coordinator::undo()
-{
-  undo_manager_.undo_last_action();
-}
-
-
-void Coordinator::redo()
-{
-  undo_manager_.redo_last_action();
 }
 
 
