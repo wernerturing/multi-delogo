@@ -57,6 +57,21 @@ namespace mdl {
     int start_frame_;
     fg::filter_ptr filter_;
   };
+
+
+  class ChangeStartFrameAction : public EditAction
+  {
+  public:
+    ChangeStartFrameAction(int old_start_frame, int new_start_frame);
+
+    void execute(Coordinator& coordinator) override;
+    void undo(Coordinator& coordinator) override;
+    std::string get_description() const override;
+
+  private:
+    int old_start_frame_;
+    int new_start_frame_;
+  };
 }
 
 #endif // MDL_EDIT_ACTION_H

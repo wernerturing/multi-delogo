@@ -52,3 +52,28 @@ std::string RemoveFilterAction::get_description() const
 {
   return Glib::ustring::compose(_("Remove filter at %1"), start_frame_);
 }
+
+
+ChangeStartFrameAction::ChangeStartFrameAction(int old_start_frame, int new_start_frame)
+  : old_start_frame_(old_start_frame)
+  , new_start_frame_(new_start_frame)
+{
+}
+
+
+void ChangeStartFrameAction::execute(Coordinator& coordinator)
+{
+  coordinator.change_start_frame(old_start_frame_, new_start_frame_);
+}
+
+
+void ChangeStartFrameAction::undo(Coordinator& coordinator)
+{
+  coordinator.change_start_frame(new_start_frame_, old_start_frame_);
+}
+
+
+std::string ChangeStartFrameAction::get_description() const
+{
+  return Glib::ustring::compose(_("Change start frame from %1 to %2"), old_start_frame_, new_start_frame_);
+}

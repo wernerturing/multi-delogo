@@ -244,14 +244,8 @@ void Coordinator::on_start_frame_changed(int start_frame)
     return;
   }
 
-  auto iter = filter_model_->get_by_start_frame(current_filter_start_frame_);
-
-  on_filter_selected_.block();
-  (*iter)[filter_model_->columns.start_frame] = start_frame;
-  on_filter_selected_.block(false);
-  unselect_rows();
-
-  current_filter_start_frame_ = start_frame;
+  edit_action_ptr action = edit_action_ptr(new ChangeStartFrameAction(current_filter_start_frame_, start_frame));
+  undo_manager_.execute_action(action);
 }
 
 
@@ -352,4 +346,19 @@ void Coordinator::insert_filter(int start_frame, fg::filter_ptr filter)
   set_start_frame_in_filter_panel(start_frame);
 
   select_row(inserted_row);
+}
+
+
+void Coordinator::change_start_frame(int old_start_frame, int new_start_frame)
+{
+  auto iter = filter_model_->get_by_start_frame(old_start_frame);
+
+  on_filter_selected_.block();
+  (*iter)[filter_model_->columns.start_frame] = new_start_frame;
+  on_filter_selected_.block(false);
+  unselect_rows();
+
+  set_start_frame_in_filter_panel(new_start_frame);
+
+  current_filter_start_frame_ = new_start_frame;
 }

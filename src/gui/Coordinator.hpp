@@ -99,9 +99,11 @@ namespace mdl {
 
     void remove_filter(int start_frame);
     void insert_filter(int start_frame, fg::filter_ptr filter);
+    void change_start_frame(int old_start_frame, int new_start_frame);
 
 
     friend class RemoveFilterAction;
+    friend class ChangeStartFrameAction;
   };
 }
 
