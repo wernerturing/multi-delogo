@@ -344,14 +344,9 @@ void Coordinator::remove_filter(int start_frame)
 
 void Coordinator::insert_filter(int start_frame, fg::filter_ptr filter)
 {
-  current_filter_ = filter;
-  current_filter_start_frame_ = start_frame;
-  auto inserted_row = filter_model_->insert(start_frame, filter);
+  filter_model_->insert(start_frame, filter);
   current_filter_panel_->set_changed(false);
-
-  set_start_frame_in_filter_panel(start_frame);
-
-  select_row(inserted_row);
+  frame_navigator_.change_displayed_frame(start_frame);
 }
 
 
