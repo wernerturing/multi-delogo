@@ -39,7 +39,8 @@ namespace mdl {
   public:
     MovieWindow(const std::string& project_file,
                 std::unique_ptr<fg::FilterData> filter_data,
-                const Glib::RefPtr<FrameProvider>& frame_provider);
+                const Glib::RefPtr<FrameProvider>& frame_provider,
+                Gtk::Application& app);
 
   private:
     Gtk::ToolButton btn_undo_;
@@ -53,7 +54,7 @@ namespace mdl {
     Coordinator coordinator_;
 
 
-    Gtk::Toolbar* create_toolbar();
+    Gtk::Toolbar* create_toolbar(Gtk::Application& app);
 
     bool on_key_press(GdkEventKey* key_event);
 

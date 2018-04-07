@@ -48,6 +48,9 @@ namespace mdl {
 
     int get_current_frame();
 
+    void on_undo();
+    void on_redo();
+
   private:
     UndoManager undo_manager_;
 

@@ -33,21 +33,20 @@ namespace mdl {
   class UndoManager
   {
   public:
-    UndoManager(Coordinator& coordinator, Gtk::ToolButton& btn_undo, Gtk::ToolButton& btn_redo);
+    UndoManager(Coordinator& coordinator, Gtk::Widget& btn_undo, Gtk::Widget& btn_redo);
 
     void execute_action(edit_action_ptr action);
+    void undo_last_action();
+    void redo_last_action();
 
   private:
     std::deque<edit_action_ptr> undo_list_;
     std::deque<edit_action_ptr> redo_list_;
 
     Coordinator& coordinator_;
-    Gtk::ToolButton& btn_undo_;
-    Gtk::ToolButton& btn_redo_;
+    Gtk::Widget& btn_undo_;
+    Gtk::Widget& btn_redo_;
 
-
-    void undo_last_action();
-    void redo_last_action();
 
     void add_to_undo_list(edit_action_ptr action);
     void clear_redo_list();
@@ -55,7 +54,7 @@ namespace mdl {
     void move_to_undo_list(edit_action_ptr action);
 
     void update_buttons();
-    void update_button(Gtk::ToolButton& button, std::deque<edit_action_ptr>& list, const std::string base_text);
+    void update_button(Gtk::Widget& button, std::deque<edit_action_ptr>& list, const std::string base_text);
   };
 }
 
