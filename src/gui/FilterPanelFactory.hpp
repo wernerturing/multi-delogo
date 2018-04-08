@@ -33,9 +33,10 @@ namespace mdl {
   {
   protected:
     FilterPanel(int start_frame, int max_frame);
-    virtual ~FilterPanel();
 
   public:
+    virtual ~FilterPanel();
+
     typedef boost::optional<Rectangle> MaybeRectangle;
 
     virtual bool creates_filter() const;

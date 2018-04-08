@@ -229,11 +229,12 @@ void Coordinator::on_filter_type_changed(fg::FilterType new_type)
     edit_action_ptr action = edit_action_ptr(new ChangeFilterTypeAction(current_frame_, current_filter_->type(), new_type));
     undo_manager_.execute_action(action);
   } else {
-    insert_filter(current_frame_, current_filter_panel_->get_filter());
-
     FilterPanel* new_panel = panel_factory_.convert(current_frame_, current_filter_, new_type);
-    update_displayed_panel(new_type, new_panel);
-    update_current_filter(true);
+    fg::filter_ptr new_filter = new_panel->get_filter();
+    delete new_panel;
+
+    edit_action_ptr action = edit_action_ptr(new AddFilterAction(current_frame_, new_filter));
+    undo_manager_.execute_action(action);
   }
 }
 

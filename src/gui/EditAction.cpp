@@ -27,6 +27,33 @@
 using namespace mdl;
 
 
+AddFilterAction::AddFilterAction(int start_frame, fg::filter_ptr filter)
+  : start_frame_(start_frame)
+  , filter_(filter)
+{
+}
+
+
+void AddFilterAction::execute(Coordinator& coordinator)
+{
+  printf("Executing AddFilter %d\n", start_frame_);
+  coordinator.insert_filter(start_frame_, filter_);
+}
+
+
+void AddFilterAction::undo(Coordinator& coordinator)
+{
+  printf("Undoing AddFilter %d\n", start_frame_);
+  coordinator.remove_filter(start_frame_);
+}
+
+
+std::string AddFilterAction::get_description() const
+{
+  return Glib::ustring::compose(_("Add filter at %1"), start_frame_);
+}
+
+
 ChangeFilterTypeAction::ChangeFilterTypeAction(int start_frame, fg::FilterType old_type, fg::FilterType new_type)
   : start_frame_(start_frame)
   , old_type_(old_type)

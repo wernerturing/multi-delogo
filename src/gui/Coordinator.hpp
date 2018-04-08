@@ -107,6 +107,7 @@ namespace mdl {
     void change_start_frame(int old_start_frame, int new_start_frame);
 
 
+    friend class AddFilterAction;
     friend class ChangeFilterTypeAction;
     friend class RemoveFilterAction;
     friend class ChangeStartFrameAction;
