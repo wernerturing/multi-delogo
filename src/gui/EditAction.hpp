@@ -44,6 +44,22 @@ namespace mdl {
   typedef std::shared_ptr<EditAction> edit_action_ptr;
 
 
+  class ChangeFilterTypeAction : public EditAction
+  {
+  public:
+    ChangeFilterTypeAction(int start_frame, fg::FilterType old_type, fg::FilterType new_type);
+
+    void execute(Coordinator& coordinator) override;
+    void undo(Coordinator& coordinator) override;
+    std::string get_description() const override;
+
+  private:
+    int start_frame_;
+    fg::FilterType old_type_;
+    fg::FilterType new_type_;
+  };
+
+
   class RemoveFilterAction : public EditAction
   {
   public:

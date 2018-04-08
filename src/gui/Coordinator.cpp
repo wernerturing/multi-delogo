@@ -210,6 +210,13 @@ void Coordinator::update_displayed_panel(fg::FilterType type, FilterPanel* panel
 }
 
 
+bool Coordinator::displaying_filter_start_frame()
+{
+  auto iter = filter_model_->get_by_start_frame(current_frame_);
+  return bool(iter);
+}
+
+
 void Coordinator::on_filter_type_changed(fg::FilterType new_type)
 {
   if (!current_filter_) {
@@ -217,11 +224,17 @@ void Coordinator::on_filter_type_changed(fg::FilterType new_type)
   }
 
   update_current_filter_if_necessary();
-  add_new_filter_if_not_on_filter_starting_frame(true);
 
-  FilterPanel* new_panel = panel_factory_.convert(current_frame_, current_filter_, new_type);
-  update_displayed_panel(new_type, new_panel);
-  update_current_filter(true);
+  if (displaying_filter_start_frame()) {
+    edit_action_ptr action = edit_action_ptr(new ChangeFilterTypeAction(current_frame_, current_filter_->type(), new_type));
+    undo_manager_.execute_action(action);
+  } else {
+    insert_filter(current_frame_, current_filter_panel_->get_filter());
+
+    FilterPanel* new_panel = panel_factory_.convert(current_frame_, current_filter_, new_type);
+    update_displayed_panel(new_type, new_panel);
+    update_current_filter(true);
+  }
 }
 
 
@@ -314,7 +327,7 @@ void Coordinator::update_current_filter(bool force_update)
   }
 
   auto new_filter = current_filter_panel_->get_filter();
-  (*iter)[filter_model_->columns.filter] = fg::filter_ptr(new_filter);
+  (*iter)[filter_model_->columns.filter] = new_filter;
   current_filter_ = new_filter;
 }
 
@@ -359,6 +372,16 @@ void Coordinator::insert_filter(int start_frame, fg::filter_ptr filter)
   filter_model_->insert(start_frame, filter);
   current_filter_panel_->set_changed(false);
   frame_navigator_.change_displayed_frame(start_frame);
+}
+
+
+void Coordinator::change_filter_type(int start_frame, fg::FilterType type)
+{
+  frame_navigator_.change_displayed_frame(start_frame);
+
+  FilterPanel* new_panel = panel_factory_.convert(start_frame, current_filter_, type);
+  update_displayed_panel(type, new_panel);
+  update_current_filter(true);
 }
 
 

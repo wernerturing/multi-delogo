@@ -80,6 +80,7 @@ namespace mdl {
 
     void change_displayed_filter(const FilterListModel::iterator& iter);
     void update_displayed_panel(fg::FilterType type, FilterPanel* panel);
+    bool displaying_filter_start_frame();
 
     sigc::connection on_filter_type_changed_;
     void on_filter_type_changed(fg::FilterType new_type);
@@ -102,9 +103,11 @@ namespace mdl {
 
     void remove_filter(int start_frame);
     void insert_filter(int start_frame, fg::filter_ptr filter);
+    void change_filter_type(int start_frame, fg::FilterType type);
     void change_start_frame(int old_start_frame, int new_start_frame);
 
 
+    friend class ChangeFilterTypeAction;
     friend class RemoveFilterAction;
     friend class ChangeStartFrameAction;
   };
