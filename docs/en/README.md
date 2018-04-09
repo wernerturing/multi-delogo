@@ -128,6 +128,8 @@ You can change the starting frame of a filter by using the *start frame* field.
 
 To remove a filter, select it and press the button with the minus sign below the filter list.
 
+If you make a miskate, you can use the **Undo** button to revert your last changes. The **Redo** button reverts a undo. Instead of the buttons, you can also use keyboard shortcuts: Ctrl+z for undo, and Ctrl+Shift+z or Ctrl+y for redo.
+
 To move quickly between filters, use the arrows below the filter list.
 
 If **Scroll to filter** on the toolbar is checked, when moving to a filter the frame will be scrolled if necessary so that its rectangle is displayed. If unchecked, no scrolling is performed.
