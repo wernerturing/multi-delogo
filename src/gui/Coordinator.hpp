@@ -39,8 +39,6 @@ namespace mdl {
                 int frame_width, int frame_height,
                 Gtk::ToolButton& btn_undo, Gtk::ToolButton& btn_redo);
 
-    void update_current_filter_if_necessary();
-
     void on_previous_filter();
     void on_next_filter();
 
@@ -89,6 +87,9 @@ namespace mdl {
     void on_frame_rectangle_changed(Rectangle rect);
     sigc::connection on_panel_rectangle_changed_;
     void on_panel_rectangle_changed(Rectangle rect);
+    void update_filter_for_current_frame();
+    void add_new_filter_for_current_frame();
+    void update_current_filter(bool force_updated);
 
     sigc::connection on_start_frame_changed_;
     void on_start_frame_changed(int start_frame);
@@ -96,8 +97,6 @@ namespace mdl {
     void set_start_frame_in_filter_panel(int start_frame);
 
     void create_new_filter_panel();
-    void update_current_filter(bool force_updated);
-    void add_new_filter_if_not_on_filter_starting_frame();
 
     void on_remove_filter();
 

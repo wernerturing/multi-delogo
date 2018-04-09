@@ -175,7 +175,6 @@ bool MovieWindow::on_key_press(GdkEventKey* key_event)
 
 void MovieWindow::on_save()
 {
-  coordinator_.update_current_filter_if_necessary();
   filter_data_->set_jump_size(frame_navigator_.get_jump_size());
   get_application()->save_project(project_file_, *filter_data_);
 }
