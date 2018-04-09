@@ -97,7 +97,7 @@ namespace mdl {
 
     void create_new_filter_panel();
     void update_current_filter(bool force_updated);
-    void add_new_filter_if_not_on_filter_starting_frame(bool always_add = false);
+    void add_new_filter_if_not_on_filter_starting_frame();
 
     void on_remove_filter();
 

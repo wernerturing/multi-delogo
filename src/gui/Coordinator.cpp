@@ -333,18 +333,15 @@ void Coordinator::update_current_filter(bool force_update)
 }
 
 
-void Coordinator::add_new_filter_if_not_on_filter_starting_frame(bool always_add)
+void Coordinator::add_new_filter_if_not_on_filter_starting_frame()
 {
-  auto iter = filter_model_->get_by_start_frame(current_frame_);
-  if (iter) {
+  if (displaying_filter_start_frame() || !current_filter_panel_->creates_filter()) {
     return;
   }
 
-  if (!always_add && !current_filter_panel_->creates_filter()) {
-    return;
-  }
-
-  insert_filter(current_frame_, current_filter_panel_->get_filter());
+  auto new_filter = current_filter_panel_->get_filter();
+  edit_action_ptr action = edit_action_ptr(new AddFilterAction(current_frame_, new_filter));
+  undo_manager_.execute_action(action);
 }
 
 
