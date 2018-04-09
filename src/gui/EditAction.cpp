@@ -54,6 +54,34 @@ std::string AddFilterAction::get_description() const
 }
 
 
+UpdateFilterAction::UpdateFilterAction(int start_frame, fg::filter_ptr old_filter, fg::filter_ptr new_filter)
+  : start_frame_(start_frame)
+  , old_filter_(old_filter)
+  , new_filter_(new_filter)
+{
+}
+
+
+void UpdateFilterAction::execute(Coordinator& coordinator)
+{
+  printf("Executing UpdateFilter %d\n", start_frame_);
+  coordinator.update_filter(start_frame_, new_filter_);
+}
+
+
+void UpdateFilterAction::undo(Coordinator& coordinator)
+{
+  printf("Undoing UpdateFilter %d\n", start_frame_);
+  coordinator.update_filter(start_frame_, old_filter_);
+}
+
+
+std::string UpdateFilterAction::get_description() const
+{
+  return Glib::ustring::compose(_("Update filter at %1"), start_frame_);
+}
+
+
 ChangeFilterTypeAction::ChangeFilterTypeAction(int start_frame, fg::FilterType old_type, fg::FilterType new_type)
   : start_frame_(start_frame)
   , old_type_(old_type)

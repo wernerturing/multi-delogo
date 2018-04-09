@@ -59,6 +59,22 @@ namespace mdl {
   };
 
 
+  class UpdateFilterAction : public EditAction
+  {
+  public:
+    UpdateFilterAction(int start_frame, fg::filter_ptr old_filter, fg::filter_ptr new_filter);
+
+    void execute(Coordinator& coordinator) override;
+    void undo(Coordinator& coordinator) override;
+    std::string get_description() const override;
+
+  private:
+    int start_frame_;
+    fg::filter_ptr old_filter_;
+    fg::filter_ptr new_filter_;
+  };
+
+
   class ChangeFilterTypeAction : public EditAction
   {
   public:

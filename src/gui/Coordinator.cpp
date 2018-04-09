@@ -275,15 +275,9 @@ void Coordinator::update_filter_for_current_frame()
 
 void Coordinator::update_current_filter(bool force_update)
 {
-  auto iter = filter_model_->get_by_start_frame(current_frame_);
-  if (!force_update
-      && (!iter || !current_filter_panel_ || !current_filter_panel_->is_changed())) {
-    return;
-  }
-
   auto new_filter = current_filter_panel_->get_filter();
-  (*iter)[filter_model_->columns.filter] = new_filter;
-  current_filter_ = new_filter;
+  edit_action_ptr action = edit_action_ptr(new UpdateFilterAction(current_frame_, current_filter_, new_filter));
+  undo_manager_.execute_action(action);
 }
 
 
@@ -373,14 +367,25 @@ void Coordinator::insert_filter(int start_frame, fg::filter_ptr filter)
 }
 
 
+void Coordinator::update_filter(int start_frame, fg::filter_ptr filter)
+{
+  auto iter = filter_model_->get_by_start_frame(start_frame);
+  (*iter)[filter_model_->columns.filter] = filter;
+
+  bool saved_scroll_to_filter = scroll_filter_;
+  scroll_filter_ = false;
+  frame_navigator_.change_displayed_frame(start_frame);
+  scroll_filter_ = saved_scroll_to_filter;
+}
+
+
 void Coordinator::change_filter_type(int start_frame, fg::FilterType type)
 {
   frame_navigator_.change_displayed_frame(start_frame);
 
   FilterPanel* new_panel = panel_factory_.convert(start_frame, current_filter_, type);
   update_displayed_panel(type, new_panel);
-  // TODO
-  update_current_filter(true);
+  update_filter(start_frame, new_panel->get_filter());
 }
 
 
