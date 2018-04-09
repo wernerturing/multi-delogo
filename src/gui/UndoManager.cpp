@@ -48,7 +48,12 @@ void UndoManager::execute_action(edit_action_ptr action)
 
 void UndoManager::add_to_undo_list(edit_action_ptr action)
 {
+  if (undo_list_.size() == UNDO_SIZE_) {
+    undo_list_.pop_back();
+  }
+
   undo_list_.push_front(action);
+
   update_buttons();
 }
 

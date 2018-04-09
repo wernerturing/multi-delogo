@@ -4,6 +4,8 @@
 
 * It's now possible to change a filter's starting frame.
 
+* Added undo/redo functionality.
+
 * Fixed crash when encoding was cancelled.
 
 

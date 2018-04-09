@@ -40,6 +40,8 @@ namespace mdl {
     void redo_last_action();
 
   private:
+    const static int UNDO_SIZE_ = 50;
+
     std::deque<edit_action_ptr> undo_list_;
     std::deque<edit_action_ptr> redo_list_;
 
