@@ -36,14 +36,12 @@ AddFilterAction::AddFilterAction(int start_frame, fg::filter_ptr filter)
 
 void AddFilterAction::execute(Coordinator& coordinator)
 {
-  printf("Executing AddFilter %d\n", start_frame_);
   coordinator.insert_filter(start_frame_, filter_);
 }
 
 
 void AddFilterAction::undo(Coordinator& coordinator)
 {
-  printf("Undoing AddFilter %d\n", start_frame_);
   coordinator.remove_filter(start_frame_);
 }
 
@@ -64,14 +62,12 @@ UpdateFilterAction::UpdateFilterAction(int start_frame, fg::filter_ptr old_filte
 
 void UpdateFilterAction::execute(Coordinator& coordinator)
 {
-  printf("Executing UpdateFilter %d\n", start_frame_);
   coordinator.update_filter(start_frame_, new_filter_);
 }
 
 
 void UpdateFilterAction::undo(Coordinator& coordinator)
 {
-  printf("Undoing UpdateFilter %d\n", start_frame_);
   coordinator.update_filter(start_frame_, old_filter_);
 }
 
@@ -92,14 +88,12 @@ ChangeFilterTypeAction::ChangeFilterTypeAction(int start_frame, fg::FilterType o
 
 void ChangeFilterTypeAction::execute(Coordinator& coordinator)
 {
-  printf("Executing ChangeFilterType %d\n", start_frame_);
   coordinator.change_filter_type(start_frame_, new_type_);
 }
 
 
 void ChangeFilterTypeAction::undo(Coordinator& coordinator)
 {
-  printf("Undoing ChangeFilterType %d\n", start_frame_);
   coordinator.change_filter_type(start_frame_, old_type_);
 }
 
@@ -119,14 +113,12 @@ RemoveFilterAction::RemoveFilterAction(int start_frame, fg::filter_ptr filter)
 
 void RemoveFilterAction::execute(Coordinator& coordinator)
 {
-  printf("Executing RemoveFilter %d\n", start_frame_);
   coordinator.remove_filter(start_frame_);
 }
 
 
 void RemoveFilterAction::undo(Coordinator& coordinator)
 {
-  printf("Undoing RemoveFilter %d\n", start_frame_);
   coordinator.insert_filter(start_frame_, filter_);
 }
 

@@ -42,14 +42,12 @@ void UndoManager::execute_action(edit_action_ptr action)
   clear_redo_list();
 
   add_to_undo_list(action);
-  printf("UndoManager: executing action\n");
   action->execute(coordinator_);
 }
 
 
 void UndoManager::add_to_undo_list(edit_action_ptr action)
 {
-  printf("UndoManager: adding action to undo list\n");
   undo_list_.push_front(action);
   update_buttons();
 }
@@ -57,14 +55,12 @@ void UndoManager::add_to_undo_list(edit_action_ptr action)
 
 void UndoManager::clear_redo_list()
 {
-  printf("UndoManager: clearing redo list\n");
   redo_list_.clear();
 }
 
 
 void UndoManager::undo_last_action()
 {
-  printf("UndoManager: undo\n");
   if (undo_list_.empty()) {
     return;
   }
@@ -77,7 +73,6 @@ void UndoManager::undo_last_action()
 
 void UndoManager::move_to_redo_list(edit_action_ptr action)
 {
-  printf("Moving action to redo list\n");
   redo_list_.push_front(action);
   undo_list_.pop_front();
   update_buttons();
@@ -86,7 +81,6 @@ void UndoManager::move_to_redo_list(edit_action_ptr action)
 
 void UndoManager::redo_last_action()
 {
-  printf("UndoManager: redo\n");
   if (redo_list_.empty()) {
     return;
   }
@@ -99,7 +93,6 @@ void UndoManager::redo_last_action()
 
 void UndoManager::move_to_undo_list(edit_action_ptr action)
 {
-  printf("Moving action to undo list\n");
   undo_list_.push_front(action);
   redo_list_.pop_front();
   update_buttons();
