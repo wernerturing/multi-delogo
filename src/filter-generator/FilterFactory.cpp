@@ -36,11 +36,11 @@ filter_ptr FilterFactory::load(const std::string& serialized)
   std::string type = serialized.substr(0, pos);
   std::string parameters = serialized.substr(pos + 1);
 
-  return create(type, parameters);
+  return load(type, parameters);
 }
 
 
-filter_ptr FilterFactory::create(const std::string& type, const std::string& parameters)
+filter_ptr FilterFactory::load(const std::string& type, const std::string& parameters)
 {
   if (type == "none") {
     return NullFilter::load(parameters);
@@ -53,6 +53,30 @@ filter_ptr FilterFactory::create(const std::string& type, const std::string& par
   } else if (type == "review") {
     return ReviewFilter::load(parameters);
   } else {
+    throw UnknownFilterException();
+  }
+}
+
+
+filter_ptr FilterFactory::create(FilterType type)
+{
+  switch (type) {
+  case FilterType::NO_OP:
+    return filter_ptr(new NullFilter());
+
+  case FilterType::DELOGO:
+    return filter_ptr(new DelogoFilter());
+
+  case FilterType::DRAWBOX:
+    return filter_ptr(new DrawboxFilter());
+
+  case FilterType::CUT:
+    return filter_ptr(new CutFilter());
+
+  case FilterType::REVIEW:
+    return filter_ptr(new ReviewFilter());
+
+  default:
     throw UnknownFilterException();
   }
 }

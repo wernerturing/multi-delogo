@@ -73,6 +73,12 @@ std::string NullFilter::ffmpeg_str(const std::string& between_expr) const
 }
 
 
+RectangularFilter::RectangularFilter()
+  : RectangularFilter(0, 0, 0, 0)
+{
+}
+
+
 RectangularFilter::RectangularFilter(int x, int y, int width, int height)
   : x_(x), y_(y), width_(width), height_(height)
 {
@@ -145,6 +151,12 @@ std::string RectangularFilter::rectangle_ffmpeg_str() const
 }
 
 
+DelogoFilter::DelogoFilter()
+  : RectangularFilter()
+{
+}
+
+
 DelogoFilter::DelogoFilter(int x, int y, int width, int height)
   : RectangularFilter(x, y, width, height)
 {
@@ -186,6 +198,12 @@ std::string DelogoFilter::ffmpeg_str(const std::string& between_expr) const
   buf.append(between_expr).push_back(':');
   buf.append(rectangle_ffmpeg_str());
   return buf;
+}
+
+
+DrawboxFilter::DrawboxFilter()
+  : RectangularFilter()
+{
 }
 
 

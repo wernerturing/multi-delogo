@@ -29,6 +29,9 @@
 
 #include "../TestHelpers.hpp"
 
+
+BOOST_AUTO_TEST_SUITE(loading_filters)
+
 BOOST_AUTO_TEST_CASE(test_load_with_invalid_string)
 {
   BOOST_CHECK_THROW(fg::FilterFactory::load("none"), fg::InvalidFilterException);
@@ -89,3 +92,44 @@ BOOST_AUTO_TEST_CASE(test_load_review_filter)
 
   BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::REVIEW);
 }
+
+BOOST_AUTO_TEST_SUITE_END()
+
+
+BOOST_AUTO_TEST_SUITE(creating_filters_from_type)
+
+BOOST_AUTO_TEST_CASE(should_create_a_null_filter)
+{
+  fg::filter_ptr filter = fg::FilterFactory::create(fg::FilterType::NO_OP);
+  BOOST_CHECK(filter->type() == fg::FilterType::NO_OP);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_create_a_delogo_filter)
+{
+  fg::filter_ptr filter = fg::FilterFactory::create(fg::FilterType::DELOGO);
+  BOOST_CHECK(filter->type() == fg::FilterType::DELOGO);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_create_a_drawbox_filter)
+{
+  fg::filter_ptr filter = fg::FilterFactory::create(fg::FilterType::DRAWBOX);
+  BOOST_CHECK(filter->type() == fg::FilterType::DRAWBOX);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_create_a_cut_filter)
+{
+  fg::filter_ptr filter = fg::FilterFactory::create(fg::FilterType::CUT);
+  BOOST_CHECK(filter->type() == fg::FilterType::CUT);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_create_a_review_filter)
+{
+  fg::filter_ptr filter = fg::FilterFactory::create(fg::FilterType::REVIEW);
+  BOOST_CHECK(filter->type() == fg::FilterType::REVIEW);
+}
+
+BOOST_AUTO_TEST_SUITE_END()

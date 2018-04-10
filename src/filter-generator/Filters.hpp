@@ -70,6 +70,7 @@ namespace fg {
   class RectangularFilter : public Filter
   {
   protected:
+    RectangularFilter();
     RectangularFilter(int x, int y, int width, int height);
 
   public:
@@ -97,6 +98,10 @@ namespace fg {
   public:
     DelogoFilter(int x, int y, int width, int height);
 
+  protected:
+    DelogoFilter();
+
+  public:
     static std::shared_ptr<DelogoFilter> load(const std::string& parameters);
 
     FilterType type() const override;
@@ -104,6 +109,8 @@ namespace fg {
 
     std::string save_str() const override;
     std::string ffmpeg_str(const std::string& between_expr) const override;
+
+    friend class FilterFactory;
   };
 
 
@@ -112,6 +119,10 @@ namespace fg {
   public:
     DrawboxFilter(int x, int y, int width, int height);
 
+  protected:
+    DrawboxFilter();
+
+  public:
     static std::shared_ptr<DrawboxFilter> load(const std::string& parameters);
 
     FilterType type() const override;
@@ -119,6 +130,8 @@ namespace fg {
 
     std::string save_str() const override;
     std::string ffmpeg_str(const std::string& between_expr) const override;
+
+    friend class FilterFactory;
   };
 
 

@@ -28,9 +28,10 @@ namespace fg {
   {
   public:
     static filter_ptr load(const std::string& serialized);
+    static filter_ptr create(FilterType type);
 
   private:
-    static filter_ptr create(const std::string& type, const std::string& parameters);
+    static filter_ptr load(const std::string& type, const std::string& parameters);
   };
 }
 
