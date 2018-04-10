@@ -29,6 +29,9 @@
 
 #include "../TestHelpers.hpp"
 
+
+BOOST_AUTO_TEST_SUITE(loading_filters)
+
 BOOST_AUTO_TEST_CASE(test_load_with_invalid_string)
 {
   BOOST_CHECK_THROW(fg::FilterFactory::load("none"), fg::InvalidFilterException);
@@ -89,3 +92,191 @@ BOOST_AUTO_TEST_CASE(test_load_review_filter)
 
   BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::REVIEW);
 }
+
+BOOST_AUTO_TEST_SUITE_END()
+
+
+BOOST_AUTO_TEST_SUITE(creating_filters_from_type)
+
+BOOST_AUTO_TEST_CASE(should_create_a_null_filter_with_no_rectangle)
+{
+  fg::filter_ptr filter = fg::FilterFactory::create(fg::FilterType::NO_OP);
+  BOOST_CHECK(filter->type() == fg::FilterType::NO_OP);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_create_a_null_filter_discarding_parameters)
+{
+  fg::filter_ptr filter = fg::FilterFactory::create(fg::FilterType::NO_OP, 1, 2, 3, 4);
+  BOOST_CHECK(filter->type() == fg::FilterType::NO_OP);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_create_a_delogo_filter_with_parameters)
+{
+  fg::filter_ptr filter = fg::FilterFactory::create(fg::FilterType::DELOGO, 10, 20, 30, 40);
+  BOOST_CHECK(filter->type() == fg::FilterType::DELOGO);
+
+  fg::DelogoFilter* delogo = dynamic_cast<fg::DelogoFilter*>(filter.get());
+  BOOST_CHECK(delogo->x()      == 10);
+  BOOST_CHECK(delogo->y()      == 20);
+  BOOST_CHECK(delogo->width()  == 30);
+  BOOST_CHECK(delogo->height() == 40);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_fail_if_trying_to_create_a_delogo_filter_without_parameters)
+{
+  BOOST_CHECK_THROW(fg::FilterFactory::create(fg::FilterType::DELOGO),
+                    fg::InvalidParametersException);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_create_a_drawbox_filter_with_parameters)
+{
+  fg::filter_ptr filter = fg::FilterFactory::create(fg::FilterType::DRAWBOX, 50, 60, 70, 80);
+  BOOST_CHECK(filter->type() == fg::FilterType::DRAWBOX);
+
+  fg::DrawboxFilter* drawbox = dynamic_cast<fg::DrawboxFilter*>(filter.get());
+  BOOST_CHECK(drawbox->x()      == 50);
+  BOOST_CHECK(drawbox->y()      == 60);
+  BOOST_CHECK(drawbox->width()  == 70);
+  BOOST_CHECK(drawbox->height() == 80);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_fail_if_trying_to_create_a_drawbox_filter_without_parameters)
+{
+  BOOST_CHECK_THROW(fg::FilterFactory::create(fg::FilterType::DRAWBOX),
+                    fg::InvalidParametersException);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_create_a_cut_filter)
+{
+  fg::filter_ptr filter = fg::FilterFactory::create(fg::FilterType::CUT);
+  BOOST_CHECK(filter->type() == fg::FilterType::CUT);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_create_a_review_filter)
+{
+  fg::filter_ptr filter = fg::FilterFactory::create(fg::FilterType::REVIEW);
+  BOOST_CHECK(filter->type() == fg::FilterType::REVIEW);
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+
+BOOST_AUTO_TEST_SUITE(converting_filters)
+
+BOOST_AUTO_TEST_CASE(should_convert_from_delogo_to_null_filter)
+{
+  fg::filter_ptr filter(new fg::DelogoFilter(0, 500, 100, 30));
+
+  fg::filter_ptr converted = fg::FilterFactory::convert(filter, fg::FilterType::NO_OP);
+
+  BOOST_CHECK(converted->type() == fg::FilterType::NO_OP);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_convert_from_drawbox_to_null_filter)
+{
+  fg::filter_ptr filter(new fg::DelogoFilter(0, 0, 10, 10));
+
+  fg::filter_ptr converted = fg::FilterFactory::convert(filter, fg::FilterType::NO_OP);
+
+  BOOST_CHECK(converted->type() == fg::FilterType::NO_OP);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_convert_from_null_filter_to_delogo)
+{
+  fg::filter_ptr filter(new fg::NullFilter());
+
+  fg::filter_ptr converted = fg::FilterFactory::convert(filter, fg::FilterType::DELOGO);
+
+  BOOST_CHECK(converted->type() == fg::FilterType::DELOGO);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_convert_from_null_filter_to_drawbox)
+{
+  fg::filter_ptr filter(new fg::NullFilter());
+
+  fg::filter_ptr converted = fg::FilterFactory::convert(filter, fg::FilterType::DRAWBOX);
+
+  BOOST_CHECK(converted->type() == fg::FilterType::DRAWBOX);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_convert_from_delogo_to_drawbox)
+{
+  fg::filter_ptr filter(new fg::DelogoFilter(9, 8, 7, 6));
+
+  fg::filter_ptr converted = fg::FilterFactory::convert(filter, fg::FilterType::DRAWBOX);
+  BOOST_CHECK(converted->type() == fg::FilterType::DRAWBOX);
+
+  fg::DrawboxFilter* drawbox = dynamic_cast<fg::DrawboxFilter*>(converted.get());
+  BOOST_CHECK_EQUAL(drawbox->x(), 9);
+  BOOST_CHECK_EQUAL(drawbox->y(), 8);
+  BOOST_CHECK_EQUAL(drawbox->width(), 7);
+  BOOST_CHECK_EQUAL(drawbox->height(), 6);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_convert_from_drawbox_to_delogo)
+{
+  fg::filter_ptr filter(new fg::DrawboxFilter(1, 2, 3, 4));
+
+  fg::filter_ptr converted = fg::FilterFactory::convert(filter, fg::FilterType::DELOGO);
+  BOOST_CHECK(converted->type() == fg::FilterType::DELOGO);
+
+  fg::DelogoFilter* delogo = dynamic_cast<fg::DelogoFilter*>(converted.get());
+  BOOST_CHECK_EQUAL(delogo->x(), 1);
+  BOOST_CHECK_EQUAL(delogo->y(), 2);
+  BOOST_CHECK_EQUAL(delogo->width(), 3);
+  BOOST_CHECK_EQUAL(delogo->height(), 4);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_convert_from_delogo_to_cut_filter)
+{
+  fg::filter_ptr filter(new fg::DelogoFilter(0, 500, 100, 30));
+
+  fg::filter_ptr converted = fg::FilterFactory::convert(filter, fg::FilterType::CUT);
+
+  BOOST_CHECK(converted->type() == fg::FilterType::CUT);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_convert_from_cut_filter_to_drawbox)
+{
+  fg::filter_ptr filter(new fg::CutFilter());
+
+  fg::filter_ptr converted = fg::FilterFactory::convert(filter, fg::FilterType::DRAWBOX);
+
+  BOOST_CHECK(converted->type() == fg::FilterType::DRAWBOX);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_convert_from_cut_filter_to_null_filter)
+{
+  fg::filter_ptr filter(new fg::CutFilter());
+
+  fg::filter_ptr converted = fg::FilterFactory::convert(filter, fg::FilterType::NO_OP);
+
+  BOOST_CHECK(converted->type() == fg::FilterType::NO_OP);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_convert_from_review_filter_to_delogo)
+{
+  fg::filter_ptr filter(new fg::ReviewFilter());
+
+  fg::filter_ptr converted = fg::FilterFactory::convert(filter, fg::FilterType::DELOGO);
+
+  BOOST_CHECK(converted->type() == fg::FilterType::DELOGO);
+}
+
+BOOST_AUTO_TEST_SUITE_END()

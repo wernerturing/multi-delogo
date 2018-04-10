@@ -68,26 +68,19 @@ namespace mdl {
     void undo(Coordinator& coordinator) override;
     std::string get_description() const override;
 
-  private:
+  protected:
     int start_frame_;
     fg::filter_ptr old_filter_;
     fg::filter_ptr new_filter_;
   };
 
 
-  class ChangeFilterTypeAction : public EditAction
+  class ChangeFilterTypeAction : public UpdateFilterAction
   {
   public:
-    ChangeFilterTypeAction(int start_frame, fg::FilterType old_type, fg::FilterType new_type);
+    ChangeFilterTypeAction(int start_frame, fg::filter_ptr old_filter, fg::filter_ptr new_filter);
 
-    void execute(Coordinator& coordinator) override;
-    void undo(Coordinator& coordinator) override;
     std::string get_description() const override;
-
-  private:
-    int start_frame_;
-    fg::FilterType old_type_;
-    fg::FilterType new_type_;
   };
 
 
