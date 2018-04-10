@@ -264,14 +264,14 @@ void Coordinator::update_filter_for_current_frame()
   }
 
   if (displaying_filter_start_frame()) {
-    update_current_filter(true);
+    update_current_filter();
   } else {
     add_new_filter_for_current_frame();
   }
 }
 
 
-void Coordinator::update_current_filter(bool force_update)
+void Coordinator::update_current_filter()
 {
   auto new_filter = current_filter_panel_->get_filter();
   edit_action_ptr action = edit_action_ptr(new UpdateFilterAction(current_frame_, current_filter_, new_filter));

@@ -89,7 +89,7 @@ namespace mdl {
     void on_panel_rectangle_changed(Rectangle rect);
     void update_filter_for_current_frame();
     void add_new_filter_for_current_frame();
-    void update_current_filter(bool force_updated);
+    void update_current_filter();
 
     sigc::connection on_start_frame_changed_;
     void on_start_frame_changed(int start_frame);
