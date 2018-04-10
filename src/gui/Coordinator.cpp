@@ -281,9 +281,14 @@ void Coordinator::update_current_filter()
 
 void Coordinator::add_new_filter_for_current_frame()
 {
+  bool saved_scroll_to_filter = scroll_filter_;
+  scroll_filter_ = false;
+
   auto new_filter = current_filter_panel_->get_filter();
   edit_action_ptr action = edit_action_ptr(new AddFilterAction(current_frame_, new_filter));
   undo_manager_.execute_action(action);
+
+  scroll_filter_ = saved_scroll_to_filter;
 }
 
 
