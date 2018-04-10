@@ -123,9 +123,9 @@ bool FilterPanelNull::creates_filter() const
 }
 
 
-fg::Filter* FilterPanelNull::get_filter() const
+fg::filter_ptr FilterPanelNull::get_filter() const
 {
-  return new fg::NullFilter();
+  return fg::filter_ptr(new fg::NullFilter());
 }
 
 
@@ -135,9 +135,9 @@ FilterPanelCut::FilterPanelCut(int start_frame, int max_frame)
 }
 
 
-fg::Filter* FilterPanelCut::get_filter() const
+fg::filter_ptr FilterPanelCut::get_filter() const
 {
-  return new fg::CutFilter();
+  return fg::filter_ptr(new fg::CutFilter());
 }
 
 
@@ -147,9 +147,9 @@ FilterPanelReview::FilterPanelReview(int start_frame, int max_frame)
 }
 
 
-fg::Filter* FilterPanelReview::get_filter() const
+fg::filter_ptr FilterPanelReview::get_filter() const
 {
-  return new fg::ReviewFilter();
+  return fg::filter_ptr(new fg::ReviewFilter());
 }
 
 
@@ -163,7 +163,7 @@ FilterPanelRectangular::FilterPanelRectangular(int start_frame, int max_frame,
 
 
 FilterPanelRectangular::FilterPanelRectangular(int start_frame, int max_frame,
-                                               fg::RectangularFilter* filter,
+                                               std::shared_ptr<fg::RectangularFilter> filter,
                                                int frame_width, int frame_height)
   : FilterPanelRectangular(start_frame, max_frame,
                            filter->x(), filter->y(), filter->width(), filter->height(),
@@ -262,19 +262,19 @@ FilterPanelDelogo::FilterPanelDelogo(int start_frame, int max_frame,
 
 
 FilterPanelDelogo::FilterPanelDelogo(int start_frame, int max_frame,
-                                     fg::DelogoFilter* filter,
+                                     std::shared_ptr<fg::DelogoFilter> filter,
                                      int frame_width, int frame_height)
   : FilterPanelRectangular(start_frame, max_frame, filter, frame_width, frame_height)
 {
 }
 
 
-fg::Filter* FilterPanelDelogo::get_filter() const
+fg::filter_ptr FilterPanelDelogo::get_filter() const
 {
-  return new fg::DelogoFilter(txt_x_.get_value_as_int(),
-                              txt_y_.get_value_as_int(),
-                              txt_width_.get_value_as_int(),
-                              txt_height_.get_value_as_int());
+  return fg::filter_ptr(new fg::DelogoFilter(txt_x_.get_value_as_int(),
+                                             txt_y_.get_value_as_int(),
+                                             txt_width_.get_value_as_int(),
+                                             txt_height_.get_value_as_int()));
 }
 
 
@@ -286,17 +286,17 @@ FilterPanelDrawbox::FilterPanelDrawbox(int start_frame, int max_frame,
 
 
 FilterPanelDrawbox::FilterPanelDrawbox(int start_frame, int max_frame,
-                                       fg::DrawboxFilter* filter,
+                                       std::shared_ptr<fg::DrawboxFilter> filter,
                                        int frame_width, int frame_height)
   : FilterPanelRectangular(start_frame, max_frame, filter, frame_width, frame_height)
 {
 }
 
 
-fg::Filter* FilterPanelDrawbox::get_filter() const
+fg::filter_ptr FilterPanelDrawbox::get_filter() const
 {
-  return new fg::DrawboxFilter(txt_x_.get_value_as_int(),
-                               txt_y_.get_value_as_int(),
-                               txt_width_.get_value_as_int(),
-                               txt_height_.get_value_as_int());
+  return fg::filter_ptr(new fg::DrawboxFilter(txt_x_.get_value_as_int(),
+                                              txt_y_.get_value_as_int(),
+                                              txt_width_.get_value_as_int(),
+                                              txt_height_.get_value_as_int()));
 }

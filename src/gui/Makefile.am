@@ -30,6 +30,8 @@ multi_delogo_SOURCES = main.cpp \
                        FilterPanelFactory.cpp \
                        FilterType.cpp \
                        FilterList.cpp \
+                       EditAction.cpp \
+                       UndoManager.cpp \
                        Coordinator.cpp \
                        MovieWindow.cpp \
                        FindLogosWindow.cpp \
@@ -54,6 +56,8 @@ noinst_HEADERS = common/Exceptions.hpp \
                  FilterPanelFactory.hpp \
                  FilterType.hpp \
                  FilterList.hpp \
+                 EditAction.hpp \
+                 UndoManager.hpp \
                  Coordinator.hpp \
                  MovieWindow.hpp \
                  FindLogosWindow.hpp \

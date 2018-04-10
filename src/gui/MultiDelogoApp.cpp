@@ -93,7 +93,8 @@ void MultiDelogoApp::open_file(const std::string& file)
 
   MovieWindow* window = new MovieWindow(mpr->file,
                                         std::move(mpr->filter_data),
-                                        frame_provider);
+                                        frame_provider,
+                                        *this);
   register_window(window);
 }
 

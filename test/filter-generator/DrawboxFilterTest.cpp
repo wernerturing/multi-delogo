@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <memory>
 #include <string>
 
 #include "Filters.hpp"
@@ -57,7 +58,7 @@ BOOST_AUTO_TEST_CASE(test_construction)
 
 BOOST_AUTO_TEST_CASE(test_load)
 {
-  fg::DrawboxFilter* filter = fg::DrawboxFilter::load("50;60;100;80");
+  std::shared_ptr<fg::DrawboxFilter> filter = fg::DrawboxFilter::load("50;60;100;80");
 
   BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::DRAWBOX);
   BOOST_CHECK_EQUAL(filter->x(), 50);

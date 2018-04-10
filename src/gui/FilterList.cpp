@@ -109,6 +109,12 @@ void FilterList::unselect()
 }
 
 
+Gtk::TreeModel::iterator FilterList::get_selected() const
+{
+  return selection_->get_selected();
+}
+
+
 void FilterList::scroll_to_row(const Gtk::TreeModel::iterator& iter)
 {
   view_.scroll_to_row(model_->get_path(iter));

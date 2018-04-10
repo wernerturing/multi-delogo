@@ -48,7 +48,7 @@ public:
     ffmpeg.set_output_file("output.mp4");
   }
 
-  void add_filter(int start_frame, fg::Filter* filter)
+  void add_filter(int start_frame, fg::filter_ptr filter)
   {
     filters.insert(start_frame, filter);
   }
@@ -113,7 +113,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h265_copy_audio)
 
 BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264_reencode_audio)
 {
-  add_filter(1000, new fg::CutFilter());
+  add_filter(1000, fg::filter_ptr(new fg::CutFilter()));
   ffmpeg.set_codec(FFmpegExecutor::Codec::H264);
   ffmpeg.set_quality(20);
 

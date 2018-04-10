@@ -34,18 +34,10 @@
 using namespace fg;
 
 
-FilterList::~FilterList()
-{
-  for (auto& entry: filters_) {
-    delete entry.second;
-  }
-}
-
-
-void FilterList::insert(int start_frame, Filter* filter)
+void FilterList::insert(int start_frame, filter_ptr filter)
 {
   remove(start_frame);
-  filters_.insert(std::pair<int, Filter*>(start_frame, filter));
+  filters_.insert(std::pair<int, filter_ptr>(start_frame, filter));
 }
 
 
@@ -53,7 +45,6 @@ void FilterList::remove(int start_frame)
 {
   auto iter = filters_.find(start_frame);
   if (iter != end()) {
-    delete iter->second;
     filters_.erase(iter);
   }
 }
@@ -67,8 +58,8 @@ void FilterList::change_start_frame(int old_start_frame, int new_start_frame)
   }
 
   remove(new_start_frame);
-  filters_.insert(std::pair<int, Filter*>(new_start_frame, iter->second));
-  filters_.erase(old_start_frame); // remove() is not used because we must not delete the filter
+  filters_.insert(std::pair<int, filter_ptr>(new_start_frame, iter->second));
+  filters_.erase(old_start_frame);
 }
 
 
@@ -185,7 +176,7 @@ void FilterList::load_line(const std::string& line)
 
   try {
     int start_frame = std::stoi(line.substr(0, pos));
-    Filter* filter = FilterFactory::load(line.substr(pos + 1));
+    filter_ptr filter = filter_ptr(FilterFactory::load(line.substr(pos + 1)));
 
     insert(start_frame, filter);
   } catch (std::invalid_argument& e) {

@@ -19,6 +19,7 @@
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
 
+#include "filter-generator/FilterFactory.hpp"
 #include "filter-generator/Filters.hpp"
 
 #include "Coordinator.hpp"
@@ -26,6 +27,7 @@
 #include "FrameNavigator.hpp"
 #include "FrameView.hpp"
 #include "FilterPanelFactory.hpp"
+#include "EditAction.hpp"
 #include "Utils.hpp"
 
 using namespace mdl;
@@ -34,8 +36,10 @@ using namespace mdl;
 Coordinator::Coordinator(Gtk::Window& parent_window,
                          FilterList& filter_list,
                          FrameNavigator& frame_navigator,
-                         int frame_width, int frame_height)
-  : parent_window_(parent_window)
+                         int frame_width, int frame_height,
+                         Gtk::ToolButton& btn_undo, Gtk::ToolButton& btn_redo)
+  : undo_manager_(*this, btn_undo, btn_redo)
+  , parent_window_(parent_window)
   , filter_list_(filter_list)
   , filter_model_(filter_list.get_model())
   , frame_navigator_(frame_navigator)
@@ -110,6 +114,18 @@ int Coordinator::get_current_frame()
 }
 
 
+void Coordinator::on_undo()
+{
+  undo_manager_.undo_last_action();
+}
+
+
+void Coordinator::on_redo()
+{
+  undo_manager_.redo_last_action();
+}
+
+
 void Coordinator::on_filter_selected(int start_frame)
 {
   frame_navigator_.change_displayed_frame(start_frame);
@@ -118,8 +134,6 @@ void Coordinator::on_filter_selected(int start_frame)
 
 void Coordinator::on_frame_changed(int new_frame)
 {
-  update_current_filter_if_necessary();
-
   auto iter = filter_model_->get_for_frame(new_frame);
 
   if (iter && (*iter)[filter_model_->columns.start_frame] == new_frame) {
@@ -159,7 +173,7 @@ void Coordinator::change_displayed_filter(const FilterListModel::iterator& iter)
   }
 
   int start_frame = (*iter)[filter_model_->columns.start_frame];
-  fg::Filter* filter = (*iter)[filter_model_->columns.filter];
+  fg::filter_ptr filter = (*iter)[filter_model_->columns.filter];
   if (filter == current_filter_) {
     return;
   }
@@ -195,18 +209,27 @@ void Coordinator::update_displayed_panel(fg::FilterType type, FilterPanel* panel
 }
 
 
+bool Coordinator::displaying_filter_start_frame()
+{
+  auto iter = filter_model_->get_by_start_frame(current_frame_);
+  return bool(iter);
+}
+
+
 void Coordinator::on_filter_type_changed(fg::FilterType new_type)
 {
   if (!current_filter_) {
     return;
   }
 
-  update_current_filter_if_necessary();
-  add_new_filter_if_not_on_filter_starting_frame(true);
-
-  FilterPanel* new_panel = panel_factory_.convert(current_frame_, current_filter_, new_type);
-  update_displayed_panel(new_type, new_panel);
-  update_current_filter(true);
+  auto new_filter = fg::FilterFactory::convert(current_filter_, new_type);
+  if (displaying_filter_start_frame()) {
+    edit_action_ptr action = edit_action_ptr(new ChangeFilterTypeAction(current_frame_, current_filter_, new_filter));
+    undo_manager_.execute_action(action);
+  } else {
+    edit_action_ptr action = edit_action_ptr(new AddFilterAction(current_frame_, new_filter));
+    undo_manager_.execute_action(action);
+  }
 }
 
 
@@ -220,7 +243,7 @@ void Coordinator::on_frame_rectangle_changed(Rectangle rect)
   current_filter_panel_->set_rectangle(rect);
   on_panel_rectangle_changed_.block(false);
 
-  add_new_filter_if_not_on_filter_starting_frame();
+  update_filter_for_current_frame();
 }
 
 
@@ -230,7 +253,42 @@ void Coordinator::on_panel_rectangle_changed(Rectangle rect)
   frame_view_.show_rectangle(rect);
   on_frame_rectangle_changed_.block(false);
 
-  add_new_filter_if_not_on_filter_starting_frame();
+  update_filter_for_current_frame();
+}
+
+
+void Coordinator::update_filter_for_current_frame()
+{
+  if (!current_filter_panel_->creates_filter()) {
+    return;
+  }
+
+  if (displaying_filter_start_frame()) {
+    update_current_filter();
+  } else {
+    add_new_filter_for_current_frame();
+  }
+}
+
+
+void Coordinator::update_current_filter()
+{
+  auto new_filter = current_filter_panel_->get_filter();
+  edit_action_ptr action = edit_action_ptr(new UpdateFilterAction(current_frame_, current_filter_, new_filter));
+  undo_manager_.execute_action(action);
+}
+
+
+void Coordinator::add_new_filter_for_current_frame()
+{
+  bool saved_scroll_to_filter = scroll_filter_;
+  scroll_filter_ = false;
+
+  auto new_filter = current_filter_panel_->get_filter();
+  edit_action_ptr action = edit_action_ptr(new AddFilterAction(current_frame_, new_filter));
+  undo_manager_.execute_action(action);
+
+  scroll_filter_ = saved_scroll_to_filter;
 }
 
 
@@ -241,14 +299,14 @@ void Coordinator::on_start_frame_changed(int start_frame)
     return;
   }
 
-  auto iter = filter_model_->get_by_start_frame(current_filter_start_frame_);
+  fg::filter_ptr previous_filter;
+  auto previous_filter_iter = filter_model_->get_by_start_frame(start_frame);
+  if (previous_filter_iter) {
+    previous_filter = (*previous_filter_iter)[filter_model_->columns.filter];
+  }
 
-  on_filter_selected_.block();
-  (*iter)[filter_model_->columns.start_frame] = start_frame;
-  on_filter_selected_.block(false);
-  unselect_rows();
-
-  current_filter_start_frame_ = start_frame;
+  edit_action_ptr action = edit_action_ptr(new ChangeStartFrameAction(current_filter_start_frame_, start_frame, previous_filter));
+  undo_manager_.execute_action(action);
 }
 
 
@@ -284,53 +342,56 @@ void Coordinator::create_new_filter_panel()
 }
 
 
-void Coordinator::update_current_filter_if_necessary()
-{
-  update_current_filter(false);
-}
-
-
-void Coordinator::update_current_filter(bool force_update)
-{
-  auto iter = filter_model_->get_by_start_frame(current_frame_);
-  if (!force_update
-      && (!iter || !current_filter_panel_ || !current_filter_panel_->is_changed())) {
-    return;
-  }
-
-  auto new_filter = current_filter_panel_->get_filter();
-  (*iter)[filter_model_->columns.filter] = new_filter;
-  current_filter_ = new_filter;
-}
-
-
-void Coordinator::add_new_filter_if_not_on_filter_starting_frame(bool always_add)
-{
-  auto iter = filter_model_->get_by_start_frame(current_frame_);
-  if (iter) {
-    return;
-  }
-
-  if (!always_add && !current_filter_panel_->creates_filter()) {
-    return;
-  }
-
-  current_filter_ = current_filter_panel_->get_filter();
-  current_filter_start_frame_ = current_frame_;
-  auto inserted_row = filter_model_->insert(current_frame_, current_filter_);
-  current_filter_panel_->set_changed(false);
-
-  set_start_frame_in_filter_panel(current_frame_);
-
-  select_row(inserted_row);
-}
-
-
 void Coordinator::on_remove_filter()
 {
-  auto iter = filter_model_->get_by_start_frame(current_frame_);
+  auto iter = filter_list_.get_selected();
+  fg::filter_ptr filter = (*iter)[filter_model_->columns.filter];
+
+  edit_action_ptr remove_action = edit_action_ptr(new RemoveFilterAction(current_frame_, filter));
+  undo_manager_.execute_action(remove_action);
+}
+
+
+void Coordinator::remove_filter(int start_frame)
+{
+  auto iter = filter_model_->get_by_start_frame(start_frame);
   on_filter_selected_.block();
   filter_model_->remove(iter);
   on_filter_selected_.block(false);
   on_frame_changed(current_frame_);
+}
+
+
+void Coordinator::insert_filter(int start_frame, fg::filter_ptr filter)
+{
+  filter_model_->insert(start_frame, filter);
+  current_filter_panel_->set_changed(false);
+  frame_navigator_.change_displayed_frame(start_frame);
+}
+
+
+void Coordinator::update_filter(int start_frame, fg::filter_ptr filter)
+{
+  auto iter = filter_model_->get_by_start_frame(start_frame);
+  (*iter)[filter_model_->columns.filter] = filter;
+
+  bool saved_scroll_to_filter = scroll_filter_;
+  scroll_filter_ = false;
+  frame_navigator_.change_displayed_frame(start_frame);
+  scroll_filter_ = saved_scroll_to_filter;
+}
+
+
+void Coordinator::change_start_frame(int old_start_frame, int new_start_frame)
+{
+  auto iter = filter_model_->get_by_start_frame(old_start_frame);
+
+  on_filter_selected_.block();
+  (*iter)[filter_model_->columns.start_frame] = new_start_frame;
+  on_filter_selected_.block(false);
+  unselect_rows();
+
+  set_start_frame_in_filter_panel(new_start_frame);
+
+  current_filter_start_frame_ = new_start_frame;
 }

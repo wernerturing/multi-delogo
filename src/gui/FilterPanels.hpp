@@ -19,6 +19,8 @@
 #ifndef MDL_FILTER_PANELS_H
 #define MDL_FILTER_PANELS_H
 
+#include <memory>
+
 #include <gtkmm.h>
 
 #include "filter-generator/Filters.hpp"
@@ -48,7 +50,7 @@ namespace mdl {
     FilterPanelNull(int start_frame, int max_frame);
 
     bool creates_filter() const override;
-    fg::Filter* get_filter() const override;
+    fg::filter_ptr get_filter() const override;
   };
 
 
@@ -57,7 +59,7 @@ namespace mdl {
   public:
     FilterPanelCut(int start_frame, int max_frame);
 
-    fg::Filter* get_filter() const override;
+    fg::filter_ptr get_filter() const override;
   };
 
 
@@ -66,7 +68,7 @@ namespace mdl {
   public:
     FilterPanelReview(int start_frame, int max_frame);
 
-    fg::Filter* get_filter() const override;
+    fg::filter_ptr get_filter() const override;
   };
 
 
@@ -76,7 +78,7 @@ namespace mdl {
     FilterPanelRectangular(int start_frame, int max_frame,
                            int frame_width, int frame_height);
     FilterPanelRectangular(int start_frame, int max_frame,
-                           fg::RectangularFilter* filter,
+                           std::shared_ptr<fg::RectangularFilter> filter,
                            int frame_width, int frame_height);
     FilterPanelRectangular(int start_frame, int max_frame,
                            int x, int y, int width, int height,
@@ -111,10 +113,10 @@ namespace mdl {
     FilterPanelDelogo(int start_frame, int max_frame,
                       int frame_width, int frame_height);
     FilterPanelDelogo(int start_frame, int max_frame,
-                      fg::DelogoFilter* filter,
+                      std::shared_ptr<fg::DelogoFilter> filter,
                       int frame_width, int frame_height);
 
-    fg::Filter* get_filter() const override;
+    fg::filter_ptr get_filter() const override;
   };
 
 
@@ -124,10 +126,10 @@ namespace mdl {
     FilterPanelDrawbox(int start_frame, int max_frame,
                        int frame_width, int frame_height);
     FilterPanelDrawbox(int start_frame, int max_frame,
-                       fg::DrawboxFilter* filter,
+                       std::shared_ptr<fg::DrawboxFilter> filter,
                        int frame_width, int frame_height);
 
-    fg::Filter* get_filter() const override;
+    fg::filter_ptr get_filter() const override;
   };
 }
 

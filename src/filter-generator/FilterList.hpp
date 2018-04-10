@@ -19,6 +19,7 @@
 #ifndef FG_FILTER_LIST_H
 #define FG_FILTER_LIST_H
 
+#include <memory>
 #include <string>
 #include <map>
 #include <istream>
@@ -33,10 +34,10 @@ namespace fg {
   class FilterList
   {
   public:
-    typedef std::map<int, Filter*>::value_type value_type;
+    typedef std::map<int, filter_ptr>::value_type value_type;
     typedef boost::optional<value_type> maybe_type;
-    typedef std::map<int, Filter*>::size_type size_type;
-    typedef std::map<int, Filter*>::const_iterator const_iterator;
+    typedef std::map<int, filter_ptr>::size_type size_type;
+    typedef std::map<int, filter_ptr>::const_iterator const_iterator;
 
     FilterList() = default;
 
@@ -44,9 +45,7 @@ namespace fg {
     FilterList (const FilterList&) = delete;
     FilterList& operator=(const FilterList&) = delete;
 
-    ~FilterList();
-
-    void insert(int start_frame, Filter* filter);
+    void insert(int start_frame, filter_ptr filter);
     void remove(int start_frame);
     void change_start_frame(int old_start_frame, int new_start_frame);
 
@@ -68,7 +67,7 @@ namespace fg {
 
 
   private:
-    std::map<int, Filter*> filters_;
+    std::map<int, filter_ptr> filters_;
 
     void load_line(const std::string& line);
   };

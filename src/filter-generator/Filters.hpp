@@ -19,6 +19,7 @@
 #ifndef FG_FILTERS_H
 #define FG_FILTERS_H
 
+#include <memory>
 #include <string>
 #include <vector>
 #include <ostream>
@@ -50,10 +51,13 @@ namespace fg {
   };
 
 
+  typedef std::shared_ptr<Filter> filter_ptr;
+
+
   class NullFilter : public Filter
   {
   public:
-    static NullFilter* load(const std::string& parameters);
+    static std::shared_ptr<NullFilter> load(const std::string& parameters);
 
     FilterType type() const override;
     std::string name() const override;
@@ -93,7 +97,7 @@ namespace fg {
   public:
     DelogoFilter(int x, int y, int width, int height);
 
-    static DelogoFilter* load(const std::string& parameters);
+    static std::shared_ptr<DelogoFilter> load(const std::string& parameters);
 
     FilterType type() const override;
     std::string name() const override;
@@ -108,7 +112,7 @@ namespace fg {
   public:
     DrawboxFilter(int x, int y, int width, int height);
 
-    static DrawboxFilter* load(const std::string& parameters);
+    static std::shared_ptr<DrawboxFilter> load(const std::string& parameters);
 
     FilterType type() const override;
     std::string name() const override;
@@ -121,7 +125,7 @@ namespace fg {
   class CutFilter : public Filter
   {
   public:
-    static CutFilter* load(const std::string& parameters);
+    static std::shared_ptr<CutFilter> load(const std::string& parameters);
 
     FilterType type() const override;
     std::string name() const override;
@@ -136,7 +140,7 @@ namespace fg {
   class ReviewFilter : public Filter
   {
   public:
-    static ReviewFilter* load(const std::string& parameters);
+    static std::shared_ptr<ReviewFilter> load(const std::string& parameters);
 
     FilterType type() const override;
     std::string name() const override;

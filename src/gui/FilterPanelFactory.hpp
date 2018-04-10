@@ -33,13 +33,14 @@ namespace mdl {
   {
   protected:
     FilterPanel(int start_frame, int max_frame);
-    virtual ~FilterPanel();
 
   public:
+    virtual ~FilterPanel();
+
     typedef boost::optional<Rectangle> MaybeRectangle;
 
     virtual bool creates_filter() const;
-    virtual fg::Filter* get_filter() const = 0;
+    virtual fg::filter_ptr get_filter() const = 0;
     virtual void set_start_frame(int start_frame);
     virtual MaybeRectangle get_rectangle() const = 0;
     virtual void set_rectangle(const Rectangle& rect) = 0;
@@ -68,17 +69,13 @@ namespace mdl {
   public:
     FilterPanelFactory(int max_frame, int frame_width, int frame_height);
 
-    FilterPanel* create(int start_frame, fg::Filter* filter);
+    FilterPanel* create(int start_frame, fg::filter_ptr filter);
     FilterPanel* create(int start_frame, fg::FilterType type);
-    FilterPanel* convert(int start_frame, fg::Filter* original, fg::FilterType new_type);
 
   private:
     int max_frame_;
     int frame_width_;
     int frame_height_;
-
-    bool is_no_parameters(fg::FilterType type);
-    bool is_rectangular(fg::FilterType type);
   };
 }
 

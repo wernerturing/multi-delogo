@@ -38,13 +38,15 @@ using namespace mdl;
 
 MovieWindow::MovieWindow(const std::string& project_file,
                          std::unique_ptr<fg::FilterData> filter_data,
-                         const Glib::RefPtr<FrameProvider>& frame_provider)
+                         const Glib::RefPtr<FrameProvider>& frame_provider,
+                         Gtk::Application& app)
   : project_file_(project_file)
   , filter_data_(std::move(filter_data))
   , filter_list_(filter_data_->filter_list())
   , frame_navigator_(*this, frame_provider)
   , coordinator_(*this, filter_list_, frame_navigator_,
-                 frame_provider->get_frame_width(), frame_provider->get_frame_height())
+                 frame_provider->get_frame_width(), frame_provider->get_frame_height(),
+                 btn_undo_, btn_redo_)
 {
   set_default_size(1000, 600);
   set_title(Glib::ustring::compose("multi-delogo: %1",
@@ -52,7 +54,7 @@ MovieWindow::MovieWindow(const std::string& project_file,
 
   Gtk::Grid* vbox = Gtk::manage(new Gtk::Grid());
   vbox->set_orientation(Gtk::ORIENTATION_VERTICAL);
-  vbox->add(*create_toolbar());
+  vbox->add(*create_toolbar(app));
 
   Gtk::Grid* hbox = Gtk::manage(new Gtk::Grid());
   hbox->set_column_spacing(8);
@@ -70,7 +72,7 @@ MovieWindow::MovieWindow(const std::string& project_file,
 }
 
 
-Gtk::Toolbar* MovieWindow::create_toolbar()
+Gtk::Toolbar* MovieWindow::create_toolbar(Gtk::Application& app)
 {
   Gtk::ToolButton* btn_new = Gtk::manage(new Gtk::ToolButton());
   btn_new->set_tooltip_text(_("Create a new project"));
@@ -87,6 +89,16 @@ Gtk::Toolbar* MovieWindow::create_toolbar()
   btn_save->set_tooltip_text(_("Save current project"));
   btn_save->set_icon_name("document-save");
   gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_save->gobj()), "win.save");
+
+  add_action("undo", sigc::mem_fun(coordinator_, &Coordinator::on_undo));
+  app.set_accels_for_action("win.undo", {"<Ctrl>z"});
+  btn_undo_.set_icon_name("edit-undo");
+  gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_undo_.gobj()), "win.undo");
+
+  add_action("redo", sigc::mem_fun(coordinator_, &Coordinator::on_redo));
+  app.set_accels_for_action("win.redo", {"<Ctrl><Shift>z", "<Ctrl>y"});
+  btn_redo_.set_icon_name("edit-redo");
+  gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_redo_.gobj()), "win.redo");
 
   Gtk::ToggleToolButton *chk_scroll_filter = Gtk::manage(new Gtk::ToggleToolButton(_("_Scroll to filter")));
   chk_scroll_filter->set_active();
@@ -111,6 +123,9 @@ Gtk::Toolbar* MovieWindow::create_toolbar()
   toolbar->append(*btn_new);
   toolbar->append(*btn_open);
   toolbar->append(*btn_save);
+  toolbar->append(*Gtk::manage(new Gtk::SeparatorToolItem()));
+  toolbar->append(btn_undo_);
+  toolbar->append(btn_redo_);
   toolbar->append(*Gtk::manage(new Gtk::SeparatorToolItem()));
   toolbar->append(*chk_scroll_filter);
   toolbar->append(*Gtk::manage(new Gtk::SeparatorToolItem()));
@@ -160,7 +175,6 @@ bool MovieWindow::on_key_press(GdkEventKey* key_event)
 
 void MovieWindow::on_save()
 {
-  coordinator_.update_current_filter_if_necessary();
   filter_data_->set_jump_size(frame_navigator_.get_jump_size());
   get_application()->save_project(project_file_, *filter_data_);
 }

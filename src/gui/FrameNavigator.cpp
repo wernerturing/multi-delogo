@@ -172,8 +172,10 @@ void FrameNavigator::change_displayed_frame(int new_frame_number)
   try {
     new_frame_number = boost::algorithm::clamp(new_frame_number, 1, number_of_frames_);
 
-    auto pixbuf = frame_provider_->get_frame(new_frame_number - 1);
-    frame_view_.set_image(pixbuf);
+    if (new_frame_number != frame_number_) {
+      auto pixbuf = frame_provider_->get_frame(new_frame_number - 1);
+      frame_view_.set_image(pixbuf);
+    }
 
     signal_frame_changed_.emit(new_frame_number);
     frame_number_ = new_frame_number;

@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <memory>
 #include <string>
 
 #include "Filters.hpp"
@@ -63,7 +64,7 @@ BOOST_AUTO_TEST_CASE(test_save_str)
 
 BOOST_AUTO_TEST_CASE(test_load)
 {
-  fg::NullFilter* filter = fg::NullFilter::load("");
+  std::shared_ptr<fg::NullFilter> filter = fg::NullFilter::load("");
 
   BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::NO_OP);
 }

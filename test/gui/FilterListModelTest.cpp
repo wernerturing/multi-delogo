@@ -51,9 +51,9 @@ class FilterModelFixture
 public:
   FilterModelFixture()
   {
-    list.insert(1, new fg::DelogoFilter(0, 0, 0, 0));
-    list.insert(201, new fg::DrawboxFilter(2, 2, 2, 2));
-    list.insert(101, new fg::NullFilter());
+    list.insert(1, fg::filter_ptr(new fg::DelogoFilter(0, 0, 0, 0)));
+    list.insert(201, fg::filter_ptr(new fg::DrawboxFilter(2, 2, 2, 2)));
+    list.insert(101, fg::filter_ptr(new fg::NullFilter()));
 
     model = mdl::FilterListModel::create(list);
 
@@ -99,7 +99,7 @@ BOOST_AUTO_TEST_CASE(test_get_n_columns)
 BOOST_AUTO_TEST_CASE(test_get_column_type)
 {
   BOOST_CHECK_EQUAL(model->get_column_type(0), Glib::Value<int>::value_type());
-  BOOST_CHECK_EQUAL(model->get_column_type(1), Glib::Value<fg::Filter*>::value_type());
+  BOOST_CHECK_EQUAL(model->get_column_type(1), Glib::Value<fg::filter_ptr>::value_type());
   BOOST_CHECK_EQUAL(model->get_column_type(2), Glib::Value<Glib::ustring>::value_type());
 }
 
@@ -178,21 +178,21 @@ BOOST_AUTO_TEST_CASE(test_iteration)
 
   auto row0 = *iter;
   BOOST_CHECK_EQUAL(row0[model->columns.start_frame], 1);
-  fg::Filter* filter0 = row0[model->columns.filter];
+  fg::filter_ptr filter0 = row0[model->columns.filter];
   BOOST_CHECK_EQUAL(filter0->type(), fg::FilterType::DELOGO);
   BOOST_CHECK_EQUAL(row0[model->columns.filter_name], "delogo");
 
   ++iter;
   auto row1 = *iter;
   BOOST_CHECK_EQUAL(row1[model->columns.start_frame], 101);
-  fg::Filter* filter1 = row1[model->columns.filter];
+  fg::filter_ptr filter1 = row1[model->columns.filter];
   BOOST_CHECK_EQUAL(filter1->type(), fg::FilterType::NO_OP);
   BOOST_CHECK_EQUAL(row1[model->columns.filter_name], "none");
 
   ++iter;
   auto row2 = *iter;
   BOOST_CHECK_EQUAL(row2.get_value(model->columns.start_frame), 201);
-  fg::Filter* filter2 = row2.get_value(model->columns.filter);
+  fg::filter_ptr filter2 = row2.get_value(model->columns.filter);
   BOOST_CHECK_EQUAL(filter2->type(), fg::FilterType::DRAWBOX);
   BOOST_CHECK_EQUAL(row2.get_value(model->columns.filter_name), "drawbox");
 
@@ -209,7 +209,7 @@ BOOST_AUTO_TEST_CASE(test_get_for_frame)
 
   Gtk::TreeRow row = *iter;
   BOOST_CHECK_EQUAL(row[model->columns.start_frame], 101);
-  fg::Filter* filter = row[model->columns.filter];
+  fg::filter_ptr filter = row[model->columns.filter];
   BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::NO_OP);
 }
 
@@ -228,7 +228,7 @@ BOOST_AUTO_TEST_CASE(test_get_by_start_frame)
 {
   auto iter = model->get_by_start_frame(101);
   Gtk::TreeRow row = *iter;
-  fg::Filter* filter = row[model->columns.filter];
+  fg::filter_ptr filter = row[model->columns.filter];
   BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::NO_OP);
 }
 
@@ -253,7 +253,7 @@ BOOST_AUTO_TEST_CASE(test_get_by_start_frame_in_empty_model)
 BOOST_AUTO_TEST_CASE(test_insert)
 {
   auto iter_from_before_insert = model->children().begin();
-  auto returned_iter = model->insert(151, new fg::DelogoFilter(10, 20, 30, 40));
+  auto returned_iter = model->insert(151, fg::filter_ptr(new fg::DelogoFilter(10, 20, 30, 40)));
   auto iter_from_after_insert = model->children().begin();
 
   BOOST_CHECK_EQUAL(list.size(), 4);
@@ -271,7 +271,7 @@ BOOST_AUTO_TEST_CASE(test_insert)
 
 BOOST_AUTO_TEST_CASE(test_insert_for_row_that_already_exists)
 {
-  BOOST_CHECK_THROW(model->insert(101, new fg::DelogoFilter(10, 20, 30, 40)),
+  BOOST_CHECK_THROW(model->insert(101, fg::filter_ptr(new fg::DelogoFilter(10, 20, 30, 40))),
                     mdl::DuplicateRowException);
 
   BOOST_CHECK_EQUAL(list.get_by_start_frame(101)->second->type(), fg::FilterType::NO_OP);
@@ -352,7 +352,7 @@ BOOST_AUTO_TEST_CASE(should_allow_changing_the_filter)
   auto iter_before = model->children()[1];
   auto row = *iter_before;
 
-  fg::Filter* new_filter = new fg::DrawboxFilter(10, 10, 10, 10);
+  auto new_filter = fg::filter_ptr(new fg::DrawboxFilter(10, 10, 10, 10));
   row[model->columns.filter] = new_filter;
   auto iter_after = model->children()[1];
 
@@ -362,7 +362,7 @@ BOOST_AUTO_TEST_CASE(should_allow_changing_the_filter)
                     iter_after.get_stamp()); // iters remain valid
 
   auto changed_row = *saved_iter;
-  fg::Filter* changed_filter = changed_row[model->columns.filter];
+  fg::filter_ptr changed_filter = changed_row[model->columns.filter];
   BOOST_CHECK_EQUAL(changed_filter, new_filter);
 }
 

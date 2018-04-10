@@ -26,6 +26,7 @@
 #include "FrameNavigator.hpp"
 #include "FrameView.hpp"
 #include "FilterPanelFactory.hpp"
+#include "UndoManager.hpp"
 
 
 namespace mdl {
@@ -35,9 +36,8 @@ namespace mdl {
     Coordinator(Gtk::Window& parent_window,
                 FilterList& filter_list,
                 FrameNavigator& frame_navigator,
-                int frame_width, int frame_height);
-
-    void update_current_filter_if_necessary();
+                int frame_width, int frame_height,
+                Gtk::ToolButton& btn_undo, Gtk::ToolButton& btn_redo);
 
     void on_previous_filter();
     void on_next_filter();
@@ -46,7 +46,12 @@ namespace mdl {
 
     int get_current_frame();
 
+    void on_undo();
+    void on_redo();
+
   private:
+    UndoManager undo_manager_;
+
     Gtk::Window& parent_window_;
 
     FilterList& filter_list_;
@@ -59,8 +64,9 @@ namespace mdl {
     FilterPanelFactory panel_factory_;
     FilterPanel* current_filter_panel_;
     int current_filter_start_frame_;
-    fg::Filter* current_filter_;
+    fg::filter_ptr current_filter_;
     bool scroll_filter_;
+
 
     sigc::connection on_filter_selected_;
     void on_filter_selected(int start_frame);
@@ -72,6 +78,7 @@ namespace mdl {
 
     void change_displayed_filter(const FilterListModel::iterator& iter);
     void update_displayed_panel(fg::FilterType type, FilterPanel* panel);
+    bool displaying_filter_start_frame();
 
     sigc::connection on_filter_type_changed_;
     void on_filter_type_changed(fg::FilterType new_type);
@@ -80,6 +87,9 @@ namespace mdl {
     void on_frame_rectangle_changed(Rectangle rect);
     sigc::connection on_panel_rectangle_changed_;
     void on_panel_rectangle_changed(Rectangle rect);
+    void update_filter_for_current_frame();
+    void add_new_filter_for_current_frame();
+    void update_current_filter();
 
     sigc::connection on_start_frame_changed_;
     void on_start_frame_changed(int start_frame);
@@ -87,10 +97,19 @@ namespace mdl {
     void set_start_frame_in_filter_panel(int start_frame);
 
     void create_new_filter_panel();
-    void update_current_filter(bool force_updated);
-    void add_new_filter_if_not_on_filter_starting_frame(bool always_add = false);
 
     void on_remove_filter();
+
+    void remove_filter(int start_frame);
+    void insert_filter(int start_frame, fg::filter_ptr filter);
+    void update_filter(int start_frame, fg::filter_ptr filter);
+    void change_start_frame(int old_start_frame, int new_start_frame);
+
+
+    friend class AddFilterAction;
+    friend class UpdateFilterAction;
+    friend class RemoveFilterAction;
+    friend class ChangeStartFrameAction;
   };
 }
 
