@@ -78,23 +78,9 @@ std::string UpdateFilterAction::get_description() const
 }
 
 
-ChangeFilterTypeAction::ChangeFilterTypeAction(int start_frame, fg::FilterType old_type, fg::FilterType new_type)
-  : start_frame_(start_frame)
-  , old_type_(old_type)
-  , new_type_(new_type)
+ChangeFilterTypeAction::ChangeFilterTypeAction(int start_frame, fg::filter_ptr old_filter, fg::filter_ptr new_filter)
+  : UpdateFilterAction(start_frame, old_filter, new_filter)
 {
-}
-
-
-void ChangeFilterTypeAction::execute(Coordinator& coordinator)
-{
-  coordinator.change_filter_type(start_frame_, new_type_);
-}
-
-
-void ChangeFilterTypeAction::undo(Coordinator& coordinator)
-{
-  coordinator.change_filter_type(start_frame_, old_type_);
 }
 
 

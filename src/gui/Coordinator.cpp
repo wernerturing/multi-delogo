@@ -19,6 +19,7 @@
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
 
+#include "filter-generator/FilterFactory.hpp"
 #include "filter-generator/Filters.hpp"
 
 #include "Coordinator.hpp"
@@ -221,14 +222,11 @@ void Coordinator::on_filter_type_changed(fg::FilterType new_type)
     return;
   }
 
+  auto new_filter = fg::FilterFactory::convert(current_filter_, new_type);
   if (displaying_filter_start_frame()) {
-    edit_action_ptr action = edit_action_ptr(new ChangeFilterTypeAction(current_frame_, current_filter_->type(), new_type));
+    edit_action_ptr action = edit_action_ptr(new ChangeFilterTypeAction(current_frame_, current_filter_, new_filter));
     undo_manager_.execute_action(action);
   } else {
-    FilterPanel* new_panel = panel_factory_.convert(current_frame_, current_filter_, new_type);
-    fg::filter_ptr new_filter = new_panel->get_filter();
-    delete new_panel;
-
     edit_action_ptr action = edit_action_ptr(new AddFilterAction(current_frame_, new_filter));
     undo_manager_.execute_action(action);
   }
@@ -376,16 +374,6 @@ void Coordinator::update_filter(int start_frame, fg::filter_ptr filter)
   scroll_filter_ = false;
   frame_navigator_.change_displayed_frame(start_frame);
   scroll_filter_ = saved_scroll_to_filter;
-}
-
-
-void Coordinator::change_filter_type(int start_frame, fg::FilterType type)
-{
-  frame_navigator_.change_displayed_frame(start_frame);
-
-  FilterPanel* new_panel = panel_factory_.convert(start_frame, current_filter_, type);
-  update_displayed_panel(type, new_panel);
-  update_filter(start_frame, new_panel->get_filter());
 }
 
 
