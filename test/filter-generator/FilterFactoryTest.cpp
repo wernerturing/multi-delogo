@@ -98,24 +98,57 @@ BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(creating_filters_from_type)
 
-BOOST_AUTO_TEST_CASE(should_create_a_null_filter)
+BOOST_AUTO_TEST_CASE(should_create_a_null_filter_with_no_rectangle)
 {
   fg::filter_ptr filter = fg::FilterFactory::create(fg::FilterType::NO_OP);
   BOOST_CHECK(filter->type() == fg::FilterType::NO_OP);
 }
 
 
-BOOST_AUTO_TEST_CASE(should_create_a_delogo_filter)
+BOOST_AUTO_TEST_CASE(should_create_a_null_filter_discarding_parameters)
 {
-  fg::filter_ptr filter = fg::FilterFactory::create(fg::FilterType::DELOGO);
-  BOOST_CHECK(filter->type() == fg::FilterType::DELOGO);
+  fg::filter_ptr filter = fg::FilterFactory::create(fg::FilterType::NO_OP, 1, 2, 3, 4);
+  BOOST_CHECK(filter->type() == fg::FilterType::NO_OP);
 }
 
 
-BOOST_AUTO_TEST_CASE(should_create_a_drawbox_filter)
+BOOST_AUTO_TEST_CASE(should_create_a_delogo_filter_with_parameters)
 {
-  fg::filter_ptr filter = fg::FilterFactory::create(fg::FilterType::DRAWBOX);
+  fg::filter_ptr filter = fg::FilterFactory::create(fg::FilterType::DELOGO, 10, 20, 30, 40);
+  BOOST_CHECK(filter->type() == fg::FilterType::DELOGO);
+
+  fg::DelogoFilter* delogo = dynamic_cast<fg::DelogoFilter*>(filter.get());
+  BOOST_CHECK(delogo->x()      == 10);
+  BOOST_CHECK(delogo->y()      == 20);
+  BOOST_CHECK(delogo->width()  == 30);
+  BOOST_CHECK(delogo->height() == 40);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_fail_if_trying_to_create_a_delogo_filter_without_parameters)
+{
+  BOOST_CHECK_THROW(fg::FilterFactory::create(fg::FilterType::DELOGO),
+                    fg::InvalidParametersException);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_create_a_drawbox_filter_with_parameters)
+{
+  fg::filter_ptr filter = fg::FilterFactory::create(fg::FilterType::DRAWBOX, 50, 60, 70, 80);
   BOOST_CHECK(filter->type() == fg::FilterType::DRAWBOX);
+
+  fg::DrawboxFilter* drawbox = dynamic_cast<fg::DrawboxFilter*>(filter.get());
+  BOOST_CHECK(drawbox->x()      == 50);
+  BOOST_CHECK(drawbox->y()      == 60);
+  BOOST_CHECK(drawbox->width()  == 70);
+  BOOST_CHECK(drawbox->height() == 80);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_fail_if_trying_to_create_a_drawbox_filter_without_parameters)
+{
+  BOOST_CHECK_THROW(fg::FilterFactory::create(fg::FilterType::DRAWBOX),
+                    fg::InvalidParametersException);
 }
 
 

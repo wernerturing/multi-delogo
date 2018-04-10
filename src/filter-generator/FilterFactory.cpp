@@ -64,19 +64,39 @@ filter_ptr FilterFactory::create(FilterType type)
   case FilterType::NO_OP:
     return filter_ptr(new NullFilter());
 
-  case FilterType::DELOGO:
-    return filter_ptr(new DelogoFilter());
-
-  case FilterType::DRAWBOX:
-    return filter_ptr(new DrawboxFilter());
-
   case FilterType::CUT:
     return filter_ptr(new CutFilter());
 
   case FilterType::REVIEW:
     return filter_ptr(new ReviewFilter());
 
+  case FilterType::DELOGO:
+  case FilterType::DRAWBOX:
+    throw InvalidParametersException();
+
   default:
     throw UnknownFilterException();
   }
+}
+
+
+filter_ptr FilterFactory::create(FilterType type, int x, int y, int width, int height)
+{
+  if (type == FilterType::DELOGO) {
+    return filter_ptr(new DelogoFilter(x, y, width, height));
+  } else if (type == FilterType::DRAWBOX) {
+    return filter_ptr(new DrawboxFilter(x, y, width, height));
+  } else if (is_no_parameters(type)) {
+    return create(type);
+  }
+
+  throw UnknownFilterException();
+}
+
+
+bool FilterFactory::is_no_parameters(FilterType type)
+{
+  return type == FilterType::NO_OP
+      || type == FilterType::CUT
+      || type == FilterType::REVIEW;
 }
