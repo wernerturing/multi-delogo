@@ -94,9 +94,35 @@ filter_ptr FilterFactory::create(FilterType type, int x, int y, int width, int h
 }
 
 
+filter_ptr FilterFactory::convert(filter_ptr original, FilterType new_type)
+{
+  if (is_rectangular(original->type()) && is_rectangular(new_type)) {
+    std::shared_ptr<RectangularFilter> rectangular = std::dynamic_pointer_cast<RectangularFilter>(original);
+    filter_ptr converted = create(new_type, rectangular->x(), rectangular->y(), rectangular->width(), rectangular->height());
+    return converted;
+  }
+
+  if (is_rectangular(new_type)) {
+    return create(new_type, 0, 0, 0, 0);
+  }
+
+  if (is_no_parameters(new_type) || is_no_parameters(original->type())) {
+    return create(new_type);
+  }
+
+  throw std::invalid_argument("Unsupported conversion");
+}
+
+
 bool FilterFactory::is_no_parameters(FilterType type)
 {
   return type == FilterType::NO_OP
       || type == FilterType::CUT
       || type == FilterType::REVIEW;
+}
+
+
+bool FilterFactory::is_rectangular(FilterType type)
+{
+  return type == FilterType::DELOGO || type == FilterType::DRAWBOX;
 }
