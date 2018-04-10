@@ -71,15 +71,11 @@ namespace mdl {
 
     FilterPanel* create(int start_frame, fg::filter_ptr filter);
     FilterPanel* create(int start_frame, fg::FilterType type);
-    FilterPanel* convert(int start_frame, fg::filter_ptr original, fg::FilterType new_type);
 
   private:
     int max_frame_;
     int frame_width_;
     int frame_height_;
-
-    bool is_no_parameters(fg::FilterType type);
-    bool is_rectangular(fg::FilterType type);
   };
 }
 

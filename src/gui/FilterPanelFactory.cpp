@@ -17,7 +17,6 @@
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <memory>
-#include <stdexcept>
 
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
@@ -90,36 +89,3 @@ FilterPanel* FilterPanelFactory::create(int start_frame, fg::FilterType type)
     return nullptr;
   }
 }
-
-
-FilterPanel* FilterPanelFactory::convert(int start_frame, fg::filter_ptr original, fg::FilterType new_type)
-{
-  if (is_rectangular(original->type()) && is_rectangular(new_type)) {
-    FilterPanel* panel = create(start_frame, new_type);
-    std::shared_ptr<fg::RectangularFilter> rectangular = std::dynamic_pointer_cast<fg::RectangularFilter>(original);
-    panel->set_rectangle({.x = (gdouble) rectangular->x(), .y = (gdouble) rectangular->y(),
-                          .width = (gdouble) rectangular->width(), .height = (gdouble) rectangular->height()});
-    return panel;
-  }
-
-  if (is_no_parameters(new_type) || is_no_parameters(original->type())) {
-    return create(start_frame, new_type);
-  }
-
-  throw std::invalid_argument("Unsupported conversion");
-}
-
-
-bool FilterPanelFactory::is_no_parameters(fg::FilterType type)
-{
-  return type == fg::FilterType::NO_OP
-      || type == fg::FilterType::CUT
-      || type == fg::FilterType::REVIEW;
-}
-
-
-bool FilterPanelFactory::is_rectangular(fg::FilterType type)
-{
-  return type == fg::FilterType::DELOGO || type == fg::FilterType::DRAWBOX;
-}
-
