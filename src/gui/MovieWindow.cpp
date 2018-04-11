@@ -197,6 +197,12 @@ void MovieWindow::on_find_logos()
 
 void MovieWindow::on_encode()
 {
+  if (filter_data_->filter_list().empty()) {
+    Gtk::MessageDialog dlg(*this, _("There are no filters. Please define at least one filter before encoding."), false, Gtk::MESSAGE_ERROR);
+    dlg.run();
+    return;
+  }
+
   if (filter_data_->filter_list().has_review_filter()) {
     Gtk::MessageDialog dlg(*this, _("Encoding cannot be done when there are 'review' filters. Please change them to some other filter (such as 'none'), or remove them."), false, Gtk::MESSAGE_ERROR);
     dlg.run();
