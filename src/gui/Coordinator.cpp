@@ -389,9 +389,7 @@ void Coordinator::change_start_frame(int old_start_frame, int new_start_frame)
   on_filter_selected_.block();
   (*iter)[filter_model_->columns.start_frame] = new_start_frame;
   on_filter_selected_.block(false);
-  unselect_rows();
 
-  set_start_frame_in_filter_panel(new_start_frame);
-
+  frame_navigator_.change_displayed_frame(new_start_frame);
   current_filter_start_frame_ = new_start_frame;
 }
