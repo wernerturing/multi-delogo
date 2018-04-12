@@ -291,7 +291,7 @@ void EncodeWindow::enable_widgets()
 
 void EncodeWindow::on_view_log()
 {
-  LogWindow* window = new LogWindow(*this, ffmpeg_.get_log());
+  LogWindow* window = LogWindow::create(*this, ffmpeg_.get_log());
   get_application()->register_window(window);
 }
 
@@ -314,18 +314,24 @@ bool EncodeWindow::on_delete_event(GdkEventAny*)
 }
 
 
-LogWindow::LogWindow(Gtk::Window& parent, const std::string& log)
+LogWindow* LogWindow::create(Gtk::Window& parent, const std::string& log)
 {
-  set_title(_("FFmpeg log"));
+  auto builder = Gtk::Builder::create_from_resource("/wt/multi-delogo/LogWindow.ui");
+  LogWindow* window = nullptr;
+  builder->get_widget_derived("log_window", window,
+                              parent, log);
+  return window;
+}
+
+
+LogWindow::LogWindow(BaseObjectType* cobject,
+                     const Glib::RefPtr<Gtk::Builder>& builder,
+                     Gtk::Window& parent, const std::string& log)
+  : MultiDelogoAppWindow(cobject)
+{
   set_transient_for(parent);
-  set_default_size(650, 300);
 
-  Gtk::TextView* txt = Gtk::manage(new Gtk::TextView());
+  Gtk::TextView* txt = nullptr;
+  builder->get_widget("txt_log", txt);
   txt->get_buffer()->set_text(log);
-
-  Gtk::ScrolledWindow* scr = Gtk::manage(new Gtk::ScrolledWindow());
-  scr->set_shadow_type(Gtk::SHADOW_IN);
-  scr->add(*txt);
-
-  add(*scr);
 }

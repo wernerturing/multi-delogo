@@ -94,7 +94,11 @@ namespace mdl {
   class LogWindow : public MultiDelogoAppWindow
   {
   public:
-    LogWindow(Gtk::Window& parent, const std::string& log);
+    static LogWindow* create(Gtk::Window& parent, const std::string& log);
+
+    LogWindow(BaseObjectType* cobject,
+              const Glib::RefPtr<Gtk::Builder>& builder,
+              Gtk::Window& parent, const std::string& log);
   };
 }
 
