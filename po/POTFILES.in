@@ -18,6 +18,7 @@
 src/gui/Coordinator.cpp
 src/gui/EditAction.cpp
 src/gui/EncodeWindow.cpp
+src/gui/EncodeWindow.ui
 src/gui/ETRProgressBar.cpp
 src/gui/FilterList.cpp
 src/gui/FilterPanelFactory.cpp
