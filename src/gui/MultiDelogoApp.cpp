@@ -59,7 +59,7 @@ Glib::RefPtr<MultiDelogoApp> MultiDelogoApp::create()
 
 void MultiDelogoApp::on_activate()
 {
-  initial_window_ = new InitialWindow();
+  initial_window_ = InitialWindow::create();
   register_window(initial_window_);
 }
 

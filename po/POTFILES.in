@@ -27,6 +27,7 @@ src/gui/FindLogosWindow.cpp
 src/gui/FrameNavigator.cpp
 src/gui/FrameView.cpp
 src/gui/InitialWindow.cpp
+src/gui/InitialWindow.ui
 src/gui/main.cpp
 src/gui/MovieWindow.cpp
 src/gui/MultiDelogoApp.cpp

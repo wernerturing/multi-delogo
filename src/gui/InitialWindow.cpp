@@ -25,37 +25,23 @@
 using namespace mdl;
 
 
-InitialWindow::InitialWindow()
+InitialWindow* InitialWindow::create()
 {
-  set_title(_("multi-delogo"));
-  set_border_width(16);
+  auto builder = Gtk::Builder::create_from_resource("/wt/multi-delogo/InitialWindow.ui");
+  InitialWindow* window = nullptr;
+  builder->get_widget_derived("initial_window", window);
+  return window;
+}
 
-  Gtk::Label* lbl = Gtk::manage(new Gtk::Label(_("What would you like to do?")));
 
-  Gtk::Button* btn_new = Gtk::manage(new Gtk::Button(_("Start a _new project"), true));
-  btn_new->set_image_from_icon_name("document-new");
-  btn_new->set_relief(Gtk::RELIEF_NONE);
+InitialWindow::InitialWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
+  : MultiDelogoAppWindow(cobject)
+{
+  Gtk::Button* btn_new = nullptr;
+  builder->get_widget("btn_new", btn_new);
   gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_new->gobj()), MultiDelogoApp::ACTION_NEW.c_str());
 
-  Gtk::Button* btn_open = Gtk::manage(new Gtk::Button(_("_Open an existing project"), true));
-  btn_open->set_image_from_icon_name("document-open");
-  btn_open->set_relief(Gtk::RELIEF_NONE);
+  Gtk::Button* btn_open = nullptr;
+  builder->get_widget("btn_open", btn_open);
   gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_open->gobj()), MultiDelogoApp::ACTION_OPEN.c_str());
-
-  Gtk::Grid* grid = Gtk::manage(new Gtk::Grid());
-  grid->set_orientation(Gtk::ORIENTATION_VERTICAL);
-  grid->set_row_spacing(16);
-
-  lbl->set_halign(Gtk::ALIGN_START);
-  grid->add(*lbl);
-
-  btn_new->set_halign(Gtk::ALIGN_START);
-  btn_new->set_vexpand();
-  grid->add(*btn_new);
-
-  btn_open->set_halign(Gtk::ALIGN_START);
-  btn_open->set_vexpand();
-  grid->add(*btn_open);
-
-  add(*grid);
 }

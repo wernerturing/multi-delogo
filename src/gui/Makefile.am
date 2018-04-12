@@ -38,7 +38,8 @@ multi_delogo_SOURCES = main.cpp \
                        FFmpegExecutor.cpp \
                        EncodeWindow.cpp \
                        Utils.cpp \
-                       InitialWindow.cpp
+                       InitialWindow.cpp \
+                       multi-delogo.gresource.c
 
 noinst_HEADERS = common/Exceptions.hpp \
                  common/Rectangle.hpp \
@@ -65,6 +66,14 @@ noinst_HEADERS = common/Exceptions.hpp \
                  EncodeWindow.hpp \
                  Utils.hpp \
                  InitialWindow.hpp
+
+BUILT_SOURCES = multi-delogo.gresource.c
+resource_files = $(shell glib-compile-resources --generate-dependencies multi-delogo.gresource.xml)
+multi-delogo.gresource.c: multi-delogo.gresource.xml $(resource_files)
+	$(AM_V_GEN) glib-compile-resources --target=$@ --generate-source $<
+CLEANFILES = $(BUILT_SOURCES)
+
+EXTRA_DIST = multi-delogo.gresource.xml *.ui
 
 
 localedir = $(datadir)/locale
