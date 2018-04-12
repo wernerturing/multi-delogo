@@ -42,6 +42,7 @@ namespace mdl {
   {
   public:
     ETRProgressBar();
+    ETRProgressBar(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 
     void set_progress(const Progress& progress);
     void reset();

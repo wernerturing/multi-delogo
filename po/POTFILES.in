@@ -24,6 +24,7 @@ src/gui/FilterPanelFactory.cpp
 src/gui/FilterPanels.cpp
 src/gui/FilterType.cpp
 src/gui/FindLogosWindow.cpp
+src/gui/FindLogosWindow.ui
 src/gui/FrameNavigator.cpp
 src/gui/FrameView.cpp
 src/gui/InitialWindow.cpp

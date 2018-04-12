@@ -43,6 +43,13 @@ ETRProgressBar::ETRProgressBar()
 }
 
 
+ETRProgressBar::ETRProgressBar(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
+  : Gtk::ProgressBar(cobject)
+{
+  set_show_text();
+}
+
+
 void ETRProgressBar::set_progress(const Progress& progress)
 {
   if (progress.percentage >= 0) {

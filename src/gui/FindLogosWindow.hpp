@@ -37,7 +37,12 @@ namespace mdl {
   class FindLogosWindow : public MultiDelogoAppWindow
   {
   public:
-    FindLogosWindow(fg::FilterData& filter_data,
+    static FindLogosWindow* create(fg::FilterData& filter_data,
+                                   int total_frames, int start_frame, int jump_size);
+
+    FindLogosWindow(BaseObjectType* cobject,
+                    const Glib::RefPtr<Gtk::Builder>& builder,
+                    fg::FilterData& filter_data,
                     int total_frames, int start_frame, int jump_size);
     ~FindLogosWindow();
 
@@ -45,19 +50,19 @@ namespace mdl {
     fg::FilterData& filter_data_;
     std::shared_ptr<LogoFinder> logo_finder_;
 
-    Gtk::SpinButton txt_initial_frame_;
-    Gtk::SpinButton txt_final_frame_;
-    Gtk::SpinButton txt_min_frame_interval_;
-    Gtk::SpinButton txt_max_frame_interval_;
+    Gtk::SpinButton* txt_initial_frame_;
+    Gtk::SpinButton* txt_final_frame_;
+    Gtk::SpinButton* txt_min_frame_interval_;
+    Gtk::SpinButton* txt_max_frame_interval_;
 
-    Gtk::SpinButton txt_min_logo_width_;
-    Gtk::SpinButton txt_max_logo_width_;
-    Gtk::SpinButton txt_min_logo_height_;
-    Gtk::SpinButton txt_max_logo_height_;
+    Gtk::SpinButton* txt_min_logo_width_;
+    Gtk::SpinButton* txt_max_logo_width_;
+    Gtk::SpinButton* txt_min_logo_height_;
+    Gtk::SpinButton* txt_max_logo_height_;
 
-    ETRProgressBar progress_bar_;
+    ETRProgressBar* progress_bar_;
 
-    Gtk::Button btn_find_logos_;
+    Gtk::Button* btn_find_logos_;
 
     std::thread* worker_thread_;
     bool search_in_progress_;
@@ -65,9 +70,8 @@ namespace mdl {
     Glib::Dispatcher finder_finished_dispatcher_;
 
 
-    Gtk::Grid* create_parameters();
-    Gtk::Grid* create_progress();
-    Gtk::Grid* create_buttons();
+    void configure_widgets(const Glib::RefPtr<Gtk::Builder>& builder,
+                           int total_frames, int start_frame, int jump_size);
     void configure_spin(Gtk::SpinButton& spin);
     void configure_spin(Gtk::SpinButton& spin, int max);
 
