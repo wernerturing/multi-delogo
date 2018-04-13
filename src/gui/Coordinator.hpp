@@ -36,8 +36,9 @@ namespace mdl {
     Coordinator(Gtk::Window& parent_window,
                 FilterList& filter_list,
                 FrameNavigator& frame_navigator,
-                int frame_width, int frame_height,
-                Gtk::ToolButton& btn_undo, Gtk::ToolButton& btn_redo);
+                int frame_width, int frame_height);
+
+    void set_undo_buttons(Gtk::Widget* btn_undo, Gtk::Widget* btn_redo);
 
     void on_previous_filter();
     void on_next_filter();

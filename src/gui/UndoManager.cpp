@@ -27,13 +27,19 @@
 using namespace mdl;
 
 
-UndoManager::UndoManager(Coordinator& coordinator, Gtk::Widget& btn_undo, Gtk::Widget& btn_redo)
+UndoManager::UndoManager(Coordinator& coordinator)
   : coordinator_(coordinator)
-  , btn_undo_(btn_undo)
-  , btn_redo_(btn_redo)
 {
-  btn_undo_.set_sensitive(false);
-  btn_redo_.set_sensitive(false);
+}
+
+
+void UndoManager::set_undo_buttons(Gtk::Widget* btn_undo, Gtk::Widget* btn_redo)
+{
+  btn_undo_ = btn_undo;
+  btn_redo_ = btn_redo;
+
+  btn_undo_->set_sensitive(false);
+  btn_redo_->set_sensitive(false);
 }
 
 
@@ -111,14 +117,14 @@ void UndoManager::update_buttons()
 }
 
 
-void UndoManager::update_button(Gtk::Widget& button, std::deque<edit_action_ptr>& list, const std::string base_text)
+void UndoManager::update_button(Gtk::Widget* button, std::deque<edit_action_ptr>& list, const std::string base_text)
 {
   if (list.empty()) {
-    button.set_sensitive(false);
-    button.set_tooltip_text("");
+    button->set_sensitive(false);
+    button->set_tooltip_text("");
   } else {
-    button.set_sensitive(true);
+    button->set_sensitive(true);
     edit_action_ptr action = list.front();
-    button.set_tooltip_text(Glib::ustring::compose(base_text, action->get_description()));
+    button->set_tooltip_text(Glib::ustring::compose(base_text, action->get_description()));
   }
 }

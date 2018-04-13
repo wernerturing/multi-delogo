@@ -36,9 +36,8 @@ using namespace mdl;
 Coordinator::Coordinator(Gtk::Window& parent_window,
                          FilterList& filter_list,
                          FrameNavigator& frame_navigator,
-                         int frame_width, int frame_height,
-                         Gtk::ToolButton& btn_undo, Gtk::ToolButton& btn_redo)
-  : undo_manager_(*this, btn_undo, btn_redo)
+                         int frame_width, int frame_height)
+  : undo_manager_(*this)
   , parent_window_(parent_window)
   , filter_list_(filter_list)
   , filter_model_(filter_list.get_model())
@@ -71,6 +70,12 @@ Coordinator::Coordinator(Gtk::Window& parent_window,
     sigc::mem_fun(*this, &Coordinator::on_frame_rectangle_changed));
 
   frame_navigator_.change_displayed_frame(1);
+}
+
+
+void Coordinator::set_undo_buttons(Gtk::Widget* btn_undo, Gtk::Widget* btn_redo)
+{
+  undo_manager_.set_undo_buttons(btn_undo, btn_redo);
 }
 
 

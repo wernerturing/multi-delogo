@@ -33,6 +33,7 @@ src/gui/InitialWindow.ui
 src/gui/LogWindow.ui
 src/gui/main.cpp
 src/gui/MovieWindow.cpp
+src/gui/MovieWindow.ui
 src/gui/MultiDelogoApp.cpp
 src/gui/NumericEntry.cpp
 src/gui/UndoManager.cpp
