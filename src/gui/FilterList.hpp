@@ -34,7 +34,9 @@ namespace mdl {
   class FilterList : public Gtk::Grid
   {
   public:
-    FilterList(fg::FilterList& filter_list);
+    FilterList(BaseObjectType* cobject,
+               const Glib::RefPtr<Gtk::Builder>& builder,
+               fg::FilterList& filter_list);
 
     Glib::RefPtr<FilterListModel> get_model();
 
@@ -62,10 +64,10 @@ namespace mdl {
 
   private:
     Glib::RefPtr<FilterListModel> model_;
-    Gtk::TreeView view_;
+    Gtk::TreeView* view_;
     Glib::RefPtr<Gtk::TreeView::Selection> selection_;
 
-    Gtk::Button btn_remove_filter_;
+    Gtk::Button* btn_remove_filter_;
 
     FilterType filter_type_;
     Gtk::Widget* current_panel_;
@@ -79,7 +81,7 @@ namespace mdl {
     type_signal_type_changed signal_type_changed_;
 
 
-    Gtk::Grid* create_buttons();
+    void configure_buttons(const Glib::RefPtr<Gtk::Builder>& builder);
 
     void on_selection_changed();
   };

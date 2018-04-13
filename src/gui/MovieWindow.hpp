@@ -56,7 +56,7 @@ namespace mdl {
     std::string project_file_;
     std::unique_ptr<fg::FilterData> filter_data_;
 
-    FilterList filter_list_;
+    FilterList* filter_list_;
     FrameNavigator frame_navigator_;
     Coordinator coordinator_;
 

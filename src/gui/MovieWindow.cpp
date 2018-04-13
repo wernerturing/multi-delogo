@@ -61,9 +61,9 @@ MovieWindow::MovieWindow(BaseObjectType* cobject,
   , btn_redo_(nullptr)
   , project_file_(project_file)
   , filter_data_(std::move(filter_data))
-  , filter_list_(filter_data_->filter_list())
+  , filter_list_(nullptr)
   , frame_navigator_(*this, frame_provider)
-  , coordinator_(*this, filter_list_, frame_navigator_,
+  , coordinator_(*this, frame_navigator_,
                  frame_provider->get_frame_width(), frame_provider->get_frame_height())
 {
   set_title(Glib::ustring::compose("multi-delogo: %1",
@@ -72,9 +72,11 @@ MovieWindow::MovieWindow(BaseObjectType* cobject,
   configure_toolbar(builder, app);
   coordinator_.set_undo_buttons(btn_undo_, btn_redo_);
 
+  builder->get_widget_derived("filter_list", filter_list_, filter_data_->filter_list());
+  coordinator_.set_filter_list(filter_list_);
+
   Gtk::Grid* hbox = nullptr;
   builder->get_widget("grid_content", hbox);
-  hbox->add(filter_list_);
   hbox->add(frame_navigator_);
 
   frame_navigator_.set_jump_size(filter_data_->jump_size());
@@ -181,7 +183,7 @@ void MovieWindow::on_find_logos()
                               frame_navigator_.get_jump_size());
   window->set_transient_for(*this);
   window->set_modal();
-  window->signal_hide().connect(sigc::mem_fun(filter_list_, &FilterList::refresh_list));
+  window->signal_hide().connect(sigc::mem_fun(*filter_list_, &FilterList::refresh_list));
 
   get_application()->register_window(window);
 }

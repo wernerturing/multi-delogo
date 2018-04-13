@@ -34,13 +34,10 @@ using namespace mdl;
 
 
 Coordinator::Coordinator(Gtk::Window& parent_window,
-                         FilterList& filter_list,
                          FrameNavigator& frame_navigator,
                          int frame_width, int frame_height)
   : undo_manager_(*this)
   , parent_window_(parent_window)
-  , filter_list_(filter_list)
-  , filter_model_(filter_list.get_model())
   , frame_navigator_(frame_navigator)
   , frame_view_(frame_navigator_.get_frame_view())
   , panel_factory_(frame_navigator_.get_number_of_frames(),
@@ -49,33 +46,40 @@ Coordinator::Coordinator(Gtk::Window& parent_window,
   , current_filter_(nullptr)
   , scroll_filter_(true)
 {
-  on_filter_selected_ = filter_list_.signal_selection_changed().connect(
-    sigc::mem_fun(*this, &Coordinator::on_filter_selected));
-
-  filter_list_.signal_previous_filter().connect(
-    sigc::mem_fun(*this, &Coordinator::on_previous_filter));
-  filter_list_.signal_next_filter().connect(
-    sigc::mem_fun(*this, &Coordinator::on_next_filter));
-
-  filter_list_.signal_remove_filter().connect(
-    sigc::mem_fun(*this, &Coordinator::on_remove_filter));
-
-  on_filter_type_changed_ = filter_list_.signal_type_changed().connect(
-    sigc::mem_fun(*this, &Coordinator::on_filter_type_changed));
-
   frame_navigator_.signal_frame_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_frame_changed));
 
   on_frame_rectangle_changed_ = frame_view_.signal_rectangle_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_frame_rectangle_changed));
-
-  frame_navigator_.change_displayed_frame(1);
 }
 
 
 void Coordinator::set_undo_buttons(Gtk::Widget* btn_undo, Gtk::Widget* btn_redo)
 {
   undo_manager_.set_undo_buttons(btn_undo, btn_redo);
+}
+
+
+void Coordinator::set_filter_list(FilterList* filter_list)
+{
+  filter_list_ = filter_list;
+  filter_model_ = filter_list->get_model();
+
+  on_filter_selected_ = filter_list_->signal_selection_changed().connect(
+    sigc::mem_fun(*this, &Coordinator::on_filter_selected));
+
+  filter_list_->signal_previous_filter().connect(
+    sigc::mem_fun(*this, &Coordinator::on_previous_filter));
+  filter_list_->signal_next_filter().connect(
+    sigc::mem_fun(*this, &Coordinator::on_next_filter));
+
+  filter_list_->signal_remove_filter().connect(
+    sigc::mem_fun(*this, &Coordinator::on_remove_filter));
+
+  on_filter_type_changed_ = filter_list_->signal_type_changed().connect(
+    sigc::mem_fun(*this, &Coordinator::on_filter_type_changed));
+
+  frame_navigator_.change_displayed_frame(1);
 }
 
 
@@ -156,17 +160,17 @@ void Coordinator::on_frame_changed(int new_frame)
 void Coordinator::select_row(const FilterListModel::iterator& iter)
 {
   on_filter_selected_.block();
-  filter_list_.select(iter);
+  filter_list_->select(iter);
   on_filter_selected_.block(false);
 
-  filter_list_.scroll_to_row(iter);
+  filter_list_->scroll_to_row(iter);
 }
 
 
 void Coordinator::unselect_rows()
 {
   on_filter_selected_.block();
-  filter_list_.unselect();
+  filter_list_->unselect();
   on_filter_selected_.block(false);
 }
 
@@ -204,7 +208,7 @@ void Coordinator::update_displayed_panel(fg::FilterType type, FilterPanel* panel
   current_filter_panel_ = Gtk::manage(panel);
 
   on_filter_type_changed_.block();
-  filter_list_.set_filter(type, current_filter_panel_);
+  filter_list_->set_filter(type, current_filter_panel_);
   on_filter_type_changed_.block(false);
 
   on_panel_rectangle_changed_ = current_filter_panel_->signal_rectangle_changed().connect(
@@ -342,14 +346,14 @@ bool Coordinator::confirm_overwrite_by_start_frame_change(int start_frame)
 
 void Coordinator::create_new_filter_panel()
 {
-  fg::FilterType filter_type = filter_list_.get_selected_type();
+  fg::FilterType filter_type = filter_list_->get_selected_type();
   update_displayed_panel(filter_type, panel_factory_.create(current_frame_, filter_type));
 }
 
 
 void Coordinator::on_remove_filter()
 {
-  auto iter = filter_list_.get_selected();
+  auto iter = filter_list_->get_selected();
   fg::filter_ptr filter = (*iter)[filter_model_->columns.filter];
 
   edit_action_ptr remove_action = edit_action_ptr(new RemoveFilterAction(current_frame_, filter));
