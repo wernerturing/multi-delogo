@@ -31,15 +31,21 @@
 using namespace mdl;
 
 
-FrameNavigator::FrameNavigator(Gtk::Window& parent_window,
+FrameNavigator::FrameNavigator(BaseObjectType* cobject,
+                               const Glib::RefPtr<Gtk::Builder>& builder,
+                               Gtk::Window& parent_window,
                                const Glib::RefPtr<FrameProvider>& frame_provider)
-  : parent_window_(parent_window)
+  : Gtk::Grid(cobject)
+  , parent_window_(parent_window)
   , frame_provider_(frame_provider)
   , number_of_frames_(frame_provider->get_number_of_frames())
-  , frame_view_(frame_provider->get_frame_width(), frame_provider->get_frame_height())
+  , frame_view_(nullptr)
   , zoom_(1)
   , lbl_zoom_("100%")
 {
+  builder->get_widget_derived("frame_view", frame_view_,
+                              frame_provider_->get_frame_width(), frame_provider_->get_frame_height());
+
   Gtk::Grid* bottom_box = Gtk::manage(new Gtk::Grid());
   bottom_box->set_column_spacing(8);
   bottom_box->add(*create_navigation_box());
@@ -49,11 +55,6 @@ FrameNavigator::FrameNavigator(Gtk::Window& parent_window,
   bottom_box->add(*spacer);
   bottom_box->add(*create_zoom_box());
 
-  set_orientation(Gtk::ORIENTATION_VERTICAL);
-  set_row_spacing(4);
-  frame_view_.set_hexpand();
-  frame_view_.set_vexpand();
-  add(frame_view_);
   add(*bottom_box);
 }
 
@@ -174,7 +175,7 @@ void FrameNavigator::change_displayed_frame(int new_frame_number)
 
     if (new_frame_number != frame_number_) {
       auto pixbuf = frame_provider_->get_frame(new_frame_number - 1);
-      frame_view_.set_image(pixbuf);
+      frame_view_->set_image(pixbuf);
     }
 
     signal_frame_changed_.emit(new_frame_number);
@@ -227,7 +228,7 @@ void FrameNavigator::set_jump_size(int jump_size)
 }
 
 
-FrameView& FrameNavigator::get_frame_view()
+FrameView* FrameNavigator::get_frame_view()
 {
   return frame_view_;
 }
@@ -253,7 +254,7 @@ void FrameNavigator::on_zoom_100()
 
 void FrameNavigator::on_zoom_fit()
 {
-  Gtk::Allocation size = frame_view_.get_allocation();
+  Gtk::Allocation size = frame_view_->get_allocation();
   set_zoom(get_zoom_to_fit_ratio(frame_provider_->get_frame_width(), frame_provider_->get_frame_height(),
                                   size.get_width(), size.get_height()));
 }
@@ -269,5 +270,5 @@ void FrameNavigator::set_zoom(gdouble zoom)
 
   lbl_zoom_.set_text(Glib::ustring::compose("%1%%", (int) (zoom_ * 100)));
 
-  frame_view_.set_zoom(zoom_);
+  frame_view_->set_zoom(zoom_);
 }

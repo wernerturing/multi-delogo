@@ -34,11 +34,11 @@ namespace mdl {
   {
   public:
     Coordinator(Gtk::Window& parent_window,
-                FrameNavigator& frame_navigator,
-                int frame_width, int frame_height);
+                int number_of_frames, int frame_width, int frame_height);
 
     void set_undo_buttons(Gtk::Widget* btn_undo, Gtk::Widget* btn_redo);
     void set_filter_list(FilterList* filter_list);
+    void set_frame_navigator(FrameNavigator* frame_navigator);
 
     void on_previous_filter();
     void on_next_filter();
@@ -58,8 +58,8 @@ namespace mdl {
     FilterList* filter_list_;
     Glib::RefPtr<FilterListModel> filter_model_;
 
-    FrameNavigator& frame_navigator_;
-    FrameView& frame_view_;
+    FrameNavigator* frame_navigator_;
+    FrameView* frame_view_;
     int current_frame_;
 
     FilterPanelFactory panel_factory_;

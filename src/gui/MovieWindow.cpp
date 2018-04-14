@@ -62,9 +62,8 @@ MovieWindow::MovieWindow(BaseObjectType* cobject,
   , project_file_(project_file)
   , filter_data_(std::move(filter_data))
   , filter_list_(nullptr)
-  , frame_navigator_(*this, frame_provider)
-  , coordinator_(*this, frame_navigator_,
-                 frame_provider->get_frame_width(), frame_provider->get_frame_height())
+  , frame_navigator_(nullptr)
+  , coordinator_(*this, frame_provider->get_number_of_frames(), frame_provider->get_frame_width(), frame_provider->get_frame_height())
 {
   set_title(Glib::ustring::compose("multi-delogo: %1",
                                    Glib::path_get_basename(project_file)));
@@ -75,11 +74,10 @@ MovieWindow::MovieWindow(BaseObjectType* cobject,
   builder->get_widget_derived("filter_list", filter_list_, filter_data_->filter_list());
   coordinator_.set_filter_list(filter_list_);
 
-  Gtk::Grid* hbox = nullptr;
-  builder->get_widget("grid_content", hbox);
-  hbox->add(frame_navigator_);
-
-  frame_navigator_.set_jump_size(filter_data_->jump_size());
+  builder->get_widget_derived("frame_navigator", frame_navigator_,
+                              *this, frame_provider);
+  frame_navigator_->set_jump_size(filter_data_->jump_size());
+  coordinator_.set_frame_navigator(frame_navigator_);
 
   signal_key_press_event().connect(sigc::mem_fun(*this, &MovieWindow::on_key_press));
 }
@@ -134,22 +132,22 @@ bool MovieWindow::on_key_press(GdkEventKey* key_event)
   switch (key_event->keyval) {
   case GDK_KEY_A:
   case GDK_KEY_a:
-    frame_navigator_.jump_step_frame(-1);
+    frame_navigator_->jump_step_frame(-1);
     return true;
 
   case GDK_KEY_S:
   case GDK_KEY_s:
-    frame_navigator_.single_step_frame(-1);
+    frame_navigator_->single_step_frame(-1);
     return true;
 
   case GDK_KEY_D:
   case GDK_KEY_d:
-    frame_navigator_.single_step_frame(1);
+    frame_navigator_->single_step_frame(1);
     return true;
 
   case GDK_KEY_F:
   case GDK_KEY_f:
-    frame_navigator_.jump_step_frame(1);
+    frame_navigator_->jump_step_frame(1);
     return true;
 
   case GDK_KEY_C:
@@ -169,7 +167,7 @@ bool MovieWindow::on_key_press(GdkEventKey* key_event)
 
 void MovieWindow::on_save()
 {
-  filter_data_->set_jump_size(frame_navigator_.get_jump_size());
+  filter_data_->set_jump_size(frame_navigator_->get_jump_size());
   get_application()->save_project(project_file_, *filter_data_);
 }
 
@@ -178,9 +176,9 @@ void MovieWindow::on_find_logos()
 {
   FindLogosWindow* window
     = FindLogosWindow::create(*filter_data_,
-                              frame_navigator_.get_number_of_frames(),
+                              frame_navigator_->get_number_of_frames(),
                               coordinator_.get_current_frame(),
-                              frame_navigator_.get_jump_size());
+                              frame_navigator_->get_jump_size());
   window->set_transient_for(*this);
   window->set_modal();
   window->signal_hide().connect(sigc::mem_fun(*filter_list_, &FilterList::refresh_list));
@@ -206,8 +204,8 @@ void MovieWindow::on_encode()
   on_save();
 
   EncodeWindow* window = EncodeWindow::create(std::move(filter_data_),
-                                              frame_navigator_.get_number_of_frames(),
-                                              frame_navigator_.get_fps());
+                                              frame_navigator_->get_number_of_frames(),
+                                              frame_navigator_->get_fps());
   get_application()->register_window(window);
 
   hide();

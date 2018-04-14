@@ -31,7 +31,9 @@ namespace mdl {
   class FrameNavigator : public Gtk::Grid
   {
   public:
-    FrameNavigator(Gtk::Window& parent_window,
+    FrameNavigator(BaseObjectType* cobject,
+                   const Glib::RefPtr<Gtk::Builder>& builder,
+                   Gtk::Window& parent_window,
                    const Glib::RefPtr<FrameProvider>& frame_provider);
 
     int get_number_of_frames() const;
@@ -43,7 +45,7 @@ namespace mdl {
     int get_jump_size() const;
     void set_jump_size(int jump_size);
 
-    FrameView& get_frame_view();
+    FrameView* get_frame_view();
 
     typedef sigc::signal<void, int> type_signal_frame_changed;
     type_signal_frame_changed signal_frame_changed();
@@ -55,7 +57,7 @@ namespace mdl {
     int number_of_frames_;
     int frame_number_;
 
-    FrameView frame_view_;
+    FrameView* frame_view_;
 
     NumericEntry txt_frame_number_;
     NumericEntry txt_jump_size_;

@@ -32,7 +32,9 @@ namespace mdl {
   class FrameView : public Gtk::ScrolledWindow
   {
   public:
-    FrameView(int width, int height);
+    FrameView(BaseObjectType* cobject,
+              const Glib::RefPtr<Gtk::Builder>& builder,
+              int width, int height);
 
     void set_image(Glib::RefPtr<Gdk::Pixbuf> pixbuf);
 

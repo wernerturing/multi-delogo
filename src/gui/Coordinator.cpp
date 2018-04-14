@@ -34,23 +34,16 @@ using namespace mdl;
 
 
 Coordinator::Coordinator(Gtk::Window& parent_window,
-                         FrameNavigator& frame_navigator,
-                         int frame_width, int frame_height)
+                         int number_of_frames, int frame_width, int frame_height)
   : undo_manager_(*this)
   , parent_window_(parent_window)
-  , frame_navigator_(frame_navigator)
-  , frame_view_(frame_navigator_.get_frame_view())
-  , panel_factory_(frame_navigator_.get_number_of_frames(),
-                   frame_width, frame_height)
+  , frame_navigator_(nullptr)
+  , frame_view_(nullptr)
+  , panel_factory_(number_of_frames, frame_width, frame_height)
   , current_filter_panel_(nullptr)
   , current_filter_(nullptr)
   , scroll_filter_(true)
 {
-  frame_navigator_.signal_frame_changed().connect(
-    sigc::mem_fun(*this, &Coordinator::on_frame_changed));
-
-  on_frame_rectangle_changed_ = frame_view_.signal_rectangle_changed().connect(
-    sigc::mem_fun(*this, &Coordinator::on_frame_rectangle_changed));
 }
 
 
@@ -78,8 +71,21 @@ void Coordinator::set_filter_list(FilterList* filter_list)
 
   on_filter_type_changed_ = filter_list_->signal_type_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_filter_type_changed));
+}
 
-  frame_navigator_.change_displayed_frame(1);
+
+void Coordinator::set_frame_navigator(FrameNavigator* frame_navigator)
+{
+  frame_navigator_ = frame_navigator;
+  frame_view_ = frame_navigator_->get_frame_view();
+
+  frame_navigator_->signal_frame_changed().connect(
+    sigc::mem_fun(*this, &Coordinator::on_frame_changed));
+
+  on_frame_rectangle_changed_ = frame_view_->signal_rectangle_changed().connect(
+    sigc::mem_fun(*this, &Coordinator::on_frame_rectangle_changed));
+
+  frame_navigator_->change_displayed_frame(1);
 }
 
 
@@ -90,7 +96,7 @@ void Coordinator::on_previous_filter()
     return;
   }
 
-  frame_navigator_.change_displayed_frame((*iter)[filter_model_->columns.start_frame]);
+  frame_navigator_->change_displayed_frame((*iter)[filter_model_->columns.start_frame]);
 }
 
 
@@ -107,7 +113,7 @@ void Coordinator::on_next_filter()
     return;
   }
 
-  frame_navigator_.change_displayed_frame((*iter)[filter_model_->columns.start_frame]);
+  frame_navigator_->change_displayed_frame((*iter)[filter_model_->columns.start_frame]);
 }
 
 
@@ -137,7 +143,7 @@ void Coordinator::on_redo()
 
 void Coordinator::on_filter_selected(int start_frame)
 {
-  frame_navigator_.change_displayed_frame(start_frame);
+  frame_navigator_->change_displayed_frame(start_frame);
 }
 
 
@@ -193,12 +199,12 @@ void Coordinator::change_displayed_filter(const FilterListModel::iterator& iter)
 
   auto rect = current_filter_panel_->get_rectangle();
   if (rect) {
-    frame_view_.show_rectangle(*rect);
+    frame_view_->show_rectangle(*rect);
     if (scroll_filter_) {
-      frame_view_.scroll_to_current_rectangle();
+      frame_view_->scroll_to_current_rectangle();
     }
   } else {
-    frame_view_.hide_rectangle();
+    frame_view_->hide_rectangle();
   }
 }
 
@@ -259,7 +265,7 @@ void Coordinator::on_frame_rectangle_changed(Rectangle rect)
 void Coordinator::on_panel_rectangle_changed(Rectangle rect)
 {
   on_frame_rectangle_changed_.block();
-  frame_view_.show_rectangle(rect);
+  frame_view_->show_rectangle(rect);
   on_frame_rectangle_changed_.block(false);
 
   update_filter_for_current_frame();
@@ -375,7 +381,7 @@ void Coordinator::insert_filter(int start_frame, fg::filter_ptr filter)
 {
   filter_model_->insert(start_frame, filter);
   current_filter_panel_->set_changed(false);
-  frame_navigator_.change_displayed_frame(start_frame);
+  frame_navigator_->change_displayed_frame(start_frame);
 }
 
 
@@ -386,7 +392,7 @@ void Coordinator::update_filter(int start_frame, fg::filter_ptr filter)
 
   bool saved_scroll_to_filter = scroll_filter_;
   scroll_filter_ = false;
-  frame_navigator_.change_displayed_frame(start_frame);
+  frame_navigator_->change_displayed_frame(start_frame);
   scroll_filter_ = saved_scroll_to_filter;
 }
 
@@ -399,6 +405,6 @@ void Coordinator::change_start_frame(int old_start_frame, int new_start_frame)
   (*iter)[filter_model_->columns.start_frame] = new_start_frame;
   on_filter_selected_.block(false);
 
-  frame_navigator_.change_displayed_frame(new_start_frame);
+  frame_navigator_->change_displayed_frame(new_start_frame);
   current_filter_start_frame_ = new_start_frame;
 }
