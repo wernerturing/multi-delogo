@@ -26,51 +26,35 @@
 using namespace mdl;
 
 
-FilterType::FilterType()
-  : Gtk::Grid()
-  , rad_delogo_("delogo")
-  , rad_drawbox_("drawbox")
-  , rad_cut_("cut")
-  , rad_none_("none")
-  , rad_review_("review")
+FilterType::FilterType(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
+  : Gtk::Grid(cobject)
+  , rad_delogo_(nullptr)
+  , rad_drawbox_(nullptr)
+  , rad_cut_(nullptr)
+  , rad_none_(nullptr)
+  , rad_review_(nullptr)
 {
-  rad_drawbox_.join_group(rad_delogo_);
-  rad_cut_.join_group(rad_delogo_);
-  rad_none_.join_group(rad_delogo_);
-  rad_review_.join_group(rad_delogo_);
+  builder->get_widget("rad_delogo", rad_delogo_);
+  builder->get_widget("rad_drawbox", rad_drawbox_);
+  builder->get_widget("rad_cut", rad_cut_);
+  builder->get_widget("rad_none", rad_none_);
+  builder->get_widget("rad_review", rad_review_);
 
-  rad_delogo_.set_halign(Gtk::ALIGN_START);
-  rad_drawbox_.set_halign(Gtk::ALIGN_START);
-  rad_cut_.set_halign(Gtk::ALIGN_START);
-  rad_none_.set_halign(Gtk::ALIGN_START);
-  rad_review_.set_halign(Gtk::ALIGN_START);
-
-  rad_delogo_.signal_toggled().connect(
+  rad_delogo_->signal_toggled().connect(
     sigc::bind<const Gtk::RadioButton&>(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
-                                        rad_delogo_));
-  rad_drawbox_.signal_toggled().connect(
+                                        *rad_delogo_));
+  rad_drawbox_->signal_toggled().connect(
     sigc::bind<const Gtk::RadioButton&>(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
-                                        rad_drawbox_));
-  rad_cut_.signal_toggled().connect(
+                                        *rad_drawbox_));
+  rad_cut_->signal_toggled().connect(
     sigc::bind<const Gtk::RadioButton&>(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
-                                        rad_cut_));
-  rad_none_.signal_toggled().connect(
+                                        *rad_cut_));
+  rad_none_->signal_toggled().connect(
     sigc::bind<const Gtk::RadioButton&>(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
-                                        rad_none_));
-  rad_review_.signal_toggled().connect(
+                                        *rad_none_));
+  rad_review_->signal_toggled().connect(
     sigc::bind<const Gtk::RadioButton&>(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
-                                        rad_review_));
-
-  set_column_spacing(4);
-
-  Gtk::Label* lbl = Gtk::manage(new Gtk::Label(_("Filter:")));
-  attach(*lbl, 0, 0, 1, 1);
-
-  attach_next_to(rad_delogo_, *lbl, Gtk::POS_RIGHT, 1, 1);
-  attach_next_to(rad_drawbox_, rad_delogo_, Gtk::POS_BOTTOM, 1, 1);
-  attach_next_to(rad_cut_, rad_drawbox_, Gtk::POS_BOTTOM, 1, 1);
-  attach_next_to(rad_none_, rad_cut_, Gtk::POS_BOTTOM, 1, 1);
-  attach_next_to(rad_review_, rad_none_, Gtk::POS_BOTTOM, 1, 1);
+                                        *rad_review_));
 }
 
 
@@ -78,24 +62,24 @@ void FilterType::set(fg::FilterType type)
 {
   switch (type) {
   case fg::FilterType::DELOGO:
-    rad_delogo_.set_active();
+    rad_delogo_->set_active();
     break;
 
   case fg::FilterType::DRAWBOX:
-    rad_drawbox_.set_active();
+    rad_drawbox_->set_active();
     break;
 
   case fg::FilterType::CUT:
-    rad_cut_.set_active();
+    rad_cut_->set_active();
     break;
 
   case fg::FilterType::REVIEW:
-    rad_review_.set_active();
+    rad_review_->set_active();
     break;
 
   case fg::FilterType::NO_OP:
   default: // Avoid compiler warning
-    rad_none_.set_active();
+    rad_none_->set_active();
     break;
   }
 }
@@ -103,13 +87,13 @@ void FilterType::set(fg::FilterType type)
 
 fg::FilterType FilterType::get() const
 {
-  if (rad_delogo_.get_active()) {
+  if (rad_delogo_->get_active()) {
     return fg::FilterType::DELOGO;
-  } else if (rad_drawbox_.get_active()) {
+  } else if (rad_drawbox_->get_active()) {
     return fg::FilterType::DRAWBOX;
-  } else if (rad_cut_.get_active()) {
+  } else if (rad_cut_->get_active()) {
     return fg::FilterType::CUT;
-  } else if (rad_review_.get_active()) {
+  } else if (rad_review_->get_active()) {
     return fg::FilterType::REVIEW;
  } else {
     return fg::FilterType::NO_OP;

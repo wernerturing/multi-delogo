@@ -28,7 +28,7 @@ namespace mdl {
   class FilterType : public Gtk::Grid
   {
   public:
-    FilterType();
+    FilterType(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 
     void set(fg::FilterType type);
     fg::FilterType get() const;
@@ -37,11 +37,11 @@ namespace mdl {
     type_signal_type_changed signal_type_changed();
 
   private:
-    Gtk::RadioButton rad_delogo_;
-    Gtk::RadioButton rad_drawbox_;
-    Gtk::RadioButton rad_cut_;
-    Gtk::RadioButton rad_none_;
-    Gtk::RadioButton rad_review_;
+    Gtk::RadioButton* rad_delogo_;
+    Gtk::RadioButton* rad_drawbox_;
+    Gtk::RadioButton* rad_cut_;
+    Gtk::RadioButton* rad_none_;
+    Gtk::RadioButton* rad_review_;
 
     type_signal_type_changed signal_type_changed_;
 

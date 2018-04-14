@@ -69,7 +69,7 @@ namespace mdl {
 
     Gtk::Button* btn_remove_filter_;
 
-    FilterType filter_type_;
+    FilterType* filter_type_;
     Gtk::Widget* current_panel_;
 
     type_signal_selection_changed signal_selection_changed_;

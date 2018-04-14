@@ -35,6 +35,7 @@ FilterList::FilterList(BaseObjectType* cobject,
   : Gtk::Grid(cobject)
   , model_(FilterListModel::create(filter_list))
   , view_(nullptr)
+  , filter_type_(nullptr)
   , current_panel_(nullptr)
 {
   builder->get_widget("filter_view", view_);
@@ -44,13 +45,12 @@ FilterList::FilterList(BaseObjectType* cobject,
 
   configure_buttons(builder);
 
-  filter_type_.set_margin_top(8);
-  add(filter_type_);
+  builder->get_widget_derived("filter_type", filter_type_);
 
   selection_ = view_->get_selection();
   selection_->signal_changed().connect(sigc::mem_fun(*this, &FilterList::on_selection_changed));
 
-  filter_type_.signal_type_changed().connect(
+  filter_type_->signal_type_changed().connect(
     sigc::mem_fun(signal_type_changed_, &type_signal_type_changed::emit));
 }
 
@@ -105,7 +105,7 @@ void FilterList::scroll_to_row(const Gtk::TreeModel::iterator& iter)
 
 void FilterList::set_filter(fg::FilterType filter_type, Gtk::Widget* panel)
 {
-  filter_type_.set(filter_type);
+  filter_type_->set(filter_type);
 
   if (current_panel_) {
     remove(*current_panel_);
@@ -119,7 +119,7 @@ void FilterList::set_filter(fg::FilterType filter_type, Gtk::Widget* panel)
 
 fg::FilterType FilterList::get_selected_type() const
 {
-  return filter_type_.get();
+  return filter_type_->get();
 }
 
 
