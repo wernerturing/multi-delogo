@@ -44,7 +44,7 @@
   <object class="GtkApplicationWindow" id="movie_window">
     <property name="can_focus">False</property>
     <property name="default_width">1000</property>
-    <property name="default_height">600</property>
+    <property name="default_height">650</property>
     <child>
       <object class="GtkGrid" id="grid_main">
         <property name="visible">True</property>
@@ -410,7 +410,6 @@
                     <property name="can_focus">True</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
-                    <property name="shadow_type">none</property>
                     <child>
                       <placeholder/>
                     </child>
