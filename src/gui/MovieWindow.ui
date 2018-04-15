@@ -433,7 +433,7 @@
                         <property name="column_spacing">8</property>
                         <child>
                           <object class="GtkButton" id="btn_prev_jump">
-                            <property name="label" translatable="yes">&lt;&lt;</property>
+                            <property name="label" translatable="no">&lt;&lt;</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>

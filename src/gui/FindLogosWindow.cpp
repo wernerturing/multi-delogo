@@ -199,8 +199,8 @@ bool FindLogosWindow::already_has_filters()
 bool FindLogosWindow::confirm_search_with_existing_filters()
 {
   return confirmation_dialog(*this,
-                             _("There are already logos in the range specified for the search. Do you want really want to continue?"),
-                             _("_Find logos"), _("Cancel"));
+                             _("There are already filters in the range specified for the search. Do you want really want to continue?"),
+                             _("_Find logos"), _("_Cancel"));
 }
 
 
