@@ -59,20 +59,20 @@ namespace mdl {
 
     FrameView* frame_view_;
 
-    NumericEntry txt_frame_number_;
-    NumericEntry txt_jump_size_;
+    NumericEntry* txt_frame_number_;
+    NumericEntry* txt_jump_size_;
 
     gdouble zoom_;
-    Gtk::Label lbl_zoom_;
-    Gtk::Button btn_zoom_out_;
-    Gtk::Button btn_zoom_in_;
-    Gtk::Button btn_zoom_100_;
+    Gtk::Label* lbl_zoom_;
+    Gtk::Button* btn_zoom_out_;
+    Gtk::Button* btn_zoom_in_;
+    Gtk::Button* btn_zoom_100_;
 
     type_signal_frame_changed signal_frame_changed_;
 
 
-    Gtk::Grid* create_navigation_box();
-    Gtk::Grid* create_zoom_box();
+    void configure_navigation_bar(const Glib::RefPtr<Gtk::Builder>& builder);
+    void configure_zoom_bar(const Glib::RefPtr<Gtk::Builder>& builder);
 
     void on_frame_number_activate();
     bool on_frame_number_input(GdkEventFocus*);
