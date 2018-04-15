@@ -42,7 +42,8 @@ This is very similar to installing on Linux as described above. You'll need some
 
 * autoconf
 * automake
-* intltool
+* autopoint
+* gettext
 
 Clone the project with
 

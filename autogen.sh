@@ -17,8 +17,11 @@
 # You should have received a copy of the GNU General Public License
 # along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 
-touch config.rpath
+autopoint
+rm ABOUT-NLS
+
 aclocal
+
 automake --add-missing --foreign
+
 autoconf
-intltoolize --automake --force

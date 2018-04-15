@@ -195,7 +195,6 @@ msgid "FFmpeg log"
 msgstr "Log do FFmpeg"
 
 #: ../src/gui/ETRProgressBar.cpp:65
-#, c-format
 msgid "100% done"
 msgstr "100% pronto"
 

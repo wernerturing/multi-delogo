@@ -69,6 +69,7 @@ void ETRProgressBar::reset()
 void ETRProgressBar::set_finished()
 {
   set_fraction(1);
+  // xgettext:no-c-format
   set_text(_("100% done"));
 }
 
