@@ -26,7 +26,8 @@ namespace mdl {
   class NumericEntry : public Gtk::Entry
   {
   public:
-    NumericEntry();
+    NumericEntry(BaseObjectType* cobject,
+                 const Glib::RefPtr<Gtk::Builder>& builder);
 
     void set_value(int text);
     int get_value() const;

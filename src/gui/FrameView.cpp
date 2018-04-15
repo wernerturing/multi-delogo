@@ -29,8 +29,10 @@ using namespace mdl;
 const gdouble SelectionRect::RESIZE_MARGIN_ = 10;
 
 
-FrameView::FrameView(int width, int height)
-  : Gtk::ScrolledWindow()
+FrameView::FrameView(BaseObjectType* cobject,
+                     const Glib::RefPtr<Gtk::Builder>& builder,
+                     int width, int height)
+  : Gtk::ScrolledWindow(cobject)
   , drag_(false)
 {
   canvas_.set_bounds(0, 0, width, height);

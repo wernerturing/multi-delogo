@@ -31,7 +31,9 @@ namespace mdl {
   class FrameNavigator : public Gtk::Grid
   {
   public:
-    FrameNavigator(Gtk::Window& parent_window,
+    FrameNavigator(BaseObjectType* cobject,
+                   const Glib::RefPtr<Gtk::Builder>& builder,
+                   Gtk::Window& parent_window,
                    const Glib::RefPtr<FrameProvider>& frame_provider);
 
     int get_number_of_frames() const;
@@ -43,7 +45,7 @@ namespace mdl {
     int get_jump_size() const;
     void set_jump_size(int jump_size);
 
-    FrameView& get_frame_view();
+    FrameView* get_frame_view();
 
     typedef sigc::signal<void, int> type_signal_frame_changed;
     type_signal_frame_changed signal_frame_changed();
@@ -55,22 +57,22 @@ namespace mdl {
     int number_of_frames_;
     int frame_number_;
 
-    FrameView frame_view_;
+    FrameView* frame_view_;
 
-    NumericEntry txt_frame_number_;
-    NumericEntry txt_jump_size_;
+    NumericEntry* txt_frame_number_;
+    NumericEntry* txt_jump_size_;
 
     gdouble zoom_;
-    Gtk::Label lbl_zoom_;
-    Gtk::Button btn_zoom_out_;
-    Gtk::Button btn_zoom_in_;
-    Gtk::Button btn_zoom_100_;
+    Gtk::Label* lbl_zoom_;
+    Gtk::Button* btn_zoom_out_;
+    Gtk::Button* btn_zoom_in_;
+    Gtk::Button* btn_zoom_100_;
 
     type_signal_frame_changed signal_frame_changed_;
 
 
-    Gtk::Grid* create_navigation_box();
-    Gtk::Grid* create_zoom_box();
+    void configure_navigation_bar(const Glib::RefPtr<Gtk::Builder>& builder);
+    void configure_zoom_bar(const Glib::RefPtr<Gtk::Builder>& builder);
 
     void on_frame_number_activate();
     bool on_frame_number_input(GdkEventFocus*);

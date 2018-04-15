@@ -23,7 +23,9 @@
 using namespace mdl;
 
 
-NumericEntry::NumericEntry()
+NumericEntry::NumericEntry(BaseObjectType* cobject,
+                           const Glib::RefPtr<Gtk::Builder>& builder)
+  : Gtk::Entry(cobject)
 {
 }
 

@@ -31,127 +31,93 @@
 using namespace mdl;
 
 
-FrameNavigator::FrameNavigator(Gtk::Window& parent_window,
+FrameNavigator::FrameNavigator(BaseObjectType* cobject,
+                               const Glib::RefPtr<Gtk::Builder>& builder,
+                               Gtk::Window& parent_window,
                                const Glib::RefPtr<FrameProvider>& frame_provider)
-  : parent_window_(parent_window)
+  : Gtk::Grid(cobject)
+  , parent_window_(parent_window)
   , frame_provider_(frame_provider)
   , number_of_frames_(frame_provider->get_number_of_frames())
-  , frame_view_(frame_provider->get_frame_width(), frame_provider->get_frame_height())
+  , frame_view_(nullptr)
+  , txt_frame_number_(nullptr)
+  , txt_jump_size_(nullptr)
   , zoom_(1)
-  , lbl_zoom_("100%")
+  , lbl_zoom_(nullptr)
+  , btn_zoom_out_(nullptr)
+  , btn_zoom_in_(nullptr)
+  , btn_zoom_100_(nullptr)
 {
-  Gtk::Grid* bottom_box = Gtk::manage(new Gtk::Grid());
-  bottom_box->set_column_spacing(8);
-  bottom_box->add(*create_navigation_box());
-  Gtk::Label* spacer = Gtk::manage(new Gtk::Label());
-  spacer->property_margin() = 8;
-  spacer->set_hexpand();
-  bottom_box->add(*spacer);
-  bottom_box->add(*create_zoom_box());
+  builder->get_widget_derived("frame_view", frame_view_,
+                              frame_provider_->get_frame_width(), frame_provider_->get_frame_height());
 
-  set_orientation(Gtk::ORIENTATION_VERTICAL);
-  set_row_spacing(4);
-  frame_view_.set_hexpand();
-  frame_view_.set_vexpand();
-  add(frame_view_);
-  add(*bottom_box);
+  configure_navigation_bar(builder);
+  configure_zoom_bar(builder);
 }
 
 
-Gtk::Grid* FrameNavigator::create_navigation_box()
+void FrameNavigator::configure_navigation_bar(const Glib::RefPtr<Gtk::Builder>& builder)
 {
-  Gtk::Grid* box = Gtk::manage(new Gtk::Grid());
-  box->set_column_spacing(8);
-
-  txt_frame_number_.set_width_chars(6);
-
-  Gtk::Button* btn_prev = Gtk::manage(new Gtk::Button("<"));
-  btn_prev->set_tooltip_text(_("Move back one frame (s)"));
+  Gtk::Button* btn_prev = nullptr;
+  builder->get_widget("btn_prev", btn_prev);
   btn_prev->signal_clicked().connect(
     sigc::bind(sigc::mem_fun(*this, &FrameNavigator::single_step_frame),
                -1));
 
-  Gtk::Button* btn_next = Gtk::manage(new Gtk::Button(">"));
-  btn_next->set_tooltip_text(_("Move forward one frame (d)"));
+  Gtk::Button* btn_next = nullptr;
+  builder->get_widget("btn_next", btn_next);
   btn_next->signal_clicked().connect(
     sigc::bind(sigc::mem_fun(*this, &FrameNavigator::single_step_frame),
                1));
 
-  Gtk::Button* btn_prev_jump = Gtk::manage(new Gtk::Button("<<"));
-  btn_prev_jump->set_tooltip_text(_("Jump back the number of frames specified in \"jump size\" (a)"));
+  Gtk::Button* btn_prev_jump = nullptr;
+  builder->get_widget("btn_prev_jump", btn_prev_jump);
   btn_prev_jump->signal_clicked().connect(
     sigc::bind(sigc::mem_fun(*this, &FrameNavigator::jump_step_frame),
                -1));
 
-  Gtk::Button* btn_next_jump = Gtk::manage(new Gtk::Button(">>"));
-  btn_next_jump->set_tooltip_text(_("Jump forward the number of frames specified in \"jump size\" (f)"));
+  Gtk::Button* btn_next_jump = nullptr;
+  builder->get_widget("btn_next_jump", btn_next_jump);
   btn_next_jump->signal_clicked().connect(
     sigc::bind(sigc::mem_fun(*this, &FrameNavigator::jump_step_frame),
                1));
 
-  txt_frame_number_.set_tooltip_text(_("Current frame number"));
-  txt_frame_number_.signal_activate().connect(
+  Gtk::Label* lbl_number_of_frames = nullptr;
+  builder->get_widget("lbl_number_of_frames", lbl_number_of_frames);
+  lbl_number_of_frames->set_text(Glib::ustring::compose("/ %1", number_of_frames_));
+
+  builder->get_widget_derived("txt_frame_number", txt_frame_number_);
+  txt_frame_number_->signal_activate().connect(
     sigc::mem_fun(*this, &FrameNavigator::on_frame_number_activate));
-  txt_frame_number_.signal_focus_out_event().connect(
+  txt_frame_number_->signal_focus_out_event().connect(
     sigc::mem_fun(*this, &FrameNavigator::on_frame_number_input));
 
-  box->add(*btn_prev_jump);
-  box->add(*btn_prev);
-  box->add(txt_frame_number_);
-  box->add(*Gtk::manage(new Gtk::Label(Glib::ustring::compose("/ %1", number_of_frames_))));
-  box->add(*btn_next);
-  box->add(*btn_next_jump);
-
-  Gtk::Label* lbl_jump_size = Gtk::manage(new Gtk::Label(_("_Jump size:"), true));
-  lbl_jump_size->set_mnemonic_widget(txt_jump_size_);
-  lbl_jump_size->set_margin_start(32);
-  box->add(*lbl_jump_size);
-
-  txt_jump_size_.set_width_chars(6);
-  txt_jump_size_.set_tooltip_text(_("Number of frames to jump when using << and >> buttons"));
-  box->add(txt_jump_size_);
-
-  return box;
+  builder->get_widget_derived("txt_jump_size", txt_jump_size_);
 }
 
 
-Gtk::Grid* FrameNavigator::create_zoom_box()
+void FrameNavigator::configure_zoom_bar(const Glib::RefPtr<Gtk::Builder>& builder)
 {
-  Gtk::Button* btn_zoom_fit = Gtk::manage(new Gtk::Button());
-  btn_zoom_fit->set_image_from_icon_name("zoom-fit-best");
-  btn_zoom_fit->set_tooltip_text(_("Fit the image to the window"));
-
-  btn_zoom_out_.set_image_from_icon_name("zoom-out");
-  btn_zoom_out_.set_tooltip_text(_("Make image smaller"));
-
-  btn_zoom_in_.set_image_from_icon_name("zoom-in");
-  btn_zoom_in_.set_tooltip_text(_("Make image larger"));
-  btn_zoom_in_.set_sensitive(false);
-
-  btn_zoom_100_.set_image_from_icon_name("zoom-original");
-  btn_zoom_100_.set_tooltip_text(_("Zoom to original size"));
-  btn_zoom_100_.set_sensitive(false);
-
+  Gtk::Button* btn_zoom_fit = nullptr;
+  builder->get_widget("btn_zoom_fit", btn_zoom_fit);
   btn_zoom_fit->signal_clicked().connect(
     sigc::mem_fun(*this, &FrameNavigator::on_zoom_fit));
-  btn_zoom_out_.signal_clicked().connect(
+
+  builder->get_widget("btn_zoom_out", btn_zoom_out_);
+  btn_zoom_out_->signal_clicked().connect(
     sigc::bind(sigc::mem_fun(*this, &FrameNavigator::on_step_zoom),
                -0.1));
-  btn_zoom_in_.signal_clicked().connect(
+
+  builder->get_widget("btn_zoom_in", btn_zoom_in_);
+  btn_zoom_in_->signal_clicked().connect(
     sigc::bind(sigc::mem_fun(*this, &FrameNavigator::on_step_zoom),
                0.1));
-  btn_zoom_100_.signal_clicked().connect(
+
+  builder->get_widget("btn_zoom_100", btn_zoom_100_);
+  btn_zoom_100_->signal_clicked().connect(
     sigc::mem_fun(*this, &FrameNavigator::on_zoom_100));
 
-  Gtk::Grid* box = Gtk::manage(new Gtk::Grid());
-  box->set_column_spacing(8);
-  box->add(*btn_zoom_fit);
-  box->add(btn_zoom_out_);
-  box->add(lbl_zoom_);
-  box->add(btn_zoom_in_);
-  box->add(btn_zoom_100_);
-
-  return box;
+  builder->get_widget("lbl_zoom", lbl_zoom_);
 }
 
 
@@ -174,17 +140,17 @@ void FrameNavigator::change_displayed_frame(int new_frame_number)
 
     if (new_frame_number != frame_number_) {
       auto pixbuf = frame_provider_->get_frame(new_frame_number - 1);
-      frame_view_.set_image(pixbuf);
+      frame_view_->set_image(pixbuf);
     }
 
     signal_frame_changed_.emit(new_frame_number);
     frame_number_ = new_frame_number;
-    txt_frame_number_.set_value(frame_number_);
+    txt_frame_number_->set_value(frame_number_);
   } catch (const FrameNotAvailableException& e) {
     Gtk::MessageDialog dlg(parent_window_,
                            _("Could not get frame"), false,
                            Gtk::MESSAGE_ERROR);
-    txt_frame_number_.set_value(frame_number_);
+    txt_frame_number_->set_value(frame_number_);
     dlg.run();
   }
 }
@@ -198,36 +164,36 @@ void FrameNavigator::single_step_frame(int direction)
 
 void FrameNavigator::jump_step_frame(int direction)
 {
-  change_displayed_frame(frame_number_ + txt_jump_size_.get_value()*direction);
+  change_displayed_frame(frame_number_ + txt_jump_size_->get_value()*direction);
 }
 
 
 void FrameNavigator::on_frame_number_activate()
 {
-  change_displayed_frame(txt_frame_number_.get_value());
+  change_displayed_frame(txt_frame_number_->get_value());
 }
 
 
 bool FrameNavigator::on_frame_number_input(GdkEventFocus*)
 {
-  change_displayed_frame(txt_frame_number_.get_value());
+  change_displayed_frame(txt_frame_number_->get_value());
   return false;
 }
 
 
 int FrameNavigator::get_jump_size() const
 {
-  return txt_jump_size_.get_value();
+  return txt_jump_size_->get_value();
 }
 
 
 void FrameNavigator::set_jump_size(int jump_size)
 {
-  txt_jump_size_.set_value(jump_size);
+  txt_jump_size_->set_value(jump_size);
 }
 
 
-FrameView& FrameNavigator::get_frame_view()
+FrameView* FrameNavigator::get_frame_view()
 {
   return frame_view_;
 }
@@ -253,7 +219,7 @@ void FrameNavigator::on_zoom_100()
 
 void FrameNavigator::on_zoom_fit()
 {
-  Gtk::Allocation size = frame_view_.get_allocation();
+  Gtk::Allocation size = frame_view_->get_allocation();
   set_zoom(get_zoom_to_fit_ratio(frame_provider_->get_frame_width(), frame_provider_->get_frame_height(),
                                   size.get_width(), size.get_height()));
 }
@@ -263,11 +229,11 @@ void FrameNavigator::set_zoom(gdouble zoom)
 {
   zoom_ = zoom;
 
-  btn_zoom_out_.set_sensitive(zoom_ > 0.1);
-  btn_zoom_in_.set_sensitive(zoom_ < 1.0);
-  btn_zoom_100_.set_sensitive(zoom_ != 1.0);
+  btn_zoom_out_->set_sensitive(zoom_ > 0.1);
+  btn_zoom_in_->set_sensitive(zoom_ < 1.0);
+  btn_zoom_100_->set_sensitive(zoom_ != 1.0);
 
-  lbl_zoom_.set_text(Glib::ustring::compose("%1%%", (int) (zoom_ * 100)));
+  lbl_zoom_->set_text(Glib::ustring::compose("%1%%", (int) (zoom_ * 100)));
 
-  frame_view_.set_zoom(zoom_);
+  frame_view_->set_zoom(zoom_);
 }

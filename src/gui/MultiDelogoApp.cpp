@@ -59,7 +59,7 @@ Glib::RefPtr<MultiDelogoApp> MultiDelogoApp::create()
 
 void MultiDelogoApp::on_activate()
 {
-  initial_window_ = new InitialWindow();
+  initial_window_ = InitialWindow::create();
   register_window(initial_window_);
 }
 
@@ -91,10 +91,10 @@ void MultiDelogoApp::open_file(const std::string& file)
     return;
   }
 
-  MovieWindow* window = new MovieWindow(mpr->file,
-                                        std::move(mpr->filter_data),
-                                        frame_provider,
-                                        *this);
+  MovieWindow* window = MovieWindow::create(mpr->file,
+                                            std::move(mpr->filter_data),
+                                            frame_provider,
+                                            *this);
   register_window(window);
 }
 

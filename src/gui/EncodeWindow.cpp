@@ -36,54 +36,102 @@
 using namespace mdl;
 
 
-EncodeWindow::EncodeWindow(std::unique_ptr<fg::FilterData> filter_data, int total_frames, double fps)
-  : filter_data_(std::move(filter_data))
-  , fps_(fps)
-  , codec_(FFmpegExecutor::Codec::H264)
+EncodeWindow* EncodeWindow::create(std::unique_ptr<fg::FilterData> filter_data, int total_frames, double fps)
 {
-  set_title(_("Encode video"));
-  set_border_width(8);
+  auto builder = Gtk::Builder::create_from_resource("/wt/multi-delogo/EncodeWindow.ui");
+  EncodeWindow* window = nullptr;
+  builder->get_widget_derived("encode_window", window,
+                              std::move(filter_data), total_frames, fps);
+  return window;
+}
 
-  Gtk::Grid* vbox = Gtk::manage(new Gtk::Grid());
-  vbox->set_orientation(Gtk::ORIENTATION_VERTICAL);
-  vbox->set_row_spacing(8);
 
-  vbox->add(*create_file_selection());
-  vbox->add(*create_codec());
-  vbox->add(*create_quality());
-  vbox->add(*create_fuzzy());
-  vbox->add(*create_buttons());
-  vbox->add(*create_progress());
+EncodeWindow::EncodeWindow(BaseObjectType* cobject,
+                           const Glib::RefPtr<Gtk::Builder>& builder,
+                           std::unique_ptr<fg::FilterData> filter_data,
+                           int total_frames, double fps)
+  : MultiDelogoAppWindow(cobject)
+  , filter_data_(std::move(filter_data))
+  , fps_(fps)
 
-  add(*vbox);
+  , txt_file_(nullptr)
+  , txt_quality_(nullptr)
+  , chk_fuzzy_(nullptr)
+  , txt_fuzzyness_(nullptr)
+  , box_progress_(nullptr)
+  , lbl_status_(nullptr)
+  , progress_bar_(nullptr)
+  , btn_log_(nullptr)
+{
+  configure_widgets(builder);
 
   ffmpeg_.set_total_frames(total_frames);
-  ffmpeg_.signal_progress().connect(sigc::mem_fun(progress_bar_, &ETRProgressBar::set_progress));
+  ffmpeg_.signal_progress().connect(sigc::mem_fun(*progress_bar_, &ETRProgressBar::set_progress));
   ffmpeg_.signal_finished().connect(sigc::mem_fun(*this, &EncodeWindow::on_ffmpeg_finished));
 }
 
 
-Gtk::Grid* EncodeWindow::create_file_selection()
+void EncodeWindow::configure_widgets(const Glib::RefPtr<Gtk::Builder>& builder)
 {
-  Gtk::Label* lbl = Gtk::manage(new Gtk::Label(_("_Output file:"), true));
-  lbl->set_mnemonic_widget(txt_file_);
+  builder->get_widget("txt_file", txt_file_);
+  Gtk::Button* btn_select_file = nullptr;
+  builder->get_widget("btn_select_file", btn_select_file);
+  btn_select_file->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_select_file));
 
-  Gtk::Button* btn = Gtk::manage(new Gtk::Button(_("_Select"), true));
-  btn->set_image_from_icon_name("document-open");
-  btn->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_select_file));
+  Gtk::Grid* grid_file_selection = nullptr;
+  builder->get_widget("grid_file_selection", grid_file_selection);
+  widgets_to_disable_.push_back(grid_file_selection);
 
-  Gtk::Grid* box = Gtk::manage(new Gtk::Grid());
-  box->set_column_spacing(4);
-  box->set_vexpand();
-  box->set_valign(Gtk::ALIGN_CENTER);
-  box->add(*lbl);
-  txt_file_.set_hexpand();
-  box->add(txt_file_);
-  box->add(*btn);
+  Gtk::RadioButton* btn_h264 = nullptr;
+  builder->get_widget("btn_h264", btn_h264);
+  btn_h264->signal_toggled().connect(
+    sigc::bind(sigc::mem_fun(*this, &EncodeWindow::on_codec),
+               FFmpegExecutor::Codec::H264));
+  Gtk::RadioButton* btn_h265 = nullptr;
+  builder->get_widget("btn_h265", btn_h265);
+  btn_h265->signal_toggled().connect(
+    sigc::bind(sigc::mem_fun(*this, &EncodeWindow::on_codec),
+               FFmpegExecutor::Codec::H265));
 
-  widgets_to_disable_.push_back(box);
+  Gtk::Grid* grid_codec = nullptr;
+  builder->get_widget("grid_codec", grid_codec);
+  widgets_to_disable_.push_back(grid_codec);
 
-  return box;
+  builder->get_widget("txt_quality", txt_quality_);
+
+  Gtk::Grid* grid_quality = nullptr;
+  builder->get_widget("grid_quality", grid_quality);
+  widgets_to_disable_.push_back(grid_quality);
+
+  builder->get_widget("chk_fuzzy", chk_fuzzy_);
+  chk_fuzzy_->signal_toggled().connect(sigc::mem_fun(*this, &EncodeWindow::on_fuzzy_toggled));
+  builder->get_widget("txt_fuzzyness", txt_fuzzyness_);
+
+  Gtk::Grid* grid_fuzzy = nullptr;
+  builder->get_widget("grid_fuzzy", grid_fuzzy);
+  widgets_to_disable_.push_back(grid_fuzzy);
+
+  Gtk::Button* btn_script = nullptr;
+  builder->get_widget("btn_script", btn_script);
+  btn_script->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_generate_script));
+
+  Gtk::Button* btn_encode = nullptr;
+  builder->get_widget("btn_encode", btn_encode);
+  btn_encode->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_encode));
+
+  Gtk::Grid* grid_buttons = nullptr;
+  builder->get_widget("grid_buttons", grid_buttons);
+  widgets_to_disable_.push_back(grid_buttons);
+
+  builder->get_widget("lbl_status", lbl_status_);
+  builder->get_widget_derived("progress_bar", progress_bar_);
+  builder->get_widget("btn_log", btn_log_);
+  btn_log_->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_view_log));
+
+  builder->get_widget("grid_progress", box_progress_);
+  box_progress_->hide();
+
+  on_codec(FFmpegExecutor::Codec::H264);
 }
 
 
@@ -95,39 +143,8 @@ void EncodeWindow::on_select_file()
   dlg.set_current_folder(Glib::path_get_dirname(filter_data_->movie_file()));
 
   if (dlg.run() == Gtk::RESPONSE_OK) {
-    txt_file_.set_text(dlg.get_file()->get_path());
+    txt_file_->set_text(dlg.get_file()->get_path());
   }
-}
-
-
-Gtk::Grid* EncodeWindow::create_codec()
-{
-  Gtk::Label* lbl = Gtk::manage(new Gtk::Label(_("Video format:")));
-
-  Gtk::RadioButton* btn_h264 = Gtk::manage(new Gtk::RadioButton("H.26_4", true));
-  btn_h264->set_tooltip_text(_("Most compatible video format. If in doubt, use this format"));
-  btn_h264->signal_toggled().connect(
-    sigc::bind(sigc::mem_fun(*this, &EncodeWindow::on_codec),
-               FFmpegExecutor::Codec::H264));
-
-  Gtk::RadioButton* btn_h265 = Gtk::manage(new Gtk::RadioButton("H.26_5", true));
-  btn_h265->join_group(*btn_h264);
-  btn_h265->set_tooltip_text(_("A newer format that produces smaller video files. May not work on all players"));
-  btn_h265->signal_toggled().connect(
-    sigc::bind(sigc::mem_fun(*this, &EncodeWindow::on_codec),
-               FFmpegExecutor::Codec::H265));
-
-  Gtk::Grid* box = Gtk::manage(new Gtk::Grid());
-  box->set_column_spacing(4);
-  box->set_vexpand();
-  box->set_valign(Gtk::ALIGN_CENTER);
-  box->add(*lbl);
-  box->add(*btn_h264);
-  box->add(*btn_h265);
-
-  widgets_to_disable_.push_back(box);
-
-  return box;
 }
 
 
@@ -135,123 +152,22 @@ void EncodeWindow::on_codec(FFmpegExecutor::Codec codec)
 {
   codec_ = codec;
   if (codec_ == FFmpegExecutor::Codec::H264) {
-    txt_quality_.set_value(FFmpegExecutor::H264_DEFAULT_CRF_);
+    txt_quality_->set_value(FFmpegExecutor::H264_DEFAULT_CRF_);
   } else {
-    txt_quality_.set_value(FFmpegExecutor::H265_DEFAULT_CRF_);
+    txt_quality_->set_value(FFmpegExecutor::H265_DEFAULT_CRF_);
   }
-}
-
-
-Gtk::Grid* EncodeWindow::create_quality()
-{
-  Gtk::Label* lbl = Gtk::manage(new Gtk::Label(_("_Quality:"), true));
-  lbl->set_mnemonic_widget(txt_quality_);
-
-  txt_quality_.set_range(0, 51);
-  txt_quality_.set_increments(1, 1);
-  txt_quality_.set_value(FFmpegExecutor::H264_DEFAULT_CRF_);
-  txt_quality_.set_tooltip_text(_("CRF value to use for encoding. Lower values generally lead to higher quality, but bigger files. If in doubt, accept the default"));
-
-  Gtk::Grid* box = Gtk::manage(new Gtk::Grid());
-  box->set_column_spacing(4);
-  box->set_vexpand();
-  box->set_valign(Gtk::ALIGN_CENTER);
-  box->add(*lbl);
-  box->add(txt_quality_);
-
-  widgets_to_disable_.push_back(box);
-
-  return box;
-}
-
-
-Gtk::Grid* EncodeWindow::create_fuzzy()
-{
-  chk_fuzzy_.set_label(_("_Randomnly increase filter times"));
-  chk_fuzzy_.set_use_underline();
-  chk_fuzzy_.set_tooltip_text(_("If set, each filter's duration will be randomly increated, so that two or more filters can be active at the same time."));
-  chk_fuzzy_.signal_toggled().connect(sigc::mem_fun(*this, &EncodeWindow::on_fuzzy_toggled));
-
-  Gtk::Label* lbl = Gtk::manage(new Gtk::Label(_("_Factor:"), true));
-  lbl->set_mnemonic_widget(txt_fuzzyness_);
-
-  txt_fuzzyness_.set_sensitive(false);
-  txt_fuzzyness_.set_digits(1);
-  txt_fuzzyness_.set_range(0.1, 10);
-  txt_fuzzyness_.set_increments(0.1, 0.1);
-  txt_fuzzyness_.set_value(2);
-  txt_fuzzyness_.set_tooltip_text(_("Controls how much each filter's time is increased. If set to 2, then on average filters will last twice their original duration."));
-
-  Gtk::Grid* box = Gtk::manage(new Gtk::Grid());
-  box->set_column_spacing(4);
-  box->set_vexpand();
-  box->set_valign(Gtk::ALIGN_CENTER);
-  box->add(chk_fuzzy_);
-  lbl->set_margin_start(16);
-  box->add(*lbl);
-  box->add(txt_fuzzyness_);
-
-  widgets_to_disable_.push_back(box);
-
-  return box;
 }
 
 
 void EncodeWindow::on_fuzzy_toggled()
 {
-  txt_fuzzyness_.set_sensitive(chk_fuzzy_.get_active());
-}
-
-
-Gtk::Grid* EncodeWindow::create_buttons()
-{
-  Gtk::Button* btn_script = Gtk::manage(new Gtk::Button(_("_Generate filter script"), true));
-  btn_script->set_tooltip_text(_("Generates a FFmpeg filter script file that can be used to encode the video. Use this option if you want to run FFmpeg manually with custom encoding options"));
-  btn_script->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_generate_script));
-
-  Gtk::Button* btn_encode = Gtk::manage(new Gtk::Button(_("_Encode"), true));
-  btn_encode->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_encode));
-
-  Gtk::Grid* box = Gtk::manage(new Gtk::Grid());
-  box->set_column_spacing(8);
-  box->set_vexpand();
-  box->set_valign(Gtk::ALIGN_CENTER);
-  box->set_halign(Gtk::ALIGN_END);
-  box->add(*btn_script);
-  box->add(*btn_encode);
-
-  widgets_to_disable_.push_back(box);
-
-  return box;
-}
-
-
-Gtk::Grid* EncodeWindow::create_progress()
-{
-  btn_log_.set_label(_("View _log"));
-  btn_log_.set_use_underline();
-  btn_log_.signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_view_log));
-
-  box_progress_.set_orientation(Gtk::ORIENTATION_VERTICAL);
-  box_progress_.set_row_spacing(4);
-  box_progress_.set_vexpand();
-  box_progress_.set_valign(Gtk::ALIGN_CENTER);
-  box_progress_.set_no_show_all();
-
-  lbl_status_.set_margin_top(16);
-  lbl_status_.set_halign(Gtk::ALIGN_START);
-  box_progress_.add(lbl_status_);
-  progress_bar_.set_hexpand();
-  box_progress_.add(progress_bar_);
-  box_progress_.add(btn_log_);
-
-  return &box_progress_;
+  txt_fuzzyness_->set_sensitive(chk_fuzzy_->get_active());
 }
 
 
 void EncodeWindow::on_encode()
 {
-  std::string file = txt_file_.get_text();
+  std::string file = txt_file_->get_text();
   if (!check_file(file)) {
     return;
   }
@@ -260,19 +176,19 @@ void EncodeWindow::on_encode()
   ffmpeg_.set_generator(generator);
   ffmpeg_.set_input_file(filter_data_->movie_file());
   ffmpeg_.set_codec(codec_);
-  ffmpeg_.set_quality(txt_quality_.get_value_as_int());
+  ffmpeg_.set_quality(txt_quality_->get_value_as_int());
   ffmpeg_.set_output_file(file);
 
   try {
     ffmpeg_.encode();
 
-    lbl_status_.set_text(_("Encoding in progress"));
-    progress_bar_.reset();
-    box_progress_.set_no_show_all(false);
-    box_progress_.show_all();
+    lbl_status_->set_text(_("Encoding in progress"));
+    progress_bar_->reset();
+    box_progress_->set_no_show_all(false);
+    box_progress_->show_all();
 
     disable_widgets();
-    btn_log_.hide();
+    btn_log_->hide();
   } catch (ScriptGenerationException& e) {
     Gtk::MessageDialog dlg(*this,
                            Glib::ustring::compose(_("Error generating filter script for FFmpeg: %1"), e.what()),
@@ -289,7 +205,7 @@ void EncodeWindow::on_encode()
 
 void EncodeWindow::on_generate_script()
 {
-  std::string file = txt_file_.get_text();
+  std::string file = txt_file_->get_text();
   if (!check_file(file)) {
     return;
   }
@@ -333,8 +249,8 @@ bool EncodeWindow::check_file(const std::string& file)
 EncodeWindow::Generator EncodeWindow::get_generator()
 {
   Generator g;
-  if (chk_fuzzy_.get_active()) {
-    g = fg::FuzzyScriptGenerator::create(filter_data_->filter_list(), fps_, txt_fuzzyness_.get_value());
+  if (chk_fuzzy_->get_active()) {
+    g = fg::FuzzyScriptGenerator::create(filter_data_->filter_list(), fps_, txt_fuzzyness_->get_value());
   }  else {
     g = fg::RegularScriptGenerator::create(filter_data_->filter_list(), fps_);
   }
@@ -345,14 +261,14 @@ EncodeWindow::Generator EncodeWindow::get_generator()
 void EncodeWindow::on_ffmpeg_finished(bool success, const std::string& error)
 {
   enable_widgets();
-  btn_log_.show();
+  btn_log_->show();
 
-  progress_bar_.set_finished();
+  progress_bar_->set_finished();
 
   if (success) {
-    lbl_status_.set_text(_("Encoding finished successfully"));
+    lbl_status_->set_text(_("Encoding finished successfully"));
   } else {
-    lbl_status_.set_text(Glib::ustring::compose(_("Encoding failed: %1"), error));
+    lbl_status_->set_text(Glib::ustring::compose(_("Encoding failed: %1"), error));
   }
 }
 
@@ -375,7 +291,7 @@ void EncodeWindow::enable_widgets()
 
 void EncodeWindow::on_view_log()
 {
-  LogWindow* window = new LogWindow(*this, ffmpeg_.get_log());
+  LogWindow* window = LogWindow::create(*this, ffmpeg_.get_log());
   get_application()->register_window(window);
 }
 
@@ -398,18 +314,24 @@ bool EncodeWindow::on_delete_event(GdkEventAny*)
 }
 
 
-LogWindow::LogWindow(Gtk::Window& parent, const std::string& log)
+LogWindow* LogWindow::create(Gtk::Window& parent, const std::string& log)
 {
-  set_title(_("FFmpeg log"));
+  auto builder = Gtk::Builder::create_from_resource("/wt/multi-delogo/LogWindow.ui");
+  LogWindow* window = nullptr;
+  builder->get_widget_derived("log_window", window,
+                              parent, log);
+  return window;
+}
+
+
+LogWindow::LogWindow(BaseObjectType* cobject,
+                     const Glib::RefPtr<Gtk::Builder>& builder,
+                     Gtk::Window& parent, const std::string& log)
+  : MultiDelogoAppWindow(cobject)
+{
   set_transient_for(parent);
-  set_default_size(650, 300);
 
-  Gtk::TextView* txt = Gtk::manage(new Gtk::TextView());
+  Gtk::TextView* txt = nullptr;
+  builder->get_widget("txt_log", txt);
   txt->get_buffer()->set_text(log);
-
-  Gtk::ScrolledWindow* scr = Gtk::manage(new Gtk::ScrolledWindow());
-  scr->set_shadow_type(Gtk::SHADOW_IN);
-  scr->add(*txt);
-
-  add(*scr);
 }

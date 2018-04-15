@@ -28,7 +28,9 @@ namespace mdl {
   class InitialWindow : public MultiDelogoAppWindow
   {
   public:
-    InitialWindow();
+    static InitialWindow* create();
+
+    InitialWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
   };
 }
 

@@ -24,6 +24,12 @@
 using namespace mdl;
 
 
+MultiDelogoAppWindow::MultiDelogoAppWindow(BaseObjectType* cobject)
+  : Gtk::ApplicationWindow(cobject)
+{
+}
+
+
 Glib::RefPtr<MultiDelogoApp> MultiDelogoAppWindow::get_application()
 {
   Glib::RefPtr<MultiDelogoApp> app

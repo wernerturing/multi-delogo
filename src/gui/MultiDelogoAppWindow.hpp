@@ -28,6 +28,9 @@ namespace mdl {
   class MultiDelogoAppWindow : public Gtk::ApplicationWindow
   {
   protected:
+    MultiDelogoAppWindow() = default;
+    MultiDelogoAppWindow(BaseObjectType* cobject);
+
     Glib::RefPtr<MultiDelogoApp> get_application();
     Glib::RefPtr<const MultiDelogoApp> get_application() const;
   };

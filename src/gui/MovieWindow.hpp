@@ -37,24 +37,32 @@ namespace mdl {
   class MovieWindow : public MultiDelogoAppWindow
   {
   public:
-    MovieWindow(const std::string& project_file,
+    static MovieWindow* create(const std::string& project_file,
+                               std::unique_ptr<fg::FilterData> filter_data,
+                               const Glib::RefPtr<FrameProvider>& frame_provider,
+                               Gtk::Application& app);
+
+    MovieWindow(BaseObjectType* cobject,
+                const Glib::RefPtr<Gtk::Builder>& builder,
+                const std::string& project_file,
                 std::unique_ptr<fg::FilterData> filter_data,
                 const Glib::RefPtr<FrameProvider>& frame_provider,
                 Gtk::Application& app);
 
   private:
-    Gtk::ToolButton btn_undo_;
-    Gtk::ToolButton btn_redo_;
+    Gtk::ToolButton* btn_undo_;
+    Gtk::ToolButton* btn_redo_;
 
     std::string project_file_;
     std::unique_ptr<fg::FilterData> filter_data_;
 
-    FilterList filter_list_;
-    FrameNavigator frame_navigator_;
+    FilterList* filter_list_;
+    FrameNavigator* frame_navigator_;
     Coordinator coordinator_;
 
 
-    Gtk::Toolbar* create_toolbar(Gtk::Application& app);
+    void configure_toolbar(const Glib::RefPtr<Gtk::Builder>& builder,
+                           Gtk::Application& app);
 
     bool on_key_press(GdkEventKey* key_event);
 
