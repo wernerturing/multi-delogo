@@ -107,6 +107,8 @@ Note that the logo detection is not 100% effective. Some logos will not be able 
 
 Moreover, in a few cases even when a logo is detected, the result might not be correct: the start frame might be off by a few frames, perhaps only part of the logo has been detected, or some other feature of the video was incorrectly considered a logo. Therefore it's recommended to review the results before encoding the video.
 
+If there are already filters defined in the search interval you specified, you'll be asked whether ou really want to automatically search for logos. The filters already present will be ignored for purposes of the search, but they will not be removed, only new filters will be added. The only exception is if the automatic logo detector finds a logo starting at a frame that is already the start frame of an existing filter. In this case the filter for the automatically detected logo will overwrite the previous one. Because of this behavior, it is recommended to avoid searching for logos in intervals where there are filters already defined.
+
 ### Interrupting and continuing the logo detection
 
 It's possible to stop the logo detection by pressing the *Close* button. The logos already detected will not be lost.
@@ -122,7 +124,11 @@ To edit an existing filter, you have to be on that filter's start frame. You can
 
 If you are not at a filter's start frame and make any change to the filter, a new filter is added.
 
+You can change the starting frame of a filter by using the *start frame* field.
+
 To remove a filter, select it and press the button with the minus sign below the filter list.
+
+If you make a miskate, you can use the **Undo** button to revert your last changes. The **Redo** button reverts a undo. Instead of the buttons, you can also use keyboard shortcuts: Ctrl+z for undo, and Ctrl+Shift+z or Ctrl+y for redo.
 
 To move quickly between filters, use the arrows below the filter list.
 

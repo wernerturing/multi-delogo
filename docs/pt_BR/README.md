@@ -107,6 +107,8 @@ Observe que a detecção dos logos não é 100% eficaz. Alguns logos podem não 
 
 Além disso, em alguns casos mesmo quando um logo é detectado, o resultado pode não estar certo: o quadro inicial pode estar alguns quadros atrás do valor correto, talvez apenas parte do logo tenha sido reconhecida, ou algum outro artefato do vídeo foi considerado incorretamente como um logo. Por causa disso, é recomendável revisar os resultados antes de converter o vídeo.
 
+Se já existem filtros definidos no intervalo de busca especificado, você terá que confirmar se realmente deseja procurar por logos automaticamente. Os filtros já existentes serão ignorados na busca, mas não serão removidos, apenas filtros novos serão adicionados. A única exceção é se o detector automático de logos encontrar um logo iniciando num quadro que já é o quadro inicial de um filtro. Nesse caso o filtro para o logo automaticamente detectado sobrescreverá o já existente. Por causa desse comportamento, é recomendado evitar procurar por logos em intervalos onde já existem filtros definidos.
+
 ### Interrompendo e continuando a deteção de logos
 
 É possível interromper a detecção de logos clicando o botão *Fechar*. Os logos já detectados não serão perdidos.
@@ -122,7 +124,11 @@ Para editar um filtro existente, você deverá estar no quadro inicial daquele f
 
 Se você não estiver no quadro inicial e fizer alguma alteração, um novo filtro é adicionado.
 
+É possível alterar o quadro inicial de um filtro usando o campo *quadro inicial*.
+
 Para remover um filtro, selecione-o e aperte o botão com o sinal de menos abaixo da lista de filtros.
+
+Se você cometer um erro, você pode usar o botão **Desfazer** para reveter as últimas alterações. O botão **Refazer** reverte uma ação de desfazer. Ao invés dos botões, é possível usar os atalhos de teclado: Ctrl+z para desfazer, Ctrl+Shift+z ou Ctrl+y para refazer.
 
 Para mover rapidamente entre filtros, use as setas abaixo da lista de filtros.
 
