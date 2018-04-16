@@ -1,4 +1,4 @@
-## ongoing
+## 2.1.0
 
 * The automatic logo detection should be slightly faster.
 
