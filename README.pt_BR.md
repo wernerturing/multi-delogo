@@ -40,7 +40,8 @@ O processo é muito parecido com a instação no Linux descrita acima. Você pre
 
 * autoconf
 * automake
-* intltool
+* autopoint
+* gettext
 
 Faça o clone do projeto com
 
