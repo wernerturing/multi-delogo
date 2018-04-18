@@ -18,7 +18,7 @@ Para compilar o software no Linux, você precisará dos arquivos de desenvolvime
 
 * gtkmm
 * goocanvasmm
-* opecv
+* opencv
 * boost
 
 Você também precisará de um compilar C++11 e do `make`.

@@ -20,7 +20,7 @@ To compile the software on Linux, you'll need development files for the followin
 
 * gtkmm
 * goocanvasmm
-* opecv
+* opencv
 * boost
 
 You'll also need a C++11 compiler and `make`.
