@@ -29,7 +29,7 @@
 
 
 namespace mdl {
-  typedef boost::optional<Glib::RefPtr<Gio::File>> maybe_file;
+  typedef boost::optional<std::string> maybe_file;
 
   class MultiDelogoApp : public Gtk::Application
   {

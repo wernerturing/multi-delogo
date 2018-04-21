@@ -66,7 +66,7 @@ MovieWindow::MovieWindow(BaseObjectType* cobject,
   , coordinator_(*this, frame_provider->get_number_of_frames(), frame_provider->get_frame_width(), frame_provider->get_frame_height())
 {
   set_title(Glib::ustring::compose("multi-delogo: %1",
-                                   Glib::path_get_basename(project_file)));
+                                   Glib::filename_to_utf8(Glib::path_get_basename(project_file))));
 
   configure_toolbar(builder, app);
   coordinator_.set_undo_buttons(btn_undo_, btn_redo_);
