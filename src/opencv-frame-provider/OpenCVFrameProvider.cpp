@@ -33,14 +33,18 @@ using namespace mdl::opencv;
 
 OpenCVFrameProvider::OpenCVFrameProvider(std::unique_ptr<cv::VideoCapture> video)
   : FrameProvider()
+  , video_(std::move(video))
+  , current_frame_(-1)
 {
-  video_ = std::move(video);
 }
 
 
 Glib::RefPtr<Gdk::Pixbuf> OpenCVFrameProvider::get_frame(int frame_number)
 {
-  video_->set(cv::CAP_PROP_POS_FRAMES, frame_number);
+  if (frame_number != current_frame_ + 1) {
+    video_->set(cv::CAP_PROP_POS_FRAMES, frame_number);
+  }
+  current_frame_ = frame_number;
 
   cv::Mat bgr_frame;
   bool success = video_->read(bgr_frame);
