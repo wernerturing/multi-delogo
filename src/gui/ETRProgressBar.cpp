@@ -24,6 +24,9 @@
 
 #include "ETRProgressBar.hpp"
 
+
+#define MINUTE 60
+
 using namespace mdl;
 
 
@@ -84,12 +87,28 @@ std::string ETRProgressBar::get_progress_str(const Progress& progress)
 
 std::string ETRProgressBar::get_time_remaining(const Progress& progress)
 {
-  std::string min_str = Glib::ustring::format(std::setfill(L'0'), std::setw(2),
-                                              progress.minutes_remaining);
-  std::string sec_str = Glib::ustring::format(std::setfill(L'0'), std::setw(2),
-                                              progress.seconds_remaining);
-  return Glib::ustring::compose(_("about %1:%2:%3 left"),
-                                progress.hours_remaining, min_str, sec_str);
+  if (progress.total_seconds_remaining < 1*MINUTE) {
+    return Glib::ustring::compose(ngettext("about %1 second left",
+                                           "about %1 seconds left",
+                                           progress.seconds_remaining),
+                                  progress.seconds_remaining);
+  }
+
+  if (progress.total_seconds_remaining < 30*MINUTE) {
+    int rounded_minutes = progress.minutes_remaining
+                        + (progress.seconds_remaining >= 30 ? 1 : 0);
+    return Glib::ustring::compose(ngettext("about %1 minute left",
+                                           "about %1 minutes left",
+                                           rounded_minutes),
+                                  rounded_minutes);
+  }
+
+  int rounded_hours = progress.hours_remaining
+                    + (progress.minutes_remaining >= 30 ? 1 : 0);
+  return Glib::ustring::compose(ngettext("about %1 hour left",
+                                         "about %1 hours left",
+                                         rounded_hours),
+                                rounded_hours);
 }
 
 

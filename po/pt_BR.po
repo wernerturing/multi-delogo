@@ -22,8 +22,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: multi-delogo\n"
 "Report-Msgid-Bugs-To: werner.turing@protonmail.com\n"
-"POT-Creation-Date: 2018-04-15 12:07-0300\n"
-"PO-Revision-Date: 2018-04-15 12:07-0300\n"
+"POT-Creation-Date: 2018-07-25 10:50-0300\n"
+"PO-Revision-Date: 2018-07-25 10:54-0300\n"
 "Last-Translator: Werner Turing <werner.turing@protonmail.com>\n"
 "Language-Team: Werner Turing <werner.turing@protonmail.com>\n"
 "Language: pt_BR\n"
@@ -217,18 +217,32 @@ msgstr "_Converter"
 msgid "View _log"
 msgstr "Ver _log"
 
-#: src/gui/ETRProgressBar.cpp:73
+#: src/gui/ETRProgressBar.cpp:76
 #, no-c-format
 msgid "100% done"
 msgstr "100% pronto"
 
-#: src/gui/ETRProgressBar.cpp:79
+#: src/gui/ETRProgressBar.cpp:82
 msgid "%1%% done, %2"
 msgstr "%1%% pronto, %2"
 
 #: src/gui/ETRProgressBar.cpp:91
-msgid "about %1:%2:%3 left"
-msgstr "cerca de %1:%2:%3 restantes"
+msgid "about %1 second left"
+msgid_plural "about %1 seconds left"
+msgstr[0] "cerca de %1 segundo restantes"
+msgstr[1] "cerca de %1 segundos restantes"
+
+#: src/gui/ETRProgressBar.cpp:100
+msgid "about %1 minute left"
+msgid_plural "about %1 minutes left"
+msgstr[0] "cerca de %1 minuto restante"
+msgstr[1] "cerca de %1 minutos restantes"
+
+#: src/gui/ETRProgressBar.cpp:108
+msgid "about %1 hour left"
+msgid_plural "about %1 hours left"
+msgstr[0] "cerca de %1 hora restante"
+msgstr[1] "cerca de %1 horas restantes"
 
 #: src/gui/FilterList.cpp:43
 msgid "Start frame"

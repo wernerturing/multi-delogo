@@ -47,7 +47,7 @@ public:
   {
     return progress.get_time_remaining({.percentage = 0,
                                         .seconds_elapsed = 0,
-                                        .total_seconds_remaining = 0,
+                                        .total_seconds_remaining = get_total(hours, minutes, seconds),
                                         .hours_remaining = hours,
                                         .minutes_remaining = minutes,
                                         .seconds_remaining = seconds});
@@ -58,13 +58,19 @@ public:
   {
     return progress.get_progress_str({.percentage = percentage,
                                       .seconds_elapsed = 0,
-                                      .total_seconds_remaining = 0,
+                                      .total_seconds_remaining = get_total(hours, minutes, seconds),
                                       .hours_remaining = hours,
                                       .minutes_remaining = minutes,
                                       .seconds_remaining = seconds});
   }
 
   ETRProgressBar progress;
+
+private:
+  int get_total(int hours, int minutes, int seconds)
+  {
+    return hours*60*60 + minutes*60 + seconds;
+  }
 };
 }
 
@@ -107,20 +113,31 @@ BOOST_FIXTURE_TEST_SUITE(progress_string, mdl::ETRProgressBarTestFixture)
 
 BOOST_AUTO_TEST_CASE(should_format_time_remaining)
 {
-  BOOST_TEST(get_time_remaining(0, 0, 1) == "about 0:00:01 left");
-  BOOST_TEST(get_time_remaining(0, 0, 59) == "about 0:00:59 left");
+  // Less than one minute: seconds
+  BOOST_TEST(get_time_remaining(0, 0, 1) == "about 1 second left");
+  BOOST_TEST(get_time_remaining(0, 0, 59) == "about 59 seconds left");
 
-  BOOST_TEST(get_time_remaining(0, 3, 23) == "about 0:03:23 left");
-  BOOST_TEST(get_time_remaining(0, 59, 59) == "about 0:59:59 left");
+  // Less than 30 minutes: minutes
+  BOOST_TEST(get_time_remaining(0, 1, 00) == "about 1 minute left");
+  BOOST_TEST(get_time_remaining(0, 1, 29) == "about 1 minute left");
+  BOOST_TEST(get_time_remaining(0, 1, 30) == "about 2 minutes left");
+  BOOST_TEST(get_time_remaining(0, 12, 43) == "about 13 minutes left");
+  BOOST_TEST(get_time_remaining(0, 29, 59) == "about 30 minutes left");
 
-  BOOST_TEST(get_time_remaining(2, 5, 0) == "about 2:05:00 left");
+  // Over 30 minutes: hours
+  BOOST_TEST(get_time_remaining(0, 30, 00) == "about 1 hour left");
+  BOOST_TEST(get_time_remaining(1, 29, 59) == "about 1 hour left");
+  BOOST_TEST(get_time_remaining(1, 30, 00) == "about 2 hours left");
+  BOOST_TEST(get_time_remaining(5, 12, 19) == "about 5 hours left");
+  BOOST_TEST(get_time_remaining(8, 48, 23) == "about 9 hours left");
 }
 
 
 BOOST_AUTO_TEST_CASE(should_format_progress)
 {
-  BOOST_TEST(get_progress_str(.13, 0, 7, 21) == "13% done, about 0:07:21 left");
-  BOOST_TEST(get_progress_str(.93, 1, 14, 50) == "93% done, about 1:14:50 left");
+  BOOST_TEST(get_progress_str(.13, 0, 7, 21) == "13% done, about 7 minutes left");
+  BOOST_TEST(get_progress_str(.93, 1, 14, 50) == "93% done, about 1 hour left");
 }
+
 
 BOOST_AUTO_TEST_SUITE_END()
