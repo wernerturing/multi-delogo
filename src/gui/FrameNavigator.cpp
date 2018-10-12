@@ -40,6 +40,7 @@ FrameNavigator::FrameNavigator(BaseObjectType* cobject,
   , frame_provider_(frame_provider)
   , number_of_frames_(frame_provider->get_number_of_frames())
   , frame_view_(nullptr)
+  , prev_frame_view_(nullptr)
   , txt_frame_number_(nullptr)
   , txt_jump_size_(nullptr)
   , zoom_(1)
@@ -50,9 +51,13 @@ FrameNavigator::FrameNavigator(BaseObjectType* cobject,
 {
   builder->get_widget_derived("frame_view", frame_view_,
                               frame_provider_->get_frame_width(), frame_provider_->get_frame_height());
+  builder->get_widget_derived("prev_frame_view", prev_frame_view_,
+                              frame_provider_->get_frame_width(), frame_provider_->get_frame_height());
 
   configure_navigation_bar(builder);
   configure_zoom_bar(builder);
+
+  empty_pixbuf_ = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, false, 8, 1, 1);
 }
 
 
@@ -139,9 +144,9 @@ void FrameNavigator::change_displayed_frame(int new_frame_number)
     new_frame_number = boost::algorithm::clamp(new_frame_number, 1, number_of_frames_);
 
     if (new_frame_number == frame_number_ + 1) {
-      show_next_frame();
+      show_next_frame(new_frame_number);
     } else if (new_frame_number == frame_number_ - 1) {
-      show_previous_frame();
+      show_previous_frame(new_frame_number);
     } else if (new_frame_number != frame_number_) {
       show_frame(new_frame_number);
     }
@@ -159,22 +164,46 @@ void FrameNavigator::change_displayed_frame(int new_frame_number)
 }
 
 
-void FrameNavigator::show_next_frame()
+void FrameNavigator::show_next_frame(int new_frame_number)
 {
-  show_frame(frame_number_ + 1);
+  prev_frame_pixbuf_ = frame_pixbuf_;
+  prev_frame_view_->set_image(frame_pixbuf_);
+
+  fetch_and_show_current_frame(new_frame_number);
 }
 
 
-void FrameNavigator::show_previous_frame()
+void FrameNavigator::show_previous_frame(int new_frame_number)
 {
-  show_frame(frame_number_ - 1);
+  frame_pixbuf_ = prev_frame_pixbuf_;
+  frame_view_->set_image(prev_frame_pixbuf_);
+
+  fetch_and_show_prev_frame(new_frame_number);
 }
 
 
 void FrameNavigator::show_frame(int new_frame_number)
 {
-  auto pixbuf = frame_provider_->get_frame(new_frame_number - 1);
-  frame_view_->set_image(pixbuf);
+  fetch_and_show_prev_frame(new_frame_number);
+  fetch_and_show_current_frame(new_frame_number);
+}
+
+
+void FrameNavigator::fetch_and_show_current_frame(int new_frame_number)
+{
+  frame_pixbuf_ = frame_provider_->get_frame(new_frame_number - 1);
+  frame_view_->set_image(frame_pixbuf_);
+}
+
+
+void FrameNavigator::fetch_and_show_prev_frame(int new_frame_number)
+{
+  if (new_frame_number != 1) {
+    prev_frame_pixbuf_ = frame_provider_->get_frame(new_frame_number - 2);
+    prev_frame_view_->set_image(prev_frame_pixbuf_);
+  } else {
+    prev_frame_view_->set_image(empty_pixbuf_);
+  }
 }
 
 

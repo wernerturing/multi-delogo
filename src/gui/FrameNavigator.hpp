@@ -57,7 +57,11 @@ namespace mdl {
     int number_of_frames_;
     int frame_number_;
 
+    Glib::RefPtr<Gdk::Pixbuf> frame_pixbuf_;
     FrameView* frame_view_;
+    Glib::RefPtr<Gdk::Pixbuf> prev_frame_pixbuf_;
+    FrameView* prev_frame_view_;
+    Glib::RefPtr<Gdk::Pixbuf> empty_pixbuf_;
 
     NumericEntry* txt_frame_number_;
     NumericEntry* txt_jump_size_;
@@ -74,9 +78,11 @@ namespace mdl {
     void configure_navigation_bar(const Glib::RefPtr<Gtk::Builder>& builder);
     void configure_zoom_bar(const Glib::RefPtr<Gtk::Builder>& builder);
 
-    void show_next_frame();
-    void show_previous_frame();
+    void show_next_frame(int new_frame_number);
+    void show_previous_frame(int new_frame_number);
     void show_frame(int new_frame_number);
+    void fetch_and_show_current_frame(int new_frame_number);
+    void fetch_and_show_prev_frame(int new_frame_number);
 
     void on_frame_number_activate();
     bool on_frame_number_input(GdkEventFocus*);
