@@ -52,7 +52,7 @@ FrameNavigator::FrameNavigator(BaseObjectType* cobject,
   builder->get_widget_derived("frame_view", frame_view_,
                               frame_provider_->get_frame_width(), frame_provider_->get_frame_height());
   builder->get_widget_derived("prev_frame_view", prev_frame_view_,
-                              frame_provider_->get_frame_width(), frame_provider_->get_frame_height());
+                              frame_provider_->get_frame_width(), frame_provider_->get_frame_height(), false);
 
   configure_navigation_bar(builder);
   configure_zoom_bar(builder);

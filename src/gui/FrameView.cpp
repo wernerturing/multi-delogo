@@ -31,7 +31,8 @@ const gdouble SelectionRect::RESIZE_MARGIN_ = 10;
 
 FrameView::FrameView(BaseObjectType* cobject,
                      const Glib::RefPtr<Gtk::Builder>& builder,
-                     int width, int height)
+                     int width, int height,
+                     bool can_select_rectangle)
   : Gtk::ScrolledWindow(cobject)
   , drag_(false)
 {
@@ -42,15 +43,19 @@ FrameView::FrameView(BaseObjectType* cobject,
   auto root = canvas_.get_root_item();
 
   image_ = Goocanvas::Image::create(0, 0);
-  image_->signal_button_press_event().connect(sigc::mem_fun(*this, &FrameView::on_button_press));
-  image_->signal_motion_notify_event().connect(sigc::mem_fun(*this, &FrameView::on_motion_notify));
-  image_->signal_button_release_event().connect(sigc::mem_fun(*this, &FrameView::on_button_release));
+  if (can_select_rectangle) {
+    image_->signal_button_press_event().connect(sigc::mem_fun(*this, &FrameView::on_button_press));
+    image_->signal_motion_notify_event().connect(sigc::mem_fun(*this, &FrameView::on_motion_notify));
+    image_->signal_button_release_event().connect(sigc::mem_fun(*this, &FrameView::on_button_release));
+  }
   root->add_child(image_);
 
   rect_ = SelectionRect::create(100, 50, 150, 30);
-  rect_->enable_drag_and_drop();
   root->add_child(rect_);
-  rect_->signal_rectangle_changed().connect(sigc::mem_fun(signal_rectangle_changed_, &type_signal_rectangle_changed::emit));
+  if (can_select_rectangle) {
+    rect_->enable_drag_and_drop();
+    rect_->signal_rectangle_changed().connect(sigc::mem_fun(signal_rectangle_changed_, &type_signal_rectangle_changed::emit));
+  }
 
   temp_rect_ = SelectionRect::create();
   root->add_child(temp_rect_);

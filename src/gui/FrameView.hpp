@@ -34,7 +34,8 @@ namespace mdl {
   public:
     FrameView(BaseObjectType* cobject,
               const Glib::RefPtr<Gtk::Builder>& builder,
-              int width, int height);
+              int width, int height,
+              bool can_select_rectangle = true);
 
     void set_image(Glib::RefPtr<Gdk::Pixbuf> pixbuf);
 
