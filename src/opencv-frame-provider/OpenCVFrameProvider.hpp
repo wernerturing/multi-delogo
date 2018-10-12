@@ -47,7 +47,7 @@ namespace mdl { namespace opencv {
   private:
     std::unique_ptr<cv::VideoCapture> video_;
     int current_frame_;
-    // We must keep a copy of the image data, since Gdk::Pixbuf does not make a copy of the data
+    // We keep a structure for the frame data in order to avoid reallocating space every time a frame is requested.
     cv::Mat frame_;
   };
 } }
