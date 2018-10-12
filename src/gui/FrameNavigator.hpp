@@ -74,6 +74,10 @@ namespace mdl {
     void configure_navigation_bar(const Glib::RefPtr<Gtk::Builder>& builder);
     void configure_zoom_bar(const Glib::RefPtr<Gtk::Builder>& builder);
 
+    void show_next_frame();
+    void show_previous_frame();
+    void show_frame(int new_frame_number);
+
     void on_frame_number_activate();
     bool on_frame_number_input(GdkEventFocus*);
 

@@ -138,9 +138,12 @@ void FrameNavigator::change_displayed_frame(int new_frame_number)
   try {
     new_frame_number = boost::algorithm::clamp(new_frame_number, 1, number_of_frames_);
 
-    if (new_frame_number != frame_number_) {
-      auto pixbuf = frame_provider_->get_frame(new_frame_number - 1);
-      frame_view_->set_image(pixbuf);
+    if (new_frame_number == frame_number_ + 1) {
+      show_next_frame();
+    } else if (new_frame_number == frame_number_ - 1) {
+      show_previous_frame();
+    } else if (new_frame_number != frame_number_) {
+      show_frame(new_frame_number);
     }
 
     signal_frame_changed_.emit(new_frame_number);
@@ -153,6 +156,25 @@ void FrameNavigator::change_displayed_frame(int new_frame_number)
     txt_frame_number_->set_value(frame_number_);
     dlg.run();
   }
+}
+
+
+void FrameNavigator::show_next_frame()
+{
+  show_frame(frame_number_ + 1);
+}
+
+
+void FrameNavigator::show_previous_frame()
+{
+  show_frame(frame_number_ - 1);
+}
+
+
+void FrameNavigator::show_frame(int new_frame_number)
+{
+  auto pixbuf = frame_provider_->get_frame(new_frame_number - 1);
+  frame_view_->set_image(pixbuf);
 }
 
 
