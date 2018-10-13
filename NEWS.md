@@ -1,3 +1,9 @@
+## 2.2.0
+
+* It's now possible to display two frames (the current frame and the
+  one just before that) at the same time.
+
+
 ## 2.1.0
 
 * The automatic logo detection should be slightly faster.

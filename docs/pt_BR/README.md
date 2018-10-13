@@ -36,6 +36,8 @@ Para saltar um número maior de quadros para trás ou para frente, use os botõe
 
 Você também pode ir diretamente para um quadro digitando o número dele e apertando Enter.
 
+Se você marcar "Exibir quadro anterior" na barra de ferramentas, a área principal será dividida, exibindo o quadro atual à direita, e o quadro antes dele à esquerda, menor. Isso pode facilitar o processo de identificar os quadros onde ocorre uma mudança de código e a revisão dos filtros detectados automaticamente.
+
 
 ## Definindo um filtro manualmente
 
