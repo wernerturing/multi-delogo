@@ -40,6 +40,8 @@ FrameNavigator::FrameNavigator(BaseObjectType* cobject,
   , frame_provider_(frame_provider)
   , number_of_frames_(frame_provider->get_number_of_frames())
   , frame_view_(nullptr)
+  , prev_frame_view_(nullptr)
+  , lbl_prev_frame_(nullptr)
   , txt_frame_number_(nullptr)
   , txt_jump_size_(nullptr)
   , zoom_(1)
@@ -50,9 +52,20 @@ FrameNavigator::FrameNavigator(BaseObjectType* cobject,
 {
   builder->get_widget_derived("frame_view", frame_view_,
                               frame_provider_->get_frame_width(), frame_provider_->get_frame_height());
+  builder->get_widget_derived("prev_frame_view", prev_frame_view_,
+                              frame_provider_->get_frame_width(), frame_provider_->get_frame_height(), false);
+  builder->get_widget("lbl_prev_frame", lbl_prev_frame_);
+
+  Glib::signal_idle().connect([&] {
+      set_show_prev_frame(false);
+      return false;
+    });
 
   configure_navigation_bar(builder);
   configure_zoom_bar(builder);
+
+  empty_pixbuf_ = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, false, 8, 1, 1);
+  prev_frame_view_->signal_size_allocate().connect(sigc::mem_fun(*this, &FrameNavigator::set_prev_frame_zoom));
 }
 
 
@@ -138,9 +151,12 @@ void FrameNavigator::change_displayed_frame(int new_frame_number)
   try {
     new_frame_number = boost::algorithm::clamp(new_frame_number, 1, number_of_frames_);
 
-    if (new_frame_number != frame_number_) {
-      auto pixbuf = frame_provider_->get_frame(new_frame_number - 1);
-      frame_view_->set_image(pixbuf);
+    if (new_frame_number == frame_number_ + 1) {
+      show_next_frame(new_frame_number);
+    } else if (new_frame_number == frame_number_ - 1) {
+      show_previous_frame(new_frame_number);
+    } else if (new_frame_number != frame_number_) {
+      show_frame(new_frame_number);
     }
 
     signal_frame_changed_.emit(new_frame_number);
@@ -152,6 +168,49 @@ void FrameNavigator::change_displayed_frame(int new_frame_number)
                            Gtk::MESSAGE_ERROR);
     txt_frame_number_->set_value(frame_number_);
     dlg.run();
+  }
+}
+
+
+void FrameNavigator::show_next_frame(int new_frame_number)
+{
+  prev_frame_pixbuf_ = frame_pixbuf_;
+  prev_frame_view_->set_image(frame_pixbuf_);
+
+  fetch_and_show_current_frame(new_frame_number);
+}
+
+
+void FrameNavigator::show_previous_frame(int new_frame_number)
+{
+  frame_pixbuf_ = prev_frame_pixbuf_;
+  frame_view_->set_image(prev_frame_pixbuf_);
+
+  fetch_and_show_prev_frame(new_frame_number);
+}
+
+
+void FrameNavigator::show_frame(int new_frame_number)
+{
+  fetch_and_show_prev_frame(new_frame_number);
+  fetch_and_show_current_frame(new_frame_number);
+}
+
+
+void FrameNavigator::fetch_and_show_current_frame(int new_frame_number)
+{
+  frame_pixbuf_ = frame_provider_->get_frame(new_frame_number - 1);
+  frame_view_->set_image(frame_pixbuf_);
+}
+
+
+void FrameNavigator::fetch_and_show_prev_frame(int new_frame_number)
+{
+  if (new_frame_number != 1) {
+    prev_frame_pixbuf_ = frame_provider_->get_frame(new_frame_number - 2);
+    prev_frame_view_->set_image(prev_frame_pixbuf_);
+  } else {
+    prev_frame_view_->set_image(empty_pixbuf_);
   }
 }
 
@@ -190,6 +249,13 @@ int FrameNavigator::get_jump_size() const
 void FrameNavigator::set_jump_size(int jump_size)
 {
   txt_jump_size_->set_value(jump_size);
+}
+
+
+void FrameNavigator::set_show_prev_frame(bool show_prev)
+{
+  lbl_prev_frame_->set_visible(show_prev);
+  prev_frame_view_->set_visible(show_prev);
 }
 
 
@@ -236,4 +302,12 @@ void FrameNavigator::set_zoom(gdouble zoom)
   lbl_zoom_->set_text(Glib::ustring::compose("%1%%", (int) (zoom_ * 100)));
 
   frame_view_->set_zoom(zoom_);
+}
+
+
+void FrameNavigator::set_prev_frame_zoom(Gtk::Allocation size)
+{
+  gdouble ratio = get_zoom_to_fit_ratio(frame_provider_->get_frame_width(), frame_provider_->get_frame_height(),
+                                       size.get_width(), size.get_height());
+  prev_frame_view_->set_zoom(ratio);
 }

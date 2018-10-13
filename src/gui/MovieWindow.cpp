@@ -115,6 +115,12 @@ void MovieWindow::configure_toolbar(const Glib::RefPtr<Gtk::Builder>& builder,
     sigc::bind(sigc::mem_fun(*this, &MovieWindow::on_scroll_filter_toggled),
                chk_scroll_filter));
 
+  Gtk::ToggleToolButton* chk_show_prev_frame = nullptr;
+  builder->get_widget("chk_show_prev_frame", chk_show_prev_frame);
+  chk_show_prev_frame->signal_toggled().connect(
+    sigc::bind(sigc::mem_fun(*this, &MovieWindow::on_show_prev_frame_toggled),
+               chk_show_prev_frame));
+
   add_action("find-logos", sigc::mem_fun(*this, &MovieWindow::on_find_logos));
   Gtk::ToolButton* btn_find_logos = nullptr;
   builder->get_widget("btn_find_logos", btn_find_logos);
@@ -215,6 +221,12 @@ void MovieWindow::on_encode()
 void MovieWindow::on_scroll_filter_toggled(Gtk::ToggleToolButton* chk)
 {
   coordinator_.set_scroll_filter(chk->get_active());
+}
+
+
+void MovieWindow::on_show_prev_frame_toggled(Gtk::ToggleToolButton* chk)
+{
+  frame_navigator_->set_show_prev_frame(chk->get_active());
 }
 
 

@@ -36,6 +36,8 @@ To move a larger number of frames backward or forward, use the << and >> buttons
 
 You can also go directly to a frame by entering its number and pressing Enter.
 
+If you select "Show previous frame" in the toolbar, the main area will be split, displaying the current frame in the right and one frame before that in the left, smaller. That can make the process of identifying code chaning positions or reviewing automatically detected filters easier.
+
 
 ## Defining a filter manually
 

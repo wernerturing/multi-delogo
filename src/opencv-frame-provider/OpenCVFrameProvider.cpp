@@ -57,7 +57,7 @@ Glib::RefPtr<Gdk::Pixbuf> OpenCVFrameProvider::get_frame(int frame_number)
                                        Gdk::COLORSPACE_RGB,
                                        false, 8,
                                        frame_.cols, frame_.rows,
-                                       frame_.step);
+                                       frame_.step)->copy();
 }
 
 

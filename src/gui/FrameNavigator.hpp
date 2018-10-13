@@ -45,6 +45,8 @@ namespace mdl {
     int get_jump_size() const;
     void set_jump_size(int jump_size);
 
+    void set_show_prev_frame(bool show_prev);
+
     FrameView* get_frame_view();
 
     typedef sigc::signal<void, int> type_signal_frame_changed;
@@ -57,7 +59,12 @@ namespace mdl {
     int number_of_frames_;
     int frame_number_;
 
+    Glib::RefPtr<Gdk::Pixbuf> frame_pixbuf_;
     FrameView* frame_view_;
+    Glib::RefPtr<Gdk::Pixbuf> prev_frame_pixbuf_;
+    FrameView* prev_frame_view_;
+    Glib::RefPtr<Gdk::Pixbuf> empty_pixbuf_;
+    Gtk::Label* lbl_prev_frame_;
 
     NumericEntry* txt_frame_number_;
     NumericEntry* txt_jump_size_;
@@ -74,6 +81,12 @@ namespace mdl {
     void configure_navigation_bar(const Glib::RefPtr<Gtk::Builder>& builder);
     void configure_zoom_bar(const Glib::RefPtr<Gtk::Builder>& builder);
 
+    void show_next_frame(int new_frame_number);
+    void show_previous_frame(int new_frame_number);
+    void show_frame(int new_frame_number);
+    void fetch_and_show_current_frame(int new_frame_number);
+    void fetch_and_show_prev_frame(int new_frame_number);
+
     void on_frame_number_activate();
     bool on_frame_number_input(GdkEventFocus*);
 
@@ -81,6 +94,7 @@ namespace mdl {
     void on_zoom_100();
     void on_zoom_fit();
     void set_zoom(gdouble zoom);
+    void set_prev_frame_zoom(Gtk::Allocation size);
   };
 }
 
