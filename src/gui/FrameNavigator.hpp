@@ -91,6 +91,7 @@ namespace mdl {
     void on_zoom_100();
     void on_zoom_fit();
     void set_zoom(gdouble zoom);
+    void set_prev_frame_zoom(Gtk::Allocation size);
   };
 }
 

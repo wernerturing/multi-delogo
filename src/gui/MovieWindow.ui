@@ -43,7 +43,7 @@
   </object>
   <object class="GtkApplicationWindow" id="movie_window">
     <property name="can_focus">False</property>
-    <property name="default_width">1000</property>
+    <property name="default_width">1400</property>
     <property name="default_height">650</property>
     <child type="titlebar">
       <placeholder/>
@@ -630,6 +630,7 @@
                         <property name="left_attach">1</property>
                         <property name="top_attach">0</property>
                         <property name="width">2</property>
+                        <property name="height">2</property>
                       </packing>
                     </child>
                     <child>
@@ -641,6 +642,17 @@
                         <child>
                           <placeholder/>
                         </child>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbl_prev_frame">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Previous frame:</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>

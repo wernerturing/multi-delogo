@@ -58,6 +58,7 @@ FrameNavigator::FrameNavigator(BaseObjectType* cobject,
   configure_zoom_bar(builder);
 
   empty_pixbuf_ = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, false, 8, 1, 1);
+  prev_frame_view_->signal_size_allocate().connect(sigc::mem_fun(*this, &FrameNavigator::set_prev_frame_zoom));
 }
 
 
@@ -287,4 +288,12 @@ void FrameNavigator::set_zoom(gdouble zoom)
   lbl_zoom_->set_text(Glib::ustring::compose("%1%%", (int) (zoom_ * 100)));
 
   frame_view_->set_zoom(zoom_);
+}
+
+
+void FrameNavigator::set_prev_frame_zoom(Gtk::Allocation size)
+{
+  gdouble ratio = get_zoom_to_fit_ratio(frame_provider_->get_frame_width(), frame_provider_->get_frame_height(),
+                                       size.get_width(), size.get_height());
+  prev_frame_view_->set_zoom(ratio);
 }
