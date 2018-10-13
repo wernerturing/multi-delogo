@@ -22,8 +22,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: multi-delogo\n"
 "Report-Msgid-Bugs-To: werner.turing@protonmail.com\n"
-"POT-Creation-Date: 2018-07-25 10:50-0300\n"
-"PO-Revision-Date: 2018-07-25 10:54-0300\n"
+"POT-Creation-Date: 2018-10-13 17:52-0300\n"
+"PO-Revision-Date: 2018-10-13 17:54-0300\n"
 "Last-Translator: Werner Turing <werner.turing@protonmail.com>\n"
 "Language-Team: Werner Turing <werner.turing@protonmail.com>\n"
 "Language: pt_BR\n"
@@ -209,7 +209,7 @@ msgstr ""
 "converter o vídeo. Selecione esta opção se você quiser executar o FFmpeg "
 "manualmente com opções de conversão personalizadas"
 
-#: src/gui/EncodeWindow.ui:259 src/gui/MovieWindow.ui:182
+#: src/gui/EncodeWindow.ui:259 src/gui/MovieWindow.ui:197
 msgid "_Encode"
 msgstr "_Converter"
 
@@ -300,7 +300,7 @@ msgstr "Você realmente deseja parar a busca por logos?"
 msgid "_Stop"
 msgstr "_Parar"
 
-#: src/gui/FindLogosWindow.ui:8 src/gui/MovieWindow.ui:169
+#: src/gui/FindLogosWindow.ui:8 src/gui/MovieWindow.ui:184
 msgid "Find logos"
 msgstr "Procurar logos"
 
@@ -392,7 +392,7 @@ msgstr "Procurar _logos"
 msgid "_Close"
 msgstr "Fecha_r"
 
-#: src/gui/FrameNavigator.cpp:151
+#: src/gui/FrameNavigator.cpp:167
 msgid "Could not get frame"
 msgstr "Não foi possível obter o frame"
 
@@ -416,13 +416,13 @@ msgstr "_Abrir um projeto existente"
 msgid "FFmpeg log"
 msgstr "Log do FFmpeg"
 
-#: src/gui/MovieWindow.cpp:193
+#: src/gui/MovieWindow.cpp:199
 msgid ""
 "There are no filters. Please define at least one filter before encoding."
 msgstr ""
 "Não há filtros. Por favor defina pelo menos um filtro antes da conversão."
 
-#: src/gui/MovieWindow.cpp:199
+#: src/gui/MovieWindow.cpp:205
 msgid ""
 "Encoding cannot be done when there are 'review' filters. Please change them "
 "to some other filter (such as 'none'), or remove them."
@@ -442,39 +442,39 @@ msgstr "Ir para o filtro anterior (c)"
 msgid "Remove the selected filter"
 msgstr "Remover o filtro selecionado"
 
-#: src/gui/MovieWindow.ui:61
+#: src/gui/MovieWindow.ui:64
 msgid "Create a new project"
 msgstr "Criar um novo projeto"
 
-#: src/gui/MovieWindow.ui:62
+#: src/gui/MovieWindow.ui:65
 msgid "New"
 msgstr "Novo"
 
-#: src/gui/MovieWindow.ui:74
+#: src/gui/MovieWindow.ui:77
 msgid "Open an existing project"
 msgstr "Abrir um projeto existente"
 
-#: src/gui/MovieWindow.ui:75
+#: src/gui/MovieWindow.ui:78
 msgid "Open"
 msgstr "Abrir"
 
-#: src/gui/MovieWindow.ui:87
+#: src/gui/MovieWindow.ui:90
 msgid "Save current project"
 msgstr "Salvar projeto atual"
 
-#: src/gui/MovieWindow.ui:88
+#: src/gui/MovieWindow.ui:91
 msgid "Save"
 msgstr "Salvar"
 
-#: src/gui/MovieWindow.ui:110
+#: src/gui/MovieWindow.ui:113
 msgid "Undo"
 msgstr "Desfazer"
 
-#: src/gui/MovieWindow.ui:122
+#: src/gui/MovieWindow.ui:125
 msgid "Redo"
 msgstr "Refazer"
 
-#: src/gui/MovieWindow.ui:144
+#: src/gui/MovieWindow.ui:147
 msgid ""
 "Check to make the rectangle where the filter is applied to be displayed "
 "(scrolling the frame image if necessary) when moving between filters"
@@ -482,19 +482,23 @@ msgstr ""
 "Marque para fazer com que o retângulo onde o filtro é aplicado seja exibido "
 "(rolando a imagem do quadro se necessário) ao mover entre filtros"
 
-#: src/gui/MovieWindow.ui:145
+#: src/gui/MovieWindow.ui:148
 msgid "_Scroll to filter"
 msgstr "_Rolar para filtro"
 
-#: src/gui/MovieWindow.ui:168
+#: src/gui/MovieWindow.ui:161
+msgid "Show _previous frame"
+msgstr "_Exibir quadro anterior"
+
+#: src/gui/MovieWindow.ui:183
 msgid "Try to automatically find logos in the video"
 msgstr "Tentar procurar logos automaticamente no vídeo"
 
-#: src/gui/MovieWindow.ui:181
+#: src/gui/MovieWindow.ui:196
 msgid "Encode current project to a video with the filters applied"
 msgstr "Converter o projeto atual para um vídeo com os filtros aplicados"
 
-#: src/gui/MovieWindow.ui:292
+#: src/gui/MovieWindow.ui:307
 msgid "Filter:"
 msgstr "Filtro:"
 
@@ -544,6 +548,10 @@ msgstr "Aumentar tamanho da imagem"
 #: src/gui/MovieWindow.ui:605
 msgid "Zoom to original size"
 msgstr "Exibir a imagem no tamanho original"
+
+#: src/gui/MovieWindow.ui:667
+msgid "Previous frame:"
+msgstr "Quadro anterior:"
 
 #: src/gui/MultiDelogoApp.cpp:127
 msgid "Invalid data in file %1"
