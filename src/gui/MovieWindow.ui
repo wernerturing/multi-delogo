@@ -155,6 +155,18 @@
               </packing>
             </child>
             <child>
+              <object class="GtkToggleToolButton" id="chk_show_prev_frame">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Show _previous frame</property>
+                <property name="use_underline">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkSeparatorToolItem" id="sep3">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>

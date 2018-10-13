@@ -45,6 +45,8 @@ namespace mdl {
     int get_jump_size() const;
     void set_jump_size(int jump_size);
 
+    void set_show_prev_frame(bool show_prev);
+
     FrameView* get_frame_view();
 
     typedef sigc::signal<void, int> type_signal_frame_changed;
@@ -62,6 +64,7 @@ namespace mdl {
     Glib::RefPtr<Gdk::Pixbuf> prev_frame_pixbuf_;
     FrameView* prev_frame_view_;
     Glib::RefPtr<Gdk::Pixbuf> empty_pixbuf_;
+    Gtk::Label* lbl_prev_frame_;
 
     NumericEntry* txt_frame_number_;
     NumericEntry* txt_jump_size_;

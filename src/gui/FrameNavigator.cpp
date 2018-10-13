@@ -41,6 +41,7 @@ FrameNavigator::FrameNavigator(BaseObjectType* cobject,
   , number_of_frames_(frame_provider->get_number_of_frames())
   , frame_view_(nullptr)
   , prev_frame_view_(nullptr)
+  , lbl_prev_frame_(nullptr)
   , txt_frame_number_(nullptr)
   , txt_jump_size_(nullptr)
   , zoom_(1)
@@ -53,6 +54,12 @@ FrameNavigator::FrameNavigator(BaseObjectType* cobject,
                               frame_provider_->get_frame_width(), frame_provider_->get_frame_height());
   builder->get_widget_derived("prev_frame_view", prev_frame_view_,
                               frame_provider_->get_frame_width(), frame_provider_->get_frame_height(), false);
+  builder->get_widget("lbl_prev_frame", lbl_prev_frame_);
+
+  Glib::signal_idle().connect([&] {
+      set_show_prev_frame(false);
+      return false;
+    });
 
   configure_navigation_bar(builder);
   configure_zoom_bar(builder);
@@ -242,6 +249,13 @@ int FrameNavigator::get_jump_size() const
 void FrameNavigator::set_jump_size(int jump_size)
 {
   txt_jump_size_->set_value(jump_size);
+}
+
+
+void FrameNavigator::set_show_prev_frame(bool show_prev)
+{
+  lbl_prev_frame_->set_visible(show_prev);
+  prev_frame_view_->set_visible(show_prev);
 }
 
 
