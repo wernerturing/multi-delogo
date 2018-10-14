@@ -19,7 +19,7 @@ pkgdocdir = $(datadir)/doc/multi-delogo
 
 pkgdoc_DATA = COPYING
 
-EXTRA_DIST = README.md README.pt_BR.md
+EXTRA_DIST = NEWS.md README.md README.pt_BR.md
 
 
 if RUN_TESTS
