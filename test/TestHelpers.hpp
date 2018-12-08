@@ -46,6 +46,7 @@ namespace fg {
 
     return ostr;
   }
+}
 
 #else
 
