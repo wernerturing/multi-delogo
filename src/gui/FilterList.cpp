@@ -70,6 +70,11 @@ void FilterList::configure_buttons(const Glib::RefPtr<Gtk::Builder>& builder)
   builder->get_widget("btn_next_filter", btn_next_filter);
   btn_next_filter->signal_clicked().connect(
     sigc::mem_fun(signal_next_filter_, &type_signal_button::emit));
+
+  Gtk::Button* btn_shift = nullptr;
+  builder->get_widget("btn_shift", btn_shift);
+  btn_shift->signal_clicked().connect(
+    sigc::mem_fun(signal_shift_, &type_signal_button::emit));
 }
 
 
@@ -151,6 +156,12 @@ FilterList::type_signal_button FilterList::signal_next_filter()
 FilterList::type_signal_button FilterList::signal_remove_filter()
 {
   return signal_remove_filter_;
+}
+
+
+FilterList::type_signal_button FilterList::signal_shift()
+{
+  return signal_shift_;
 }
 
 

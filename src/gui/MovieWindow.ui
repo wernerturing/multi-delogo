@@ -250,6 +250,7 @@
                   <object class="GtkGrid" id="grid_filter_list_buttons">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="row_spacing">4</property>
                     <property name="column_spacing">4</property>
                     <property name="column_homogeneous">True</property>
                     <child>
@@ -286,6 +287,20 @@
                       <packing>
                         <property name="left_attach">2</property>
                         <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="btn_shift">
+                        <property name="label" translatable="yes">_Shift starting frames...</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="use_underline">True</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">1</property>
+                        <property name="width">3</property>
                       </packing>
                     </child>
                   </object>

@@ -61,6 +61,7 @@ namespace mdl {
     FrameNavigator* frame_navigator_;
     FrameView* frame_view_;
     int current_frame_;
+    int number_of_frames_;
 
     FilterPanelFactory panel_factory_;
     FilterPanel* current_filter_panel_;
@@ -105,6 +106,8 @@ namespace mdl {
     void insert_filter(int start_frame, fg::filter_ptr filter);
     void update_filter(int start_frame, fg::filter_ptr filter);
     void change_start_frame(int old_start_frame, int new_start_frame);
+
+    void on_shift();
 
 
     friend class AddFilterAction;

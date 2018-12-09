@@ -39,6 +39,7 @@ Coordinator::Coordinator(Gtk::Window& parent_window,
   , parent_window_(parent_window)
   , frame_navigator_(nullptr)
   , frame_view_(nullptr)
+  , number_of_frames_(number_of_frames)
   , panel_factory_(number_of_frames, frame_width, frame_height)
   , current_filter_panel_(nullptr)
   , current_filter_(nullptr)
@@ -68,6 +69,9 @@ void Coordinator::set_filter_list(FilterList* filter_list)
 
   filter_list_->signal_remove_filter().connect(
     sigc::mem_fun(*this, &Coordinator::on_remove_filter));
+
+  filter_list_->signal_shift().connect(
+    sigc::mem_fun(*this, &Coordinator::on_shift));
 
   on_filter_type_changed_ = filter_list_->signal_type_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_filter_type_changed));
@@ -409,4 +413,10 @@ void Coordinator::change_start_frame(int old_start_frame, int new_start_frame)
   set_start_frame_in_filter_panel(new_start_frame);
 
   current_filter_start_frame_ = new_start_frame;
+}
+
+
+void Coordinator::on_shift()
+{
+  printf("cur: %d, max: %d\n", current_frame_, number_of_frames_);
 }
