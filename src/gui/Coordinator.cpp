@@ -27,6 +27,7 @@
 #include "FrameNavigator.hpp"
 #include "FrameView.hpp"
 #include "FilterPanelFactory.hpp"
+#include "ShiftFramesWindow.hpp"
 #include "EditAction.hpp"
 #include "Utils.hpp"
 
@@ -418,5 +419,13 @@ void Coordinator::change_start_frame(int old_start_frame, int new_start_frame)
 
 void Coordinator::on_shift()
 {
-  printf("cur: %d, max: %d\n", current_frame_, number_of_frames_);
+  ShiftFramesWindow* window = ShiftFramesWindow::create(filter_model_, number_of_frames_, current_frame_);
+  window->set_transient_for(parent_window_);
+  if (window->run() == GTK_RESPONSE_ACCEPT) {
+    int start = window->get_initial_frame();
+    int end = window->get_final_frame();
+    int amount = window->get_amount();
+    printf("Shifting %d frames, from %d to %d\n", amount, start, end);
+  }
+  delete window;
 }
