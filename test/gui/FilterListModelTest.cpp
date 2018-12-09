@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <memory>
 #include <vector>
 
 #include <gtkmm.h>
@@ -364,6 +365,40 @@ BOOST_AUTO_TEST_CASE(should_allow_changing_the_filter)
   auto changed_row = *saved_iter;
   fg::filter_ptr changed_filter = changed_row[model->columns.filter];
   BOOST_CHECK_EQUAL(changed_filter, new_filter);
+}
+
+
+void test_start_frame_and_x(const Glib::RefPtr<mdl::FilterListModel>& model, int start_frame, int x)
+{
+  BOOST_TEST_CONTEXT("x = " << x) {
+    auto iter = model->get_by_start_frame(start_frame);
+    BOOST_REQUIRE(iter);
+    fg::filter_ptr filter = (*iter)[model->columns.filter];
+    std::shared_ptr<fg::DelogoFilter> delogo = std::dynamic_pointer_cast<fg::DelogoFilter>(filter);
+    BOOST_CHECK_EQUAL(delogo->x(), x);
+  }
+}
+
+BOOST_AUTO_TEST_CASE(should_shift_start_frames)
+{
+  fg::FilterList list;
+  for (int i = 0; i <= 9; ++i) {
+    list.insert(100*i + 1, fg::filter_ptr(new fg::DelogoFilter(i, i, i, i)));
+  }
+  Glib::RefPtr<mdl::FilterListModel> model = mdl::FilterListModel::create(list);
+
+  model->shift_frames(301, 601, -1);
+
+  BOOST_CHECK_EQUAL(model->children().size(), 10);
+  for (int i = 0; i <= 2; ++i) {
+    test_start_frame_and_x(model, 100*i + 1, i);
+  }
+  for (int i = 3; i <= 6; ++i) {
+    test_start_frame_and_x(model, 100*i, i);
+  }
+  for (int i = 7; i <= 9; ++i) {
+    test_start_frame_and_x(model, 100*i + 1, i);
+  }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

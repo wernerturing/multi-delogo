@@ -128,6 +128,51 @@ void FilterListModel::remove(const iterator& iter)
 }
 
 
+void FilterListModel::shift_frames(int start, int end, int amount)
+{
+  iterator iter;
+  if (amount > 0) {
+    iter = get_for_frame(end);
+  } else {
+    iter = get_for_frame(start);
+    if (!iter) {
+      iter = children()[0];
+    }
+
+    if (iter && (*iter)[columns.start_frame] < start) {
+      ++iter;
+    }
+  }
+
+  if (!iter) {
+    return;
+  }
+
+  auto path = get_path(iter);
+  int iter_start_frame = (*iter)[columns.start_frame];
+  while (true) {
+    (*iter)[columns.start_frame] = iter_start_frame + amount;
+
+    if (amount > 0) {
+      if (!path.prev()) {
+        break;
+      }
+    } else {
+      path.next();
+    }
+    iter = get_iter(path);
+    if (!iter) {
+      break;
+    }
+
+    iter_start_frame = (*iter)[columns.start_frame];
+    if (iter_start_frame < start || iter_start_frame > end) {
+      break;
+    }
+  }
+}
+
+
 Gtk::TreeModelFlags FilterListModel::get_flags_vfunc() const
 {
   return Gtk::TREE_MODEL_LIST_ONLY;

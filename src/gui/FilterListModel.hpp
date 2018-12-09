@@ -56,6 +56,8 @@ namespace mdl {
     iterator insert(int start_frame, fg::filter_ptr filter);
     void remove(const iterator& iter);
 
+    void shift_frames(int start, int end, int amount);
+
     static FilterListColumns columns;
 
   protected:
