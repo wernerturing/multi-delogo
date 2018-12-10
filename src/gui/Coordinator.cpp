@@ -421,11 +421,20 @@ void Coordinator::on_shift()
 {
   ShiftFramesWindow* window = ShiftFramesWindow::create(filter_model_, number_of_frames_, current_frame_);
   window->set_transient_for(parent_window_);
+
   if (window->run() == GTK_RESPONSE_ACCEPT) {
     int start = window->get_initial_frame();
     int end = window->get_final_frame();
     int amount = window->get_amount();
-    printf("Shifting %d frames, from %d to %d\n", amount, start, end);
+    edit_action_ptr shift_action = edit_action_ptr(new ShiftAction(start, end, amount));
+    undo_manager_.execute_action(shift_action);
   }
+
   delete window;
+}
+
+
+void Coordinator::shift(int start, int end, int amount)
+{
+  filter_model_->shift_frames(start, end, amount);
 }

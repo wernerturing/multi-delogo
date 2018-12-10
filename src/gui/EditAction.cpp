@@ -142,3 +142,30 @@ std::string ChangeStartFrameAction::get_description() const
 {
   return Glib::ustring::compose(_("Change start frame from %1 to %2"), old_start_frame_, new_start_frame_);
 }
+
+
+ShiftAction::ShiftAction(int start, int end, int amount)
+  : start_(start)
+  , end_(end)
+  , amount_(amount)
+{
+}
+
+
+void ShiftAction::execute(Coordinator& coordinator)
+{
+  coordinator.shift(start_, end_, amount_);
+}
+
+
+void ShiftAction::undo(Coordinator& coordinator)
+{
+  // TODO
+}
+
+
+std::string ShiftAction::get_description() const
+{
+  return Glib::ustring::compose(_("Shift starting frames by %1 from %2 to %3"),
+                                amount_, start_, end_);
+}

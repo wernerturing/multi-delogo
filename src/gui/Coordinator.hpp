@@ -108,12 +108,14 @@ namespace mdl {
     void change_start_frame(int old_start_frame, int new_start_frame);
 
     void on_shift();
+    void shift(int start, int end, int amount);
 
 
     friend class AddFilterAction;
     friend class UpdateFilterAction;
     friend class RemoveFilterAction;
     friend class ChangeStartFrameAction;
+    friend class ShiftAction;
   };
 }
 

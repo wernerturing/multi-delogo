@@ -113,6 +113,21 @@ namespace mdl {
     int new_start_frame_;
     fg::filter_ptr previous_filter_;
   };
+
+
+  class ShiftAction : public EditAction
+  {
+  public:
+    ShiftAction(int start, int end, int amount);
+    void execute(Coordinator& coordinator) override;
+    void undo(Coordinator& coordinator) override;
+    std::string get_description() const override;
+
+  private:
+    int start_;
+    int end_;
+    int amount_;
+  };
 }
 
 #endif // MDL_EDIT_ACTION_H
