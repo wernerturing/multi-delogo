@@ -1,3 +1,7 @@
+## 2.3.0
+
+* Added a function to shift the starting frames of a range of filters.
+
 ## 2.2.0
 
 * It's now possible to display two frames (the current frame and the

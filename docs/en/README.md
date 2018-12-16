@@ -126,7 +126,7 @@ To edit an existing filter, you have to be on that filter's start frame. You can
 
 If you are not at a filter's start frame and make any change to the filter, a new filter is added.
 
-You can change the starting frame of a filter by using the *start frame* field.
+You can change the starting frame of a filter by using the *start frame* field. To change the starting frame of a range of filters, press the **Shift starting frames** button. In the window that opens, enter the range in which you want to shift the filters' starting frames, and the amount to shift. All filters in that range will have their starting frames adjusted.
 
 To remove a filter, select it and press the button with the minus sign below the filter list.
 

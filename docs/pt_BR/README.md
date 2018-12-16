@@ -126,7 +126,7 @@ Para editar um filtro existente, você deverá estar no quadro inicial daquele f
 
 Se você não estiver no quadro inicial e fizer alguma alteração, um novo filtro é adicionado.
 
-É possível alterar o quadro inicial de um filtro usando o campo *quadro inicial*.
+É possível alterar o quadro inicial de um filtro usando o campo *quadro inicial*. Para alterar o quadro inicial de todos os filtros em um intervalo, aperte o botão **Ajustar quadros iniciais**. Na janela que abrir, selecione o intervalo no qual quer ajustar os quadros iniciais, e quantidade de quadros a adicionar ou subtrair. Todos os filtros naquele intervalo terão seus quadros iniciais ajustados com o valor informado.
 
 Para remover um filtro, selecione-o e aperte o botão com o sinal de menos abaixo da lista de filtros.
 
