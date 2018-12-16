@@ -58,6 +58,7 @@ namespace mdl {
     type_signal_button signal_previous_filter();
     type_signal_button signal_next_filter();
     type_signal_button signal_remove_filter();
+    type_signal_button signal_shift();
 
     typedef FilterType::type_signal_type_changed type_signal_type_changed;
     type_signal_type_changed signal_type_changed();
@@ -77,6 +78,7 @@ namespace mdl {
     type_signal_button signal_previous_filter_;
     type_signal_button signal_next_filter_;
     type_signal_button signal_remove_filter_;
+    type_signal_button signal_shift_;
 
     type_signal_type_changed signal_type_changed_;
 

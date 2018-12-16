@@ -16,6 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <utility>
+
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
 
@@ -27,6 +29,7 @@
 #include "FrameNavigator.hpp"
 #include "FrameView.hpp"
 #include "FilterPanelFactory.hpp"
+#include "ShiftFramesWindow.hpp"
 #include "EditAction.hpp"
 #include "Utils.hpp"
 
@@ -39,6 +42,7 @@ Coordinator::Coordinator(Gtk::Window& parent_window,
   , parent_window_(parent_window)
   , frame_navigator_(nullptr)
   , frame_view_(nullptr)
+  , number_of_frames_(number_of_frames)
   , panel_factory_(number_of_frames, frame_width, frame_height)
   , current_filter_panel_(nullptr)
   , current_filter_(nullptr)
@@ -68,6 +72,9 @@ void Coordinator::set_filter_list(FilterList* filter_list)
 
   filter_list_->signal_remove_filter().connect(
     sigc::mem_fun(*this, &Coordinator::on_remove_filter));
+
+  filter_list_->signal_shift().connect(
+    sigc::mem_fun(*this, &Coordinator::on_shift));
 
   on_filter_type_changed_ = filter_list_->signal_type_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_filter_type_changed));
@@ -409,4 +416,27 @@ void Coordinator::change_start_frame(int old_start_frame, int new_start_frame)
   set_start_frame_in_filter_panel(new_start_frame);
 
   current_filter_start_frame_ = new_start_frame;
+}
+
+
+void Coordinator::on_shift()
+{
+  ShiftFramesWindow* window = ShiftFramesWindow::create(filter_model_, number_of_frames_, current_frame_);
+  window->set_transient_for(parent_window_);
+
+  if (window->run() == GTK_RESPONSE_ACCEPT) {
+    int start = window->get_initial_frame();
+    int end = window->get_final_frame();
+    int amount = window->get_amount();
+    edit_action_ptr shift_action = edit_action_ptr(new ShiftAction(start, end, amount));
+    undo_manager_.execute_action(shift_action);
+  }
+
+  delete window;
+}
+
+
+std::pair<int, int> Coordinator::shift(int start, int end, int amount)
+{
+  return filter_model_->shift_frames(start, end, amount);
 }

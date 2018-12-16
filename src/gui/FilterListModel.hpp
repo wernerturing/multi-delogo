@@ -19,6 +19,7 @@
 #ifndef MDL_FILTER_LIST_MODEL_H
 #define MDL_FILTER_LIST_MODEL_H
 
+#include <utility>
 #include <exception>
 
 #include <glibmm/object.h>
@@ -55,6 +56,8 @@ namespace mdl {
 
     iterator insert(int start_frame, fg::filter_ptr filter);
     void remove(const iterator& iter);
+
+    std::pair<int, int> shift_frames(int start, int end, int amount);
 
     static FilterListColumns columns;
 

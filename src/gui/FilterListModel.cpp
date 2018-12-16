@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <utility>
 #include <stdexcept>
 
 #include <glibmm/objectbase.h>
@@ -125,6 +126,61 @@ void FilterListModel::remove(const iterator& iter)
   filter_list_.remove(filter->first);
   ++stamp_;
   row_deleted(path);
+}
+
+
+std::pair<int, int> FilterListModel::shift_frames(int start, int end, int amount)
+{
+  iterator iter;
+  if (amount > 0) {
+    iter = get_for_frame(end);
+  } else {
+    iter = get_for_frame(start);
+    if (!iter) {
+      iter = children()[0];
+    }
+
+    if (iter && (*iter)[columns.start_frame] < start) {
+      ++iter;
+    }
+  }
+
+  if (!iter) {
+    return std::make_pair(0, 0);
+  }
+
+  auto path = get_path(iter);
+  int first_frame = (*iter)[columns.start_frame];
+  int last_frame;
+
+  int iter_start_frame = first_frame;
+  while (true) {
+    last_frame = iter_start_frame;
+    (*iter)[columns.start_frame] = iter_start_frame + amount;
+
+    if (amount > 0) {
+      if (!path.prev()) {
+        break;
+      }
+    } else {
+      path.next();
+    }
+    iter = get_iter(path);
+    if (!iter) {
+      break;
+    }
+
+    iter_start_frame = (*iter)[columns.start_frame];
+    if (iter_start_frame < start || iter_start_frame > end) {
+      break;
+    }
+  }
+
+  if (amount > 0) {
+    return std::make_pair(last_frame, first_frame);
+  } else {
+    return std::make_pair(first_frame, last_frame);
+  }
 }
 
 

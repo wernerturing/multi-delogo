@@ -16,6 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <utility>
+
 #include <glibmm.h>
 #include <glibmm/i18n.h>
 
@@ -141,4 +143,33 @@ void ChangeStartFrameAction::undo(Coordinator& coordinator)
 std::string ChangeStartFrameAction::get_description() const
 {
   return Glib::ustring::compose(_("Change start frame from %1 to %2"), old_start_frame_, new_start_frame_);
+}
+
+
+ShiftAction::ShiftAction(int start, int end, int amount)
+  : start_(start)
+  , end_(end)
+  , amount_(amount)
+{
+}
+
+
+void ShiftAction::execute(Coordinator& coordinator)
+{
+  std::pair<int, int> frames = coordinator.shift(start_, end_, amount_);
+  actual_start_ = frames.first;
+  actual_end_ = frames.second;
+}
+
+
+void ShiftAction::undo(Coordinator& coordinator)
+{
+  coordinator.shift(actual_start_ + amount_, actual_end_ + amount_, -amount_);
+}
+
+
+std::string ShiftAction::get_description() const
+{
+  return Glib::ustring::compose(_("Shift starting frames by %1 from %2 to %3"),
+                                amount_, start_, end_);
 }

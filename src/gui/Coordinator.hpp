@@ -19,6 +19,8 @@
 #ifndef MDL_COORDINATOR_H
 #define MDL_COORDINATOR_H
 
+#include <utility>
+
 #include <gtkmm.h>
 
 #include "FilterListModel.hpp"
@@ -61,6 +63,7 @@ namespace mdl {
     FrameNavigator* frame_navigator_;
     FrameView* frame_view_;
     int current_frame_;
+    int number_of_frames_;
 
     FilterPanelFactory panel_factory_;
     FilterPanel* current_filter_panel_;
@@ -106,11 +109,15 @@ namespace mdl {
     void update_filter(int start_frame, fg::filter_ptr filter);
     void change_start_frame(int old_start_frame, int new_start_frame);
 
+    void on_shift();
+    std::pair<int, int> shift(int start, int end, int amount);
+
 
     friend class AddFilterAction;
     friend class UpdateFilterAction;
     friend class RemoveFilterAction;
     friend class ChangeStartFrameAction;
+    friend class ShiftAction;
   };
 }
 
