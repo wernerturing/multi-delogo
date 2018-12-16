@@ -16,6 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <utility>
+
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
 
@@ -434,7 +436,7 @@ void Coordinator::on_shift()
 }
 
 
-void Coordinator::shift(int start, int end, int amount)
+std::pair<int, int> Coordinator::shift(int start, int end, int amount)
 {
-  filter_model_->shift_frames(start, end, amount);
+  return filter_model_->shift_frames(start, end, amount);
 }

@@ -19,6 +19,8 @@
 #ifndef MDL_COORDINATOR_H
 #define MDL_COORDINATOR_H
 
+#include <utility>
+
 #include <gtkmm.h>
 
 #include "FilterListModel.hpp"
@@ -108,7 +110,7 @@ namespace mdl {
     void change_start_frame(int old_start_frame, int new_start_frame);
 
     void on_shift();
-    void shift(int start, int end, int amount);
+    std::pair<int, int> shift(int start, int end, int amount);
 
 
     friend class AddFilterAction;

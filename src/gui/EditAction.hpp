@@ -127,6 +127,8 @@ namespace mdl {
     int start_;
     int end_;
     int amount_;
+    int actual_start_;
+    int actual_end_;
   };
 }
 

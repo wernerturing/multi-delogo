@@ -379,7 +379,7 @@ void test_start_frame_and_x(const Glib::RefPtr<mdl::FilterListModel>& model, int
   }
 }
 
-BOOST_AUTO_TEST_CASE(should_shift_start_frames)
+BOOST_AUTO_TEST_CASE(should_shift_start_frames_backwards)
 {
   fg::FilterList list;
   for (int i = 0; i <= 9; ++i) {
@@ -387,7 +387,10 @@ BOOST_AUTO_TEST_CASE(should_shift_start_frames)
   }
   Glib::RefPtr<mdl::FilterListModel> model = mdl::FilterListModel::create(list);
 
-  model->shift_frames(301, 601, -1);
+  std::pair<int, int> frames = model->shift_frames(300, 611, -1);
+
+  BOOST_CHECK_EQUAL(frames.first, 301);
+  BOOST_CHECK_EQUAL(frames.second, 601);
 
   BOOST_CHECK_EQUAL(model->children().size(), 10);
   for (int i = 0; i <= 2; ++i) {
@@ -398,6 +401,28 @@ BOOST_AUTO_TEST_CASE(should_shift_start_frames)
   }
   for (int i = 7; i <= 9; ++i) {
     test_start_frame_and_x(model, 100*i + 1, i);
+  }
+}
+
+BOOST_AUTO_TEST_CASE(should_shift_start_frames_forwards)
+{
+  fg::FilterList list;
+  for (int i = 0; i <= 9; ++i) {
+    list.insert(100*i + 1, fg::filter_ptr(new fg::DelogoFilter(i, i, i, i)));
+  }
+  Glib::RefPtr<mdl::FilterListModel> model = mdl::FilterListModel::create(list);
+
+  std::pair<int, int> frames = model->shift_frames(700, 1100, 1);
+
+  BOOST_CHECK_EQUAL(frames.first, 701);
+  BOOST_CHECK_EQUAL(frames.second, 901);
+
+  BOOST_CHECK_EQUAL(model->children().size(), 10);
+  for (int i = 0; i <= 6; ++i) {
+    test_start_frame_and_x(model, 100*i + 1, i);
+  }
+  for (int i = 7; i <= 9; ++i) {
+    test_start_frame_and_x(model, 100*i + 2, i);
   }
 }
 

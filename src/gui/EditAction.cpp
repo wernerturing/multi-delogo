@@ -16,6 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <utility>
+
 #include <glibmm.h>
 #include <glibmm/i18n.h>
 
@@ -154,13 +156,15 @@ ShiftAction::ShiftAction(int start, int end, int amount)
 
 void ShiftAction::execute(Coordinator& coordinator)
 {
-  coordinator.shift(start_, end_, amount_);
+  std::pair<int, int> frames = coordinator.shift(start_, end_, amount_);
+  actual_start_ = frames.first;
+  actual_end_ = frames.second;
 }
 
 
 void ShiftAction::undo(Coordinator& coordinator)
 {
-  // TODO
+  coordinator.shift(actual_start_ + amount_, actual_end_ + amount_, -amount_);
 }
 
 
