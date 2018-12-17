@@ -438,5 +438,11 @@ void Coordinator::on_shift()
 
 std::pair<int, int> Coordinator::shift(int start, int end, int amount)
 {
-  return filter_model_->shift_frames(start, end, amount);
+  on_filter_selected_.block();
+  std::pair<int, int> r = filter_model_->shift_frames(start, end, amount);
+  on_filter_selected_.block(false);
+
+  on_frame_changed(current_frame_);
+
+  return r;
 }
