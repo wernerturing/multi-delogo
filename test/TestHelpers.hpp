@@ -42,6 +42,11 @@ namespace fg {
 
     case FilterType::CUT:
       ostr << "CUT";
+      break;
+
+    case FilterType::REVIEW:
+      ostr << "REVIEW";
+      break;
     }
 
     return ostr;
