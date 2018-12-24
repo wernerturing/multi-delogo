@@ -27,6 +27,7 @@
 #  include <windows.h>
 #endif
 
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/join.hpp>
 
 #include <glibmm.h>
@@ -155,6 +156,10 @@ std::vector<std::string> FFmpegExecutor::get_ffmpeg_cmd_line(const std::string& 
   std::vector<std::string> audio_opts = get_audio_opts();
   cmd_line.insert(cmd_line.end(), audio_opts.begin(), audio_opts.end());
 
+  if (is_mp4_output()) {
+    cmd_line.push_back("-movflags"); cmd_line.push_back("+faststart");
+  }
+
   cmd_line.push_back(output_file_);
 
   return cmd_line;
@@ -175,6 +180,12 @@ std::vector<std::string> FFmpegExecutor::get_audio_opts()
   }
 
   return audio_opts;
+}
+
+
+bool FFmpegExecutor::is_mp4_output() const
+{
+  return boost::algorithm::ends_with(output_file_, ".mp4");
 }
 
 

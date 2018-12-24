@@ -45,7 +45,7 @@ public:
   {
     ffmpeg.set_generator(fg::RegularScriptGenerator::create(filters, 25));
     ffmpeg.set_input_file("input.mp4");
-    ffmpeg.set_output_file("output.mp4");
+    ffmpeg.set_output_file("output.mkv");
   }
 
   void add_filter(int start_frame, fg::filter_ptr filter)
@@ -87,7 +87,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264_copy_audio)
     "-filter_complex_script", "filters.ffm",
     "-map", "[out_v]", "-c:v", "libx264", "-crf", "20",
     "-map", "0:a?", "-c:a", "copy",
-    "output.mp4"};
+    "output.mkv"};
   BOOST_TEST(get_ffmpeg_cmd_line() == expected,
              boost::test_tools::per_element());
 }
@@ -105,7 +105,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h265_copy_audio)
     "-filter_complex_script", "filters.ffm",
     "-map", "[out_v]", "-c:v", "libx265", "-crf", "25",
     "-map", "0:a?", "-c:a", "copy",
-    "output.mp4"};
+    "output.mkv"};
   BOOST_TEST(get_ffmpeg_cmd_line() == expected,
              boost::test_tools::per_element());
 }
@@ -124,6 +124,26 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264_reencode_audio)
     "-filter_complex_script", "filters.ffm",
     "-map", "[out_v]", "-c:v", "libx264", "-crf", "20",
     "-map", "[out_a]", "-c:a", "aac", "-b:a", "192k",
+    "output.mkv"};
+  BOOST_TEST(get_ffmpeg_cmd_line() == expected,
+             boost::test_tools::per_element());
+}
+
+
+BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_mp4_output)
+{
+  ffmpeg.set_codec(FFmpegExecutor::Codec::H264);
+  ffmpeg.set_quality(20);
+  ffmpeg.set_output_file("output.mp4");
+
+  std::vector<std::string> expected{
+    "ffmpeg",
+    "-y", "-v", "error", "-stats",
+    "-i", "input.mp4",
+    "-filter_complex_script", "filters.ffm",
+    "-map", "[out_v]", "-c:v", "libx264", "-crf", "20",
+    "-map", "0:a?", "-c:a", "copy",
+    "-movflags", "+faststart",
     "output.mp4"};
   BOOST_TEST(get_ffmpeg_cmd_line() == expected,
              boost::test_tools::per_element());

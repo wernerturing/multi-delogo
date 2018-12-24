@@ -90,6 +90,7 @@ namespace mdl {
 
 
     std::vector<std::string> get_ffmpeg_cmd_line(const std::string& filter_file);
+    bool is_mp4_output() const;
     std::vector<std::string> get_audio_opts();
 
     void start_ffmpeg(const std::vector<std::string>& cmd_line);
