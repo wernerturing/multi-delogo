@@ -110,7 +110,7 @@ BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
   const int filter_length = 500;
 
   FilterList list;
-  for (int i = 0; i < iters; ++i) {
+  for (int i = 1; i < iters; ++i) {
     list.insert(get_start_frame_list(i, filter_length),
                 filter_ptr(new DelogoFilter(i, i, i, i)));
   }
@@ -123,7 +123,7 @@ BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
   std::getline(result, line);
   BOOST_TEST(line == "[0:v]");
 
-  for (int i = 0; i < iters - 1; ++i) {
+  for (int i = 1; i < iters - 1; ++i) {
     std::getline(result, line);
     BOOST_TEST_CONTEXT("line " << i << ": " << line) {
       verify(line, i, filter_length);

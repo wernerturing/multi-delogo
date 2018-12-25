@@ -85,6 +85,7 @@ namespace fg {
                                int& x, int& y, int& width, int& height);
     std::string rectangle_save_str() const;
     std::string rectangle_ffmpeg_str() const;
+    std::string rectangle_ffmpeg_str(int x, int y, int width, int height) const;
 
   private:
     int x_;

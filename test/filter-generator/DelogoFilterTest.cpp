@@ -107,3 +107,23 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_str)
 
   BOOST_CHECK_EQUAL(ffmpeg, "delogo=<BETWEEN>:x=50:y=60:w=150:h=30");
 }
+
+
+BOOST_AUTO_TEST_CASE(delogo_needs_a_one_pixel_margin_from_the_borders_tl)
+{
+  fg::DelogoFilter filter(0, 0, 100, 20);
+
+  std::string ffmpeg(filter.ffmpeg_str("<BETWEEN>", 1280, 720));
+
+  BOOST_CHECK_EQUAL(ffmpeg, "delogo=<BETWEEN>:x=1:y=1:w=100:h=20");
+}
+
+
+BOOST_AUTO_TEST_CASE(delogo_needs_a_one_pixel_margin_from_the_borders_br)
+{
+  fg::DelogoFilter filter(1835, 1067, 85, 13);
+
+  std::string ffmpeg(filter.ffmpeg_str("<BETWEEN>", 1920, 1080));
+
+  BOOST_CHECK_EQUAL(ffmpeg, "delogo=<BETWEEN>:x=1835:y=1067:w=84:h=12");
+}
