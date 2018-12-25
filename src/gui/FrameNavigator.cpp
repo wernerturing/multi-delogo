@@ -140,6 +140,18 @@ int FrameNavigator::get_number_of_frames() const
 }
 
 
+int FrameNavigator::get_frame_width() const
+{
+  return frame_provider_->get_frame_width();
+}
+
+
+int FrameNavigator::get_frame_height() const
+{
+  return frame_provider_->get_frame_height();
+}
+
+
 double FrameNavigator::get_fps() const
 {
   return frame_provider_->get_fps();

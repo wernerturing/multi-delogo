@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_str)
 {
   fg::NullFilter filter;
 
-  std::string ffmpeg(filter.ffmpeg_str("<BETWEEN>"));
+  std::string ffmpeg(filter.ffmpeg_str("<BETWEEN>", 640, 480));
 
   BOOST_CHECK_EQUAL(ffmpeg, "");
 }

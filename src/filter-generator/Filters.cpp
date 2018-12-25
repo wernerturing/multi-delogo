@@ -19,6 +19,7 @@
 #include <memory>
 #include <string>
 #include <stdexcept>
+#include <algorithm>
 
 #include <boost/algorithm/string.hpp>
 
@@ -67,7 +68,8 @@ std::string NullFilter::save_str() const
 }
 
 
-std::string NullFilter::ffmpeg_str(const std::string& between_expr) const
+std::string NullFilter::ffmpeg_str(const std::string& between_expr,
+                                   int frame_width, int frame_height) const
 {
   return "";
 }
@@ -136,11 +138,17 @@ std::string RectangularFilter::rectangle_save_str() const
 
 std::string RectangularFilter::rectangle_ffmpeg_str() const
 {
+  return rectangle_ffmpeg_str(x_, y_, width_, height_);
+}
+
+
+std::string RectangularFilter::rectangle_ffmpeg_str(int x, int y, int width, int height) const
+{
   std::string buf;
-  buf.append("x=").append(std::to_string(x_)).push_back(':');
-  buf.append("y=").append(std::to_string(y_)).push_back(':');
-  buf.append("w=").append(std::to_string(width_)).push_back(':');
-  buf.append("h=").append(std::to_string(height_));
+  buf.append("x=").append(std::to_string(x)).push_back(':');
+  buf.append("y=").append(std::to_string(y)).push_back(':');
+  buf.append("w=").append(std::to_string(width)).push_back(':');
+  buf.append("h=").append(std::to_string(height));
   return buf;
 }
 
@@ -180,11 +188,17 @@ std::string DelogoFilter::save_str() const
 }
 
 
-std::string DelogoFilter::ffmpeg_str(const std::string& between_expr) const
+std::string DelogoFilter::ffmpeg_str(const std::string& between_expr,
+                                     int frame_width, int frame_height) const
 {
+  int adj_x      = std::max(x(), 1);
+  int adj_y      = std::max(y(), 1);
+  int adj_width  = std::min(width(),  frame_width  - adj_x - 1);
+  int adj_height = std::min(height(), frame_height - adj_y - 1);
+
   std::string buf("delogo=");
   buf.append(between_expr).push_back(':');
-  buf.append(rectangle_ffmpeg_str());
+  buf.append(rectangle_ffmpeg_str(adj_x, adj_y, adj_width, adj_height));
   return buf;
 }
 
@@ -224,7 +238,8 @@ std::string DrawboxFilter::save_str() const
 }
 
 
-std::string DrawboxFilter::ffmpeg_str(const std::string& between_expr) const
+std::string DrawboxFilter::ffmpeg_str(const std::string& between_expr,
+                                      int frame_width, int frame_height) const
 {
   std::string buf("drawbox=");
   buf.append(between_expr).push_back(':');
@@ -268,7 +283,8 @@ std::string CutFilter::save_str() const
 }
 
 
-std::string CutFilter::ffmpeg_str(const std::string& between_expr) const
+std::string CutFilter::ffmpeg_str(const std::string& between_expr,
+                                  int frame_width, int frame_height) const
 {
   return "";
 }
@@ -302,7 +318,8 @@ std::string ReviewFilter::save_str() const
 }
 
 
-std::string ReviewFilter::ffmpeg_str(const std::string& between_expr) const
+std::string ReviewFilter::ffmpeg_str(const std::string& between_expr,
+                                     int frame_width, int frame_height) const
 {
   return "";
 }
