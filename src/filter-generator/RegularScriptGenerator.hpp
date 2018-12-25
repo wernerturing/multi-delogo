@@ -34,10 +34,12 @@ namespace fg {
   class RegularScriptGenerator : public ScriptGenerator
   {
   protected:
-    RegularScriptGenerator(const FilterList& filter_list, double fps);
+    RegularScriptGenerator(const FilterList& filter_list,
+                           int frame_width, int frame_height, double fps);
 
   public:
-    static std::shared_ptr<RegularScriptGenerator> create(const FilterList& filter_list, double fps);
+    static std::shared_ptr<RegularScriptGenerator> create(const FilterList& filter_list,
+                                                          int frame_width, int frame_height, double fps);
 
     bool affects_audio() const override;
     void generate_ffmpeg_script(std::ostream& out) const override;
@@ -45,6 +47,8 @@ namespace fg {
 
   protected:
     const FilterList& filter_list_;
+    int frame_width_;
+    int frame_height_;
     std::string fps_;
     mutable int first_filter_;
 

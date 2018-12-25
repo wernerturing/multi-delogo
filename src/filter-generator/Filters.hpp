@@ -47,7 +47,8 @@ namespace fg {
     virtual bool affects_audio() const;
 
     virtual std::string save_str() const = 0;
-    virtual std::string ffmpeg_str(const std::string& between_expr) const = 0;
+    virtual std::string ffmpeg_str(const std::string& between_expr,
+                                   int frame_width, int frame_height) const = 0;
   };
 
 
@@ -63,7 +64,8 @@ namespace fg {
     std::string name() const override;
 
     std::string save_str() const override;
-    std::string ffmpeg_str(const std::string& between_expr) const override;
+    std::string ffmpeg_str(const std::string& between_expr,
+                           int frame_width, int frame_height) const override;
   };
 
 
@@ -103,7 +105,8 @@ namespace fg {
     std::string name() const override;
 
     std::string save_str() const override;
-    std::string ffmpeg_str(const std::string& between_expr) const override;
+    std::string ffmpeg_str(const std::string& between_expr,
+                           int frame_width, int frame_height) const override;
   };
 
 
@@ -118,7 +121,8 @@ namespace fg {
     std::string name() const override;
 
     std::string save_str() const override;
-    std::string ffmpeg_str(const std::string& between_expr) const override;
+    std::string ffmpeg_str(const std::string& between_expr,
+                           int frame_width, int frame_height) const override;
   };
 
 
@@ -133,7 +137,8 @@ namespace fg {
     bool affects_audio() const override;
 
     std::string save_str() const override;
-    std::string ffmpeg_str(const std::string& between_expr) const override;
+    std::string ffmpeg_str(const std::string& between_expr,
+                           int frame_width, int frame_height) const override;
   };
 
 
@@ -146,7 +151,8 @@ namespace fg {
     std::string name() const override;
 
     std::string save_str() const override;
-    std::string ffmpeg_str(const std::string& between_expr) const override;
+    std::string ffmpeg_str(const std::string& between_expr,
+                           int frame_width, int frame_height) const override;
   };
 }
 

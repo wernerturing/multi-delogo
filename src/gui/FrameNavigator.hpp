@@ -37,6 +37,8 @@ namespace mdl {
                    const Glib::RefPtr<FrameProvider>& frame_provider);
 
     int get_number_of_frames() const;
+    int get_frame_width() const;
+    int get_frame_height() const;
     double get_fps() const;
     void single_step_frame(int direction);
     void jump_step_frame(int direction);

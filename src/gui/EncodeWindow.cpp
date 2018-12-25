@@ -36,12 +36,14 @@
 using namespace mdl;
 
 
-EncodeWindow* EncodeWindow::create(std::unique_ptr<fg::FilterData> filter_data, int total_frames, double fps)
+EncodeWindow* EncodeWindow::create(std::unique_ptr<fg::FilterData> filter_data,
+                                   int frame_width, int frame_height,
+                                   int total_frames, double fps)
 {
   auto builder = Gtk::Builder::create_from_resource("/wt/multi-delogo/EncodeWindow.ui");
   EncodeWindow* window = nullptr;
-  builder->get_widget_derived("encode_window", window,
-                              std::move(filter_data), total_frames, fps);
+  builder->get_widget_derived("encode_window", window, std::move(filter_data),
+                              frame_width, frame_height, total_frames, fps);
   return window;
 }
 
@@ -49,9 +51,12 @@ EncodeWindow* EncodeWindow::create(std::unique_ptr<fg::FilterData> filter_data, 
 EncodeWindow::EncodeWindow(BaseObjectType* cobject,
                            const Glib::RefPtr<Gtk::Builder>& builder,
                            std::unique_ptr<fg::FilterData> filter_data,
+                           int frame_width, int frame_height,
                            int total_frames, double fps)
   : MultiDelogoAppWindow(cobject)
   , filter_data_(std::move(filter_data))
+  , frame_width_(frame_width)
+  , frame_height_(frame_height)
   , fps_(fps)
 
   , txt_file_(nullptr)
@@ -250,9 +255,9 @@ EncodeWindow::Generator EncodeWindow::get_generator()
 {
   Generator g;
   if (chk_fuzzy_->get_active()) {
-    g = fg::FuzzyScriptGenerator::create(filter_data_->filter_list(), fps_, txt_fuzzyness_->get_value());
-  }  else {
-    g = fg::RegularScriptGenerator::create(filter_data_->filter_list(), fps_);
+    g = fg::FuzzyScriptGenerator::create(filter_data_->filter_list(), frame_width_, frame_height_, fps_, txt_fuzzyness_->get_value());
+  } else {
+    g = fg::RegularScriptGenerator::create(filter_data_->filter_list(), frame_width_, frame_height_, fps_);
   }
   return g;
 }

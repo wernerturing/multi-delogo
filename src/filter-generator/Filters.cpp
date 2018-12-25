@@ -67,7 +67,8 @@ std::string NullFilter::save_str() const
 }
 
 
-std::string NullFilter::ffmpeg_str(const std::string& between_expr) const
+std::string NullFilter::ffmpeg_str(const std::string& between_expr,
+                                   int frame_width, int frame_height) const
 {
   return "";
 }
@@ -180,7 +181,8 @@ std::string DelogoFilter::save_str() const
 }
 
 
-std::string DelogoFilter::ffmpeg_str(const std::string& between_expr) const
+std::string DelogoFilter::ffmpeg_str(const std::string& between_expr,
+                                     int frame_width, int frame_height) const
 {
   std::string buf("delogo=");
   buf.append(between_expr).push_back(':');
@@ -224,7 +226,8 @@ std::string DrawboxFilter::save_str() const
 }
 
 
-std::string DrawboxFilter::ffmpeg_str(const std::string& between_expr) const
+std::string DrawboxFilter::ffmpeg_str(const std::string& between_expr,
+                                      int frame_width, int frame_height) const
 {
   std::string buf("drawbox=");
   buf.append(between_expr).push_back(':');
@@ -268,7 +271,8 @@ std::string CutFilter::save_str() const
 }
 
 
-std::string CutFilter::ffmpeg_str(const std::string& between_expr) const
+std::string CutFilter::ffmpeg_str(const std::string& between_expr,
+                                  int frame_width, int frame_height) const
 {
   return "";
 }
@@ -302,7 +306,8 @@ std::string ReviewFilter::save_str() const
 }
 
 
-std::string ReviewFilter::ffmpeg_str(const std::string& between_expr) const
+std::string ReviewFilter::ffmpeg_str(const std::string& between_expr,
+                                     int frame_width, int frame_height) const
 {
   return "";
 }

@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_str)
 {
   fg::DelogoFilter filter(50, 60, 150, 30);
 
-  std::string ffmpeg(filter.ffmpeg_str("<BETWEEN>"));
+  std::string ffmpeg(filter.ffmpeg_str("<BETWEEN>", 1280, 720));
 
   BOOST_CHECK_EQUAL(ffmpeg, "delogo=<BETWEEN>:x=50:y=60:w=150:h=30");
 }

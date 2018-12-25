@@ -114,7 +114,7 @@ BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
     list.insert(get_start_frame_list(i, filter_length),
                 filter_ptr(new DelogoFilter(i, i, i, i)));
   }
-  std::shared_ptr<ScriptGenerator> g = FuzzyScriptGenerator::create(list, 25, 2);
+  std::shared_ptr<ScriptGenerator> g = FuzzyScriptGenerator::create(list, 1920, 1080, 25, 2);
 
   std::stringstream result;
   g->generate_ffmpeg_script(result);
@@ -145,7 +145,7 @@ BOOST_AUTO_TEST_CASE(cut_positions_should_not_be_changed)
   list.insert(1, filter_ptr(new DelogoFilter(1, 1, 1, 1)));
   list.insert(501, filter_ptr(new CutFilter()));
   list.insert(1001, filter_ptr(new DelogoFilter(2, 2, 2, 2)));
-  std::shared_ptr<ScriptGenerator> g = FuzzyScriptGenerator::create(list, 25, 2);
+  std::shared_ptr<ScriptGenerator> g = FuzzyScriptGenerator::create(list, 1920, 1080, 25, 2);
 
   std::stringstream result;
   g->generate_ffmpeg_script(result);

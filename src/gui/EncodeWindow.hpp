@@ -38,17 +38,21 @@ namespace mdl {
   {
   public:
     static EncodeWindow* create(std::unique_ptr<fg::FilterData> filter_data,
+                                int frame_width, int frame_height,
                                 int total_frames, double fps);
 
     EncodeWindow(BaseObjectType* cobject,
                  const Glib::RefPtr<Gtk::Builder>& builder,
                  std::unique_ptr<fg::FilterData> filter_data,
+                 int frame_width, int frame_height,
                  int total_frames, double fps);
 
   private:
     typedef std::shared_ptr<fg::ScriptGenerator> Generator;
 
     std::unique_ptr<fg::FilterData> filter_data_;
+    int frame_width_;
+    int frame_height_;
     double fps_;
     FFmpegExecutor::Codec codec_;
 

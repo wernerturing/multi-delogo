@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_str)
 {
   fg::CutFilter filter;
 
-  std::string ffmpeg(filter.ffmpeg_str("<BETWEEN>"));
+  std::string ffmpeg(filter.ffmpeg_str("<BETWEEN>", 1920, 1080));
 
   BOOST_CHECK_EQUAL(ffmpeg, "");
 }

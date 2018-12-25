@@ -34,8 +34,10 @@
 using namespace fg;
 
 
-RegularScriptGenerator::RegularScriptGenerator(const FilterList& filter_list, double fps)
+RegularScriptGenerator::RegularScriptGenerator(const FilterList& filter_list, int frame_width, int frame_height, double fps)
   : filter_list_(filter_list)
+  , frame_width_(frame_width)
+  , frame_height_(frame_height)
   , first_filter_(true)
 {
   fps_ = make_fps_str(fps);
@@ -53,9 +55,9 @@ std::string RegularScriptGenerator::make_fps_str(double fps)
 
 
 
-std::shared_ptr<RegularScriptGenerator> RegularScriptGenerator::create(const FilterList& filter_list, double fps)
+std::shared_ptr<RegularScriptGenerator> RegularScriptGenerator::create(const FilterList& filter_list, int frame_width, int frame_height, double fps)
 {
-  return std::shared_ptr<RegularScriptGenerator>(new RegularScriptGenerator(filter_list, fps));
+  return std::shared_ptr<RegularScriptGenerator>(new RegularScriptGenerator(filter_list, frame_width, frame_height, fps));
 }
 
 
@@ -110,7 +112,7 @@ void RegularScriptGenerator::process_standard_filter(filter_ptr filter,
                                                      std::ostream& out) const
 {
   std::string frame_expr = get_enable_expression(start_frame, next_start_frame);
-  std::string ffmpeg_str = filter->ffmpeg_str(frame_expr);
+  std::string ffmpeg_str = filter->ffmpeg_str(frame_expr, frame_width_, frame_height_);
   if (ffmpeg_str != "") {
     out << separator() << ffmpeg_str;
   }
