@@ -18,6 +18,7 @@
  */
 #include <cerrno>
 #include <string>
+#include <iostream>
 #include <fstream>
 
 #include <gtkmm.h>
@@ -48,12 +49,29 @@ MultiDelogoApp::MultiDelogoApp()
 {
   add_action("new", sigc::mem_fun(*this, &MultiDelogoApp::on_new_project));
   add_action("open", sigc::mem_fun(*this, &MultiDelogoApp::on_open_project));
+
+  add_main_option_entry(OPTION_TYPE_BOOL, "version", '\0', _("Outputs application version and exits"));
+  signal_handle_local_options().connect(sigc::mem_fun(*this, &MultiDelogoApp::handle_options));
 }
 
 
 Glib::RefPtr<MultiDelogoApp> MultiDelogoApp::create()
 {
   return Glib::RefPtr<MultiDelogoApp>(new MultiDelogoApp());
+}
+
+
+int MultiDelogoApp::handle_options(const Glib::RefPtr<Glib::VariantDict>& options)
+{
+  bool version = false;
+  options->lookup_value("version", version);
+  if (version) {
+    std::cout << "multi-delogo version " << PACKAGE_VERSION << std::endl;
+    std::cout << "Copyright (C) 2018 Werner Turing <werner.turing@protonmail.com>" << std::endl;
+    return 0;
+  }
+
+  return -1;
 }
 
 

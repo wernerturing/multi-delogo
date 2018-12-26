@@ -59,6 +59,8 @@ namespace mdl {
 
     Gtk::ApplicationWindow* initial_window_;
 
+    int handle_options(const Glib::RefPtr<Glib::VariantDict>& options);
+
     void on_activate();
 
     void on_open(const Gio::Application::type_vec_files& files,
