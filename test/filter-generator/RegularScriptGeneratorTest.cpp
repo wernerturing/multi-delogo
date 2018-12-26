@@ -74,9 +74,9 @@ BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
   std::string expected =
     "[0:v]\n"
     "delogo=enable='between(n,0,499)':x=10:y=11:w=12:h=13,\n"
-    "drawbox=enable='between(n,500,999)':x=20:y=21:w=22:h=23:c=black:t=max,\n"
-    "drawbox=enable='between(n,1300,1999)':x=30:y=31:w=32:h=33:c=black:t=max,\n"
-    "drawbox=enable='gte(n,2000)':x=40:y=41:w=42:h=43:c=black:t=max\n"
+    "drawbox=enable='between(n,500,999)':x=20:y=21:w=22:h=23:c=black:t=fill,\n"
+    "drawbox=enable='between(n,1300,1999)':x=30:y=31:w=32:h=33:c=black:t=fill,\n"
+    "drawbox=enable='gte(n,2000)':x=40:y=41:w=42:h=43:c=black:t=fill\n"
     "[out_v]";
   BOOST_CHECK_EQUAL(out.str(), expected);
 }
@@ -131,7 +131,7 @@ BOOST_AUTO_TEST_CASE(should_generate_script_with_cut_filter)
   std::string expected =
     "[0:v]\n"
     "delogo=enable='between(n,0,599)':x=10:y=11:w=12:h=13,\n"
-    "drawbox=enable='gte(n,1000)':x=20:y=21:w=22:h=23:c=black:t=max,\n"
+    "drawbox=enable='gte(n,1000)':x=20:y=21:w=22:h=23:c=black:t=fill,\n"
     "select='not(between(n,600,999))',setpts=N/FRAME_RATE/TB\n"
     "[out_v];\n"
     "[0:a]aselect='not(between(t,600/25.000000,999/25.000000))',asetpts=N/SR/TB[out_a]";

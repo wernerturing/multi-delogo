@@ -244,7 +244,7 @@ std::string DrawboxFilter::ffmpeg_str(const std::string& between_expr,
   std::string buf("drawbox=");
   buf.append(between_expr).push_back(':');
   buf.append(rectangle_ffmpeg_str());
-  buf.append(":c=black:t=max");
+  buf.append(":c=black:t=fill");
   return buf;
 }
 
