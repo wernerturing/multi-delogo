@@ -1,5 +1,8 @@
 ## 2.3.0
 
+* Fixed bug that prevented the drawbox filter to be used because of
+  changes in its syntax.
+
 * Fixed bug that prevented the video to be encoded when there was a
   delogo filter that touched an edge of the video frame.
 
