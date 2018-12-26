@@ -44,11 +44,15 @@ namespace mdl {
 
     void register_window(Gtk::ApplicationWindow* window);
 
+    bool is_verbose() const;
+
     const static std::string ACTION_NEW;
     const static std::string ACTION_OPEN;
 
   private:
     const static std::string EXTENSION_;
+
+    bool verbose_ = false;
 
     struct Project
     {

@@ -41,7 +41,7 @@ namespace mdl {
   };
 
 
-  std::shared_ptr<LogoFinder> create_logo_finder(fg::FilterData& filter_data, LogoFinderCallback& callback);
+  std::shared_ptr<LogoFinder> create_logo_finder(fg::FilterData& filter_data, LogoFinderCallback& callback, bool verbose);
 }
 
 

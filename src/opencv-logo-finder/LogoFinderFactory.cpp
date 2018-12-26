@@ -26,11 +26,11 @@
 #include "FilterListAdapter.hpp"
 
 
-std::shared_ptr<mdl::LogoFinder> mdl::create_logo_finder(fg::FilterData& filter_data, mdl::LogoFinderCallback& callback)
+std::shared_ptr<mdl::LogoFinder> mdl::create_logo_finder(fg::FilterData& filter_data, mdl::LogoFinderCallback& callback, bool verbose)
 {
   mdl::FilterListAdapter* adapter = new mdl::FilterListAdapter(filter_data.filter_list(), callback);
   return std::shared_ptr<mdl::LogoFinder>(
-    new mdl::opencv::OpenCVLogoFinder(filter_data.movie_file(), *adapter),
+    new mdl::opencv::OpenCVLogoFinder(filter_data.movie_file(), *adapter, verbose),
     [adapter](mdl::LogoFinder* logo_finder) {
       delete logo_finder;
       delete adapter;

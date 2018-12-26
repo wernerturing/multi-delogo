@@ -184,7 +184,8 @@ void MovieWindow::on_find_logos()
     = FindLogosWindow::create(*filter_data_,
                               frame_navigator_->get_number_of_frames(),
                               coordinator_.get_current_frame(),
-                              frame_navigator_->get_jump_size());
+                              frame_navigator_->get_jump_size(),
+                              get_application()->is_verbose());
   window->set_transient_for(*this);
   window->set_modal();
   window->signal_hide().connect(sigc::mem_fun(*filter_list_, &FilterList::refresh_list));

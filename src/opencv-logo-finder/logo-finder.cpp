@@ -63,11 +63,10 @@ int main(int argc, char* argv[])
   MatcherCallback matcher_callback(frame_interval_min);
 
   std::shared_ptr<LogoFinder> finder
-    = create_logo_finder(filter_data, matcher_callback);
+    = create_logo_finder(filter_data, matcher_callback, true);
   finder->set_start_frame(start_frame);
   finder->set_frame_interval_min(frame_interval_min);
   finder->set_extra_frames(frame_interval_max - frame_interval_min);
-  finder->set_verbose();
 
   int end_frame;
   if (argc == 7) {

@@ -37,12 +37,14 @@ using namespace mdl;
 
 
 FindLogosWindow* FindLogosWindow::create(fg::FilterData& filter_data,
-                                         int total_frames, int start_frame, int jump_size)
+                                         int total_frames, int start_frame, int jump_size,
+                                         bool verbose)
 {
   auto builder = Gtk::Builder::create_from_resource("/wt/multi-delogo/FindLogosWindow.ui");
   FindLogosWindow* window = nullptr;
   builder->get_widget_derived("find_logos_window", window,
-                              filter_data, total_frames, start_frame, jump_size);
+                              filter_data, total_frames, start_frame, jump_size,
+                              verbose);
   return window;
 }
 
@@ -50,7 +52,8 @@ FindLogosWindow* FindLogosWindow::create(fg::FilterData& filter_data,
 FindLogosWindow::FindLogosWindow(BaseObjectType* cobject,
                                  const Glib::RefPtr<Gtk::Builder>& builder,
                                  fg::FilterData& filter_data,
-                                 int total_frames, int start_frame, int jump_size)
+                                 int total_frames, int start_frame, int jump_size,
+                                 bool verbose)
   : MultiDelogoAppWindow(cobject)
 
   , filter_data_(filter_data)
@@ -73,7 +76,7 @@ FindLogosWindow::FindLogosWindow(BaseObjectType* cobject,
   , search_in_progress_(false)
   , callback_(finder_progress_dispatcher_)
 {
-  logo_finder_ = create_logo_finder(filter_data_, callback_);
+  logo_finder_ = create_logo_finder(filter_data_, callback_, verbose);
 
   configure_widgets(builder, total_frames, start_frame, jump_size);
 

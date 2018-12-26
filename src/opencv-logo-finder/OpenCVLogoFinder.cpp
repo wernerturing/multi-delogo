@@ -38,8 +38,8 @@ using namespace mdl::opencv;
                            << rect.width << " " << rect.height << "]"
 
 
-OpenCVLogoFinder::OpenCVLogoFinder(const std::string& file, LogoFinderCallback& callback)
-  : LogoFinder(callback)
+OpenCVLogoFinder::OpenCVLogoFinder(const std::string& file, LogoFinderCallback& callback, bool verbose)
+  : LogoFinder(callback, verbose)
   , n_last_failures_(0)
   , stop_requested_(false)
 {

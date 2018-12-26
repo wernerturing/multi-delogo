@@ -31,7 +31,7 @@ namespace mdl { namespace opencv {
   class OpenCVLogoFinder: public LogoFinder
   {
   public:
-    OpenCVLogoFinder(const std::string& file, LogoFinderCallback& callback);
+    OpenCVLogoFinder(const std::string& file, LogoFinderCallback& callback, bool verbose);
 
     void find_logos() override;
 

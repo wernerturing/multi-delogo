@@ -46,8 +46,8 @@ namespace mdl {
   class LogoFinder
   {
   public:
-    LogoFinder(LogoFinderCallback& callback)
-      : verbose_(false)
+    LogoFinder(LogoFinderCallback& callback, bool verbose)
+      : verbose_(verbose)
       , callback_(callback) { };
 
     virtual ~LogoFinder() { };
@@ -112,7 +112,7 @@ namespace mdl {
     int frame_interval_min_;
     int extra_frames_;
 
-    bool verbose_;
+    bool verbose_ = false;
 
     /**
      * Minimal box width to be recognized as a possible logo.

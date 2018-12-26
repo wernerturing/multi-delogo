@@ -51,6 +51,7 @@ MultiDelogoApp::MultiDelogoApp()
   add_action("open", sigc::mem_fun(*this, &MultiDelogoApp::on_open_project));
 
   add_main_option_entry(OPTION_TYPE_BOOL, "version", '\0', _("Outputs application version and exits"));
+  add_main_option_entry(OPTION_TYPE_BOOL, "verbose", 'v', _("Outputs debugging information"));
   signal_handle_local_options().connect(sigc::mem_fun(*this, &MultiDelogoApp::handle_options));
 }
 
@@ -70,6 +71,8 @@ int MultiDelogoApp::handle_options(const Glib::RefPtr<Glib::VariantDict>& option
     std::cout << "Copyright (C) 2018 Werner Turing <werner.turing@protonmail.com>" << std::endl;
     return 0;
   }
+
+  options->lookup_value("verbose", verbose_);
 
   return -1;
 }
@@ -329,4 +332,10 @@ void MultiDelogoApp::error_dialog(const Glib::ustring& message, Gtk::MessageType
     dlg.set_transient_for(*initial_window_);
   }
   dlg.run();
+}
+
+
+bool MultiDelogoApp::is_verbose() const
+{
+  return verbose_;
 }

@@ -38,12 +38,14 @@ namespace mdl {
   {
   public:
     static FindLogosWindow* create(fg::FilterData& filter_data,
-                                   int total_frames, int start_frame, int jump_size);
+                                   int total_frames, int start_frame, int jump_size,
+                                   bool verbose);
 
     FindLogosWindow(BaseObjectType* cobject,
                     const Glib::RefPtr<Gtk::Builder>& builder,
                     fg::FilterData& filter_data,
-                    int total_frames, int start_frame, int jump_size);
+                    int total_frames, int start_frame, int jump_size,
+                    bool verbose);
     ~FindLogosWindow();
 
   private:
