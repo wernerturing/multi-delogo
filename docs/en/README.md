@@ -36,7 +36,13 @@ To move a larger number of frames backward or forward, use the << and >> buttons
 
 You can also go directly to a frame by entering its number and pressing Enter.
 
-If you select "Show previous frame" in the toolbar, the main area will be split, displaying the current frame in the right and one frame before that in the left, smaller. That can make the process of identifying code chaning positions or reviewing automatically detected filters easier.
+To help identify the frames at which the logo changes, the **Previous frame** function can be useful. This displays two consecutive frames at a time. There are two modes:
+
+* **Fit to window** displays the whole previous frame at once, zooming it so that it fits the window.
+
+* **Same view** shows the previous frame with the same zoom level as the current frame, and both frames scroll in sync so that the same region of the frames is always displayed.
+
+To disable this feature, select **Don't display**, and only the current frame will be displayed.
 
 
 ## Defining a filter manually
