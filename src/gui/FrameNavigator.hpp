@@ -80,6 +80,7 @@ namespace mdl {
 
     type_signal_frame_changed signal_frame_changed_;
 
+    PrevFrame prev_frame_setting_;
     sigc::connection prev_frame_view_on_size_allocate_;
 
 

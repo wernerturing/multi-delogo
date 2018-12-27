@@ -272,15 +272,22 @@ void FrameNavigator::set_show_prev_frame(PrevFrame setting)
     break;
 
   case PrevFrame::FIT:
+    prev_frame_view_->set_vadjustment(Gtk::Adjustment::create(0, 1, 1));
+    prev_frame_view_->set_hadjustment(Gtk::Adjustment::create(0, 1, 1));
     prev_frame_view_on_size_allocate_ = prev_frame_view_->signal_size_allocate().connect(sigc::mem_fun(*this, &FrameNavigator::set_prev_frame_zoom));
     break;
 
   case PrevFrame::SAME:
+    prev_frame_view_->set_vadjustment(frame_view_->get_vadjustment());
+    prev_frame_view_->set_hadjustment(frame_view_->get_hadjustment());
+    prev_frame_view_->set_zoom(zoom_);
     break;
   }
 
   lbl_prev_frame_->set_visible(setting != PrevFrame::NO);
   prev_frame_view_->set_visible(setting != PrevFrame::NO);
+
+  prev_frame_setting_ = setting;
 }
 
 
@@ -327,6 +334,9 @@ void FrameNavigator::set_zoom(gdouble zoom)
   lbl_zoom_->set_text(Glib::ustring::compose("%1%%", (int) (zoom_ * 100)));
 
   frame_view_->set_zoom(zoom_);
+  if (prev_frame_setting_ == PrevFrame::SAME) {
+    prev_frame_view_->set_zoom(zoom_);
+  }
 }
 
 
