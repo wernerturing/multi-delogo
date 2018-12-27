@@ -57,7 +57,7 @@ FrameNavigator::FrameNavigator(BaseObjectType* cobject,
   builder->get_widget("lbl_prev_frame", lbl_prev_frame_);
 
   Glib::signal_idle().connect([&] {
-      set_show_prev_frame(false);
+      set_show_prev_frame(PrevFrame::NO);
       return false;
     });
 
@@ -65,7 +65,6 @@ FrameNavigator::FrameNavigator(BaseObjectType* cobject,
   configure_zoom_bar(builder);
 
   empty_pixbuf_ = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, false, 8, 1, 1);
-  prev_frame_view_->signal_size_allocate().connect(sigc::mem_fun(*this, &FrameNavigator::set_prev_frame_zoom));
 }
 
 
@@ -264,10 +263,24 @@ void FrameNavigator::set_jump_size(int jump_size)
 }
 
 
-void FrameNavigator::set_show_prev_frame(bool show_prev)
+void FrameNavigator::set_show_prev_frame(PrevFrame setting)
 {
-  lbl_prev_frame_->set_visible(show_prev);
-  prev_frame_view_->set_visible(show_prev);
+  prev_frame_view_on_size_allocate_.disconnect();
+
+  switch (setting) {
+  case PrevFrame::NO:
+    break;
+
+  case PrevFrame::FIT:
+    prev_frame_view_on_size_allocate_ = prev_frame_view_->signal_size_allocate().connect(sigc::mem_fun(*this, &FrameNavigator::set_prev_frame_zoom));
+    break;
+
+  case PrevFrame::SAME:
+    break;
+  }
+
+  lbl_prev_frame_->set_visible(setting != PrevFrame::NO);
+  prev_frame_view_->set_visible(setting != PrevFrame::NO);
 }
 
 
