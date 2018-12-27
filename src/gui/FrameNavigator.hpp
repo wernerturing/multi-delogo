@@ -47,7 +47,8 @@ namespace mdl {
     int get_jump_size() const;
     void set_jump_size(int jump_size);
 
-    void set_show_prev_frame(bool show_prev);
+    enum class PrevFrame { NO, FIT, SAME };
+    void set_show_prev_frame(PrevFrame setting);
 
     FrameView* get_frame_view();
 
@@ -78,6 +79,9 @@ namespace mdl {
     Gtk::Button* btn_zoom_100_;
 
     type_signal_frame_changed signal_frame_changed_;
+
+    PrevFrame prev_frame_setting_;
+    sigc::connection prev_frame_view_on_size_allocate_;
 
 
     void configure_navigation_bar(const Glib::RefPtr<Gtk::Builder>& builder);

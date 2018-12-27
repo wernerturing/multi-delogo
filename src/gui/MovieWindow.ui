@@ -155,11 +155,50 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToggleToolButton" id="chk_show_prev_frame">
+              <object class="GtkMenuToolButton" id="mnu_prev_frame">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Show _previous frame</property>
+                <property name="label" translatable="yes">_Previous frame</property>
                 <property name="use_underline">True</property>
+                <child type="menu">
+                  <object class="GtkMenu">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkRadioMenuItem" id="chk_prev_frame_no">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Shows only the current frame</property>
+                        <property name="label" translatable="yes">_Don't display</property>
+                        <property name="use_underline">True</property>
+                        <property name="active">True</property>
+                        <property name="draw_as_radio">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRadioMenuItem" id="chk_prev_frame_fit">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Displays the whole previous frame</property>
+                        <property name="label" translatable="yes">_Fit to window</property>
+                        <property name="use_underline">True</property>
+                        <property name="draw_as_radio">True</property>
+                        <property name="group">chk_prev_frame_no</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRadioMenuItem" id="chk_prev_frame_same">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Displays the previous frame using the same zoom and showing the same region as the current frame</property>
+                        <property name="label" translatable="yes">_Same view</property>
+                        <property name="use_underline">True</property>
+                        <property name="draw_as_radio">True</property>
+                        <property name="group">chk_prev_frame_no</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -655,9 +694,7 @@
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
-                        <property name="top_attach">0</property>
-                        <property name="width">2</property>
-                        <property name="height">2</property>
+                        <property name="top_attach">1</property>
                       </packing>
                     </child>
                     <child>
@@ -685,6 +722,9 @@
                         <property name="left_attach">0</property>
                         <property name="top_attach">0</property>
                       </packing>
+                    </child>
+                    <child>
+                      <placeholder/>
                     </child>
                   </object>
                   <packing>

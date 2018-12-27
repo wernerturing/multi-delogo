@@ -60,7 +60,6 @@ namespace mdl {
     FrameNavigator* frame_navigator_;
     Coordinator coordinator_;
 
-
     void configure_toolbar(const Glib::RefPtr<Gtk::Builder>& builder,
                            Gtk::Application& app);
 
@@ -71,7 +70,7 @@ namespace mdl {
     void on_encode();
 
     void on_scroll_filter_toggled(Gtk::ToggleToolButton* chk);
-    void on_show_prev_frame_toggled(Gtk::ToggleToolButton* chk);
+    void on_set_prev_frame(Gtk::RadioMenuItem* radio, FrameNavigator::PrevFrame setting);
 
     void on_hide() override;
   };
