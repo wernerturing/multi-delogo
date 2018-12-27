@@ -115,11 +115,23 @@ void MovieWindow::configure_toolbar(const Glib::RefPtr<Gtk::Builder>& builder,
     sigc::bind(sigc::mem_fun(*this, &MovieWindow::on_scroll_filter_toggled),
                chk_scroll_filter));
 
-  Gtk::ToggleToolButton* chk_show_prev_frame = nullptr;
-  builder->get_widget("chk_show_prev_frame", chk_show_prev_frame);
-  chk_show_prev_frame->signal_toggled().connect(
-    sigc::bind(sigc::mem_fun(*this, &MovieWindow::on_show_prev_frame_toggled),
-               chk_show_prev_frame));
+  Gtk::RadioMenuItem* chk_prev_frame_no = nullptr;
+  builder->get_widget("chk_prev_frame_no", chk_prev_frame_no);
+  chk_prev_frame_no->signal_toggled().connect(
+    sigc::bind(sigc::mem_fun(*this, &MovieWindow::on_set_prev_frame),
+               chk_prev_frame_no, PrevFrame::NO));
+
+  Gtk::RadioMenuItem* chk_prev_frame_fit = nullptr;
+  builder->get_widget("chk_prev_frame_fit", chk_prev_frame_fit);
+  chk_prev_frame_fit->signal_toggled().connect(
+    sigc::bind(sigc::mem_fun(*this, &MovieWindow::on_set_prev_frame),
+               chk_prev_frame_fit, PrevFrame::FIT));
+
+  Gtk::RadioMenuItem* chk_prev_frame_same = nullptr;
+  builder->get_widget("chk_prev_frame_same", chk_prev_frame_same);
+  chk_prev_frame_same->signal_toggled().connect(
+    sigc::bind(sigc::mem_fun(*this, &MovieWindow::on_set_prev_frame),
+               chk_prev_frame_same, PrevFrame::SAME));
 
   add_action("find-logos", sigc::mem_fun(*this, &MovieWindow::on_find_logos));
   Gtk::ToolButton* btn_find_logos = nullptr;
@@ -226,9 +238,28 @@ void MovieWindow::on_scroll_filter_toggled(Gtk::ToggleToolButton* chk)
 }
 
 
-void MovieWindow::on_show_prev_frame_toggled(Gtk::ToggleToolButton* chk)
+void MovieWindow::on_set_prev_frame(Gtk::RadioMenuItem* radio, PrevFrame setting)
 {
-  frame_navigator_->set_show_prev_frame(chk->get_active());
+  // The signal is emitted for the item that is unchecked and for the item that is checked, so we ignore unchecking signals
+  if (!radio->get_active()) {
+    return;
+  }
+
+  switch (setting) {
+  case PrevFrame::NO:
+    printf("Prev frame: no\n");
+    break;
+
+  case PrevFrame::FIT:
+    printf("Prev frame: fit\n");
+    break;
+
+  case PrevFrame::SAME:
+    printf("Prev frame: same\n");
+    break;
+  }
+
+  //frame_navigator_->set_show_prev_frame(chk->get_active());
 }
 
 
