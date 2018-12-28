@@ -15,7 +15,7 @@ dnl
 dnl You should have received a copy of the GNU General Public License
 dnl along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 
-AC_INIT([multi-delogo], [2.2.0])
+AC_INIT([multi-delogo], [2.3.0])
 AC_CONFIG_SRCDIR([src/gui/main.cpp])
 
 AC_CONFIG_MACRO_DIR([m4])
