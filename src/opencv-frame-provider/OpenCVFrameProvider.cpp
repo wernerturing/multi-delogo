@@ -49,7 +49,7 @@ Glib::RefPtr<Gdk::Pixbuf> OpenCVFrameProvider::get_frame(int frame_number)
   cv::Mat bgr_frame;
   bool success = video_->read(bgr_frame);
   if (!success) {
-    throw mdl::FrameNotAvailableException();
+    throw mdl::FrameNotAvailableException(current_frame_);
   }
 
   cv::cvtColor(bgr_frame, frame_, cv::COLOR_BGR2RGB);

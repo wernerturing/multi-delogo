@@ -33,7 +33,7 @@ namespace mdl { namespace opencv {
   public:
     OpenCVLogoFinder(const std::string& file, LogoFinderCallback& callback, bool verbose);
 
-    void find_logos() override;
+    OpenCVLogoFinder::find_result find_logos() override;
 
     void stop() override;
 
@@ -48,6 +48,8 @@ namespace mdl { namespace opencv {
     int n_last_failures_;
 
     bool stop_requested_;
+
+    int current_frame_;
 
     /**
      * Number of steps to do while searching for the logo in an

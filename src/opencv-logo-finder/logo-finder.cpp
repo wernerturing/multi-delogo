@@ -48,7 +48,7 @@ private:
 int main(int argc, char* argv[])
 {
   if (argc < 5) {
-    std::cout << "Usage: matcher <video> <output> <start_frame> <frame_interval_min> <frame_interval_max> [<end_frame>]" << std::endl;
+    std::cout << "Usage: logo-finder <video> <output> <start_frame> <frame_interval_min> <frame_interval_max> [<end_frame>]" << std::endl;
     return 1;
   }
 
@@ -84,12 +84,17 @@ int main(int argc, char* argv[])
             << ", output " << argv[2]
             << std::endl;
 
-  finder->find_logos();
+  auto res = finder->find_logos();
 
   std::ofstream output(argv[2]);
   filter_data.save(output);
 
-  std::cout << "Finished" << std::endl;
+  if (res.first) {
+    std::cout << "Finished successfully" << std::endl;
+  } else {
+    std::cout << "Error: " << res.second << std::endl;
+    return 2;
+  }
 }
 
 

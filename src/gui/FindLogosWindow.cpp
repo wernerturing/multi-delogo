@@ -81,7 +81,7 @@ FindLogosWindow::FindLogosWindow(BaseObjectType* cobject,
   configure_widgets(builder, total_frames, start_frame, jump_size);
 
   finder_progress_dispatcher_.connect(sigc::mem_fun(*this, &FindLogosWindow::on_progress));
-  finder_finished_dispatcher_.connect(sigc::mem_fun(*progress_bar_, &ETRProgressBar::set_finished));
+  finder_finished_dispatcher_.connect(sigc::mem_fun(*this, &FindLogosWindow::on_finished));
   callback_.set_finder(logo_finder_.get());
 }
 
@@ -176,9 +176,9 @@ void FindLogosWindow::on_find_logos()
   search_in_progress_ = true;
   callback_.start(initial_frame, final_frame);
   worker_thread_ = new std::thread([this] {
-    logo_finder_->find_logos();
-    search_in_progress_ = false;
-    finder_finished_dispatcher_.emit();
+      find_result_ = logo_finder_->find_logos();
+      search_in_progress_ = false;
+      finder_finished_dispatcher_.emit();
   });
   btn_find_logos_->set_sensitive(false);
 }
@@ -245,6 +245,15 @@ void FindLogosWindow::on_progress()
 {
   Progress p = callback_.get_progress();
   progress_bar_->set_progress(p);
+}
+
+
+void FindLogosWindow::on_finished()
+{
+  progress_bar_->set_finished();
+  if (!find_result_.first) {
+    progress_bar_->set_text(Glib::ustring::compose(_("Process finished unexpectedly: %1"), find_result_.second));
+  }
 }
 
 

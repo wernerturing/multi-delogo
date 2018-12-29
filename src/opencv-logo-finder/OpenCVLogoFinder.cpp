@@ -62,9 +62,10 @@ OpenCVLogoFinder::OpenCVLogoFinder(const std::string& file, LogoFinderCallback& 
 }
 
 
-void OpenCVLogoFinder::find_logos()
+OpenCVLogoFinder::find_result OpenCVLogoFinder::find_logos()
 {
-  int interval_start = start_frame_;
+  try {
+    int interval_start = start_frame_;
   while (interval_start < total_frames_) {
     int interval_end = interval_start + frame_interval_min_;
     if (interval_end > total_frames_) {
@@ -97,6 +98,11 @@ void OpenCVLogoFinder::find_logos()
       interval_start += frame_interval_min_;
       ++n_last_failures_;
     }
+  }
+
+  return std::make_pair(true, "");
+  } catch (const FrameNotAvailableException& e) {
+    return std::make_pair(false, "Could not get frame " + std::to_string(e.get_frame()));
   }
 }
 
@@ -178,6 +184,7 @@ void OpenCVLogoFinder::average_frame(int start_frame, int end_frame)
 void OpenCVLogoFinder::go_to_frame(int frame_number)
 {
   cap_.set(cv::CAP_PROP_POS_FRAMES, frame_number);
+  current_frame_ = frame_number;
 }
 
 
@@ -185,8 +192,9 @@ void OpenCVLogoFinder::advance_frame()
 {
   bool success = cap_.grab();
   if (!success) {
-    throw mdl::FrameNotAvailableException();
+    throw mdl::FrameNotAvailableException(current_frame_);
   }
+  ++current_frame_;
 }
 
 
@@ -194,7 +202,7 @@ void OpenCVLogoFinder::get_frame()
 {
   bool success = cap_.retrieve(t_frame_);
   if (!success) {
-    throw mdl::FrameNotAvailableException();
+    throw mdl::FrameNotAvailableException(current_frame_);
   }
 }
 

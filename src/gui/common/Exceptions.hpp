@@ -44,10 +44,19 @@ namespace mdl {
   class FrameNotAvailableException : public Exception
   {
   public:
+    FrameNotAvailableException(int frame)
+      : frame_(frame) { }
+
+    int get_frame() const
+      { return frame_; }
+
     const char* what() const throw() override
     {
       return "Failed to get frame";
     }
+
+  private:
+    int frame_;
   };
 
 

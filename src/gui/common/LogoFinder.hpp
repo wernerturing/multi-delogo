@@ -104,7 +104,10 @@ namespace mdl {
     }
 
 
-    virtual void find_logos() = 0;
+    typedef std::pair<bool, std::string> find_result;
+
+
+    virtual find_result find_logos() = 0;
     virtual void stop() = 0;
 
   protected:

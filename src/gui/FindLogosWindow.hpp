@@ -68,6 +68,7 @@ namespace mdl {
 
     std::thread* worker_thread_;
     bool search_in_progress_;
+    LogoFinder::find_result find_result_;
     Glib::Dispatcher finder_progress_dispatcher_;
     Glib::Dispatcher finder_finished_dispatcher_;
 
@@ -86,6 +87,8 @@ namespace mdl {
     bool confirm_stop();
 
     void on_progress();
+
+    void on_finished();
 
 
     class ProgressCallback : public mdl::LogoFinderCallback
