@@ -6,6 +6,9 @@
 * Fixed bug that prevented the video to be encoded when there was a
   delogo filter that touched an edge of the video frame.
 
+* Fixed bug that caused a crash if there is an error reading a frame
+  while finding logos.
+
 * Added a function to shift the starting frames of a range of filters.
 
 * Show previous frames has a new mode, that displays the same region
