@@ -36,7 +36,13 @@ To move a larger number of frames backward or forward, use the << and >> buttons
 
 You can also go directly to a frame by entering its number and pressing Enter.
 
-If you select "Show previous frame" in the toolbar, the main area will be split, displaying the current frame in the right and one frame before that in the left, smaller. That can make the process of identifying code chaning positions or reviewing automatically detected filters easier.
+To help identify the frames at which the logo changes, the **Previous frame** function can be useful. This displays two consecutive frames at a time. There are two modes:
+
+* **Fit to window** displays the whole previous frame at once, zooming it so that it fits the window.
+
+* **Same view** shows the previous frame with the same zoom level as the current frame, and both frames scroll in sync so that the same region of the frames is always displayed.
+
+To disable this feature, select **Don't display**, and only the current frame will be displayed.
 
 
 ## Defining a filter manually
@@ -126,7 +132,7 @@ To edit an existing filter, you have to be on that filter's start frame. You can
 
 If you are not at a filter's start frame and make any change to the filter, a new filter is added.
 
-You can change the starting frame of a filter by using the *start frame* field.
+You can change the starting frame of a filter by using the *start frame* field. To change the starting frame of a range of filters, press the **Shift starting frames** button. In the window that opens, enter the range in which you want to shift the filters' starting frames, and the amount to shift. All filters in that range will have their starting frames adjusted.
 
 To remove a filter, select it and press the button with the minus sign below the filter list.
 

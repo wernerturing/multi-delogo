@@ -36,7 +36,13 @@ Para saltar um número maior de quadros para trás ou para frente, use os botõe
 
 Você também pode ir diretamente para um quadro digitando o número dele e apertando Enter.
 
-Se você marcar "Exibir quadro anterior" na barra de ferramentas, a área principal será dividida, exibindo o quadro atual à direita, e o quadro antes dele à esquerda, menor. Isso pode facilitar o processo de identificar os quadros onde ocorre uma mudança de código e a revisão dos filtros detectados automaticamente.
+Para ajudar na identificação dos quadros onde o logo muda, a função **Quadro anterior** pode ser útil. Ela faz com que dois quadros sucessivos sejam exibidos simultaneamente. Há dois modos:
+
+* **Ajustar à janela** exibe o quadro anterior inteiro, ajustando o zoom para que ele caiba na janela.
+
+* **Mesma visão** mostra o quadro anterior com o mesmo nível de zoom que o atual, e ambos os quadros são rolados em sincroniza, de forma que a mesma região do quadro seja sempre exibida.
+
+Para desbilitar esse recurso, selecione **Não exibir**, e apenas o quadro atual será exibido.
 
 
 ## Definindo um filtro manualmente
@@ -126,7 +132,7 @@ Para editar um filtro existente, você deverá estar no quadro inicial daquele f
 
 Se você não estiver no quadro inicial e fizer alguma alteração, um novo filtro é adicionado.
 
-É possível alterar o quadro inicial de um filtro usando o campo *quadro inicial*.
+É possível alterar o quadro inicial de um filtro usando o campo *quadro inicial*. Para alterar o quadro inicial de todos os filtros em um intervalo, aperte o botão **Ajustar quadros iniciais**. Na janela que abrir, selecione o intervalo no qual quer ajustar os quadros iniciais, e quantidade de quadros a adicionar ou subtrair. Todos os filtros naquele intervalo terão seus quadros iniciais ajustados com o valor informado.
 
 Para remover um filtro, selecione-o e aperte o botão com o sinal de menos abaixo da lista de filtros.
 
