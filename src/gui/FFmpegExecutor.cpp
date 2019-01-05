@@ -23,7 +23,10 @@
 #include <fstream>
 #include <regex>
 
-#ifdef __MINGW32__
+#ifndef __MINGW32__
+#  include <sys/types.h>
+#  include <signal.h>
+#else
 #  include <windows.h>
 #endif
 
@@ -117,8 +120,10 @@ bool FFmpegExecutor::is_executing() const
 void FFmpegExecutor::terminate()
 {
   ffmpeg_out_signal_.disconnect();
-#ifdef __MINGW32__
-  TerminateProcess(ffmpeg_handle_, 250);
+#ifndef __MINGW32__
+  kill(ffmpeg_pid_, SIGTERM);
+#else
+  TerminateProcess(ffmpeg_pid_, 250);
 #endif
 }
 
@@ -194,14 +199,13 @@ void FFmpegExecutor::start_ffmpeg(const std::vector<std::string>& cmd_line)
   log_ = boost::algorithm::join(cmd_line, " ");
   log_ += "\n\n";
 
-  Glib::Pid ffmpeg_pid;
   int ffmpeg_stderr_fd;
   try {
     Glib::spawn_async_with_pipes("",
                                  cmd_line,
                                  Glib::SPAWN_SEARCH_PATH | Glib::SPAWN_DO_NOT_REAP_CHILD | Glib::SPAWN_STDOUT_TO_DEV_NULL,
                                  Glib::SlotSpawnChildSetup(),
-                                 &ffmpeg_pid,
+                                 &ffmpeg_pid_,
                                  nullptr,
                                  nullptr,
                                  &ffmpeg_stderr_fd);
@@ -213,7 +217,7 @@ void FFmpegExecutor::start_ffmpeg(const std::vector<std::string>& cmd_line)
   ffmpeg_timer_.start();
 
   Glib::signal_child_watch().connect(sigc::mem_fun(*this, &FFmpegExecutor::on_ffmpeg_finished),
-                                     ffmpeg_pid);
+                                     ffmpeg_pid_);
 
   ffmpeg_out_ = Glib::IOChannel::create_from_fd(ffmpeg_stderr_fd);
   const auto io_source = Glib::IOSource::create(ffmpeg_out_,
@@ -221,10 +225,6 @@ void FFmpegExecutor::start_ffmpeg(const std::vector<std::string>& cmd_line)
   io_source->set_priority(Glib::PRIORITY_LOW);
   ffmpeg_out_signal_ = io_source->connect(sigc::mem_fun(*this, &FFmpegExecutor::on_ffmpeg_output));
   io_source->attach(Glib::MainContext::get_default());
-
-#ifdef __MINGW32__
-  ffmpeg_handle_ = ffmpeg_pid;
-#endif
 }
 
 

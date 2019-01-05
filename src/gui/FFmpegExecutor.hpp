@@ -76,9 +76,7 @@ namespace mdl {
 
     std::string tmp_filter_file_;
     int total_frames_output_;
-#ifdef __MINGW32__
-    Glib::Pid ffmpeg_handle_;
-#endif
+    Glib::Pid ffmpeg_pid_;
     Glib::RefPtr<Glib::IOChannel> ffmpeg_out_;
     sigc::connection ffmpeg_out_signal_;
     Glib::Timer ffmpeg_timer_;
