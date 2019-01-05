@@ -272,9 +272,9 @@ maybe_file MultiDelogoApp::select_movie_file()
 {
   auto filter_movies = Gtk::FileFilter::create();
   filter_movies->set_name(_("Movies"));
-#ifndef __MINGW32__
+#if !defined(__MINGW32__) && !defined(__APPLE__)
   filter_movies->add_mime_type("video/*");
-#else // No wildcard mime support in Windows
+#else // No wildcard mime support in Windows/Mac
   filter_movies->add_pattern("*.avi");
   filter_movies->add_pattern("*.flv");
   filter_movies->add_pattern("*.mkv");
