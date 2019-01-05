@@ -41,7 +41,7 @@ PKG_CHECK_MODULES([GOOCANVASMM], [goocanvasmm-2.0])
 AC_SUBST([GOOCANVASMM_CFLAGS])
 AC_SUBST([GOOCANVASMM_LIBS])
 
-WT_OPENCV([OPENCV], [3.0], [opencv_videoio opencv_imgproc opencv_core])
+WT_OPENCV([OPENCV], [4.0], [opencv_videoio opencv_imgproc opencv_core])
 AC_SUBST([OPENCV_CFLAGS])
 AC_SUBST([OPENCV_LIBS])
 
