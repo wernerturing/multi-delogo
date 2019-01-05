@@ -31,7 +31,7 @@ libfilter_list_logo_adapter_a_SOURCES = FilterListAdapter.cpp \
                                         FilterListAdapter.hpp \
                                         LogoFinderFactory.cpp
 
-libfilter_list_logo_adapter_a_CPPFLAGS = -I..
+libfilter_list_logo_adapter_a_CPPFLAGS = -I.. $(OPENCV_CFLAGS)
 
 
 noinst_PROGRAMS = logo-finder
