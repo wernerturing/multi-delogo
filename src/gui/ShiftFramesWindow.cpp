@@ -25,7 +25,7 @@
 using namespace mdl;
 
 
-ShiftFramesWindow* ShiftFramesWindow::create(Glib::RefPtr<FilterListModel> filter_model,
+ShiftFramesWindow* ShiftFramesWindow::create(const Glib::RefPtr<FilterListModel>& filter_model,
                                              int total_frames, int start_frame)
 {
   auto builder = Gtk::Builder::create_from_resource("/wt/multi-delogo/ShiftFramesWindow.ui");
@@ -38,7 +38,7 @@ ShiftFramesWindow* ShiftFramesWindow::create(Glib::RefPtr<FilterListModel> filte
 
 ShiftFramesWindow::ShiftFramesWindow(BaseObjectType* cobject,
                                      const Glib::RefPtr<Gtk::Builder>& builder,
-                                     Glib::RefPtr<FilterListModel> filter_model,
+                                     const Glib::RefPtr<FilterListModel>& filter_model,
                                      int total_frames, int start_frame)
   : Gtk::Dialog(cobject)
   , filter_model_(filter_model)

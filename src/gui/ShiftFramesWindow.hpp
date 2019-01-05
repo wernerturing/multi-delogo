@@ -28,12 +28,12 @@ namespace mdl {
   class ShiftFramesWindow : public Gtk::Dialog
   {
   public:
-    static ShiftFramesWindow* create(Glib::RefPtr<FilterListModel> filter_model,
+    static ShiftFramesWindow* create(const Glib::RefPtr<FilterListModel>& filter_model,
                                      int total_frames, int start_frame);
 
     ShiftFramesWindow(BaseObjectType* cobject,
                       const Glib::RefPtr<Gtk::Builder>& builder,
-                      Glib::RefPtr<FilterListModel> filter_model,
+                      const Glib::RefPtr<FilterListModel>& filter_model,
                       int total_frames, int start_frame);
 
     int get_initial_frame() const;
@@ -41,7 +41,7 @@ namespace mdl {
     int get_amount() const;
 
   private:
-    Glib::RefPtr<FilterListModel>& filter_model_;
+    Glib::RefPtr<FilterListModel> filter_model_;
 
     Gtk::SpinButton* txt_initial_frame_;
     Gtk::SpinButton* txt_final_frame_;
