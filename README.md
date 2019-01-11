@@ -36,6 +36,11 @@ make install
 Then run `multi-delogo` to start the application.
 
 
+## Installation on Mac OS
+
+There's a [Homebrew formula](https://github.com/wernerturing/homebrew-multi-delogo) that installs multi-delogo automatically.
+
+
 ## Installation from github
 
 This is very similar to installing on Linux as described above. You'll need some additional dependencies:

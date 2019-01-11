@@ -34,6 +34,11 @@ make install
 Em seguida, execute `multi-delogo` para iniciar a aplicação.
 
 
+## Instalação no Mac OS
+
+Há uma [fórmula do Homebrew](https://github.com/wernerturing/homebrew-multi-delogo) para instalar o multi-delogo automaticamente.
+
+
 ## Instalação do github
 
 O processo é muito parecido com a instação no Linux descrita acima. Você precisará de algumas dependências adicionais:
