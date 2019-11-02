@@ -16,7 +16,7 @@ dnl You should have received a copy of the GNU General Public License
 dnl along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_DEFUN([WT_OPENCV], [dnl
-  PKG_CHECK_MODULES([$1], [opencv >= $2])
+  PKG_CHECK_MODULES([$1], [opencv4 >= $2])
   res=""
   for arg in [$]$1_LIBS; do
       case "$arg" in
