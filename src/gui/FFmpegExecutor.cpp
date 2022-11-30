@@ -288,7 +288,7 @@ void FFmpegExecutor::on_ffmpeg_finished(Glib::Pid pid, int status)
   ffmpeg_out_.reset();
 
   GError *error = nullptr;
-  if (g_spawn_check_exit_status(status, &error)) {
+  if (g_spawn_check_wait_status(status, &error)) {
     signal_finished_.emit(true, "");
   } else {
     std::string message(error->message);
