@@ -27,6 +27,7 @@
 #include "FrameNavigator.hpp"
 #include "FrameNavigatorUtil.hpp"
 #include "FrameView.hpp"
+#include "Utils.hpp"
 
 using namespace mdl;
 
@@ -39,6 +40,7 @@ FrameNavigator::FrameNavigator(BaseObjectType* cobject,
   , parent_window_(parent_window)
   , frame_provider_(frame_provider)
   , number_of_frames_(frame_provider->get_number_of_frames())
+  , duration_(frame_provider->get_duration())
   , frame_view_(nullptr)
   , prev_frame_view_(nullptr)
   , lbl_prev_frame_(nullptr)
@@ -105,6 +107,10 @@ void FrameNavigator::configure_navigation_bar(const Glib::RefPtr<Gtk::Builder>& 
     sigc::mem_fun(*this, &FrameNavigator::on_frame_number_input));
 
   builder->get_widget_derived("txt_jump_size", txt_jump_size_);
+
+  Gtk::Label* lbl_time_total = nullptr;
+  builder->get_widget("lbl_time_total", lbl_time_total);
+  lbl_time_total->set_text(format_time(duration_));
 }
 
 

@@ -17,6 +17,7 @@
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <string>
+#include <iomanip>
 #include <utility>
 
 #include <gtkmm.h>
@@ -60,4 +61,22 @@ bool mdl::confirmation_dialog(Gtk::MessageDialog&& dlg, const Glib::ustring& txt
   dlg.add_button(txt_safe, Gtk::RESPONSE_NO);
   dlg.set_default_response(Gtk::RESPONSE_NO);
   return dlg.run() == Gtk::RESPONSE_YES;
+}
+
+
+std::string mdl::format_time(long ms)
+{
+  int seconds = ms / 1000;
+  ms %= 1000;
+  int minutes = seconds / 60;
+  seconds %= 60;
+
+  std::ostringstream oss;
+  oss << std::setfill('0') << std::setw(2) << minutes
+      << ":"
+      << std::setfill('0') << std::setw(2) << seconds
+      << "."
+      << std::setfill('0') << std::setw(3) << ms;
+
+  return oss.str();
 }

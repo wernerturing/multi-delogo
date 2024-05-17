@@ -30,7 +30,8 @@ check_PROGRAMS = ETRProgressBarTest \
                  FilterListModelTest \
                  FilterPanelFactoryTest \
                  FrameNavigatorUtilTest \
-                 SelectionRectTest
+                 SelectionRectTest \
+                 UtilsTest
 
 ETRProgressBarTest_SOURCES = ETRProgressBarTest.cpp \
                              ../../src/gui/ETRProgressBar.cpp
@@ -53,5 +54,8 @@ SelectionRectTest_SOURCES = SelectionRectTest.cpp \
                             ../../src/gui/FrameView.cpp
 SelectionRectTest_CPPFLAGS = $(AM_CPPFLAGS) $(GOOCANVASMM_CFLAGS)
 SelectionRectTest_LDADD = $(LDADD) $(GOOCANVASMM_LIBS)
+
+UtilsTest_SOURCES = UtilsTest.cpp \
+                    ../../src/gui/Utils.cpp
 
 TESTS = $(check_PROGRAMS)

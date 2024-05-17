@@ -83,3 +83,9 @@ double OpenCVFrameProvider::get_fps()
 {
   return video_->get(cv::CAP_PROP_FPS);
 }
+
+
+long OpenCVFrameProvider::get_duration()
+{
+  return get_number_of_frames() / get_fps() * 1000;
+}

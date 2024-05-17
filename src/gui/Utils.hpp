@@ -34,6 +34,8 @@ namespace mdl {
                            const Glib::ustring& msg,
                            const Glib::ustring& txt_destructive,
                            const Glib::ustring& txt_safe);
+
+ std::string format_time(long ms);
 }
 
 #endif // MDL_UTILS_H

@@ -61,6 +61,7 @@ namespace mdl {
     Glib::RefPtr<FrameProvider> frame_provider_;
     int number_of_frames_;
     int frame_number_;
+    long duration_;
 
     Glib::RefPtr<Gdk::Pixbuf> frame_pixbuf_;
     FrameView* frame_view_;
