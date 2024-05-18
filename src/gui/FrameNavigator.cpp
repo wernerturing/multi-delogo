@@ -46,6 +46,7 @@ FrameNavigator::FrameNavigator(BaseObjectType* cobject,
   , lbl_prev_frame_(nullptr)
   , txt_frame_number_(nullptr)
   , txt_jump_size_(nullptr)
+  , lbl_time_pos_(nullptr)
   , zoom_(1)
   , lbl_zoom_(nullptr)
   , btn_zoom_out_(nullptr)
@@ -108,6 +109,7 @@ void FrameNavigator::configure_navigation_bar(const Glib::RefPtr<Gtk::Builder>& 
 
   builder->get_widget_derived("txt_jump_size", txt_jump_size_);
 
+  builder->get_widget("lbl_time_pos", lbl_time_pos_);
   Gtk::Label* lbl_time_total = nullptr;
   builder->get_widget("lbl_time_total", lbl_time_total);
   lbl_time_total->set_text(format_time(duration_));
@@ -179,6 +181,9 @@ void FrameNavigator::change_displayed_frame(int new_frame_number)
     signal_frame_changed_.emit(new_frame_number);
     frame_number_ = new_frame_number;
     txt_frame_number_->set_value(frame_number_);
+
+    long time_pos = calculate_position((frame_number_ - 1), get_fps());
+    lbl_time_pos_->set_label(format_time(time_pos));
   } catch (const FrameNotAvailableException& e) {
     Gtk::MessageDialog dlg(parent_window_,
                            _("Could not get frame"), false,

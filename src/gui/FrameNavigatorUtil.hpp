@@ -22,6 +22,7 @@
 
 namespace mdl {
   double get_zoom_to_fit_ratio(int image_width, int image_height, int window_width, int window_height);
+  long calculate_position(int frame_number, double fps);
 }
 
 #endif // MDL_FRAME_NAVIGATOR_UTIL_H

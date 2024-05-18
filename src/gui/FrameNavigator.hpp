@@ -73,6 +73,8 @@ namespace mdl {
     NumericEntry* txt_frame_number_;
     NumericEntry* txt_jump_size_;
 
+    Gtk::Label* lbl_time_pos_;
+
     gdouble zoom_;
     Gtk::Label* lbl_zoom_;
     Gtk::Button* btn_zoom_out_;
