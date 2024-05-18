@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2019 Werner Turing <werner.turing@protonmail.com>
+ * Copyright (C) 2018-2024 Werner Turing <werner.turing@protonmail.com>
  *
  * This file is part of multi-delogo.
  *
