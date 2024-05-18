@@ -112,7 +112,7 @@ void FrameNavigator::configure_navigation_bar(const Glib::RefPtr<Gtk::Builder>& 
   builder->get_widget("lbl_time_pos", lbl_time_pos_);
   Gtk::Label* lbl_time_total = nullptr;
   builder->get_widget("lbl_time_total", lbl_time_total);
-  lbl_time_total->set_text(format_time(duration_));
+  lbl_time_total->set_text(format_time_based_on_total(duration_, duration_));
 }
 
 
@@ -183,7 +183,7 @@ void FrameNavigator::change_displayed_frame(int new_frame_number)
     txt_frame_number_->set_value(frame_number_);
 
     long time_pos = calculate_position((frame_number_ - 1), get_fps());
-    lbl_time_pos_->set_label(format_time(time_pos));
+    lbl_time_pos_->set_label(format_time_based_on_total(time_pos, duration_));
   } catch (const FrameNotAvailableException& e) {
     Gtk::MessageDialog dlg(parent_window_,
                            _("Could not get frame"), false,

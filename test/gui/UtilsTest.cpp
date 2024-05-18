@@ -28,7 +28,7 @@ using namespace mdl;
 #include <boost/test/unit_test.hpp>
 
 
-BOOST_AUTO_TEST_SUITE(format_time_suite)
+BOOST_AUTO_TEST_SUITE(format_time_tests)
 
 BOOST_AUTO_TEST_CASE(should_format_time_1)
 {
@@ -58,6 +58,64 @@ BOOST_AUTO_TEST_CASE(should_format_time_3)
   std::string result = format_time(min*60*1000 + sec*1000 + ms);
 
   BOOST_CHECK_EQUAL(result, "61:23.100");
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+
+BOOST_AUTO_TEST_SUITE(format_time_with_hour_tests)
+
+BOOST_AUTO_TEST_CASE(should_format_time_with_hour_1)
+{
+  long min = 6;
+  long sec = 8;
+  long ms = 321;
+  std::string result = format_time_with_hour(min*60*1000 + sec*1000 + ms);
+
+  BOOST_CHECK_EQUAL(result, "0:06:08.321");
+}
+
+BOOST_AUTO_TEST_CASE(should_format_time_2)
+{
+  long hour = 1;
+  long min = 2;
+  long sec = 23;
+  long ms = 100;
+  std::string result
+    = format_time_with_hour(hour*60*60*1000 + min*60*1000 + sec*1000 + ms);
+
+  BOOST_CHECK_EQUAL(result, "1:02:23.100");
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+
+BOOST_AUTO_TEST_SUITE(format_time_based_on_total_tests)
+
+BOOST_AUTO_TEST_CASE(should_not_include_hours_if_total_is_less_than_1_hour)
+{
+  long min = 6;
+  long sec = 8;
+  long ms = 321;
+  long time = min*60*1000 + sec*1000 + ms;
+  long total = 59*60*1000 + 59*1000 + 999;
+
+  std::string result = format_time_based_on_total(time, total);
+
+  BOOST_CHECK_EQUAL(result, "06:08.321");
+}
+
+BOOST_AUTO_TEST_CASE(should_include_hours_if_total_is_1_hour_or_more)
+{
+  long min = 6;
+  long sec = 8;
+  long ms = 321;
+  long time = min*60*1000 + sec*1000 + ms;
+  long total = 60*60*1000;
+
+  std::string result = format_time_based_on_total(time, total);
+
+  BOOST_CHECK_EQUAL(result, "0:06:08.321");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

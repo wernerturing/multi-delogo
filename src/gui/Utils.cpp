@@ -80,3 +80,38 @@ std::string mdl::format_time(long ms)
 
   return oss.str();
 }
+
+
+std::string mdl::format_time_with_hour(long ms)
+{
+  int seconds = ms / 1000;
+  ms %= 1000;
+  int minutes = seconds / 60;
+  seconds %= 60;
+  int hours = minutes / 60;
+  minutes %= 60;
+
+  std::ostringstream oss;
+  oss << hours
+      << ":"
+      << std::setfill('0') << std::setw(2) << minutes
+      << ":"
+      << std::setfill('0') << std::setw(2) << seconds
+      << "."
+      << std::setfill('0') << std::setw(3) << ms;
+
+  return oss.str();
+}
+
+
+std::string mdl::format_time_based_on_total(long ms, long total_ms)
+{
+  const long one_hour = 60*60*1000;
+
+  if (total_ms >= one_hour) {
+    return format_time_with_hour(ms);
+  } else {
+    return format_time(ms);
+  }
+}
+
