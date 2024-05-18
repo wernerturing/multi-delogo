@@ -50,3 +50,32 @@ BOOST_AUTO_TEST_CASE(should_return_1_if_image_fits_window)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+
+BOOST_AUTO_TEST_SUITE(calculate_position_tests)
+
+BOOST_AUTO_TEST_CASE(should_calculate_position_1)
+{
+  BOOST_CHECK_EQUAL(calculate_position(0, 29.97), 0);
+  BOOST_CHECK_EQUAL(calculate_position(1, 29.97), 33);
+  BOOST_CHECK_EQUAL(calculate_position(2, 29.97), 66);
+  BOOST_CHECK_EQUAL(calculate_position(3, 29.97), 100);
+  BOOST_CHECK_EQUAL(calculate_position(10, 29.97), 333);
+  BOOST_CHECK_EQUAL(calculate_position(25, 29.97), 834);
+  BOOST_CHECK_EQUAL(calculate_position(517, 29.97), 17250);
+  BOOST_CHECK_EQUAL(calculate_position(42619, 29.97), 1422055);
+}
+
+BOOST_AUTO_TEST_CASE(should_calculate_position_2)
+{
+  BOOST_CHECK_EQUAL(calculate_position(0, 25), 0);
+  BOOST_CHECK_EQUAL(calculate_position(1, 25), 40);
+  BOOST_CHECK_EQUAL(calculate_position(2, 25), 80);
+  BOOST_CHECK_EQUAL(calculate_position(3, 25), 120);
+  BOOST_CHECK_EQUAL(calculate_position(10, 25), 400);
+  BOOST_CHECK_EQUAL(calculate_position(25, 25), 1000);
+  BOOST_CHECK_EQUAL(calculate_position(517, 25), 20680);
+  BOOST_CHECK_EQUAL(calculate_position(42619, 25), 1704760);
+}
+
+BOOST_AUTO_TEST_SUITE_END()

@@ -36,6 +36,7 @@ namespace mdl {
     virtual int get_frame_height() = 0;
     virtual int get_number_of_frames() = 0;
     virtual double get_fps() = 0;
+    virtual long get_duration() = 0;
   };
 
 

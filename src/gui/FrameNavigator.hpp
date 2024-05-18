@@ -61,6 +61,7 @@ namespace mdl {
     Glib::RefPtr<FrameProvider> frame_provider_;
     int number_of_frames_;
     int frame_number_;
+    long duration_;
 
     Glib::RefPtr<Gdk::Pixbuf> frame_pixbuf_;
     FrameView* frame_view_;
@@ -71,6 +72,8 @@ namespace mdl {
 
     NumericEntry* txt_frame_number_;
     NumericEntry* txt_jump_size_;
+
+    Gtk::Label* lbl_time_pos_;
 
     gdouble zoom_;
     Gtk::Label* lbl_zoom_;

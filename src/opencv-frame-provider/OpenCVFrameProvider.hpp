@@ -43,6 +43,7 @@ namespace mdl { namespace opencv {
     int get_frame_height() override;
     int get_number_of_frames() override;
     double get_fps() override;
+    long get_duration() override;
 
   private:
     std::unique_ptr<cv::VideoCapture> video_;

@@ -21,3 +21,4 @@ FilterListModelTest
 FilterPanelFactoryTest
 FrameNavigatorUtilTest
 SelectionRectTest
+UtilsTest
