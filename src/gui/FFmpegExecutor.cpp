@@ -148,8 +148,6 @@ std::vector<std::string> FFmpegExecutor::get_ffmpeg_cmd_line(const std::string& 
   std::vector<std::string> cmd_line;
   cmd_line.push_back("ffmpeg");
   cmd_line.push_back("-y");
-  cmd_line.push_back("-v"); cmd_line.push_back("error");
-  cmd_line.push_back("-stats");
 
   cmd_line.push_back("-i"); cmd_line.push_back(input_file_);
   cmd_line.push_back("-filter_complex_script"); cmd_line.push_back(filter_file);
