@@ -19,6 +19,8 @@
 #include <memory>
 #include <string>
 
+#include <boost/algorithm/string/join.hpp>
+
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
 
@@ -115,6 +117,10 @@ void EncodeWindow::configure_widgets(const Glib::RefPtr<Gtk::Builder>& builder)
   Gtk::Grid* grid_fuzzy = nullptr;
   builder->get_widget("grid_fuzzy", grid_fuzzy);
   widgets_to_disable_.push_back(grid_fuzzy);
+
+  Gtk::Button* btn_cmd_line = nullptr;
+  builder->get_widget("btn_cmd_line", btn_cmd_line);
+  btn_cmd_line->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_show_cmd_line));
 
   Gtk::Button* btn_script = nullptr;
   builder->get_widget("btn_script", btn_script);
@@ -230,6 +236,23 @@ void EncodeWindow::on_generate_script()
     dlg.run();
     return;
   }
+}
+
+
+void EncodeWindow::on_show_cmd_line()
+{
+  ffmpeg_.set_generator(get_generator());
+  ffmpeg_.set_input_file(filter_data_->movie_file());
+  ffmpeg_.set_codec(codec_);
+  ffmpeg_.set_quality(txt_quality_->get_value_as_int());
+  ffmpeg_.set_output_file(txt_file_->get_text());
+
+  std::vector<std::string> args = ffmpeg_.get_ffmpeg_cmd_line(_("FILTER_FILE"));
+  std::string cmd_line = boost::algorithm::join(args, " ");
+
+  LogWindow* window = LogWindow::create(*this, cmd_line);
+  window->set_title(_("FFmpeg command line"));
+  get_application()->register_window(window);
 }
 
 

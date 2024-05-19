@@ -79,6 +79,7 @@ namespace mdl {
 
     void on_encode();
     void on_generate_script();
+    void on_show_cmd_line();
 
     bool check_file(const std::string& file);
 
