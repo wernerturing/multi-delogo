@@ -21,6 +21,9 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <!-- interface-license-type gplv3 -->
+  <!-- interface-name multi-delogo -->
+  <!-- interface-copyright 2018-2024 Werner Turing <werner.turing@protonmail.com> -->
   <object class="GtkAdjustment" id="adj_txt_fuzzyness">
     <property name="lower">0.10</property>
     <property name="upper">10</property>
@@ -43,20 +46,17 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
     <property name="border-width">8</property>
     <property name="title" translatable="yes">Encode video</property>
     <child>
-      <!-- n-columns=1 n-rows=6 -->
-      <object class="GtkGrid" id="grid_main">
+      <object class="GtkBox" id="box_main">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
-        <property name="row-spacing">8</property>
+        <property name="spacing">8</property>
         <child>
-          <!-- n-columns=3 n-rows=1 -->
-          <object class="GtkGrid" id="grid_file_selection">
+          <object class="GtkBox" id="box_file_selection">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="valign">center</property>
-            <property name="vexpand">True</property>
-            <property name="column-spacing">4</property>
+            <property name="spacing">4</property>
             <child>
               <object class="GtkLabel" id="lbl_file">
                 <property name="visible">True</property>
@@ -66,19 +66,20 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="mnemonic-widget">txt_file</property>
               </object>
               <packing>
-                <property name="left-attach">0</property>
-                <property name="top-attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkEntry" id="txt_file">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
-                <property name="hexpand">True</property>
               </object>
               <packing>
-                <property name="left-attach">1</property>
-                <property name="top-attach">0</property>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -91,24 +92,24 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="use-underline">True</property>
               </object>
               <packing>
-                <property name="left-attach">2</property>
-                <property name="top-attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
           <packing>
-            <property name="left-attach">0</property>
-            <property name="top-attach">0</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
-          <!-- n-columns=3 n-rows=1 -->
-          <object class="GtkGrid" id="grid_codec">
+          <object class="GtkBox" id="box_codec">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="valign">center</property>
-            <property name="vexpand">True</property>
-            <property name="column-spacing">4</property>
+            <property name="spacing">4</property>
             <child>
               <object class="GtkLabel" id="lbl_codec">
                 <property name="visible">True</property>
@@ -116,8 +117,9 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="label" translatable="yes">Video format:</property>
               </object>
               <packing>
-                <property name="left-attach">0</property>
-                <property name="top-attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -132,8 +134,9 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="draw-indicator">True</property>
               </object>
               <packing>
-                <property name="left-attach">1</property>
-                <property name="top-attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -149,24 +152,24 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="group">btn_h264</property>
               </object>
               <packing>
-                <property name="left-attach">2</property>
-                <property name="top-attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
           <packing>
-            <property name="left-attach">0</property>
-            <property name="top-attach">1</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
           </packing>
         </child>
         <child>
-          <!-- n-columns=2 n-rows=1 -->
-          <object class="GtkGrid" id="grid_quality">
+          <object class="GtkBox" id="box_quality">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="valign">center</property>
-            <property name="vexpand">True</property>
-            <property name="column-spacing">4</property>
+            <property name="spacing">4</property>
             <child>
               <object class="GtkLabel" id="lbl_quality">
                 <property name="visible">True</property>
@@ -176,8 +179,9 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="mnemonic-widget">txt_quality</property>
               </object>
               <packing>
-                <property name="left-attach">0</property>
-                <property name="top-attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -188,24 +192,24 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="adjustment">adj_txt_quality</property>
               </object>
               <packing>
-                <property name="left-attach">1</property>
-                <property name="top-attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>
           <packing>
-            <property name="left-attach">0</property>
-            <property name="top-attach">2</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
           </packing>
         </child>
         <child>
-          <!-- n-columns=3 n-rows=1 -->
-          <object class="GtkGrid" id="grid_fuzzy">
+          <object class="GtkBox" id="box_fuzzy">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="valign">center</property>
-            <property name="vexpand">True</property>
-            <property name="column-spacing">4</property>
+            <property name="spacing">4</property>
             <child>
               <object class="GtkCheckButton" id="chk_fuzzy">
                 <property name="label" translatable="yes">_Randomnly increase filter times</property>
@@ -217,8 +221,9 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="draw-indicator">True</property>
               </object>
               <packing>
-                <property name="left-attach">0</property>
-                <property name="top-attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -231,8 +236,9 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="mnemonic-widget">txt_fuzzyness</property>
               </object>
               <packing>
-                <property name="left-attach">1</property>
-                <property name="top-attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -246,25 +252,25 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="value">2</property>
               </object>
               <packing>
-                <property name="left-attach">2</property>
-                <property name="top-attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
           <packing>
-            <property name="left-attach">0</property>
-            <property name="top-attach">3</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
           </packing>
         </child>
         <child>
-          <!-- n-columns=3 n-rows=1 -->
-          <object class="GtkGrid" id="grid_buttons">
+          <object class="GtkBox" id="box_buttons">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="halign">end</property>
             <property name="valign">center</property>
-            <property name="vexpand">True</property>
-            <property name="column-spacing">8</property>
+            <property name="spacing">8</property>
             <child>
               <object class="GtkButton" id="btn_script">
                 <property name="label" translatable="yes">_Generate filter script</property>
@@ -275,8 +281,9 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="use-underline">True</property>
               </object>
               <packing>
-                <property name="left-attach">1</property>
-                <property name="top-attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -288,8 +295,9 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="use-underline">True</property>
               </object>
               <packing>
-                <property name="left-attach">2</property>
-                <property name="top-attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -302,26 +310,26 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="use-underline">True</property>
               </object>
               <packing>
-                <property name="left-attach">0</property>
-                <property name="top-attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
           <packing>
-            <property name="left-attach">0</property>
-            <property name="top-attach">4</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
           </packing>
         </child>
         <child>
-          <!-- n-columns=1 n-rows=3 -->
-          <object class="GtkGrid" id="grid_progress">
+          <object class="GtkBox" id="box_progress">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="no-show-all">True</property>
             <property name="valign">center</property>
-            <property name="vexpand">True</property>
             <property name="orientation">vertical</property>
-            <property name="row-spacing">4</property>
+            <property name="spacing">4</property>
             <child>
               <object class="GtkLabel" id="lbl_status">
                 <property name="visible">True</property>
@@ -330,19 +338,20 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="margin-top">16</property>
               </object>
               <packing>
-                <property name="left-attach">0</property>
-                <property name="top-attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkProgressBar" id="progress_bar">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="hexpand">True</property>
               </object>
               <packing>
-                <property name="left-attach">0</property>
-                <property name="top-attach">1</property>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -354,14 +363,16 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="use-underline">True</property>
               </object>
               <packing>
-                <property name="left-attach">0</property>
-                <property name="top-attach">2</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
           <packing>
-            <property name="left-attach">0</property>
-            <property name="top-attach">5</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
           </packing>
         </child>
       </object>

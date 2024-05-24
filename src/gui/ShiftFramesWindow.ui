@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.0 
+<!-- Generated with glade 3.40.0 
 
 Copyright (C) 2018-2024 Werner Turing <werner.turing@protonmail.com>
 
@@ -21,30 +21,30 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <!-- interface-license-type gplv3 -->
+  <!-- interface-name multi-delogo -->
+  <!-- interface-copyright 2018-2024 Werner Turing <werner.turing@protonmail.com> -->
   <object class="GtkDialog" id="shift_frames_window">
-    <property name="can_focus">False</property>
+    <property name="can-focus">False</property>
     <property name="title" translatable="yes">Shift starting frames</property>
     <property name="modal">True</property>
-    <property name="type_hint">dialog</property>
-    <child>
-      <placeholder/>
-    </child>
+    <property name="type-hint">dialog</property>
     <child internal-child="vbox">
       <object class="GtkBox">
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">
           <object class="GtkButtonBox">
-            <property name="can_focus">False</property>
-            <property name="layout_style">end</property>
+            <property name="can-focus">False</property>
+            <property name="layout-style">end</property>
             <child>
               <object class="GtkButton" id="btn_shift">
                 <property name="label" translatable="yes">S_hift</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_underline">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="use-underline">True</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -56,9 +56,9 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
               <object class="GtkButton" id="btn_close">
                 <property name="label" translatable="yes">_Close</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_underline">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="use-underline">True</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -74,89 +74,90 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
           </packing>
         </child>
         <child>
+          <!-- n-columns=4 n-rows=2 -->
           <object class="GtkGrid" id="grid_parameters">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can-focus">False</property>
             <property name="valign">center</property>
             <property name="vexpand">True</property>
-            <property name="row_spacing">8</property>
-            <property name="column_spacing">8</property>
+            <property name="row-spacing">8</property>
+            <property name="column-spacing">8</property>
             <child>
               <object class="GtkLabel" id="lbl_initial_frame">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="halign">end</property>
                 <property name="label" translatable="yes">_Start frame:</property>
-                <property name="use_underline">True</property>
-                <property name="mnemonic_widget">txt_initial_frame</property>
+                <property name="use-underline">True</property>
+                <property name="mnemonic-widget">txt_initial_frame</property>
               </object>
               <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">0</property>
+                <property name="left-attach">0</property>
+                <property name="top-attach">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkSpinButton" id="txt_initial_frame">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
+                <property name="can-focus">True</property>
                 <property name="hexpand">True</property>
-                <property name="width_chars">7</property>
+                <property name="width-chars">7</property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">0</property>
+                <property name="left-attach">1</property>
+                <property name="top-attach">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="lbl_final_frame">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="halign">end</property>
                 <property name="label" translatable="yes">_End frame:</property>
-                <property name="use_underline">True</property>
-                <property name="mnemonic_widget">txt_final_frame</property>
+                <property name="use-underline">True</property>
+                <property name="mnemonic-widget">txt_final_frame</property>
               </object>
               <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">0</property>
+                <property name="left-attach">2</property>
+                <property name="top-attach">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkSpinButton" id="txt_final_frame">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
+                <property name="can-focus">True</property>
                 <property name="hexpand">True</property>
-                <property name="width_chars">7</property>
+                <property name="width-chars">7</property>
               </object>
               <packing>
-                <property name="left_attach">3</property>
-                <property name="top_attach">0</property>
+                <property name="left-attach">3</property>
+                <property name="top-attach">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="lbl_amount">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="halign">end</property>
                 <property name="label" translatable="yes">_Amount:</property>
-                <property name="use_underline">True</property>
-                <property name="mnemonic_widget">txt_amount</property>
+                <property name="use-underline">True</property>
+                <property name="mnemonic-widget">txt_amount</property>
               </object>
               <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">1</property>
+                <property name="left-attach">0</property>
+                <property name="top-attach">1</property>
               </packing>
             </child>
             <child>
               <object class="GtkSpinButton" id="txt_amount">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
+                <property name="can-focus">True</property>
                 <property name="hexpand">True</property>
                 <property name="value">1</property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">1</property>
+                <property name="left-attach">1</property>
+                <property name="top-attach">1</property>
               </packing>
             </child>
             <child>

@@ -32,7 +32,7 @@ using namespace mdl;
 FilterList::FilterList(BaseObjectType* cobject,
                        const Glib::RefPtr<Gtk::Builder>& builder,
                        fg::FilterList& filter_list)
-  : Gtk::Grid(cobject)
+  : Gtk::Box(cobject)
   , model_(FilterListModel::create(filter_list))
   , view_(nullptr)
   , filter_type_(nullptr)

@@ -85,9 +85,9 @@ void EncodeWindow::configure_widgets(const Glib::RefPtr<Gtk::Builder>& builder)
   builder->get_widget("btn_select_file", btn_select_file);
   btn_select_file->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_select_file));
 
-  Gtk::Grid* grid_file_selection = nullptr;
-  builder->get_widget("grid_file_selection", grid_file_selection);
-  widgets_to_disable_.push_back(grid_file_selection);
+  Gtk::Box* box_file_selection = nullptr;
+  builder->get_widget("box_file_selection", box_file_selection);
+  widgets_to_disable_.push_back(box_file_selection);
 
   Gtk::RadioButton* btn_h264 = nullptr;
   builder->get_widget("btn_h264", btn_h264);
@@ -100,23 +100,23 @@ void EncodeWindow::configure_widgets(const Glib::RefPtr<Gtk::Builder>& builder)
     sigc::bind(sigc::mem_fun(*this, &EncodeWindow::on_codec),
                FFmpegExecutor::Codec::H265));
 
-  Gtk::Grid* grid_codec = nullptr;
-  builder->get_widget("grid_codec", grid_codec);
-  widgets_to_disable_.push_back(grid_codec);
+  Gtk::Box* box_codec = nullptr;
+  builder->get_widget("box_codec", box_codec);
+  widgets_to_disable_.push_back(box_codec);
 
   builder->get_widget("txt_quality", txt_quality_);
 
-  Gtk::Grid* grid_quality = nullptr;
-  builder->get_widget("grid_quality", grid_quality);
-  widgets_to_disable_.push_back(grid_quality);
+  Gtk::Box* box_quality = nullptr;
+  builder->get_widget("box_quality", box_quality);
+  widgets_to_disable_.push_back(box_quality);
 
   builder->get_widget("chk_fuzzy", chk_fuzzy_);
   chk_fuzzy_->signal_toggled().connect(sigc::mem_fun(*this, &EncodeWindow::on_fuzzy_toggled));
   builder->get_widget("txt_fuzzyness", txt_fuzzyness_);
 
-  Gtk::Grid* grid_fuzzy = nullptr;
-  builder->get_widget("grid_fuzzy", grid_fuzzy);
-  widgets_to_disable_.push_back(grid_fuzzy);
+  Gtk::Box* box_fuzzy = nullptr;
+  builder->get_widget("box_fuzzy", box_fuzzy);
+  widgets_to_disable_.push_back(box_fuzzy);
 
   Gtk::Button* btn_cmd_line = nullptr;
   builder->get_widget("btn_cmd_line", btn_cmd_line);
@@ -130,16 +130,16 @@ void EncodeWindow::configure_widgets(const Glib::RefPtr<Gtk::Builder>& builder)
   builder->get_widget("btn_encode", btn_encode);
   btn_encode->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_encode));
 
-  Gtk::Grid* grid_buttons = nullptr;
-  builder->get_widget("grid_buttons", grid_buttons);
-  widgets_to_disable_.push_back(grid_buttons);
+  Gtk::Box* box_buttons = nullptr;
+  builder->get_widget("box_buttons", box_buttons);
+  widgets_to_disable_.push_back(box_buttons);
 
   builder->get_widget("lbl_status", lbl_status_);
   builder->get_widget_derived("progress_bar", progress_bar_);
   builder->get_widget("btn_log", btn_log_);
   btn_log_->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_view_log));
 
-  builder->get_widget("grid_progress", box_progress_);
+  builder->get_widget("box_progress", box_progress_);
   box_progress_->hide();
 
   on_codec(FFmpegExecutor::Codec::H264);

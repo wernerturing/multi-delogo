@@ -62,7 +62,7 @@ namespace mdl {
     Gtk::CheckButton* chk_fuzzy_;
     Gtk::SpinButton* txt_fuzzyness_;
 
-    Gtk::Grid* box_progress_;
+    Gtk::Box* box_progress_;
     Gtk::Label* lbl_status_;
     ETRProgressBar* progress_bar_;
     Gtk::Button* btn_log_;

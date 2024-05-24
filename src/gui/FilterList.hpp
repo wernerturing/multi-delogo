@@ -31,7 +31,7 @@
 
 
 namespace mdl {
-  class FilterList : public Gtk::Grid
+  class FilterList : public Gtk::Box
   {
   public:
     FilterList(BaseObjectType* cobject,
