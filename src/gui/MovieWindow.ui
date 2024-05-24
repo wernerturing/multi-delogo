@@ -679,7 +679,7 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="margin-start">64</property>
-                            <property name="label" translatable="yes">00:00.000</property>
+                            <property name="label">00:00.000</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -691,7 +691,7 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                           <object class="GtkLabel" id="lbl_time_separator">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">/</property>
+                            <property name="label">/</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -703,7 +703,7 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                           <object class="GtkLabel" id="lbl_time_total">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">10:00.000</property>
+                            <property name="label">10:00.000</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
