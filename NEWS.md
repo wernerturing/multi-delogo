@@ -1,5 +1,10 @@
 ## 2.4.0
 
+* The time position is now displayed.
+
+* Added a button to display the ffmpeg command line that will be
+  called.
+
 * Fixed bug that left ffmpeg executing even when cancel encoding was
   selected.
 
