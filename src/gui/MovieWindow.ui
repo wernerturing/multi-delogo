@@ -650,7 +650,7 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                           <object class="GtkLabel" id="lbl_jump_size">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="margin-left">32</property>
+                            <property name="margin-start">32</property>
                             <property name="label" translatable="yes">_Jump size:</property>
                             <property name="use-underline">True</property>
                             <property name="mnemonic-widget">txt_jump_size</property>
