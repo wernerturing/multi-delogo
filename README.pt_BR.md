@@ -17,7 +17,7 @@ Baixe a última versão da [página de releaes](https://github.com/wernerturing/
 Para compilar o software no Linux, você precisará dos arquivos de desenvolvimento para as seguintes bibliotecas:
 
 * gtkmm
-* goocanvasmm
+* goocanvas
 * opencv
 * boost
 

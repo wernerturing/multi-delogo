@@ -20,7 +20,7 @@
 #define MDL_FRAME_VIEW_H
 
 #include <gtkmm.h>
-#include <goocanvasmm.h>
+#include <goocanvas.h>
 
 #include "common/Rectangle.hpp"
 
@@ -48,11 +48,25 @@ namespace mdl {
     typedef sigc::signal<void, Rectangle> type_signal_rectangle_changed;
     type_signal_rectangle_changed signal_rectangle_changed();
 
+    ~FrameView();
+
+    friend bool fv_on_button_press_wrapper(GooCanvasItem* item,
+                                           GooCanvasItem* target_item,
+                                           GdkEventButton* event,
+                                           FrameView* frameview);
+    friend bool fv_on_motion_notify_wrapper(GooCanvasItem* item,
+                                            GooCanvasItem* target_item,
+                                            GdkEventMotion* event,
+                                            FrameView* frameview);
+    friend bool fv_on_button_release_wrapper(GooCanvasItem* item,
+                                             GooCanvasItem* target_item,
+                                             GdkEventButton* event,
+                                             FrameView* frameview);
   private:
-    Goocanvas::Canvas canvas_;
-    Glib::RefPtr<Goocanvas::Image> image_;
-    Glib::RefPtr<SelectionRect> rect_;
-    Glib::RefPtr<SelectionRect> temp_rect_;
+    GooCanvas* canvas_;
+    GooCanvasItem* image_;
+    SelectionRect* rect_;
+    SelectionRect* temp_rect_;
 
     bool drag_;
     Point drag_start_;
@@ -60,9 +74,9 @@ namespace mdl {
     type_signal_rectangle_changed signal_rectangle_changed_;
 
 
-    bool on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
-    bool on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventMotion* event);
-    bool on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
+    bool on_button_press(GooCanvasItem* item, GdkEventButton* event);
+    bool on_motion_notify(GooCanvasItem* item, GdkEventMotion* event);
+    bool on_button_release(GooCanvasItem* item, GdkEventButton* event);
   };
 
 
@@ -81,24 +95,47 @@ namespace mdl {
   };
 
 
-  class SelectionRect : public Goocanvas::Rect
+  class SelectionRect
   {
-  protected:
-    SelectionRect(gdouble x, gdouble y, gdouble width, gdouble height);
-
   public:
-    static Glib::RefPtr<SelectionRect> create(gdouble x=0.0, gdouble y=0.0, gdouble width=0.0, gdouble height=0.0);
+    SelectionRect(gdouble x=0.0, gdouble y=0.0, gdouble width=0.0, gdouble height=0.0);
+
+    GooCanvasItem* c_item();
+
+    void set_visible(bool is_visible);
+
     void enable_drag_and_drop();
 
     Rectangle get_coordinates();
     void set_coordinates(const Rectangle& coordinates);
 
+    ~SelectionRect();
+
     typedef sigc::signal<void, Rectangle> type_signal_rectangle_changed;
     type_signal_rectangle_changed signal_rectangle_changed();
+
+    friend bool sr_on_button_press_wrapper(GooCanvasItem* item,
+                                           GooCanvasItem* target_item,
+                                           GdkEventButton* event,
+                                           SelectionRect* rect);
+    friend bool sr_on_motion_notify_wrapper(GooCanvasItem* item,
+                                            GooCanvasItem* target_item,
+                                            GdkEventMotion* event,
+                                            SelectionRect* rect);
+    friend bool sr_on_button_release_wrapper(GooCanvasItem* item,
+                                             GooCanvasItem* target_item,
+                                             GdkEventButton* event,
+                                             SelectionRect* rect);
+    friend bool sr_on_leave_notify_wrapper(GooCanvasItem* item,
+                                           GooCanvasItem* target_item,
+                                           GdkEventCrossing* event,
+                                           SelectionRect* rect);
 
 
   private:
     const static gdouble RESIZE_MARGIN_;
+
+    GooCanvasItem* rect_;
 
     DragMode drag_mode_;
     Rectangle start_coordinates_;
@@ -126,11 +163,11 @@ namespace mdl {
     void start_drag(DragMode mode, Point start);
     Rectangle get_new_coordinates(const Point& drag_point);
 
-    bool on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
-    bool on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventMotion* event);
-    bool on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
+    bool on_button_press(GooCanvasItem* item, GdkEventButton* event);
+    bool on_motion_notify(GooCanvasItem* item, GdkEventMotion* event);
+    bool on_button_release(GooCanvasItem* item, GdkEventButton* event);
 
-    bool on_leave_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventCrossing* event);
+    bool on_leave_notify(GooCanvasItem* item, GdkEventCrossing* event);
 
 
     friend class SelectionRectTestFixture;
