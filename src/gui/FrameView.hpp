@@ -48,9 +48,21 @@ namespace mdl {
     typedef sigc::signal<void, Rectangle> type_signal_rectangle_changed;
     type_signal_rectangle_changed signal_rectangle_changed();
 
+    friend bool on_button_press_wrapper(GooCanvasItem* item,
+                                        GooCanvasItem* target_item,
+                                        GdkEventButton* event,
+                                        FrameView* frameview);
+    friend bool on_motion_notify_wrapper(GooCanvasItem* item,
+                                         GooCanvasItem* target_item,
+                                         GdkEventMotion* event,
+                                         FrameView* frameview);
+    friend bool on_button_release_wrapper(GooCanvasItem* item,
+                                          GooCanvasItem* target_item,
+                                          GdkEventButton* event,
+                                          FrameView* frameview);
   private:
     GooCanvas* canvas_;
-    Glib::RefPtr<Goocanvas::Image> image_;
+    GooCanvasItem* image_;
     Glib::RefPtr<SelectionRect> rect_;
     Glib::RefPtr<SelectionRect> temp_rect_;
 
@@ -60,9 +72,9 @@ namespace mdl {
     type_signal_rectangle_changed signal_rectangle_changed_;
 
 
-    bool on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
-    bool on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventMotion* event);
-    bool on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event);
+    bool on_button_press(GooCanvasItem* item, GdkEventButton* event);
+    bool on_motion_notify(GooCanvasItem* item, GdkEventMotion* event);
+    bool on_button_release(GooCanvasItem* item, GdkEventButton* event);
   };
 
 

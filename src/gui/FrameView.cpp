@@ -24,6 +24,22 @@
 
 #include "FrameView.hpp"
 
+namespace mdl {
+  bool on_button_press_wrapper(GooCanvasItem* item,
+                               GooCanvasItem* target_item,
+                               GdkEventButton* event,
+                               FrameView* frameview);
+  bool on_motion_notify_wrapper(GooCanvasItem* item,
+                                GooCanvasItem* target_item,
+                                GdkEventMotion* event,
+                                FrameView* frameview);
+  bool on_button_release_wrapper(GooCanvasItem* item,
+                                 GooCanvasItem* target_item,
+                                 GdkEventButton* event,
+                                 FrameView* frameview);
+}
+
+
 using namespace mdl;
 
 
@@ -46,13 +62,13 @@ FrameView::FrameView(BaseObjectType* cobject,
 
   auto root = goo_canvas_get_root_item(canvas_);
 
-  image_ = Goocanvas::Image::create(0, 0);
+  image_ = goo_canvas_image_new(root, NULL, 0, 0, NULL);
   if (can_select_rectangle) {
-    image_->signal_button_press_event().connect(sigc::mem_fun(*this, &FrameView::on_button_press));
-    image_->signal_motion_notify_event().connect(sigc::mem_fun(*this, &FrameView::on_motion_notify));
-    image_->signal_button_release_event().connect(sigc::mem_fun(*this, &FrameView::on_button_release));
+    g_signal_connect(image_, "button-press-event", G_CALLBACK(on_button_press_wrapper), this);
+    g_signal_connect(image_, "motion-notify-event", G_CALLBACK(on_motion_notify_wrapper), this);
+    g_signal_connect(image_, "button-release-event", G_CALLBACK(on_button_release_wrapper), this);
   }
-  goo_canvas_item_add_child(root, (GooCanvasItem*) image_->gobj(), -1);
+  goo_canvas_item_add_child(root, image_, -1);
 
   rect_ = SelectionRect::create(100, 50, 150, 30);
   goo_canvas_item_add_child(root, (GooCanvasItem*) rect_->gobj(), -1);
@@ -71,7 +87,7 @@ FrameView::FrameView(BaseObjectType* cobject,
 
 void FrameView::set_image(Glib::RefPtr<Gdk::Pixbuf> pixbuf)
 {
-  image_->property_pixbuf() = pixbuf;
+  g_object_set(image_, "pixbuf", pixbuf->gobj(), NULL);
 }
 
 
@@ -106,7 +122,7 @@ FrameView::type_signal_rectangle_changed FrameView::signal_rectangle_changed()
 }
 
 
-bool FrameView::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event)
+bool FrameView::on_button_press(GooCanvasItem* item, GdkEventButton* event)
 {
   if (event->button != 1) {
     return false;
@@ -116,7 +132,7 @@ bool FrameView::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEv
   drag_start_.x = event->x;
   drag_start_.y = event->y;
 
-  goo_canvas_pointer_grab(canvas_, item->gobj(),
+  goo_canvas_pointer_grab(canvas_, item,
                           (GdkEventMask) (GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_RELEASE_MASK),
                           NULL,
                           event->time);
@@ -125,7 +141,7 @@ bool FrameView::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEv
 }
 
 
-bool FrameView::on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventMotion* event)
+bool FrameView::on_motion_notify(GooCanvasItem* item, GdkEventMotion* event)
 {
   if (!drag_) {
     return false;
@@ -143,14 +159,14 @@ bool FrameView::on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkE
 }
 
 
-bool FrameView::on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventButton* event)
+bool FrameView::on_button_release(GooCanvasItem* item, GdkEventButton* event)
 {
   if (!drag_) {
     return false;
   }
 
   drag_ = false;
-  goo_canvas_pointer_ungrab(canvas_, item->gobj(), event->time);
+  goo_canvas_pointer_ungrab(canvas_, item, event->time);
   temp_rect_->property_visibility() = Goocanvas::ITEM_HIDDEN;
 
   Rectangle coordinates = temp_rect_->get_coordinates();
@@ -161,6 +177,33 @@ bool FrameView::on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, Gdk
   }
 
   return true;
+}
+
+
+bool mdl::on_button_press_wrapper(GooCanvasItem* item,
+                                  GooCanvasItem* target_item,
+                                  GdkEventButton* event,
+                                  FrameView* frameview)
+{
+  return frameview->on_button_press(item, event);
+}
+
+
+bool mdl::on_motion_notify_wrapper(GooCanvasItem* item,
+                                   GooCanvasItem* target_item,
+                                   GdkEventMotion* event,
+                                   FrameView* frameview)
+{
+  return frameview->on_motion_notify(item, event);
+}
+
+
+bool mdl::on_button_release_wrapper(GooCanvasItem* item,
+                                    GooCanvasItem* target_item,
+                                    GdkEventButton* event,
+                                    FrameView* frameview)
+{
+  return frameview->on_button_release(item, event);
 }
 
 
