@@ -19,6 +19,7 @@
 #include <cmath>
 
 #include <gtkmm.h>
+#include <goocanvas.h>
 #include <goocanvasmm.h>
 
 #include "FrameView.hpp"
@@ -36,11 +37,14 @@ FrameView::FrameView(BaseObjectType* cobject,
   : Gtk::ScrolledWindow(cobject)
   , drag_(false)
 {
-  canvas_.set_bounds(0, 0, width, height);
-  canvas_.property_integer_layout() = true;
-  canvas_.property_anchor() = Goocanvas::ANCHOR_CENTER;
+  canvas_ = (GooCanvas*) goo_canvas_new();
+  goo_canvas_set_bounds(canvas_, 0, 0, width, height);
+  g_object_set(canvas_,
+               "integer_layout", true,
+               "anchor", GOO_CANVAS_ANCHOR_CENTER,
+               0);
 
-  auto root = canvas_.get_root_item();
+  auto root = goo_canvas_get_root_item(canvas_);
 
   image_ = Goocanvas::Image::create(0, 0);
   if (can_select_rectangle) {
@@ -48,19 +52,20 @@ FrameView::FrameView(BaseObjectType* cobject,
     image_->signal_motion_notify_event().connect(sigc::mem_fun(*this, &FrameView::on_motion_notify));
     image_->signal_button_release_event().connect(sigc::mem_fun(*this, &FrameView::on_button_release));
   }
-  root->add_child(image_);
+  goo_canvas_item_add_child(root, (GooCanvasItem*) image_->gobj(), -1);
 
   rect_ = SelectionRect::create(100, 50, 150, 30);
-  root->add_child(rect_);
+  goo_canvas_item_add_child(root, (GooCanvasItem*) rect_->gobj(), -1);
   if (can_select_rectangle) {
     rect_->enable_drag_and_drop();
     rect_->signal_rectangle_changed().connect(sigc::mem_fun(signal_rectangle_changed_, &type_signal_rectangle_changed::emit));
   }
 
   temp_rect_ = SelectionRect::create();
-  root->add_child(temp_rect_);
+  goo_canvas_item_add_child(root, (GooCanvasItem*) temp_rect_->gobj(), -1);
 
-  add(canvas_);
+  auto canvas = Glib::wrap((GtkWidget*) canvas_);
+  add(*canvas);
 }
 
 
@@ -72,7 +77,7 @@ void FrameView::set_image(Glib::RefPtr<Gdk::Pixbuf> pixbuf)
 
 void FrameView::set_zoom(gdouble level)
 {
-  canvas_.set_scale(level);
+  goo_canvas_set_scale(canvas_, level);
 }
 
 
@@ -91,7 +96,7 @@ void FrameView::hide_rectangle()
 
 void FrameView::scroll_to_current_rectangle()
 {
-  canvas_.scroll_to(rect_->property_x() - 50, rect_->property_y() - 50);
+  goo_canvas_scroll_to(canvas_, rect_->property_x() - 50, rect_->property_y() - 50);
 }
 
 
@@ -111,9 +116,10 @@ bool FrameView::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, GdkEv
   drag_start_.x = event->x;
   drag_start_.y = event->y;
 
-  item->get_canvas()->pointer_grab(item,
-                                   Gdk::POINTER_MOTION_MASK | Gdk::POINTER_MOTION_HINT_MASK | Gdk::BUTTON_RELEASE_MASK,
-                                   event->time);
+  goo_canvas_pointer_grab(canvas_, item->gobj(),
+                          (GdkEventMask) (GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_RELEASE_MASK),
+                          NULL,
+                          event->time);
 
   return true;
 }
@@ -144,7 +150,7 @@ bool FrameView::on_button_release(const Glib::RefPtr<Goocanvas::Item>& item, Gdk
   }
 
   drag_ = false;
-  item->get_canvas()->pointer_ungrab(item, event->time);
+  goo_canvas_pointer_ungrab(canvas_, item->gobj(), event->time);
   temp_rect_->property_visibility() = Goocanvas::ITEM_HIDDEN;
 
   Rectangle coordinates = temp_rect_->get_coordinates();
@@ -390,10 +396,12 @@ bool SelectionRect::on_button_press(const Glib::RefPtr<Goocanvas::Item>& item, G
   drag_start_.y = event->y;
   drag_mode_ = get_drag_mode_for_point(to_inside_coordinates(drag_start_));
 
-  item->get_canvas()->pointer_grab(item,
-                                   Gdk::POINTER_MOTION_MASK | Gdk::POINTER_MOTION_HINT_MASK | Gdk::BUTTON_RELEASE_MASK,
-                                   get_cursor(drag_mode_),
-                                   event->time);
+  GooCanvasItem* citem = item->gobj();
+  GooCanvas* canvas = goo_canvas_item_get_canvas(citem);
+  goo_canvas_pointer_grab(canvas, citem,
+                          (GdkEventMask) (GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_RELEASE_MASK),
+                          get_cursor(drag_mode_)->gobj(),
+                          event->time);
 
   return true;
 }
@@ -404,7 +412,9 @@ bool SelectionRect::on_motion_notify(const Glib::RefPtr<Goocanvas::Item>& item, 
   if (drag_mode_ == DragMode::NONE) {
     Point inside_c = to_inside_coordinates({.x = event->x, .y = event->y});
     DragMode mode = get_drag_mode_for_point(inside_c);
-    item->get_canvas()->get_window()->set_cursor(get_cursor(mode));
+    GooCanvas* canvas = goo_canvas_item_get_canvas(item->gobj());
+    gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(canvas)),
+                          get_cursor(mode)->gobj());
 
     return false;
   }
@@ -422,7 +432,9 @@ bool SelectionRect::on_button_release(const Glib::RefPtr<Goocanvas::Item>& item,
   }
 
   drag_mode_ = DragMode::NONE;
-  item->get_canvas()->pointer_ungrab(item, event->time);
+  GooCanvasItem* citem = item->gobj();
+  GooCanvas* canvas = goo_canvas_item_get_canvas(citem);
+  goo_canvas_pointer_ungrab(canvas, citem, event->time);
 
   signal_rectangle_changed_.emit(get_coordinates());
 
@@ -432,6 +444,8 @@ bool SelectionRect::on_button_release(const Glib::RefPtr<Goocanvas::Item>& item,
 
 bool SelectionRect::on_leave_notify(const Glib::RefPtr<Goocanvas::Item>& item, GdkEventCrossing* event)
 {
-  item->get_canvas()->get_window()->set_cursor();
+  GooCanvas* canvas = goo_canvas_item_get_canvas(item->gobj());
+  GdkWindow* window = gtk_widget_get_window(GTK_WIDGET(canvas));
+  gdk_window_set_cursor(window, NULL);
   return false;
 }

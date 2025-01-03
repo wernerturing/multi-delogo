@@ -49,7 +49,7 @@ namespace mdl {
     type_signal_rectangle_changed signal_rectangle_changed();
 
   private:
-    Goocanvas::Canvas canvas_;
+    GooCanvas* canvas_;
     Glib::RefPtr<Goocanvas::Image> image_;
     Glib::RefPtr<SelectionRect> rect_;
     Glib::RefPtr<SelectionRect> temp_rect_;
