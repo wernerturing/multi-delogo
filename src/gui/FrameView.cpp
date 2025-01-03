@@ -20,7 +20,6 @@
 
 #include <gtkmm.h>
 #include <goocanvas.h>
-#include <goocanvasmm.h>
 
 #include "FrameView.hpp"
 

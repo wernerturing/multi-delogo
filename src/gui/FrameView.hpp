@@ -20,7 +20,7 @@
 #define MDL_FRAME_VIEW_H
 
 #include <gtkmm.h>
-#include <goocanvasmm.h>
+#include <goocanvas.h>
 
 #include "common/Rectangle.hpp"
 
