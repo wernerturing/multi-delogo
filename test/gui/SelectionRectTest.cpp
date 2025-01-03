@@ -50,7 +50,7 @@ class SelectionRectTestFixture
 public:
   SelectionRectTestFixture()
   {
-    rect = SelectionRect::create(10, 15, 100, 50);
+    rect = new SelectionRect(10, 15, 100, 50);
   }
 
   DragMode get_drag_mode()
@@ -83,7 +83,7 @@ public:
     return rect->get_new_coordinates(drag_point);
   };
 
-  Glib::RefPtr<SelectionRect> rect;
+  SelectionRect* rect;
 };
 }
 BOOST_FIXTURE_TEST_SUITE(SelectionRect, mdl::SelectionRectTestFixture);
