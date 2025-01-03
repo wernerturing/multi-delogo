@@ -1,4 +1,4 @@
-dnl Copyright (C) 2018-2024 Werner Turing <werner.turing@protonmail.com>
+dnl Copyright (C) 2018-2025 Werner Turing <werner.turing@protonmail.com>
 dnl
 dnl This file is part of multi-delogo.
 dnl

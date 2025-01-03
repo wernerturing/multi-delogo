@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.40.0 
 
-Copyright (C) 2018-2024 Werner Turing <werner.turing@protonmail.com>
+Copyright (C) 2018-2025 Werner Turing <werner.turing@protonmail.com>
 
 This file is part of multi-delogo.
 
@@ -23,7 +23,7 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
   <requires lib="gtk+" version="3.20"/>
   <!-- interface-license-type gplv3 -->
   <!-- interface-name multi-delogo -->
-  <!-- interface-copyright 2018-2024 Werner Turing <werner.turing@protonmail.com> -->
+  <!-- interface-copyright 2018-2025 Werner Turing <werner.turing@protonmail.com> -->
   <object class="GtkImage" id="img_btn_new">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
