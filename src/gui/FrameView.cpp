@@ -86,7 +86,7 @@ FrameView::FrameView(BaseObjectType* cobject,
   }
   goo_canvas_item_add_child(root, image_, -1);
 
-  rect_ = new SelectionRect(100, 50, 150, 30);
+  rect_ = new SelectionRect(0, 0, 0, 0);
   goo_canvas_item_add_child(root, rect_->c_item(), -1);
   if (can_select_rectangle) {
     rect_->enable_drag_and_drop();
