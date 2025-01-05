@@ -69,12 +69,12 @@ FrameView::FrameView(BaseObjectType* cobject,
   : Gtk::ScrolledWindow(cobject)
   , drag_(false)
 {
-  canvas_ = (GooCanvas*) goo_canvas_new();
+  canvas_ = GOO_CANVAS(goo_canvas_new());
   goo_canvas_set_bounds(canvas_, 0, 0, width, height);
   g_object_set(canvas_,
                "integer_layout", true,
                "anchor", GOO_CANVAS_ANCHOR_CENTER,
-               0);
+               NULL);
 
   auto root = goo_canvas_get_root_item(canvas_);
 
@@ -96,7 +96,7 @@ FrameView::FrameView(BaseObjectType* cobject,
   temp_rect_ = new SelectionRect();
   goo_canvas_item_add_child(root, temp_rect_->c_item(), -1);
 
-  auto canvas = Glib::wrap((GtkWidget*) canvas_);
+  auto canvas = Glib::wrap(GTK_WIDGET(canvas_));
   add(*canvas);
 }
 
