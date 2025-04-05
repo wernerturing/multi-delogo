@@ -103,7 +103,9 @@ FrameView::FrameView(BaseObjectType* cobject,
 
 void FrameView::set_image(Glib::RefPtr<Gdk::Pixbuf> pixbuf)
 {
-  g_object_set(image_, "pixbuf", pixbuf->gobj(), NULL);
+  if (pixbuf) {
+    g_object_set(image_, "pixbuf", pixbuf->gobj(), NULL);
+  }
 }
 
 
