@@ -17,7 +17,7 @@ Baixe a última versão da [página de releaes](https://github.com/wernerturing/
 Para compilar o software no Linux, você precisará dos arquivos de desenvolvimento para as seguintes bibliotecas:
 
 * gtkmm
-* goocanvasmm
+* goocanvas
 * opencv
 * boost
 
@@ -76,7 +76,7 @@ Você também pode mandar um email para werner.turing@protonmail.com.
 
 ## Copyright
 
-multi-delogo é Copyright (C) 2018-2019 Werner Turing <werner.turing@protonmail.com>
+multi-delogo é Copyright (C) 2018-2025 Werner Turing <werner.turing@protonmail.com>
 
 multi-delogo é um software livre: você pode redistribui-lo e/ou modificá-lo de acordo com os termos da GNU General Public License publicada pela Free Software Foundation, ou a versão 3 da Licença, ou (caso queira) qualquer versão posterior.
 

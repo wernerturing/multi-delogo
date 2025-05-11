@@ -1,6 +1,6 @@
 # multi-delogo messages in Portuguese (Brazilian)
 #
-# Copyright (C) 2018-2019 Werner Turing <werner.turing@protonmail.com>
+# Copyright (C) 2018-2025 Werner Turing <werner.turing@protonmail.com>
 #
 # This file is part of multi-delogo.
 #
@@ -22,8 +22,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: multi-delogo\n"
 "Report-Msgid-Bugs-To: werner.turing@protonmail.com\n"
-"POT-Creation-Date: 2022-11-30 10:48-0300\n"
-"PO-Revision-Date: 2018-12-27 18:17-0200\n"
+"POT-Creation-Date: 2024-05-24 18:18-0300\n"
+"PO-Revision-Date: 2024-05-24 18:18-0300\n"
 "Last-Translator: Werner Turing <werner.turing@protonmail.com>\n"
 "Language-Team: Werner Turing <werner.turing@protonmail.com>\n"
 "Language: pt_BR\n"
@@ -36,7 +36,7 @@ msgstr ""
 msgid "Overwrite filter starting at frame %1?"
 msgstr "Sobrescrever filtro iniciando em %1?"
 
-#: src/gui/Coordinator.cpp:356 src/gui/EncodeWindow.cpp:247
+#: src/gui/Coordinator.cpp:356 src/gui/EncodeWindow.cpp:270
 msgid "_Overwrite"
 msgstr "_Sobrescrever"
 
@@ -68,57 +68,65 @@ msgstr "Alterar quadro inicial de %1 para %2"
 msgid "Shift starting frames by %1 from %2 to %3"
 msgstr "Alterar quadros iniciais em %1 de %2 para %3"
 
-#: src/gui/EncodeWindow.cpp:145
+#: src/gui/EncodeWindow.cpp:151
 msgid "Select output file"
 msgstr "Selecione o arquivo de destino"
 
-#: src/gui/EncodeWindow.cpp:146 src/gui/EncodeWindow.cpp:247
+#: src/gui/EncodeWindow.cpp:152 src/gui/EncodeWindow.cpp:270
 #: src/gui/FindLogosWindow.cpp:206 src/gui/MultiDelogoApp.cpp:307
 msgid "_Cancel"
 msgstr "_Cancelar"
 
-#: src/gui/EncodeWindow.cpp:147
+#: src/gui/EncodeWindow.cpp:153
 msgid "_Save"
 msgstr "_Salvar"
 
-#: src/gui/EncodeWindow.cpp:190
+#: src/gui/EncodeWindow.cpp:196
 msgid "Encoding in progress"
 msgstr "Conversão sendo executada"
 
-#: src/gui/EncodeWindow.cpp:199
+#: src/gui/EncodeWindow.cpp:205
 msgid "Error generating filter script for FFmpeg: %1"
 msgstr "Erro ao gerar script de filtros para o FFmpeg: %1"
 
-#: src/gui/EncodeWindow.cpp:203
+#: src/gui/EncodeWindow.cpp:209
 msgid "Could not execute FFmpeg: %1"
 msgstr "Não foi possível executar o FFmpeg: %1"
 
-#: src/gui/EncodeWindow.cpp:224
+#: src/gui/EncodeWindow.cpp:230
 msgid "Filter script generated"
 msgstr "Script com filtros gerado"
 
-#: src/gui/EncodeWindow.cpp:227 src/gui/MultiDelogoApp.cpp:127
+#: src/gui/EncodeWindow.cpp:233 src/gui/MultiDelogoApp.cpp:127
 #: src/gui/MultiDelogoApp.cpp:243
 msgid "Could not open file %1: %2"
 msgstr "Não foi possível abrir o arquivo %1: %2"
 
-#: src/gui/EncodeWindow.cpp:239
+#: src/gui/EncodeWindow.cpp:250
+msgid "FILTER_FILE"
+msgstr "ARQUIVO_DE_FILTROS"
+
+#: src/gui/EncodeWindow.cpp:254
+msgid "FFmpeg command line"
+msgstr "Linha de comando FFmpeg"
+
+#: src/gui/EncodeWindow.cpp:262
 msgid "Please select the output file"
 msgstr "Por favor selecione o arquivo de destino"
 
-#: src/gui/EncodeWindow.cpp:246
+#: src/gui/EncodeWindow.cpp:269
 msgid "File %1 already exists. Overwrite?"
 msgstr "Arquivo %1 já existe. Sobrescrever?"
 
-#: src/gui/EncodeWindow.cpp:274
+#: src/gui/EncodeWindow.cpp:297
 msgid "Encoding finished successfully"
 msgstr "Conversão terminou com sucesso"
 
-#: src/gui/EncodeWindow.cpp:276
+#: src/gui/EncodeWindow.cpp:299
 msgid "Encoding failed: %1"
 msgstr "Conversão falhou: %1"
 
-#: src/gui/EncodeWindow.cpp:311
+#: src/gui/EncodeWindow.cpp:334
 msgid ""
 "Encoding is in progress. If it is cancelled now, it'll be necessary to "
 "restart encoding from the beginning. Really cancel?"
@@ -126,47 +134,47 @@ msgstr ""
 "A conversão está sendo executada. Se for cancelada agora, será necesário "
 "reiniciar a conversão do começo. Realmente deseja cancelar?"
 
-#: src/gui/EncodeWindow.cpp:312
+#: src/gui/EncodeWindow.cpp:335
 msgid "C_ancel encoding"
 msgstr "C_ancelar conversão"
 
-#: src/gui/EncodeWindow.cpp:312 src/gui/FindLogosWindow.cpp:234
+#: src/gui/EncodeWindow.cpp:335 src/gui/FindLogosWindow.cpp:234
 msgid "_Continue"
 msgstr "_Continuar"
 
-#: src/gui/EncodeWindow.ui:25
+#: src/gui/EncodeWindow.ui:47
 msgid "Encode video"
 msgstr "Converter vídeo"
 
-#: src/gui/EncodeWindow.ui:43
+#: src/gui/EncodeWindow.ui:64
 msgid "_Output file:"
 msgstr "_Arquivo de destino:"
 
-#: src/gui/EncodeWindow.ui:65
+#: src/gui/EncodeWindow.ui:87
 msgid "_Select"
 msgstr "_Selecionar"
 
-#: src/gui/EncodeWindow.ui:94
+#: src/gui/EncodeWindow.ui:117
 msgid "Video format:"
 msgstr "Formato do vídeo:"
 
-#: src/gui/EncodeWindow.ui:107
+#: src/gui/EncodeWindow.ui:131
 msgid "Most compatible video format. If in doubt, use this format"
 msgstr ""
 "Formato de vídeo mais compatível. Se estiver em dúvida, use este formato"
 
-#: src/gui/EncodeWindow.ui:123
+#: src/gui/EncodeWindow.ui:148
 msgid ""
 "A newer format that produces smaller video files. May not work on all players"
 msgstr ""
 "Um formato mais novo que gera arquivos menores. Pode não ser suportado por "
 "todos os players"
 
-#: src/gui/EncodeWindow.ui:151
+#: src/gui/EncodeWindow.ui:177
 msgid "_Quality:"
 msgstr "_Qualidade:"
 
-#: src/gui/EncodeWindow.ui:164
+#: src/gui/EncodeWindow.ui:191
 msgid ""
 "CRF value to use for encoding. Lower values generally lead to higher "
 "quality, but bigger files. If in doubt, accept the default"
@@ -175,11 +183,11 @@ msgstr ""
 "produzem melhor qualidade, mas arquivos maiores. Se estiver em dúvida, use o "
 "padrão"
 
-#: src/gui/EncodeWindow.ui:187
+#: src/gui/EncodeWindow.ui:215
 msgid "_Randomnly increase filter times"
 msgstr "A_umentar aleatoriamente a duração dos filtros"
 
-#: src/gui/EncodeWindow.ui:191
+#: src/gui/EncodeWindow.ui:219
 msgid ""
 "If set, each filter's duration will be randomly increated, so that two or "
 "more filters can be active at the same time."
@@ -187,11 +195,11 @@ msgstr ""
 "Se selecionado, a duração de cada filtro será aumentada aleatoriamente, de "
 "forma que dois ou mais filtros estejam ativos simultaneamente."
 
-#: src/gui/EncodeWindow.ui:205
+#: src/gui/EncodeWindow.ui:234
 msgid "_Factor:"
 msgstr "_Fator:"
 
-#: src/gui/EncodeWindow.ui:219
+#: src/gui/EncodeWindow.ui:249
 msgid ""
 "Controls how much each filter's time is increased. If set to 2, then on "
 "average filters will last twice their original duration."
@@ -199,11 +207,11 @@ msgstr ""
 "Controla quanto a duração de cada filtro é aumentada. Se tem o valor 2, "
 "então na média cada filtro durará o dobro do tempo original."
 
-#: src/gui/EncodeWindow.ui:245
+#: src/gui/EncodeWindow.ui:276
 msgid "_Generate filter script"
 msgstr "_Gerar script com filtros"
 
-#: src/gui/EncodeWindow.ui:249
+#: src/gui/EncodeWindow.ui:280
 msgid ""
 "Generates a FFmpeg filter script file that can be used to encode the video. "
 "Use this option if you want to run FFmpeg manually with custom encoding "
@@ -213,11 +221,19 @@ msgstr ""
 "converter o vídeo. Selecione esta opção se você quiser executar o FFmpeg "
 "manualmente com opções de conversão personalizadas"
 
-#: src/gui/EncodeWindow.ui:259 src/gui/MovieWindow.ui:236
+#: src/gui/EncodeWindow.ui:291 src/gui/MovieWindow.ui:255
 msgid "_Encode"
 msgstr "_Converter"
 
-#: src/gui/EncodeWindow.ui:310
+#: src/gui/EncodeWindow.ui:305
+msgid "Show _command line"
+msgstr "Exibir linha de _comando"
+
+#: src/gui/EncodeWindow.ui:309
+msgid "Show the FFmpeg command line used to encode the video"
+msgstr "Exibir a linha de comando do FFmpeg usada para converter o vídeo"
+
+#: src/gui/EncodeWindow.ui:359
 msgid "View _log"
 msgstr "Ver _log"
 
@@ -256,7 +272,7 @@ msgstr "Quadro inicial"
 msgid "Filter"
 msgstr "Filtro"
 
-#: src/gui/FilterPanels.cpp:35 src/gui/ShiftFramesWindow.ui:70
+#: src/gui/FilterPanels.cpp:35 src/gui/ShiftFramesWindow.ui:90
 msgid "_Start frame:"
 msgstr "_Quadro inicial:"
 
@@ -308,119 +324,119 @@ msgstr "_Parar"
 msgid "Process finished unexpectedly: %1"
 msgstr "Processo terminou inesperadamente: %1"
 
-#: src/gui/FindLogosWindow.ui:8 src/gui/MovieWindow.ui:223
+#: src/gui/FindLogosWindow.ui:30 src/gui/MovieWindow.ui:242
 msgid "Find logos"
 msgstr "Procurar logos"
 
-#: src/gui/FindLogosWindow.ui:27
+#: src/gui/FindLogosWindow.ui:51
 msgid "Search interval:"
 msgstr "Intervalo de busca:"
 
-#: src/gui/FindLogosWindow.ui:39
+#: src/gui/FindLogosWindow.ui:63
 msgid "_start:"
 msgstr "iní_cio:"
 
-#: src/gui/FindLogosWindow.ui:52
+#: src/gui/FindLogosWindow.ui:76
 msgid "The frame at which to start to search"
 msgstr "Quando onde deve iniciar a busca por logos"
 
-#: src/gui/FindLogosWindow.ui:64
+#: src/gui/FindLogosWindow.ui:88
 msgid "_end:"
 msgstr "_fim:"
 
-#: src/gui/FindLogosWindow.ui:77
+#: src/gui/FindLogosWindow.ui:101
 msgid "The frame at which to end to search"
 msgstr "Quando onde deve terminar a busca por logos"
 
-#: src/gui/FindLogosWindow.ui:89
+#: src/gui/FindLogosWindow.ui:113
 msgid "Logo duration:"
 msgstr "Duração do logo:"
 
-#: src/gui/FindLogosWindow.ui:101
+#: src/gui/FindLogosWindow.ui:125
 msgid "_between:"
 msgstr "e_ntre:"
 
-#: src/gui/FindLogosWindow.ui:114
+#: src/gui/FindLogosWindow.ui:138
 msgid "Minimum number of frames that the logos last"
 msgstr "Número mínimo de quadros que os logos duram"
 
-#: src/gui/FindLogosWindow.ui:126
+#: src/gui/FindLogosWindow.ui:150
 msgid "an_d:"
 msgstr "_e:"
 
-#: src/gui/FindLogosWindow.ui:139
+#: src/gui/FindLogosWindow.ui:163
 msgid "Maximum number of frames that the logos last"
 msgstr "Número máximo de quadros que os logos duram"
 
-#: src/gui/FindLogosWindow.ui:151
+#: src/gui/FindLogosWindow.ui:175
 msgid "Logo width:"
 msgstr "Largura do logo:"
 
-#: src/gui/FindLogosWindow.ui:163
+#: src/gui/FindLogosWindow.ui:187
 msgid "_min:"
 msgstr "_mín:"
 
-#: src/gui/FindLogosWindow.ui:176
+#: src/gui/FindLogosWindow.ui:200
 msgid "Minimum width of the possible logos to consider"
 msgstr "Largura mínima dos logos a considerar"
 
-#: src/gui/FindLogosWindow.ui:188
+#: src/gui/FindLogosWindow.ui:212
 msgid "ma_x:"
 msgstr "má_x:"
 
-#: src/gui/FindLogosWindow.ui:201
+#: src/gui/FindLogosWindow.ui:225
 msgid "Maximum width of the possible logos to consider"
 msgstr "Largura máxima dos logos a considerar"
 
-#: src/gui/FindLogosWindow.ui:213
+#: src/gui/FindLogosWindow.ui:237
 msgid "Logo height:"
 msgstr "Altura do logo:"
 
-#: src/gui/FindLogosWindow.ui:225
+#: src/gui/FindLogosWindow.ui:249
 msgid "m_in:"
 msgstr "m_ín:"
 
-#: src/gui/FindLogosWindow.ui:238
+#: src/gui/FindLogosWindow.ui:262
 msgid "Minimum height of the possible logos to consider"
 msgstr "Altura mínima dos logos a considerar"
 
-#: src/gui/FindLogosWindow.ui:250
+#: src/gui/FindLogosWindow.ui:274
 msgid "m_ax:"
 msgstr "m_áx:"
 
-#: src/gui/FindLogosWindow.ui:263
+#: src/gui/FindLogosWindow.ui:287
 msgid "Maximum height of the possible logos to consider"
 msgstr "Altura máxima dos logos a considerar"
 
-#: src/gui/FindLogosWindow.ui:313
+#: src/gui/FindLogosWindow.ui:322
 msgid "Find _logos"
 msgstr "Procurar _logos"
 
-#: src/gui/FindLogosWindow.ui:326 src/gui/ShiftFramesWindow.ui:38
+#: src/gui/FindLogosWindow.ui:336 src/gui/ShiftFramesWindow.ui:57
 msgid "_Close"
 msgstr "Fecha_r"
 
-#: src/gui/FrameNavigator.cpp:178
+#: src/gui/FrameNavigator.cpp:189
 msgid "Could not get frame"
 msgstr "Não foi possível obter o frame"
 
-#: src/gui/InitialWindow.ui:18
+#: src/gui/InitialWindow.ui:40
 msgid "multi-delogo"
 msgstr "multi-delogo"
 
-#: src/gui/InitialWindow.ui:30
+#: src/gui/InitialWindow.ui:52
 msgid "What would you like to do?"
 msgstr "O que deseja fazer?"
 
-#: src/gui/InitialWindow.ui:39 src/gui/MultiDelogoApp.cpp:163
+#: src/gui/InitialWindow.ui:62 src/gui/MultiDelogoApp.cpp:163
 msgid "Start a _new project"
 msgstr "Começar um _novo projeto"
 
-#: src/gui/InitialWindow.ui:56
+#: src/gui/InitialWindow.ui:79
 msgid "_Open an existing project"
 msgstr "_Abrir um projeto existente"
 
-#: src/gui/LogWindow.ui:7
+#: src/gui/LogWindow.ui:29
 msgid "FFmpeg log"
 msgstr "Log do FFmpeg"
 
@@ -438,51 +454,51 @@ msgstr ""
 "Não é possível fazer a conversão enquanto há filtros 'review'. Por favor "
 "altere-os para um outro filtro (como 'none'), ou remova-os."
 
-#: src/gui/MovieWindow.ui:8
+#: src/gui/MovieWindow.ui:30
 msgid "Jump to next filter (v)"
 msgstr "Ir para o próximo filtro (v)"
 
-#: src/gui/MovieWindow.ui:14
+#: src/gui/MovieWindow.ui:36
 msgid "Jump to previous filter (c)"
 msgstr "Ir para o filtro anterior (c)"
 
-#: src/gui/MovieWindow.ui:21
+#: src/gui/MovieWindow.ui:43
 msgid "Remove the selected filter"
 msgstr "Remover o filtro selecionado"
 
-#: src/gui/MovieWindow.ui:64
+#: src/gui/MovieWindow.ui:83
 msgid "Create a new project"
 msgstr "Criar um novo projeto"
 
-#: src/gui/MovieWindow.ui:65
+#: src/gui/MovieWindow.ui:84
 msgid "New"
 msgstr "Novo"
 
-#: src/gui/MovieWindow.ui:77
+#: src/gui/MovieWindow.ui:96
 msgid "Open an existing project"
 msgstr "Abrir um projeto existente"
 
-#: src/gui/MovieWindow.ui:78
+#: src/gui/MovieWindow.ui:97
 msgid "Open"
 msgstr "Abrir"
 
-#: src/gui/MovieWindow.ui:90
+#: src/gui/MovieWindow.ui:109
 msgid "Save current project"
 msgstr "Salvar projeto atual"
 
-#: src/gui/MovieWindow.ui:91
+#: src/gui/MovieWindow.ui:110
 msgid "Save"
 msgstr "Salvar"
 
-#: src/gui/MovieWindow.ui:113
+#: src/gui/MovieWindow.ui:132
 msgid "Undo"
 msgstr "Desfazer"
 
-#: src/gui/MovieWindow.ui:125
+#: src/gui/MovieWindow.ui:144
 msgid "Redo"
 msgstr "Refazer"
 
-#: src/gui/MovieWindow.ui:147
+#: src/gui/MovieWindow.ui:166
 msgid ""
 "Check to make the rectangle where the filter is applied to be displayed "
 "(scrolling the frame image if necessary) when moving between filters"
@@ -490,31 +506,31 @@ msgstr ""
 "Marque para fazer com que o retângulo onde o filtro é aplicado seja exibido "
 "(rolando a imagem do quadro se necessário) ao mover entre filtros"
 
-#: src/gui/MovieWindow.ui:148
+#: src/gui/MovieWindow.ui:167
 msgid "_Scroll to filter"
 msgstr "_Rolar para filtro"
 
-#: src/gui/MovieWindow.ui:161
+#: src/gui/MovieWindow.ui:180
 msgid "_Previous frame"
 msgstr "_Quadro anterior"
 
-#: src/gui/MovieWindow.ui:171
+#: src/gui/MovieWindow.ui:190
 msgid "Shows only the current frame"
 msgstr "Exibe apenas o quadro atual"
 
-#: src/gui/MovieWindow.ui:172
+#: src/gui/MovieWindow.ui:191
 msgid "_Don't display"
 msgstr "_Não exibir"
 
-#: src/gui/MovieWindow.ui:182
+#: src/gui/MovieWindow.ui:201
 msgid "Displays the whole previous frame"
 msgstr "Exibe quadro anterior inteiro"
 
-#: src/gui/MovieWindow.ui:183
+#: src/gui/MovieWindow.ui:202
 msgid "_Fit to window"
 msgstr "Ajustar à _janela"
 
-#: src/gui/MovieWindow.ui:193
+#: src/gui/MovieWindow.ui:212
 msgid ""
 "Displays the previous frame using the same zoom and showing the same region "
 "as the current frame"
@@ -522,76 +538,76 @@ msgstr ""
 "Exibe o quadro anterior com o mesmo nível de zoom e exibindo a mesma região "
 "do quadro atual"
 
-#: src/gui/MovieWindow.ui:194
+#: src/gui/MovieWindow.ui:213
 msgid "_Same view"
 msgstr "_Mesma visão"
 
-#: src/gui/MovieWindow.ui:222
+#: src/gui/MovieWindow.ui:241
 msgid "Try to automatically find logos in the video"
 msgstr "Tentar procurar logos automaticamente no vídeo"
 
-#: src/gui/MovieWindow.ui:235
+#: src/gui/MovieWindow.ui:254
 msgid "Encode current project to a video with the filters applied"
 msgstr "Converter o projeto atual para um vídeo com os filtros aplicados"
 
-#: src/gui/MovieWindow.ui:333
+#: src/gui/MovieWindow.ui:355
 msgid "_Shift starting frames..."
 msgstr "Alterar quadros _iniciais..."
 
-#: src/gui/MovieWindow.ui:361
+#: src/gui/MovieWindow.ui:385
 msgid "Filter:"
 msgstr "Filtro:"
 
-#: src/gui/MovieWindow.ui:494
+#: src/gui/MovieWindow.ui:541
+msgid "Previous frame:"
+msgstr "Quadro anterior:"
+
+#: src/gui/MovieWindow.ui:574
 msgid "Jump back the number of frames specified in \"jump size\" (a)"
 msgstr ""
-"Saltar para frente o número de quadros especificado em \"tamanho do "
-"salto\" (a)"
+"Saltar para frente o número de quadros especificado em \"tamanho do salto\" "
+"(a)"
 
-#: src/gui/MovieWindow.ui:507
+#: src/gui/MovieWindow.ui:588
 msgid "Move back one frame (s)"
 msgstr "Voltar um quadro (s)"
 
-#: src/gui/MovieWindow.ui:518
+#: src/gui/MovieWindow.ui:600
 msgid "Current frame number"
 msgstr "Número do quadro atual"
 
-#: src/gui/MovieWindow.ui:543
+#: src/gui/MovieWindow.ui:627
 msgid "Move forward one frame (d)"
 msgstr "Avançar um quadro (d)"
 
-#: src/gui/MovieWindow.ui:556
+#: src/gui/MovieWindow.ui:641
 msgid "Jump forward the number of frames specified in \"jump size\" (f)"
 msgstr ""
 "Saltar para trás o número de quadros especificado em \"tamanho do salto\" (f)"
 
-#: src/gui/MovieWindow.ui:568
+#: src/gui/MovieWindow.ui:654
 msgid "_Jump size:"
 msgstr "_Tamanho do salto:"
 
-#: src/gui/MovieWindow.ui:581
+#: src/gui/MovieWindow.ui:668
 msgid "Number of frames to jump when using << and >> buttons"
 msgstr "Número de quadros a saltar quando os botões << e >> são utilizados"
 
-#: src/gui/MovieWindow.ui:607
+#: src/gui/MovieWindow.ui:732
 msgid "Fit the image to the window"
 msgstr "Ajustar tamanho da imagem ao da janela"
 
-#: src/gui/MovieWindow.ui:620
+#: src/gui/MovieWindow.ui:746
 msgid "Make image smaller"
 msgstr "Diminuir tamanho da imagem"
 
-#: src/gui/MovieWindow.ui:645
+#: src/gui/MovieWindow.ui:773
 msgid "Make image larger"
 msgstr "Aumentar tamanho da imagem"
 
-#: src/gui/MovieWindow.ui:659
+#: src/gui/MovieWindow.ui:788
 msgid "Zoom to original size"
 msgstr "Exibir a imagem no tamanho original"
-
-#: src/gui/MovieWindow.ui:719
-msgid "Previous frame:"
-msgstr "Quadro anterior:"
 
 #: src/gui/MultiDelogoApp.cpp:53
 msgid "Outputs application version and exits"
@@ -652,19 +668,19 @@ msgstr "_Abrir"
 msgid "All files"
 msgstr "Todos os arquivos"
 
-#: src/gui/ShiftFramesWindow.ui:7
+#: src/gui/ShiftFramesWindow.ui:29
 msgid "Shift starting frames"
 msgstr "Alterar quadros iniciais"
 
-#: src/gui/ShiftFramesWindow.ui:24
+#: src/gui/ShiftFramesWindow.ui:43
 msgid "S_hift"
 msgstr "_Ajustar"
 
-#: src/gui/ShiftFramesWindow.ui:96
+#: src/gui/ShiftFramesWindow.ui:116
 msgid "_End frame:"
 msgstr "Quadro _final:"
 
-#: src/gui/ShiftFramesWindow.ui:122
+#: src/gui/ShiftFramesWindow.ui:142
 msgid "_Amount:"
 msgstr "Q_uantidade:"
 

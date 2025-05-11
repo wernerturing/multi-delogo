@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2019 Werner Turing <werner.turing@protonmail.com>
+ * Copyright (C) 2018-2025 Werner Turing <werner.turing@protonmail.com>
  *
  * This file is part of multi-delogo.
  *
@@ -62,7 +62,7 @@ namespace mdl {
     Gtk::CheckButton* chk_fuzzy_;
     Gtk::SpinButton* txt_fuzzyness_;
 
-    Gtk::Grid* box_progress_;
+    Gtk::Box* box_progress_;
     Gtk::Label* lbl_status_;
     ETRProgressBar* progress_bar_;
     Gtk::Button* btn_log_;
@@ -79,6 +79,7 @@ namespace mdl {
 
     void on_encode();
     void on_generate_script();
+    void on_show_cmd_line();
 
     bool check_file(const std::string& file);
 

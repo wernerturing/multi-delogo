@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2019 Werner Turing <werner.turing@protonmail.com>
+ * Copyright (C) 2018-2025 Werner Turing <werner.turing@protonmail.com>
  *
  * This file is part of multi-delogo.
  *
@@ -52,6 +52,7 @@ namespace mdl {
 
     void encode();
     void generate_script(const std::string& output_script);
+    std::vector<std::string> get_ffmpeg_cmd_line(const std::string& filter_file);
 
     bool is_executing() const;
     void terminate();
@@ -87,7 +88,6 @@ namespace mdl {
     type_signal_finished signal_finished_;
 
 
-    std::vector<std::string> get_ffmpeg_cmd_line(const std::string& filter_file);
     bool is_mp4_output() const;
     std::vector<std::string> get_audio_opts();
 

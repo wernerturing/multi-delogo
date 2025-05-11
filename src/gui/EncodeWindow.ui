@@ -1,333 +1,381 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.0 -->
+<!-- Generated with glade 3.40.0 
+
+Copyright (C) 2018-2025 Werner Turing <werner.turing@protonmail.com>
+
+This file is part of multi-delogo.
+
+multi-delogo is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+multi-delogo is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <!-- interface-license-type gplv3 -->
+  <!-- interface-name multi-delogo -->
+  <!-- interface-copyright 2018-2025 Werner Turing <werner.turing@protonmail.com> -->
   <object class="GtkAdjustment" id="adj_txt_fuzzyness">
-    <property name="lower">0.10000000000000001</property>
+    <property name="lower">0.10</property>
     <property name="upper">10</property>
     <property name="value">2</property>
-    <property name="step_increment">0.10000000000000001</property>
-    <property name="page_increment">0.10000000000000001</property>
+    <property name="step-increment">0.10</property>
+    <property name="page-increment">0.10</property>
   </object>
   <object class="GtkAdjustment" id="adj_txt_quality">
     <property name="upper">51</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">1</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">1</property>
   </object>
   <object class="GtkImage" id="img_btn_select_file">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">document-open</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">document-open</property>
   </object>
   <object class="GtkApplicationWindow" id="encode_window">
-    <property name="can_focus">False</property>
-    <property name="border_width">8</property>
+    <property name="can-focus">False</property>
+    <property name="border-width">8</property>
     <property name="title" translatable="yes">Encode video</property>
     <child>
-      <object class="GtkGrid" id="grid_main">
+      <object class="GtkBox" id="box_main">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
-        <property name="row_spacing">8</property>
+        <property name="spacing">8</property>
         <child>
-          <object class="GtkGrid" id="grid_file_selection">
+          <object class="GtkBox" id="box_file_selection">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can-focus">False</property>
             <property name="valign">center</property>
-            <property name="vexpand">True</property>
-            <property name="column_spacing">4</property>
+            <property name="spacing">4</property>
             <child>
               <object class="GtkLabel" id="lbl_file">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="label" translatable="yes">_Output file:</property>
-                <property name="use_underline">True</property>
-                <property name="mnemonic_widget">txt_file</property>
+                <property name="use-underline">True</property>
+                <property name="mnemonic-widget">txt_file</property>
               </object>
               <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkEntry" id="txt_file">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="hexpand">True</property>
+                <property name="can-focus">True</property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">0</property>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
               <object class="GtkButton" id="btn_select_file">
                 <property name="label" translatable="yes">_Select</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
                 <property name="image">img_btn_select_file</property>
-                <property name="use_underline">True</property>
+                <property name="use-underline">True</property>
               </object>
               <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
           <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">0</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
-          <object class="GtkGrid" id="grid_codec">
+          <object class="GtkBox" id="box_codec">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can-focus">False</property>
             <property name="valign">center</property>
-            <property name="vexpand">True</property>
-            <property name="column_spacing">4</property>
+            <property name="spacing">4</property>
             <child>
               <object class="GtkLabel" id="lbl_codec">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="label" translatable="yes">Video format:</property>
               </object>
               <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkRadioButton" id="btn_h264">
-                <property name="label" translatable="no">H.26_4</property>
+                <property name="label">H.26_4</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="tooltip_text" translatable="yes">Most compatible video format. If in doubt, use this format</property>
-                <property name="use_underline">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">False</property>
+                <property name="tooltip-text" translatable="yes">Most compatible video format. If in doubt, use this format</property>
+                <property name="use-underline">True</property>
                 <property name="active">True</property>
-                <property name="draw_indicator">True</property>
+                <property name="draw-indicator">True</property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
               <object class="GtkRadioButton" id="btn_h265">
-                <property name="label" translatable="no">H.26_5</property>
+                <property name="label">H.26_5</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="tooltip_text" translatable="yes">A newer format that produces smaller video files. May not work on all players</property>
-                <property name="use_underline">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">False</property>
+                <property name="tooltip-text" translatable="yes">A newer format that produces smaller video files. May not work on all players</property>
+                <property name="use-underline">True</property>
                 <property name="active">True</property>
-                <property name="draw_indicator">True</property>
+                <property name="draw-indicator">True</property>
                 <property name="group">btn_h264</property>
               </object>
               <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
           <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">1</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
           </packing>
         </child>
         <child>
-          <object class="GtkGrid" id="grid_quality">
+          <object class="GtkBox" id="box_quality">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can-focus">False</property>
             <property name="valign">center</property>
-            <property name="vexpand">True</property>
-            <property name="column_spacing">4</property>
+            <property name="spacing">4</property>
             <child>
               <object class="GtkLabel" id="lbl_quality">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="label" translatable="yes">_Quality:</property>
-                <property name="use_underline">True</property>
-                <property name="mnemonic_widget">txt_quality</property>
+                <property name="use-underline">True</property>
+                <property name="mnemonic-widget">txt_quality</property>
               </object>
               <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkSpinButton" id="txt_quality">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">CRF value to use for encoding. Lower values generally lead to higher quality, but bigger files. If in doubt, accept the default</property>
+                <property name="can-focus">True</property>
+                <property name="tooltip-text" translatable="yes">CRF value to use for encoding. Lower values generally lead to higher quality, but bigger files. If in doubt, accept the default</property>
                 <property name="adjustment">adj_txt_quality</property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>
           <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">2</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
           </packing>
         </child>
         <child>
-          <object class="GtkGrid" id="grid_fuzzy">
+          <object class="GtkBox" id="box_fuzzy">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can-focus">False</property>
             <property name="valign">center</property>
-            <property name="vexpand">True</property>
-            <property name="column_spacing">4</property>
+            <property name="spacing">4</property>
             <child>
               <object class="GtkCheckButton" id="chk_fuzzy">
                 <property name="label" translatable="yes">_Randomnly increase filter times</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="tooltip_text" translatable="yes">If set, each filter's duration will be randomly increated, so that two or more filters can be active at the same time.</property>
-                <property name="use_underline">True</property>
-                <property name="draw_indicator">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">False</property>
+                <property name="tooltip-text" translatable="yes">If set, each filter's duration will be randomly increated, so that two or more filters can be active at the same time.</property>
+                <property name="use-underline">True</property>
+                <property name="draw-indicator">True</property>
               </object>
               <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="lbl_fuzzy_factor">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_left">16</property>
+                <property name="can-focus">False</property>
+                <property name="margin-start">16</property>
                 <property name="label" translatable="yes">_Factor:</property>
-                <property name="use_underline">True</property>
-                <property name="mnemonic_widget">txt_fuzzyness</property>
+                <property name="use-underline">True</property>
+                <property name="mnemonic-widget">txt_fuzzyness</property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
               <object class="GtkSpinButton" id="txt_fuzzyness">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Controls how much each filter's time is increased. If set to 2, then on average filters will last twice their original duration.</property>
+                <property name="can-focus">True</property>
+                <property name="tooltip-text" translatable="yes">Controls how much each filter's time is increased. If set to 2, then on average filters will last twice their original duration.</property>
                 <property name="adjustment">adj_txt_fuzzyness</property>
                 <property name="digits">1</property>
                 <property name="value">2</property>
               </object>
               <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
           <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">3</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
           </packing>
         </child>
         <child>
-          <object class="GtkGrid" id="grid_buttons">
+          <object class="GtkBox" id="box_buttons">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can-focus">False</property>
             <property name="halign">end</property>
             <property name="valign">center</property>
-            <property name="vexpand">True</property>
-            <property name="column_spacing">8</property>
+            <property name="spacing">8</property>
             <child>
               <object class="GtkButton" id="btn_script">
                 <property name="label" translatable="yes">_Generate filter script</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Generates a FFmpeg filter script file that can be used to encode the video. Use this option if you want to run FFmpeg manually with custom encoding options</property>
-                <property name="use_underline">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">Generates a FFmpeg filter script file that can be used to encode the video. Use this option if you want to run FFmpeg manually with custom encoding options</property>
+                <property name="use-underline">True</property>
               </object>
               <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkButton" id="btn_encode">
                 <property name="label" translatable="yes">_Encode</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_underline">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="use-underline">True</property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_cmd_line">
+                <property name="label" translatable="yes">Show _command line</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">Show the FFmpeg command line used to encode the video</property>
+                <property name="use-underline">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
           <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">4</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
           </packing>
         </child>
         <child>
-          <object class="GtkGrid" id="grid_progress">
+          <object class="GtkBox" id="box_progress">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="no_show_all">True</property>
+            <property name="can-focus">False</property>
+            <property name="no-show-all">True</property>
             <property name="valign">center</property>
-            <property name="vexpand">True</property>
             <property name="orientation">vertical</property>
-            <property name="row_spacing">4</property>
+            <property name="spacing">4</property>
             <child>
               <object class="GtkLabel" id="lbl_status">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="halign">start</property>
-                <property name="margin_top">16</property>
+                <property name="margin-top">16</property>
               </object>
               <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">0</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkProgressBar" id="progress_bar">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="hexpand">True</property>
+                <property name="can-focus">False</property>
               </object>
               <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">1</property>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
               <object class="GtkButton" id="btn_log">
                 <property name="label" translatable="yes">View _log</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_underline">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="use-underline">True</property>
               </object>
               <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">2</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
           <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">5</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
           </packing>
         </child>
       </object>
-    </child>
-    <child>
-      <placeholder/>
     </child>
   </object>
 </interface>

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2019 Werner Turing <werner.turing@protonmail.com>
+ * Copyright (C) 2018-2025 Werner Turing <werner.turing@protonmail.com>
  *
  * This file is part of multi-delogo.
  *
@@ -18,6 +18,8 @@
  */
 #include <memory>
 #include <string>
+
+#include <boost/algorithm/string/join.hpp>
 
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
@@ -83,9 +85,9 @@ void EncodeWindow::configure_widgets(const Glib::RefPtr<Gtk::Builder>& builder)
   builder->get_widget("btn_select_file", btn_select_file);
   btn_select_file->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_select_file));
 
-  Gtk::Grid* grid_file_selection = nullptr;
-  builder->get_widget("grid_file_selection", grid_file_selection);
-  widgets_to_disable_.push_back(grid_file_selection);
+  Gtk::Box* box_file_selection = nullptr;
+  builder->get_widget("box_file_selection", box_file_selection);
+  widgets_to_disable_.push_back(box_file_selection);
 
   Gtk::RadioButton* btn_h264 = nullptr;
   builder->get_widget("btn_h264", btn_h264);
@@ -98,23 +100,27 @@ void EncodeWindow::configure_widgets(const Glib::RefPtr<Gtk::Builder>& builder)
     sigc::bind(sigc::mem_fun(*this, &EncodeWindow::on_codec),
                FFmpegExecutor::Codec::H265));
 
-  Gtk::Grid* grid_codec = nullptr;
-  builder->get_widget("grid_codec", grid_codec);
-  widgets_to_disable_.push_back(grid_codec);
+  Gtk::Box* box_codec = nullptr;
+  builder->get_widget("box_codec", box_codec);
+  widgets_to_disable_.push_back(box_codec);
 
   builder->get_widget("txt_quality", txt_quality_);
 
-  Gtk::Grid* grid_quality = nullptr;
-  builder->get_widget("grid_quality", grid_quality);
-  widgets_to_disable_.push_back(grid_quality);
+  Gtk::Box* box_quality = nullptr;
+  builder->get_widget("box_quality", box_quality);
+  widgets_to_disable_.push_back(box_quality);
 
   builder->get_widget("chk_fuzzy", chk_fuzzy_);
   chk_fuzzy_->signal_toggled().connect(sigc::mem_fun(*this, &EncodeWindow::on_fuzzy_toggled));
   builder->get_widget("txt_fuzzyness", txt_fuzzyness_);
 
-  Gtk::Grid* grid_fuzzy = nullptr;
-  builder->get_widget("grid_fuzzy", grid_fuzzy);
-  widgets_to_disable_.push_back(grid_fuzzy);
+  Gtk::Box* box_fuzzy = nullptr;
+  builder->get_widget("box_fuzzy", box_fuzzy);
+  widgets_to_disable_.push_back(box_fuzzy);
+
+  Gtk::Button* btn_cmd_line = nullptr;
+  builder->get_widget("btn_cmd_line", btn_cmd_line);
+  btn_cmd_line->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_show_cmd_line));
 
   Gtk::Button* btn_script = nullptr;
   builder->get_widget("btn_script", btn_script);
@@ -124,16 +130,16 @@ void EncodeWindow::configure_widgets(const Glib::RefPtr<Gtk::Builder>& builder)
   builder->get_widget("btn_encode", btn_encode);
   btn_encode->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_encode));
 
-  Gtk::Grid* grid_buttons = nullptr;
-  builder->get_widget("grid_buttons", grid_buttons);
-  widgets_to_disable_.push_back(grid_buttons);
+  Gtk::Box* box_buttons = nullptr;
+  builder->get_widget("box_buttons", box_buttons);
+  widgets_to_disable_.push_back(box_buttons);
 
   builder->get_widget("lbl_status", lbl_status_);
   builder->get_widget_derived("progress_bar", progress_bar_);
   builder->get_widget("btn_log", btn_log_);
   btn_log_->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_view_log));
 
-  builder->get_widget("grid_progress", box_progress_);
+  builder->get_widget("box_progress", box_progress_);
   box_progress_->hide();
 
   on_codec(FFmpegExecutor::Codec::H264);
@@ -230,6 +236,23 @@ void EncodeWindow::on_generate_script()
     dlg.run();
     return;
   }
+}
+
+
+void EncodeWindow::on_show_cmd_line()
+{
+  ffmpeg_.set_generator(get_generator());
+  ffmpeg_.set_input_file(filter_data_->movie_file());
+  ffmpeg_.set_codec(codec_);
+  ffmpeg_.set_quality(txt_quality_->get_value_as_int());
+  ffmpeg_.set_output_file(txt_file_->get_text());
+
+  std::vector<std::string> args = ffmpeg_.get_ffmpeg_cmd_line(_("FILTER_FILE"));
+  std::string cmd_line = boost::algorithm::join(args, " ");
+
+  LogWindow* window = LogWindow::create(*this, cmd_line);
+  window->set_title(_("FFmpeg command line"));
+  get_application()->register_window(window);
 }
 
 

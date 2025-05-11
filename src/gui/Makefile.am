@@ -1,4 +1,4 @@
-# Copyright (C) 2018-2019 Werner Turing <werner.turing@protonmail.com>
+# Copyright (C) 2018-2025 Werner Turing <werner.turing@protonmail.com>
 #
 # This file is part of multi-delogo.
 #
@@ -84,7 +84,7 @@ multi_delogo_CPPFLAGS = -DLOCALEDIR=\"$(localedir)\" \
                         -I.. \
                         $(PTHREAD_CFLAGS) \
                         $(GTKMM_CFLAGS) \
-                        $(GOOCANVASMM_CFLAGS)
+                        $(GOOCANVAS_CFLAGS)
 
 frame_provider_lib = ../opencv-frame-provider/libopencv-frame-provider.a $(OPENCV_LIBS)
 
@@ -94,5 +94,5 @@ multi_delogo_LDADD = ../filter-generator/libfilter-generator.a \
                      $(frame_provider_lib) \
                      $(PTHREAD_CFLAGS) $(PTHREAD_LIBS) \
                      $(GTKMM_LIBS) \
-                     $(GOOCANVASMM_LIBS) \
+                     $(GOOCANVAS_LIBS) \
                      $(WINDOWS_LDFLAGS)

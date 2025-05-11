@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2019 Werner Turing <werner.turing@protonmail.com>
+ * Copyright (C) 2018-2025 Werner Turing <werner.turing@protonmail.com>
  *
  * This file is part of multi-delogo.
  *
@@ -17,6 +17,7 @@
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <string>
+#include <iomanip>
 #include <utility>
 
 #include <gtkmm.h>
@@ -61,3 +62,56 @@ bool mdl::confirmation_dialog(Gtk::MessageDialog&& dlg, const Glib::ustring& txt
   dlg.set_default_response(Gtk::RESPONSE_NO);
   return dlg.run() == Gtk::RESPONSE_YES;
 }
+
+
+std::string mdl::format_time(long ms)
+{
+  int seconds = ms / 1000;
+  ms %= 1000;
+  int minutes = seconds / 60;
+  seconds %= 60;
+
+  std::ostringstream oss;
+  oss << std::setfill('0') << std::setw(2) << minutes
+      << ":"
+      << std::setfill('0') << std::setw(2) << seconds
+      << "."
+      << std::setfill('0') << std::setw(3) << ms;
+
+  return oss.str();
+}
+
+
+std::string mdl::format_time_with_hour(long ms)
+{
+  int seconds = ms / 1000;
+  ms %= 1000;
+  int minutes = seconds / 60;
+  seconds %= 60;
+  int hours = minutes / 60;
+  minutes %= 60;
+
+  std::ostringstream oss;
+  oss << hours
+      << ":"
+      << std::setfill('0') << std::setw(2) << minutes
+      << ":"
+      << std::setfill('0') << std::setw(2) << seconds
+      << "."
+      << std::setfill('0') << std::setw(3) << ms;
+
+  return oss.str();
+}
+
+
+std::string mdl::format_time_based_on_total(long ms, long total_ms)
+{
+  const long one_hour = 60*60*1000;
+
+  if (total_ms >= one_hour) {
+    return format_time_with_hour(ms);
+  } else {
+    return format_time(ms);
+  }
+}
+

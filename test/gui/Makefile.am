@@ -1,4 +1,4 @@
-# Copyright (C) 2018-2019 Werner Turing <werner.turing@protonmail.com>
+# Copyright (C) 2018-2025 Werner Turing <werner.turing@protonmail.com>
 #
 # This file is part of multi-delogo.
 #
@@ -30,7 +30,8 @@ check_PROGRAMS = ETRProgressBarTest \
                  FilterListModelTest \
                  FilterPanelFactoryTest \
                  FrameNavigatorUtilTest \
-                 SelectionRectTest
+                 SelectionRectTest \
+                 UtilsTest
 
 ETRProgressBarTest_SOURCES = ETRProgressBarTest.cpp \
                              ../../src/gui/ETRProgressBar.cpp
@@ -51,7 +52,10 @@ FrameNavigatorUtilTest_SOURCES = FrameNavigatorUtilTest.cpp \
 
 SelectionRectTest_SOURCES = SelectionRectTest.cpp \
                             ../../src/gui/FrameView.cpp
-SelectionRectTest_CPPFLAGS = $(AM_CPPFLAGS) $(GOOCANVASMM_CFLAGS)
-SelectionRectTest_LDADD = $(LDADD) $(GOOCANVASMM_LIBS)
+SelectionRectTest_CPPFLAGS = $(AM_CPPFLAGS) $(GOOCANVAS_CFLAGS)
+SelectionRectTest_LDADD = $(LDADD) $(GOOCANVAS_LIBS)
+
+UtilsTest_SOURCES = UtilsTest.cpp \
+                    ../../src/gui/Utils.cpp
 
 TESTS = $(check_PROGRAMS)

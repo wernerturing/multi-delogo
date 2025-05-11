@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2019 Werner Turing <werner.turing@protonmail.com>
+ * Copyright (C) 2018-2025 Werner Turing <werner.turing@protonmail.com>
  *
  * This file is part of multi-delogo.
  *
@@ -46,7 +46,7 @@ Coordinator::Coordinator(Gtk::Window& parent_window,
   , panel_factory_(number_of_frames, frame_width, frame_height)
   , current_filter_panel_(nullptr)
   , current_filter_(nullptr)
-  , scroll_filter_(true)
+  , scroll_filter_(false) // Will be changed in set_frame_navigator
 {
 }
 
@@ -92,7 +92,19 @@ void Coordinator::set_frame_navigator(FrameNavigator* frame_navigator)
   on_frame_rectangle_changed_ = frame_view_->signal_rectangle_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_frame_rectangle_changed));
 
+  // Displaying the first frame is done with scroll_filter_ as false
+  // (set on the constructor). Trying to scroll to the rectangle at this
+  // stage was causing the position of the image to be wrong (issue #13).
   frame_navigator_->change_displayed_frame(1);
+  // Only After the image is displayed the value is set.
+  scroll_filter_ = true;
+  // And a timeout is set to move to the rectangle after everything
+  // is displayed.
+  // idle_timeout is not enough, a timeout was necessary
+  Glib::signal_timeout().connect([&] {
+    frame_view_->scroll_to_current_rectangle();
+    return false;
+  }, 100);
 }
 
 

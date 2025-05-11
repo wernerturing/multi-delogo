@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2019 Werner Turing <werner.turing@protonmail.com>
+ * Copyright (C) 2018-2025 Werner Turing <werner.turing@protonmail.com>
  *
  * This file is part of multi-delogo.
  *
@@ -27,6 +27,7 @@
 #include "FrameNavigator.hpp"
 #include "FrameNavigatorUtil.hpp"
 #include "FrameView.hpp"
+#include "Utils.hpp"
 
 using namespace mdl;
 
@@ -39,11 +40,13 @@ FrameNavigator::FrameNavigator(BaseObjectType* cobject,
   , parent_window_(parent_window)
   , frame_provider_(frame_provider)
   , number_of_frames_(frame_provider->get_number_of_frames())
+  , duration_(frame_provider->get_duration())
   , frame_view_(nullptr)
   , prev_frame_view_(nullptr)
   , lbl_prev_frame_(nullptr)
   , txt_frame_number_(nullptr)
   , txt_jump_size_(nullptr)
+  , lbl_time_pos_(nullptr)
   , zoom_(1)
   , lbl_zoom_(nullptr)
   , btn_zoom_out_(nullptr)
@@ -105,6 +108,11 @@ void FrameNavigator::configure_navigation_bar(const Glib::RefPtr<Gtk::Builder>& 
     sigc::mem_fun(*this, &FrameNavigator::on_frame_number_input));
 
   builder->get_widget_derived("txt_jump_size", txt_jump_size_);
+
+  builder->get_widget("lbl_time_pos", lbl_time_pos_);
+  Gtk::Label* lbl_time_total = nullptr;
+  builder->get_widget("lbl_time_total", lbl_time_total);
+  lbl_time_total->set_text(format_time_based_on_total(duration_, duration_));
 }
 
 
@@ -173,6 +181,9 @@ void FrameNavigator::change_displayed_frame(int new_frame_number)
     signal_frame_changed_.emit(new_frame_number);
     frame_number_ = new_frame_number;
     txt_frame_number_->set_value(frame_number_);
+
+    long time_pos = calculate_position((frame_number_ - 1), get_fps());
+    lbl_time_pos_->set_label(format_time_based_on_total(time_pos, duration_));
   } catch (const FrameNotAvailableException& e) {
     Gtk::MessageDialog dlg(parent_window_,
                            _("Could not get frame"), false,

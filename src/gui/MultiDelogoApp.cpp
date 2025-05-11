@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2019 Werner Turing <werner.turing@protonmail.com>
+ * Copyright (C) 2018-2025 Werner Turing <werner.turing@protonmail.com>
  *
  * This file is part of multi-delogo.
  *
@@ -68,7 +68,7 @@ int MultiDelogoApp::handle_options(const Glib::RefPtr<Glib::VariantDict>& option
   options->lookup_value("version", version);
   if (version) {
     std::cout << "multi-delogo version " << PACKAGE_VERSION << std::endl;
-    std::cout << "Copyright (C) 2018-2019 Werner Turing <werner.turing@protonmail.com>" << std::endl;
+    std::cout << "Copyright (C) 2018-2025 Werner Turing <werner.turing@protonmail.com>" << std::endl;
     return 0;
   }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2019 Werner Turing <werner.turing@protonmail.com>
+ * Copyright (C) 2018-2025 Werner Turing <werner.turing@protonmail.com>
  *
  * This file is part of multi-delogo.
  *
@@ -31,4 +31,10 @@ double mdl::get_zoom_to_fit_ratio(int image_width, int image_height, int window_
   }
 
   return ratio;
+}
+
+
+long mdl::calculate_position(int frame_number, double fps)
+{
+  return 1/fps * 1000 * frame_number;
 }

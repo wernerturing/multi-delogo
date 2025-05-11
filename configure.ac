@@ -1,4 +1,4 @@
-dnl Copyright (C) 2018-2019 Werner Turing <werner.turing@protonmail.com>
+dnl Copyright (C) 2018-2025 Werner Turing <werner.turing@protonmail.com>
 dnl
 dnl This file is part of multi-delogo.
 dnl
@@ -15,7 +15,7 @@ dnl
 dnl You should have received a copy of the GNU General Public License
 dnl along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 
-AC_INIT([multi-delogo], [2.3.0])
+AC_INIT([multi-delogo], [2.4.0])
 AC_CONFIG_SRCDIR([src/gui/main.cpp])
 
 AC_CONFIG_MACRO_DIR([m4])
@@ -33,13 +33,17 @@ AC_PROG_RANLIB
 
 AX_PTHREAD
 
+PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.70.0])
+
 PKG_CHECK_MODULES([GTKMM], [gtkmm-3.0 >= 3.19.7])
 AC_SUBST([GTKMM_CFLAGS])
 AC_SUBST([GTKMM_LIBS])
 
-PKG_CHECK_MODULES([GOOCANVASMM], [goocanvasmm-2.0])
-AC_SUBST([GOOCANVASMM_CFLAGS])
-AC_SUBST([GOOCANVASMM_LIBS])
+PKG_CHECK_MODULES([GOOCANVAS], [goocanvas-2.0],, [
+  PKG_CHECK_MODULES([GOOCANVAS], [goocanvas-3.0])
+])
+AC_SUBST([GOOCANVAS_CFLAGS])
+AC_SUBST([GOOCANVAS_LIBS])
 
 WT_OPENCV([OPENCV], [4.0], [opencv_videoio opencv_imgproc opencv_core])
 AC_SUBST([OPENCV_CFLAGS])

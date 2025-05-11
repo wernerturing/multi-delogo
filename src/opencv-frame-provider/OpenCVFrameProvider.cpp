@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2019 Werner Turing <werner.turing@protonmail.com>
+ * Copyright (C) 2018-2025 Werner Turing <werner.turing@protonmail.com>
  *
  * This file is part of multi-delogo.
  *
@@ -82,4 +82,10 @@ int OpenCVFrameProvider::get_number_of_frames()
 double OpenCVFrameProvider::get_fps()
 {
   return video_->get(cv::CAP_PROP_FPS);
+}
+
+
+long OpenCVFrameProvider::get_duration()
+{
+  return get_number_of_frames() / get_fps() * 1000;
 }

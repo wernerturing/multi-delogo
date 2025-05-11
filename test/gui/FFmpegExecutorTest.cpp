@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2019 Werner Turing <werner.turing@protonmail.com>
+ * Copyright (C) 2018-2025 Werner Turing <werner.turing@protonmail.com>
  *
  * This file is part of multi-delogo.
  *
@@ -82,7 +82,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264_copy_audio)
 
   std::vector<std::string> expected{
     "ffmpeg",
-    "-y", "-v", "error", "-stats",
+    "-y",
     "-i", "input.mp4",
     "-filter_complex_script", "filters.ffm",
     "-map", "[out_v]", "-c:v", "libx264", "-crf", "20",
@@ -100,7 +100,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h265_copy_audio)
 
   std::vector<std::string> expected{
     "ffmpeg",
-    "-y", "-v", "error", "-stats",
+    "-y",
     "-i", "input.mp4",
     "-filter_complex_script", "filters.ffm",
     "-map", "[out_v]", "-c:v", "libx265", "-crf", "25",
@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264_reencode_audio)
 
   std::vector<std::string> expected{
     "ffmpeg",
-    "-y", "-v", "error", "-stats",
+    "-y",
     "-i", "input.mp4",
     "-filter_complex_script", "filters.ffm",
     "-map", "[out_v]", "-c:v", "libx264", "-crf", "20",
@@ -138,7 +138,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_mp4_output)
 
   std::vector<std::string> expected{
     "ffmpeg",
-    "-y", "-v", "error", "-stats",
+    "-y",
     "-i", "input.mp4",
     "-filter_complex_script", "filters.ffm",
     "-map", "[out_v]", "-c:v", "libx264", "-crf", "20",
