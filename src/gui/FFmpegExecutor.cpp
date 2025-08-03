@@ -74,6 +74,12 @@ void FFmpegExecutor::set_quality(int quality)
 }
 
 
+void FFmpegExecutor::set_preset(const std::string& preset)
+{
+  preset_ = preset;
+}
+
+
 void FFmpegExecutor::set_output_file(const std::string& output_file)
 {
   output_file_ = output_file;
@@ -158,6 +164,8 @@ std::vector<std::string> FFmpegExecutor::get_ffmpeg_cmd_line(const std::string& 
 
   std::vector<std::string> audio_opts = get_audio_opts();
   cmd_line.insert(cmd_line.end(), audio_opts.begin(), audio_opts.end());
+
+  cmd_line.push_back("-preset"); cmd_line.push_back(preset_);
 
   if (is_mp4_output()) {
     cmd_line.push_back("-movflags"); cmd_line.push_back("+faststart");

@@ -197,6 +197,43 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="position">1</property>
               </packing>
             </child>
+            <child>
+              <object class="GtkLabel" id="lbl_preset">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="margin-start">32</property>
+                <property name="label" translatable="yes">_Preset:</property>
+                <property name="use-underline">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBoxText" id="cmb_preset">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="active">5</property>
+                <items>
+                  <item translatable="no">ultrafast</item>
+                  <item translatable="no">superfast</item>
+                  <item translatable="no">veryfast</item>
+                  <item translatable="no">faster</item>
+                  <item translatable="no">fast</item>
+                  <item translatable="no">medium</item>
+                  <item translatable="no">slow</item>
+                  <item translatable="no">slower</item>
+                  <item translatable="no">veryslow</item>
+                </items>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">True</property>

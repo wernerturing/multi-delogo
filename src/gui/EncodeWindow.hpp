@@ -58,6 +58,7 @@ namespace mdl {
 
     Gtk::Entry* txt_file_;
     Gtk::SpinButton* txt_quality_;
+    Gtk::ComboBoxText* cmb_preset_;
 
     Gtk::CheckButton* chk_fuzzy_;
     Gtk::SpinButton* txt_fuzzyness_;

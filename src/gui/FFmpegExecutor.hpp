@@ -48,6 +48,7 @@ namespace mdl {
 
     void set_codec(Codec codec);
     void set_quality(int quality);
+    void set_preset(const std::string& preset);
     void set_output_file(const std::string& output_file);
 
     void encode();
@@ -73,6 +74,7 @@ namespace mdl {
 
     Codec codec_;
     int quality_;
+    std::string preset_;
     std::string output_file_;
 
     std::string tmp_filter_file_;

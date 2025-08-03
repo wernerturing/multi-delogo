@@ -63,6 +63,7 @@ EncodeWindow::EncodeWindow(BaseObjectType* cobject,
 
   , txt_file_(nullptr)
   , txt_quality_(nullptr)
+  , cmb_preset_(nullptr)
   , chk_fuzzy_(nullptr)
   , txt_fuzzyness_(nullptr)
   , box_progress_(nullptr)
@@ -105,6 +106,7 @@ void EncodeWindow::configure_widgets(const Glib::RefPtr<Gtk::Builder>& builder)
   widgets_to_disable_.push_back(box_codec);
 
   builder->get_widget("txt_quality", txt_quality_);
+  builder->get_widget("cmb_preset", cmb_preset_);
 
   Gtk::Box* box_quality = nullptr;
   builder->get_widget("box_quality", box_quality);
@@ -188,6 +190,7 @@ void EncodeWindow::on_encode()
   ffmpeg_.set_input_file(filter_data_->movie_file());
   ffmpeg_.set_codec(codec_);
   ffmpeg_.set_quality(txt_quality_->get_value_as_int());
+  ffmpeg_.set_preset(cmb_preset_->get_active_text());
   ffmpeg_.set_output_file(file);
 
   try {
@@ -244,6 +247,7 @@ void EncodeWindow::on_show_cmd_line()
   ffmpeg_.set_generator(get_generator());
   ffmpeg_.set_input_file(filter_data_->movie_file());
   ffmpeg_.set_codec(codec_);
+  ffmpeg_.set_preset(cmb_preset_->get_active_text());
   ffmpeg_.set_quality(txt_quality_->get_value_as_int());
   ffmpeg_.set_output_file(txt_file_->get_text());
 

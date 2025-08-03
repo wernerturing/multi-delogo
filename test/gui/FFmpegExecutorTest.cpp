@@ -79,6 +79,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264_copy_audio)
 {
   ffmpeg.set_codec(FFmpegExecutor::Codec::H264);
   ffmpeg.set_quality(20);
+  ffmpeg.set_preset("slow");
 
   std::vector<std::string> expected{
     "ffmpeg",
@@ -87,6 +88,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264_copy_audio)
     "-filter_complex_script", "filters.ffm",
     "-map", "[out_v]", "-c:v", "libx264", "-crf", "20",
     "-map", "0:a?", "-c:a", "copy",
+    "-preset", "slow",
     "output.mkv"};
   BOOST_TEST(get_ffmpeg_cmd_line() == expected,
              boost::test_tools::per_element());
@@ -97,6 +99,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h265_copy_audio)
 {
   ffmpeg.set_codec(FFmpegExecutor::Codec::H265);
   ffmpeg.set_quality(25);
+  ffmpeg.set_preset("fast");
 
   std::vector<std::string> expected{
     "ffmpeg",
@@ -105,6 +108,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h265_copy_audio)
     "-filter_complex_script", "filters.ffm",
     "-map", "[out_v]", "-c:v", "libx265", "-crf", "25",
     "-map", "0:a?", "-c:a", "copy",
+    "-preset", "fast",
     "output.mkv"};
   BOOST_TEST(get_ffmpeg_cmd_line() == expected,
              boost::test_tools::per_element());
@@ -116,6 +120,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264_reencode_audio)
   add_filter(1000, fg::filter_ptr(new fg::CutFilter()));
   ffmpeg.set_codec(FFmpegExecutor::Codec::H264);
   ffmpeg.set_quality(20);
+  ffmpeg.set_preset("medium");
 
   std::vector<std::string> expected{
     "ffmpeg",
@@ -124,6 +129,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h264_reencode_audio)
     "-filter_complex_script", "filters.ffm",
     "-map", "[out_v]", "-c:v", "libx264", "-crf", "20",
     "-map", "[out_a]", "-c:a", "aac", "-b:a", "192k",
+    "-preset", "medium",
     "output.mkv"};
   BOOST_TEST(get_ffmpeg_cmd_line() == expected,
              boost::test_tools::per_element());
@@ -135,6 +141,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_mp4_output)
   ffmpeg.set_codec(FFmpegExecutor::Codec::H264);
   ffmpeg.set_quality(20);
   ffmpeg.set_output_file("output.mp4");
+  ffmpeg.set_preset("medium");
 
   std::vector<std::string> expected{
     "ffmpeg",
@@ -143,6 +150,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_mp4_output)
     "-filter_complex_script", "filters.ffm",
     "-map", "[out_v]", "-c:v", "libx264", "-crf", "20",
     "-map", "0:a?", "-c:a", "copy",
+    "-preset", "medium",
     "-movflags", "+faststart",
     "output.mp4"};
   BOOST_TEST(get_ffmpeg_cmd_line() == expected,
