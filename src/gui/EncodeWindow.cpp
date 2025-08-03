@@ -120,6 +120,15 @@ void EncodeWindow::configure_widgets(const Glib::RefPtr<Gtk::Builder>& builder)
   builder->get_widget("box_fuzzy", box_fuzzy);
   widgets_to_disable_.push_back(box_fuzzy);
 
+  builder->get_widget("chk_scale", chk_scale_);
+  chk_scale_->signal_toggled().connect(sigc::mem_fun(*this, &EncodeWindow::on_scale_toggled));
+  builder->get_widget("txt_scale_width", txt_scale_width_);
+  builder->get_widget("txt_scale_height", txt_scale_height_);
+
+  Gtk::Box* box_scale = nullptr;
+  builder->get_widget("box_scale", box_scale);
+  widgets_to_disable_.push_back(box_scale);
+
   Gtk::Button* btn_cmd_line = nullptr;
   builder->get_widget("btn_cmd_line", btn_cmd_line);
   btn_cmd_line->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_show_cmd_line));
@@ -175,6 +184,13 @@ void EncodeWindow::on_codec(FFmpegExecutor::Codec codec)
 void EncodeWindow::on_fuzzy_toggled()
 {
   txt_fuzzyness_->set_sensitive(chk_fuzzy_->get_active());
+}
+
+
+void EncodeWindow::on_scale_toggled()
+{
+  txt_scale_width_->set_sensitive(chk_scale_->get_active());
+  txt_scale_height_->set_sensitive(chk_scale_->get_active());
 }
 
 
@@ -280,11 +296,19 @@ bool EncodeWindow::check_file(const std::string& file)
 
 EncodeWindow::Generator EncodeWindow::get_generator()
 {
+  bool scale = chk_scale_->get_active();
+  fg::maybe_int scale_width  = scale
+    ? boost::make_optional(txt_scale_width_->get_value_as_int())
+    : boost::none;
+  fg::maybe_int scale_height = scale
+    ? boost::make_optional(txt_scale_height_->get_value_as_int())
+    : boost::none;
+
   Generator g;
   if (chk_fuzzy_->get_active()) {
-    g = fg::FuzzyScriptGenerator::create(filter_data_->filter_list(), frame_width_, frame_height_, fps_, txt_fuzzyness_->get_value());
+    g = fg::FuzzyScriptGenerator::create(filter_data_->filter_list(), frame_width_, frame_height_, fps_, txt_fuzzyness_->get_value(), scale_width, scale_height);
   } else {
-    g = fg::RegularScriptGenerator::create(filter_data_->filter_list(), frame_width_, frame_height_, fps_);
+    g = fg::RegularScriptGenerator::create(filter_data_->filter_list(), frame_width_, frame_height_, fps_, scale_width, scale_height);
   }
   return g;
 }

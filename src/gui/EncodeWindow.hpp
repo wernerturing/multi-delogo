@@ -63,6 +63,10 @@ namespace mdl {
     Gtk::CheckButton* chk_fuzzy_;
     Gtk::SpinButton* txt_fuzzyness_;
 
+    Gtk::CheckButton* chk_scale_;
+    Gtk::SpinButton* txt_scale_width_;
+    Gtk::SpinButton* txt_scale_height_;
+
     Gtk::Box* box_progress_;
     Gtk::Label* lbl_status_;
     ETRProgressBar* progress_bar_;
@@ -77,6 +81,7 @@ namespace mdl {
     void on_select_file();
     void on_codec(FFmpegExecutor::Codec codec);
     void on_fuzzy_toggled();
+    void on_scale_toggled();
 
     void on_encode();
     void on_generate_script();

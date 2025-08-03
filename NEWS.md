@@ -1,3 +1,12 @@
+## Upcoming version
+
+* Fix crash when opening a video.
+
+* It is now possible to select the ffmpeg preset when encoding.
+
+* It is now possible to scale the encoded video.
+
+
 ## 2.4.0
 
 * The time position is now displayed.

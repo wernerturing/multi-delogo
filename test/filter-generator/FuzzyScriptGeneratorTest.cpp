@@ -114,7 +114,7 @@ BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
     list.insert(get_start_frame_list(i, filter_length),
                 filter_ptr(new DelogoFilter(i, i, i, i)));
   }
-  std::shared_ptr<ScriptGenerator> g = FuzzyScriptGenerator::create(list, 1920, 1080, 25, 2);
+  std::shared_ptr<ScriptGenerator> g = FuzzyScriptGenerator::create(list, 1920, 1080, 25, 2, boost::none, boost::none);
 
   std::stringstream result;
   g->generate_ffmpeg_script(result);
@@ -145,7 +145,7 @@ BOOST_AUTO_TEST_CASE(cut_positions_should_not_be_changed)
   list.insert(1, filter_ptr(new DelogoFilter(1, 1, 1, 1)));
   list.insert(501, filter_ptr(new CutFilter()));
   list.insert(1001, filter_ptr(new DelogoFilter(2, 2, 2, 2)));
-  std::shared_ptr<ScriptGenerator> g = FuzzyScriptGenerator::create(list, 1920, 1080, 25, 2);
+  std::shared_ptr<ScriptGenerator> g = FuzzyScriptGenerator::create(list, 1920, 1080, 25, 2, boost::none, boost::none);
 
   std::stringstream result;
   g->generate_ffmpeg_script(result);
@@ -171,4 +171,30 @@ BOOST_AUTO_TEST_CASE(cut_positions_should_not_be_changed)
 
   std::getline(result, line);
   BOOST_TEST(line == "[0:a]aselect='not(between(t,500/25.000000,999/25.000000))',asetpts=N/SR/TB[out_a]");
+}
+
+
+BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script_with_scale)
+{
+  const int iters = 200;
+  const int filter_length = 500;
+
+  FilterList list;
+  list.insert(1, filter_ptr(new DelogoFilter(10, 11, 12, 13)));
+  std::shared_ptr<ScriptGenerator> g = FuzzyScriptGenerator::create(list, 1920, 1080, 25, 2, 1280, 720);
+
+  std::stringstream result;
+  g->generate_ffmpeg_script(result);
+
+  std::string line;
+  std::getline(result, line);
+  BOOST_TEST(line == "[0:v]");
+
+  std::getline(result, line); // Filter
+
+  std::getline(result, line);
+  BOOST_TEST(line == "scale=1280:720");
+
+  std::getline(result, line);
+  BOOST_TEST(line == "[out_v]");
 }

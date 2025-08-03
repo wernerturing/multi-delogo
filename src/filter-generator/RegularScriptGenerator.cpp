@@ -34,10 +34,14 @@
 using namespace fg;
 
 
-RegularScriptGenerator::RegularScriptGenerator(const FilterList& filter_list, int frame_width, int frame_height, double fps)
+RegularScriptGenerator::RegularScriptGenerator(const FilterList& filter_list,
+                                               int frame_width, int frame_height, double fps,
+                                               maybe_int scale_width, maybe_int scale_height)
   : filter_list_(filter_list)
   , frame_width_(frame_width)
   , frame_height_(frame_height)
+  , scale_width_(scale_width)
+  , scale_height_(scale_height)
   , first_filter_(true)
 {
   fps_ = make_fps_str(fps);
@@ -55,9 +59,9 @@ std::string RegularScriptGenerator::make_fps_str(double fps)
 
 
 
-std::shared_ptr<RegularScriptGenerator> RegularScriptGenerator::create(const FilterList& filter_list, int frame_width, int frame_height, double fps)
+std::shared_ptr<RegularScriptGenerator> RegularScriptGenerator::create(const FilterList& filter_list, int frame_width, int frame_height, double fps, maybe_int scale_width, maybe_int scale_height)
 {
-  return std::shared_ptr<RegularScriptGenerator>(new RegularScriptGenerator(filter_list, frame_width, frame_height, fps));
+  return std::shared_ptr<RegularScriptGenerator>(new RegularScriptGenerator(filter_list, frame_width, frame_height, fps, scale_width, scale_height));
 }
 
 
@@ -77,6 +81,7 @@ void RegularScriptGenerator::generate_ffmpeg_script(std::ostream& out) const
   out << "[0:v]\n";
   generate_ffmpeg_script_standard_filters(out);
   generate_ffmpeg_script_cuts(out);
+  generate_ffmpeg_script_scale(out);
   out << "\n[out_v]";
   generate_ffmpeg_script_audio(out);
 }
@@ -138,6 +143,16 @@ void RegularScriptGenerator::generate_ffmpeg_script_cuts(std::ostream& out) cons
 
   std::string expressions(boost::algorithm::join(positions, "+"));
   out << separator() << "select='not(" << expressions << ")',setpts=N/FRAME_RATE/TB";
+}
+
+
+void RegularScriptGenerator::generate_ffmpeg_script_scale(std::ostream& out) const
+{
+  if (!scale_width_) {
+    return;
+  }
+
+  out << separator() << "scale=" << *scale_width_ << ":" << *scale_height_;
 }
 
 

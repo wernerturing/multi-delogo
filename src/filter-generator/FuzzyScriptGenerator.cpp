@@ -36,8 +36,11 @@ using namespace fg;
 
 FuzzyScriptGenerator::FuzzyScriptGenerator(const FilterList& filter_list,
                                            int frame_width, int frame_height, double fps,
-                                           double fuzzyness)
-  : RegularScriptGenerator(filter_list, frame_width, frame_height, fps)
+                                           double fuzzyness,
+                                           maybe_int scale_width, maybe_int scale_height)
+  : RegularScriptGenerator(filter_list,
+                           frame_width, frame_height, fps,
+                           scale_width, scale_height)
 {
   double mean = (fuzzyness - 1) / 2;
   double stddev = mean / 2;
@@ -49,9 +52,10 @@ FuzzyScriptGenerator::FuzzyScriptGenerator(const FilterList& filter_list,
 
 std::shared_ptr<FuzzyScriptGenerator> FuzzyScriptGenerator::create(const FilterList& filter_list,
                                                                    int frame_width, int frame_height, double fps,
-                                                                   double fuzzyness)
+                                                                   double fuzzyness,
+                                                                   maybe_int scale_width, maybe_int scale_height)
 {
-  return std::shared_ptr<FuzzyScriptGenerator>(new FuzzyScriptGenerator(filter_list, frame_width, frame_height, fps, fuzzyness));
+  return std::shared_ptr<FuzzyScriptGenerator>(new FuzzyScriptGenerator(filter_list, frame_width, frame_height, fps, fuzzyness, scale_width, scale_height));
 }
 
 
@@ -82,7 +86,7 @@ int FuzzyScriptGenerator::adjust_start(int start_frame) const
 }
 
 
-FuzzyScriptGenerator::maybe_int FuzzyScriptGenerator::adjust_end(maybe_int end_frame) const
+maybe_int FuzzyScriptGenerator::adjust_end(maybe_int end_frame) const
 {
   if (!end_frame) {
     return boost::none;

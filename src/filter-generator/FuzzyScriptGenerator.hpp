@@ -35,12 +35,14 @@ namespace fg {
   protected:
     FuzzyScriptGenerator(const FilterList& filter_list,
                          int frame_width, int frame_height, double fps,
-                         double fuzzyness);
+                         double fuzzyness,
+                         maybe_int scale_width, maybe_int scale_height);
 
   public:
     static std::shared_ptr<FuzzyScriptGenerator> create(const FilterList& filter_list,
                                                         int frame_width, int frame_height, double fps,
-                                                        double fuzzyness);
+                                                        double fuzzyness,
+                                                        maybe_int scale_width, maybe_int scale_height);
     void generate_ffmpeg_script(std::ostream& out) const override;
 
   protected:

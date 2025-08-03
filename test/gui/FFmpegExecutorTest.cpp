@@ -43,7 +43,7 @@ class FFmpegExecutorTestFixture
 public:
   FFmpegExecutorTestFixture()
   {
-    ffmpeg.set_generator(fg::RegularScriptGenerator::create(filters, 1920, 1080, 25));
+    ffmpeg.set_generator(fg::RegularScriptGenerator::create(filters, 1920, 1080, 25, boost::none, boost::none));
     ffmpeg.set_input_file("input.mp4");
     ffmpeg.set_output_file("output.mkv");
   }

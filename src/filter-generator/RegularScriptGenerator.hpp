@@ -31,15 +31,19 @@
 
 
 namespace fg {
+  typedef boost::optional<int> maybe_int;
+
   class RegularScriptGenerator : public ScriptGenerator
   {
   protected:
     RegularScriptGenerator(const FilterList& filter_list,
-                           int frame_width, int frame_height, double fps);
+                           int frame_width, int frame_height, double fps,
+                           maybe_int scale_width, maybe_int scale_height);
 
   public:
     static std::shared_ptr<RegularScriptGenerator> create(const FilterList& filter_list,
-                                                          int frame_width, int frame_height, double fps);
+                                                          int frame_width, int frame_height, double fps,
+                                                          maybe_int scale_width, maybe_int scale_height);
 
     bool affects_audio() const override;
     void generate_ffmpeg_script(std::ostream& out) const override;
@@ -50,15 +54,17 @@ namespace fg {
     int frame_width_;
     int frame_height_;
     std::string fps_;
+    maybe_int scale_width_;
+    maybe_int scale_height_;
     mutable int first_filter_;
 
-    typedef boost::optional<int> maybe_int;
     mutable std::vector<std::pair<int, maybe_int>> cuts_;
 
     std::string make_fps_str(double fps);
 
     void generate_ffmpeg_script_standard_filters(std::ostream& out) const;
     void generate_ffmpeg_script_cuts(std::ostream& out) const;
+    void generate_ffmpeg_script_scale(std::ostream& out) const;
     void generate_ffmpeg_script_audio(std::ostream& out) const;
     std::string separator() const;
 
