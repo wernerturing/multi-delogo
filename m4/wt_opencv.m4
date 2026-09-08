@@ -17,6 +17,10 @@ dnl along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_DEFUN([WT_OPENCV], [dnl
   PKG_CHECK_MODULES([$1], [opencv4 >= $2])
+  dnl Treat OpenCV headers as system headers so that deprecation warnings
+  dnl triggered inside them (e.g. -Wdeprecated-enum-enum-conversion) are not
+  dnl reported when building multi-delogo.
+  $1_CFLAGS=`echo " [$]$1_CFLAGS" | sed -e 's/ -I/ -isystem /g'`
   res=""
   for arg in [$]$1_LIBS; do
       case "$arg" in
