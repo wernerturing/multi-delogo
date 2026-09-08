@@ -20,7 +20,6 @@
 #define MDL_FRAME_VIEW_H
 
 #include <gtkmm.h>
-#include <goocanvas.h>
 
 #include "common/Rectangle.hpp"
 
@@ -36,6 +35,7 @@ namespace mdl {
               const Glib::RefPtr<Gtk::Builder>& builder,
               int width, int height,
               bool can_select_rectangle = true);
+    ~FrameView();
 
     void set_image(Glib::RefPtr<Gdk::Pixbuf> pixbuf);
 
@@ -48,25 +48,16 @@ namespace mdl {
     typedef sigc::signal<void, Rectangle> type_signal_rectangle_changed;
     type_signal_rectangle_changed signal_rectangle_changed();
 
-    ~FrameView();
-
-    friend bool fv_on_button_press_wrapper(GooCanvasItem* item,
-                                           GooCanvasItem* target_item,
-                                           GdkEventButton* event,
-                                           FrameView* frameview);
-    friend bool fv_on_motion_notify_wrapper(GooCanvasItem* item,
-                                            GooCanvasItem* target_item,
-                                            GdkEventMotion* event,
-                                            FrameView* frameview);
-    friend bool fv_on_button_release_wrapper(GooCanvasItem* item,
-                                             GooCanvasItem* target_item,
-                                             GdkEventButton* event,
-                                             FrameView* frameview);
   private:
-    GooCanvas* canvas_;
-    GooCanvasItem* image_;
+    const int image_width_;
+    const int image_height_;
+
+    Gtk::DrawingArea canvas_;
+    Glib::RefPtr<Gdk::Pixbuf> pixbuf_;
     SelectionRect* rect_;
     SelectionRect* temp_rect_;
+
+    gdouble zoom_;
 
     bool drag_;
     Point drag_start_;
@@ -74,9 +65,20 @@ namespace mdl {
     type_signal_rectangle_changed signal_rectangle_changed_;
 
 
-    bool on_button_press(GooCanvasItem* item, GdkEventButton* event);
-    bool on_motion_notify(GooCanvasItem* item, GdkEventMotion* event);
-    bool on_button_release(GooCanvasItem* item, GdkEventButton* event);
+    void update_canvas_size();
+    // Offset, in widget pixels, of the (possibly centered) scaled image
+    // inside the drawing area allocation.
+    Point content_offset() const;
+    // Maps a pointer position on the drawing area to image-space pixels.
+    Point widget_to_image(double x, double y) const;
+
+    bool render_canvas(const Cairo::RefPtr<Cairo::Context>& cr);
+    void draw_selection(const Cairo::RefPtr<Cairo::Context>& cr, SelectionRect& rect);
+
+    bool on_canvas_button_press(GdkEventButton* event);
+    bool on_canvas_motion_notify(GdkEventMotion* event);
+    bool on_canvas_button_release(GdkEventButton* event);
+    bool on_canvas_leave_notify(GdkEventCrossing* event);
   };
 
 
@@ -100,42 +102,34 @@ namespace mdl {
   public:
     SelectionRect(gdouble x=0.0, gdouble y=0.0, gdouble width=0.0, gdouble height=0.0);
 
-    GooCanvasItem* c_item();
-
     void set_visible(bool is_visible);
+    bool is_visible() const;
 
-    void enable_drag_and_drop();
+    void create_cursors();
 
-    Rectangle get_coordinates();
+    Rectangle get_coordinates() const;
     void set_coordinates(const Rectangle& coordinates);
-
-    ~SelectionRect();
 
     typedef sigc::signal<void, Rectangle> type_signal_rectangle_changed;
     type_signal_rectangle_changed signal_rectangle_changed();
 
-    friend bool sr_on_button_press_wrapper(GooCanvasItem* item,
-                                           GooCanvasItem* target_item,
-                                           GdkEventButton* event,
-                                           SelectionRect* rect);
-    friend bool sr_on_motion_notify_wrapper(GooCanvasItem* item,
-                                            GooCanvasItem* target_item,
-                                            GdkEventMotion* event,
-                                            SelectionRect* rect);
-    friend bool sr_on_button_release_wrapper(GooCanvasItem* item,
-                                             GooCanvasItem* target_item,
-                                             GdkEventButton* event,
-                                             SelectionRect* rect);
-    friend bool sr_on_leave_notify_wrapper(GooCanvasItem* item,
-                                           GooCanvasItem* target_item,
-                                           GdkEventCrossing* event,
-                                           SelectionRect* rect);
+    // Hit-testing and interactive move/resize. Every point is in
+    // image-space coordinates; the caller is responsible for translating
+    // widget/event coordinates and for filtering the mouse button.
+    bool contains(const Point& point) const;
+    Glib::RefPtr<Gdk::Cursor> cursor_for_point(const Point& point) const;
+
+    void begin_drag(const Point& point);
+    void update_drag(const Point& point);
+    void end_drag();
+    bool dragging() const;
 
 
   private:
     const static gdouble RESIZE_MARGIN_;
 
-    GooCanvasItem* rect_;
+    Rectangle coordinates_;
+    bool visible_;
 
     DragMode drag_mode_;
     Rectangle start_coordinates_;
@@ -154,20 +148,14 @@ namespace mdl {
     type_signal_rectangle_changed signal_rectangle_changed_;
 
 
-    Rectangle normalize(const Rectangle& original);
+    Rectangle normalize(const Rectangle& original) const;
 
-    Point to_inside_coordinates(const Point& point);
-    DragMode get_drag_mode_for_point(const Point& point);
-    Glib::RefPtr<Gdk::Cursor> get_cursor(DragMode mode);
+    Point to_inside_coordinates(const Point& point) const;
+    DragMode get_drag_mode_for_point(const Point& point) const;
+    Glib::RefPtr<Gdk::Cursor> get_cursor(DragMode mode) const;
 
     void start_drag(DragMode mode, Point start);
-    Rectangle get_new_coordinates(const Point& drag_point);
-
-    bool on_button_press(GooCanvasItem* item, GdkEventButton* event);
-    bool on_motion_notify(GooCanvasItem* item, GdkEventMotion* event);
-    bool on_button_release(GooCanvasItem* item, GdkEventButton* event);
-
-    bool on_leave_notify(GooCanvasItem* item, GdkEventCrossing* event);
+    Rectangle get_new_coordinates(const Point& drag_point) const;
 
 
     friend class SelectionRectTestFixture;

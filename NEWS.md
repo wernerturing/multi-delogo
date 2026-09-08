@@ -1,3 +1,9 @@
+## Unreleased
+
+* Removed the goocanvas dependency; the frame view is now drawn
+  directly with Cairo.
+
+
 ## 2.5.0
 
 * Fix crash when opening a video.

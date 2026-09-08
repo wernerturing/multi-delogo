@@ -17,7 +17,6 @@
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <gtkmm.h>
-#include <goocanvas.h>
 
 #include "common/Rectangle.hpp"
 

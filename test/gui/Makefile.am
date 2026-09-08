@@ -52,8 +52,6 @@ FrameNavigatorUtilTest_SOURCES = FrameNavigatorUtilTest.cpp \
 
 SelectionRectTest_SOURCES = SelectionRectTest.cpp \
                             ../../src/gui/FrameView.cpp
-SelectionRectTest_CPPFLAGS = $(AM_CPPFLAGS) $(GOOCANVAS_CFLAGS)
-SelectionRectTest_LDADD = $(LDADD) $(GOOCANVAS_LIBS)
 
 UtilsTest_SOURCES = UtilsTest.cpp \
                     ../../src/gui/Utils.cpp

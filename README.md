@@ -19,7 +19,6 @@ Download the latest release from the [releases page](https://github.com/wernertu
 To compile the software on Linux, you'll need development files for the following libraries:
 
 * gtkmm
-* goocanvas
 * opencv
 * boost
 

@@ -16,44 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <algorithm>
 #include <cmath>
+#include <vector>
 
 #include <gtkmm.h>
-#include <goocanvas.h>
 
 #include "FrameView.hpp"
-
-namespace mdl {
-  bool fv_on_button_press_wrapper(GooCanvasItem* item,
-                                  GooCanvasItem* target_item,
-                                  GdkEventButton* event,
-                                  FrameView* frameview);
-  bool fv_on_motion_notify_wrapper(GooCanvasItem* item,
-                                   GooCanvasItem* target_item,
-                                   GdkEventMotion* event,
-                                   FrameView* frameview);
-  bool fv_on_button_release_wrapper(GooCanvasItem* item,
-                                    GooCanvasItem* target_item,
-                                    GdkEventButton* event,
-                                    FrameView* frameview);
-
-  bool sr_on_button_press_wrapper(GooCanvasItem* item,
-                                  GooCanvasItem* target_item,
-                                  GdkEventButton* event,
-                                  SelectionRect* rect);
-  bool sr_on_motion_notify_wrapper(GooCanvasItem* item,
-                                   GooCanvasItem* target_item,
-                                   GdkEventMotion* event,
-                                   SelectionRect* rect);
-  bool sr_on_button_release_wrapper(GooCanvasItem* item,
-                                    GooCanvasItem* target_item,
-                                    GdkEventButton* event,
-                                    SelectionRect* rect);
-  bool sr_on_leave_notify_wrapper(GooCanvasItem* item,
-                                  GooCanvasItem* target_item,
-                                  GdkEventCrossing* event,
-                                  SelectionRect* rect);
-}
 
 
 using namespace mdl;
@@ -67,134 +36,32 @@ FrameView::FrameView(BaseObjectType* cobject,
                      int width, int height,
                      bool can_select_rectangle)
   : Gtk::ScrolledWindow(cobject)
+  , image_width_(width)
+  , image_height_(height)
+  , rect_(new SelectionRect())
+  , temp_rect_(new SelectionRect())
+  , zoom_(1.0)
   , drag_(false)
 {
-  canvas_ = GOO_CANVAS(goo_canvas_new());
-  goo_canvas_set_bounds(canvas_, 0, 0, width, height);
-  g_object_set(canvas_,
-               "integer_layout", true,
-               "anchor", GOO_CANVAS_ANCHOR_CENTER,
-               NULL);
-
-  auto root = goo_canvas_get_root_item(canvas_);
-
-  image_ = goo_canvas_image_new(root, NULL, 0, 0, NULL);
   if (can_select_rectangle) {
-    g_signal_connect(image_, "button-press-event", G_CALLBACK(fv_on_button_press_wrapper), this);
-    g_signal_connect(image_, "motion-notify-event", G_CALLBACK(fv_on_motion_notify_wrapper), this);
-    g_signal_connect(image_, "button-release-event", G_CALLBACK(fv_on_button_release_wrapper), this);
+    rect_->create_cursors();
+    rect_->signal_rectangle_changed().connect(
+      sigc::mem_fun(signal_rectangle_changed_, &type_signal_rectangle_changed::emit));
   }
-  goo_canvas_item_add_child(root, image_, -1);
 
-  rect_ = new SelectionRect(0, 0, 0, 0);
-  goo_canvas_item_add_child(root, rect_->c_item(), -1);
+  canvas_.add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK
+                     | Gdk::POINTER_MOTION_MASK | Gdk::LEAVE_NOTIFY_MASK);
+  canvas_.signal_draw().connect(sigc::mem_fun(*this, &FrameView::render_canvas));
   if (can_select_rectangle) {
-    rect_->enable_drag_and_drop();
-    rect_->signal_rectangle_changed().connect(sigc::mem_fun(signal_rectangle_changed_, &type_signal_rectangle_changed::emit));
+    canvas_.signal_button_press_event().connect(sigc::mem_fun(*this, &FrameView::on_canvas_button_press));
+    canvas_.signal_motion_notify_event().connect(sigc::mem_fun(*this, &FrameView::on_canvas_motion_notify));
+    canvas_.signal_button_release_event().connect(sigc::mem_fun(*this, &FrameView::on_canvas_button_release));
+    canvas_.signal_leave_notify_event().connect(sigc::mem_fun(*this, &FrameView::on_canvas_leave_notify));
   }
 
-  temp_rect_ = new SelectionRect();
-  goo_canvas_item_add_child(root, temp_rect_->c_item(), -1);
-
-  auto canvas = Glib::wrap(GTK_WIDGET(canvas_));
-  add(*canvas);
-}
-
-
-void FrameView::set_image(Glib::RefPtr<Gdk::Pixbuf> pixbuf)
-{
-  if (pixbuf) {
-    g_object_set(image_, "pixbuf", pixbuf->gobj(), NULL);
-  }
-}
-
-
-void FrameView::set_zoom(gdouble level)
-{
-  goo_canvas_set_scale(canvas_, level);
-}
-
-
-void FrameView::show_rectangle(const Rectangle& rect)
-{
-  rect_->set_visible(true);
-  rect_->set_coordinates(rect);
-}
-
-
-void FrameView::hide_rectangle()
-{
-  rect_->set_visible(false);
-}
-
-
-void FrameView::scroll_to_current_rectangle()
-{
-  goo_canvas_scroll_to(canvas_, rect_->get_coordinates().x - 50, rect_->get_coordinates().y - 50);
-}
-
-
-FrameView::type_signal_rectangle_changed FrameView::signal_rectangle_changed()
-{
-  return signal_rectangle_changed_;
-}
-
-
-bool FrameView::on_button_press(GooCanvasItem* item, GdkEventButton* event)
-{
-  if (event->button != 1) {
-    return false;
-  }
-
-  drag_ = true;
-  drag_start_.x = event->x;
-  drag_start_.y = event->y;
-
-  goo_canvas_pointer_grab(canvas_, item,
-                          (GdkEventMask) (GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_RELEASE_MASK),
-                          NULL,
-                          event->time);
-
-  return true;
-}
-
-
-bool FrameView::on_motion_notify(GooCanvasItem* item, GdkEventMotion* event)
-{
-  if (!drag_) {
-    return false;
-  }
-
-  double width = event->x - drag_start_.x;
-  double height = event->y - drag_start_.y;
-  if (abs(width) >= 5 || abs(height) >= 5) {
-    temp_rect_->set_coordinates({.x = drag_start_.x, .y = drag_start_.y,
-                                 .width = width, .height = height});
-    temp_rect_->set_visible(true);
-  }
-
-  return true;
-}
-
-
-bool FrameView::on_button_release(GooCanvasItem* item, GdkEventButton* event)
-{
-  if (!drag_) {
-    return false;
-  }
-
-  drag_ = false;
-  goo_canvas_pointer_ungrab(canvas_, item, event->time);
-  temp_rect_->set_visible(false);
-
-  Rectangle coordinates = temp_rect_->get_coordinates();
-  if (coordinates.width >= 5 || coordinates.height >= 5) {
-    rect_->set_coordinates(coordinates);
-    rect_->set_visible(true);
-    signal_rectangle_changed_.emit(coordinates);
-  }
-
-  return true;
+  update_canvas_size();
+  canvas_.show();
+  add(canvas_);
 }
 
 
@@ -205,70 +72,240 @@ FrameView::~FrameView()
 }
 
 
-bool mdl::fv_on_button_press_wrapper(GooCanvasItem* item,
-                                     GooCanvasItem* target_item,
-                                     GdkEventButton* event,
-                                     FrameView* frameview)
+void FrameView::update_canvas_size()
 {
-  return frameview->on_button_press(item, event);
+  canvas_.set_size_request(std::max(1, (int) std::lround(image_width_ * zoom_)),
+                           std::max(1, (int) std::lround(image_height_ * zoom_)));
 }
 
 
-bool mdl::fv_on_motion_notify_wrapper(GooCanvasItem* item,
-                                      GooCanvasItem* target_item,
-                                      GdkEventMotion* event,
-                                      FrameView* frameview)
+Point FrameView::content_offset() const
 {
-  return frameview->on_motion_notify(item, event);
+  double scaled_width = image_width_ * zoom_;
+  double scaled_height = image_height_ * zoom_;
+  return {
+    std::round(std::max(0.0, (canvas_.get_allocated_width() - scaled_width) / 2.0)),
+    std::round(std::max(0.0, (canvas_.get_allocated_height() - scaled_height) / 2.0))
+  };
 }
 
 
-bool mdl::fv_on_button_release_wrapper(GooCanvasItem* item,
-                                       GooCanvasItem* target_item,
-                                       GdkEventButton* event,
-                                       FrameView* frameview)
+Point FrameView::widget_to_image(double x, double y) const
 {
-  return frameview->on_button_release(item, event);
+  Point offset = content_offset();
+  return {.x = (x - offset.x) / zoom_, .y = (y - offset.y) / zoom_};
+}
+
+
+void FrameView::set_image(Glib::RefPtr<Gdk::Pixbuf> pixbuf)
+{
+  if (pixbuf) {
+    pixbuf_ = pixbuf;
+    canvas_.queue_draw();
+  }
+}
+
+
+void FrameView::set_zoom(gdouble level)
+{
+  zoom_ = level;
+  update_canvas_size();
+  canvas_.queue_draw();
+}
+
+
+void FrameView::show_rectangle(const Rectangle& rect)
+{
+  rect_->set_visible(true);
+  rect_->set_coordinates(rect);
+  canvas_.queue_draw();
+}
+
+
+void FrameView::hide_rectangle()
+{
+  rect_->set_visible(false);
+  canvas_.queue_draw();
+}
+
+
+void FrameView::scroll_to_current_rectangle()
+{
+  Rectangle c = rect_->get_coordinates();
+  Point offset = content_offset();
+
+  auto hadjustment = get_hadjustment();
+  auto vadjustment = get_vadjustment();
+  if (hadjustment) {
+    hadjustment->set_value((c.x - 50) * zoom_ + offset.x);
+  }
+  if (vadjustment) {
+    vadjustment->set_value((c.y - 50) * zoom_ + offset.y);
+  }
+}
+
+
+FrameView::type_signal_rectangle_changed FrameView::signal_rectangle_changed()
+{
+  return signal_rectangle_changed_;
+}
+
+
+bool FrameView::render_canvas(const Cairo::RefPtr<Cairo::Context>& cr)
+{
+  Point offset = content_offset();
+  cr->translate(offset.x, offset.y);
+  cr->scale(zoom_, zoom_);
+
+  if (pixbuf_) {
+    Gdk::Cairo::set_source_pixbuf(cr, pixbuf_, 0, 0);
+    cr->paint();
+  }
+
+  draw_selection(cr, *rect_);
+  draw_selection(cr, *temp_rect_);
+
+  return false;
+}
+
+
+void FrameView::draw_selection(const Cairo::RefPtr<Cairo::Context>& cr, SelectionRect& rect)
+{
+  if (!rect.is_visible()) {
+    return;
+  }
+
+  Rectangle r = rect.get_coordinates();
+
+  cr->save();
+  cr->rectangle(r.x, r.y, r.width, r.height);
+  cr->set_source_rgba(0.0, 0.0, 0.0, 0x60 / 255.0);
+  cr->fill_preserve();
+
+  cr->set_source_rgba(0.0, 0.0, 0.0, 1.0);
+  cr->set_line_width(1.0);
+  cr->set_dash(std::vector<double>{5.0, 5.0}, 0.0);
+  cr->stroke();
+  cr->restore();
+}
+
+
+bool FrameView::on_canvas_button_press(GdkEventButton* event)
+{
+  if (event->button != 1) {
+    return false;
+  }
+
+  Point p = widget_to_image(event->x, event->y);
+
+  if (rect_->is_visible() && rect_->contains(p)) {
+    rect_->begin_drag(p);
+    return true;
+  }
+
+  drag_ = true;
+  drag_start_ = p;
+  return true;
+}
+
+
+bool FrameView::on_canvas_motion_notify(GdkEventMotion* event)
+{
+  Point p = widget_to_image(event->x, event->y);
+
+  if (rect_->dragging()) {
+    rect_->update_drag(p);
+    canvas_.queue_draw();
+    return true;
+  }
+
+  if (drag_) {
+    double width = p.x - drag_start_.x;
+    double height = p.y - drag_start_.y;
+    if (std::abs(width) >= 5 || std::abs(height) >= 5) {
+      temp_rect_->set_coordinates({.x = drag_start_.x, .y = drag_start_.y,
+                                   .width = width, .height = height});
+      temp_rect_->set_visible(true);
+      canvas_.queue_draw();
+    }
+    return true;
+  }
+
+  auto window = canvas_.get_window();
+  if (window) {
+    if (rect_->is_visible() && rect_->contains(p)) {
+      window->set_cursor(rect_->cursor_for_point(p));
+    } else {
+      window->set_cursor();
+    }
+  }
+  return false;
+}
+
+
+bool FrameView::on_canvas_button_release(GdkEventButton* event)
+{
+  if (event->button != 1) {
+    return false;
+  }
+
+  if (rect_->dragging()) {
+    rect_->end_drag();
+    canvas_.queue_draw();
+    return true;
+  }
+
+  if (!drag_) {
+    return false;
+  }
+
+  drag_ = false;
+  temp_rect_->set_visible(false);
+
+  Rectangle coordinates = temp_rect_->get_coordinates();
+  if (coordinates.width >= 5 || coordinates.height >= 5) {
+    rect_->set_coordinates(coordinates);
+    rect_->set_visible(true);
+    signal_rectangle_changed_.emit(coordinates);
+  }
+
+  canvas_.queue_draw();
+  return true;
+}
+
+
+bool FrameView::on_canvas_leave_notify(GdkEventCrossing* event)
+{
+  auto window = canvas_.get_window();
+  if (window) {
+    window->set_cursor();
+  }
+  return false;
 }
 
 
 SelectionRect::SelectionRect(gdouble x, gdouble y, gdouble width, gdouble height)
-  : rect_(goo_canvas_rect_new(NULL, x, y, width, height, NULL))
+  : coordinates_{x, y, width, height}
+  , visible_(false)
   , drag_mode_(DragMode::NONE)
 {
-  GooCanvasLineDash* dashed = goo_canvas_line_dash_new(2, 5.0, 5.0);
-  g_object_set(rect_,
-               "visibility", GOO_CANVAS_ITEM_HIDDEN,
-               "line-width", 1.0,
-               "fill-color-rgba", 0x00000060,
-               "line-dash", dashed,
-               NULL);
-}
-
-
-GooCanvasItem* SelectionRect::c_item()
-{
-  return rect_;
 }
 
 
 void SelectionRect::set_visible(bool is_visible)
 {
-  GooCanvasItemVisibility visibility = is_visible
-    ? GOO_CANVAS_ITEM_VISIBLE
-    : GOO_CANVAS_ITEM_INVISIBLE;
-  g_object_set(rect_, "visibility", visibility, NULL);
+  visible_ = is_visible;
 }
 
 
-void SelectionRect::enable_drag_and_drop()
+bool SelectionRect::is_visible() const
 {
-  g_signal_connect(rect_, "button-press-event", G_CALLBACK(sr_on_button_press_wrapper), this);
-  g_signal_connect(rect_, "motion-notify-event", G_CALLBACK(sr_on_motion_notify_wrapper), this);
-  g_signal_connect(rect_, "button-release-event", G_CALLBACK(sr_on_button_release_wrapper), this);
+  return visible_;
+}
 
-  g_signal_connect(rect_, "leave-notify-event", G_CALLBACK(sr_on_leave_notify_wrapper), this);
 
+void SelectionRect::create_cursors()
+{
   move_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "move");
   resize_br_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "se-resize");
   resize_bl_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "sw-resize");
@@ -281,28 +318,15 @@ void SelectionRect::enable_drag_and_drop()
 }
 
 
-Rectangle SelectionRect::get_coordinates()
+Rectangle SelectionRect::get_coordinates() const
 {
-  Rectangle ret;
-  g_object_get(rect_,
-               "x", &ret.x,
-               "y", &ret.y,
-               "width", &ret.width,
-               "height", &ret.height,
-               NULL);
-  return ret;
+  return coordinates_;
 }
 
 
 void SelectionRect::set_coordinates(const Rectangle& coordinates)
 {
-  Rectangle r(normalize(coordinates));
-  g_object_set(rect_,
-               "x", r.x,
-               "y", r.y,
-               "width", r.width,
-               "height", r.height,
-               NULL);
+  coordinates_ = normalize(coordinates);
 }
 
 
@@ -312,7 +336,7 @@ SelectionRect::type_signal_rectangle_changed SelectionRect::signal_rectangle_cha
 }
 
 
-Rectangle SelectionRect::normalize(const Rectangle& original)
+Rectangle SelectionRect::normalize(const Rectangle& original) const
 {
   Rectangle ret(original);
   if (ret.width < 0) {
@@ -327,18 +351,16 @@ Rectangle SelectionRect::normalize(const Rectangle& original)
 }
 
 
-Point SelectionRect::to_inside_coordinates(const Point& point)
+Point SelectionRect::to_inside_coordinates(const Point& point) const
 {
-  gdouble x, y;
-  g_object_get(rect_, "x", &x, "y", &y, NULL);
-  return {.x = point.x - x, .y = point.y - y};
+  return {.x = point.x - coordinates_.x, .y = point.y - coordinates_.y};
 }
 
 
-DragMode SelectionRect::get_drag_mode_for_point(const Point& point)
+DragMode SelectionRect::get_drag_mode_for_point(const Point& point) const
 {
-  gdouble width, height;
-  g_object_get(rect_, "width", &width, "height", &height, NULL);
+  gdouble width = coordinates_.width;
+  gdouble height = coordinates_.height;
 
   if (point.x >= width - RESIZE_MARGIN_
       && point.y >= height - RESIZE_MARGIN_) {
@@ -366,7 +388,7 @@ DragMode SelectionRect::get_drag_mode_for_point(const Point& point)
 }
 
 
-Glib::RefPtr<Gdk::Cursor> SelectionRect::get_cursor(DragMode mode)
+Glib::RefPtr<Gdk::Cursor> SelectionRect::get_cursor(DragMode mode) const
 {
   switch (mode) {
   case DragMode::MOVE:
@@ -410,7 +432,7 @@ void SelectionRect::start_drag(DragMode mode, Point start)
 }
 
 
-Rectangle SelectionRect::get_new_coordinates(const Point& drag_point)
+Rectangle SelectionRect::get_new_coordinates(const Point& drag_point) const
 {
   Rectangle ret = start_coordinates_;
   gdouble rel_x = drag_point.x - drag_start_.x;
@@ -472,107 +494,48 @@ Rectangle SelectionRect::get_new_coordinates(const Point& drag_point)
 }
 
 
-bool SelectionRect::on_button_press(GooCanvasItem* item, GdkEventButton* event)
+bool SelectionRect::contains(const Point& point) const
 {
-  if (event->button != 1) {
-    return false;
-  }
-
-  start_coordinates_ = get_coordinates();
-  drag_start_.x = event->x;
-  drag_start_.y = event->y;
-  drag_mode_ = get_drag_mode_for_point(to_inside_coordinates(drag_start_));
-
-  GooCanvas* canvas = goo_canvas_item_get_canvas(item);
-  goo_canvas_pointer_grab(canvas, item,
-                          (GdkEventMask) (GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_RELEASE_MASK),
-                          get_cursor(drag_mode_)->gobj(),
-                          event->time);
-
-  return true;
+  Rectangle r = normalize(coordinates_);
+  return point.x >= r.x && point.x <= r.x + r.width
+      && point.y >= r.y && point.y <= r.y + r.height;
 }
 
 
-bool SelectionRect::on_motion_notify(GooCanvasItem* item, GdkEventMotion* event)
+Glib::RefPtr<Gdk::Cursor> SelectionRect::cursor_for_point(const Point& point) const
 {
-  if (drag_mode_ == DragMode::NONE) {
-    Point inside_c = to_inside_coordinates({.x = event->x, .y = event->y});
-    DragMode mode = get_drag_mode_for_point(inside_c);
-    GooCanvas* canvas = goo_canvas_item_get_canvas(item);
-    gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(canvas)),
-                          get_cursor(mode)->gobj());
-
-    return false;
-  }
-
-  set_coordinates(get_new_coordinates({.x = event->x, .y = event->y}));
-
-  return true;
+  return get_cursor(get_drag_mode_for_point(to_inside_coordinates(point)));
 }
 
 
-bool SelectionRect::on_button_release(GooCanvasItem* item, GdkEventButton* event)
+void SelectionRect::begin_drag(const Point& point)
+{
+  start_drag(get_drag_mode_for_point(to_inside_coordinates(point)), point);
+}
+
+
+void SelectionRect::update_drag(const Point& point)
 {
   if (drag_mode_ == DragMode::NONE) {
-    return false;
+    return;
+  }
+
+  set_coordinates(get_new_coordinates(point));
+}
+
+
+void SelectionRect::end_drag()
+{
+  if (drag_mode_ == DragMode::NONE) {
+    return;
   }
 
   drag_mode_ = DragMode::NONE;
-  GooCanvas* canvas = goo_canvas_item_get_canvas(item);
-  goo_canvas_pointer_ungrab(canvas, item, event->time);
-
   signal_rectangle_changed_.emit(get_coordinates());
-
-  return true;
 }
 
 
-bool SelectionRect::on_leave_notify(GooCanvasItem* item, GdkEventCrossing* event)
+bool SelectionRect::dragging() const
 {
-  GooCanvas* canvas = goo_canvas_item_get_canvas(item);
-  GdkWindow* window = gtk_widget_get_window(GTK_WIDGET(canvas));
-  gdk_window_set_cursor(window, NULL);
-  return false;
-}
-
-
-SelectionRect::~SelectionRect()
-{
-  g_object_unref(rect_);
-}
-
-
-bool mdl::sr_on_button_press_wrapper(GooCanvasItem* item,
-                                     GooCanvasItem* target_item,
-                                     GdkEventButton* event,
-                                     SelectionRect* rect)
-{
-  return rect->on_button_press(item, event);
-}
-
-
-bool mdl::sr_on_motion_notify_wrapper(GooCanvasItem* item,
-                                      GooCanvasItem* target_item,
-                                      GdkEventMotion* event,
-                                      SelectionRect* rect)
-{
-  return rect->on_motion_notify(item, event);
-}
-
-
-bool mdl::sr_on_button_release_wrapper(GooCanvasItem* item,
-                                       GooCanvasItem* target_item,
-                                       GdkEventButton* event,
-                                       SelectionRect* rect)
-{
-  return rect->on_button_release(item, event);
-}
-
-
-bool mdl::sr_on_leave_notify_wrapper(GooCanvasItem* item,
-                                     GooCanvasItem* target_item,
-                                     GdkEventCrossing* event,
-                                     SelectionRect* rect)
-{
-  return rect->on_leave_notify(item, event);
+  return drag_mode_ != DragMode::NONE;
 }
