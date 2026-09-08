@@ -286,7 +286,8 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
               <object class="GtkLabel" id="lbl_scale_x">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="xpad">8</property>
+                <property name="margin-start">8</property>
+                <property name="margin-end">8</property>
                 <property name="label">x</property>
               </object>
               <packing>
