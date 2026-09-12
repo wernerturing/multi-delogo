@@ -150,10 +150,9 @@ void FindLogosWindow::on_find_logos()
   int min_frame_interval = txt_min_frame_interval_->get_value_as_int();
   int max_frame_interval = txt_max_frame_interval_->get_value_as_int();
   if (max_frame_interval < min_frame_interval) {
-    Gtk::MessageDialog dlg(*this,
-                           _("Invalid logo duration: maximum duration must be greater than or than the minimum duration"),
-                           false, Gtk::MESSAGE_ERROR);
-    run_dialog_sync(dlg);
+    message_dialog(*this,
+                   _("Invalid logo duration: maximum duration must be greater than or than the minimum duration"),
+                   Gtk::MESSAGE_ERROR);
     return;
   }
 

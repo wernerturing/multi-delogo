@@ -326,11 +326,11 @@ maybe_file MultiDelogoApp::select_file_for_open(const std::string& title,
 
 void MultiDelogoApp::error_dialog(const Glib::ustring& message, Gtk::MessageType type)
 {
-  Gtk::MessageDialog dlg(message, false, type);
   if (initial_window_) {
-    dlg.set_transient_for(*initial_window_);
+    message_dialog(*initial_window_, message, type);
+  } else {
+    message_dialog(message, type);
   }
-  run_dialog_sync(dlg);
 }
 
 

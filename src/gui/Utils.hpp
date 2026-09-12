@@ -29,6 +29,10 @@ namespace mdl {
 
   int run_dialog_sync(Gtk::Dialog& dlg);
 
+  void message_dialog(const Glib::ustring& msg, Gtk::MessageType type);
+  void message_dialog(Gtk::Window& parent, const Glib::ustring& msg,
+                      Gtk::MessageType type);
+
   bool confirmation_dialog(const Glib::ustring& msg,
                            const Glib::ustring& txt_destructive,
                            const Glib::ustring& txt_safe);

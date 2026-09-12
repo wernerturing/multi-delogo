@@ -71,6 +71,20 @@ int mdl::run_dialog_sync(Gtk::Dialog& dlg)
 }
 
 
+void mdl::message_dialog(const Glib::ustring& msg, Gtk::MessageType type)
+{
+  Gtk::MessageDialog dlg(msg, false, type);
+  run_dialog_sync(dlg);
+}
+
+
+void mdl::message_dialog(Gtk::Window& parent, const Glib::ustring& msg, Gtk::MessageType type)
+{
+  Gtk::MessageDialog dlg(parent, msg, false, type);
+  run_dialog_sync(dlg);
+}
+
+
 bool mdl::confirmation_dialog(const Glib::ustring& msg,
                               const Glib::ustring& txt_destructive,
                               const Glib::ustring& txt_safe)

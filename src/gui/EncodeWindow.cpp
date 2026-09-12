@@ -207,15 +207,13 @@ void EncodeWindow::on_encode()
     disable_widgets();
     btn_log_->hide();
   } catch (ScriptGenerationException& e) {
-    Gtk::MessageDialog dlg(*this,
-                           Glib::ustring::compose(_("Error generating filter script for FFmpeg: %1"), e.what()),
-                           false, Gtk::MESSAGE_ERROR);
-    run_dialog_sync(dlg);
+    message_dialog(*this,
+                   Glib::ustring::compose(_("Error generating filter script for FFmpeg: %1"), e.what()),
+                   Gtk::MESSAGE_ERROR);
   } catch (FFmpegStartException& e) {
     auto msg = Glib::ustring::compose(_("Could not execute FFmpeg: %1"),
                                       e.what());
-    Gtk::MessageDialog dlg(*this, msg, false, Gtk::MESSAGE_ERROR);
-    run_dialog_sync(dlg);
+    message_dialog(*this, msg, Gtk::MESSAGE_ERROR);
   }
 }
 
@@ -233,13 +231,11 @@ void EncodeWindow::on_generate_script()
   try {
     ffmpeg_.generate_script(file);
 
-    Gtk::MessageDialog dlg(*this, _("Filter script generated"));
-    run_dialog_sync(dlg);
+    message_dialog(*this, _("Filter script generated"), Gtk::MESSAGE_INFO);
   } catch (ScriptGenerationException& e) {
     auto msg = Glib::ustring::compose(_("Could not open file %1: %2"),
                                       file, e.what());
-    Gtk::MessageDialog dlg(*this, msg, false, Gtk::MESSAGE_ERROR);
-    run_dialog_sync(dlg);
+    message_dialog(*this, msg, Gtk::MESSAGE_ERROR);
     return;
   }
 }
@@ -266,8 +262,7 @@ void EncodeWindow::on_show_cmd_line()
 bool EncodeWindow::check_file(const std::string& file)
 {
   if (file.empty()) {
-    Gtk::MessageDialog dlg(*this, _("Please select the output file"), false, Gtk::MESSAGE_ERROR);
-    run_dialog_sync(dlg);
+    message_dialog(*this, _("Please select the output file"), Gtk::MESSAGE_ERROR);
     return false;
   }
 
