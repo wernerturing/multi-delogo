@@ -32,6 +32,7 @@
 #include "MultiDelogoApp.hpp"
 #include "FindLogosWindow.hpp"
 #include "EncodeWindow.hpp"
+#include "Utils.hpp"
 
 using namespace mdl;
 
@@ -209,14 +210,12 @@ void MovieWindow::on_find_logos()
 void MovieWindow::on_encode()
 {
   if (filter_data_->filter_list().empty()) {
-    Gtk::MessageDialog dlg(*this, _("There are no filters. Please define at least one filter before encoding."), false, Gtk::MESSAGE_ERROR);
-    dlg.run();
+    message_dialog(*this, _("There are no filters. Please define at least one filter before encoding."), Gtk::MESSAGE_ERROR);
     return;
   }
 
   if (filter_data_->filter_list().has_review_filter()) {
-    Gtk::MessageDialog dlg(*this, _("Encoding cannot be done when there are 'review' filters. Please change them to some other filter (such as 'none'), or remove them."), false, Gtk::MESSAGE_ERROR);
-    dlg.run();
+    message_dialog(*this, _("Encoding cannot be done when there are 'review' filters. Please change them to some other filter (such as 'none'), or remove them."), Gtk::MESSAGE_ERROR);
     return;
   }
 

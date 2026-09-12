@@ -439,7 +439,7 @@ void Coordinator::on_shift()
   ShiftFramesWindow* window = ShiftFramesWindow::create(filter_model_, number_of_frames_, current_frame_);
   window->set_transient_for(parent_window_);
 
-  if (window->run() == GTK_RESPONSE_ACCEPT) {
+  if (run_dialog_sync(*window) == GTK_RESPONSE_ACCEPT) {
     int start = window->get_initial_frame();
     int end = window->get_final_frame();
     int amount = window->get_amount();

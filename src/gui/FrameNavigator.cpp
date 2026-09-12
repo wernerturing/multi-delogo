@@ -185,11 +185,8 @@ void FrameNavigator::change_displayed_frame(int new_frame_number)
     long time_pos = calculate_position((frame_number_ - 1), get_fps());
     lbl_time_pos_->set_label(format_time_based_on_total(time_pos, duration_));
   } catch (const FrameNotAvailableException& e) {
-    Gtk::MessageDialog dlg(parent_window_,
-                           _("Could not get frame"), false,
-                           Gtk::MESSAGE_ERROR);
     txt_frame_number_->set_value(frame_number_);
-    dlg.run();
+    message_dialog(parent_window_, _("Could not get frame"), Gtk::MESSAGE_ERROR);
   }
 }
 
