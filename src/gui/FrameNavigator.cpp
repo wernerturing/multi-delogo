@@ -189,7 +189,7 @@ void FrameNavigator::change_displayed_frame(int new_frame_number)
                            _("Could not get frame"), false,
                            Gtk::MESSAGE_ERROR);
     txt_frame_number_->set_value(frame_number_);
-    dlg.run();
+    run_dialog_sync(dlg);
   }
 }
 

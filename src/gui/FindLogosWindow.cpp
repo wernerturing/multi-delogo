@@ -153,7 +153,7 @@ void FindLogosWindow::on_find_logos()
     Gtk::MessageDialog dlg(*this,
                            _("Invalid logo duration: maximum duration must be greater than or than the minimum duration"),
                            false, Gtk::MESSAGE_ERROR);
-    dlg.run();
+    run_dialog_sync(dlg);
     return;
   }
 

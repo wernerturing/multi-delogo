@@ -27,6 +27,8 @@
 namespace mdl {
   bool file_exists(const std::string& file);
 
+  int run_dialog_sync(Gtk::Dialog& dlg);
+
   bool confirmation_dialog(const Glib::ustring& msg,
                            const Glib::ustring& txt_destructive,
                            const Glib::ustring& txt_safe);

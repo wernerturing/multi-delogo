@@ -36,6 +36,41 @@ bool mdl::file_exists(const std::string& file)
 }
 
 
+int mdl::run_dialog_sync(Gtk::Dialog& dlg)
+{
+  bool was_modal = dlg.get_modal();
+  if (!was_modal) {
+    dlg.set_modal(true);
+  }
+
+  if (!dlg.get_visible()) {
+    dlg.show();
+  }
+
+  int response_id = Gtk::RESPONSE_NONE;
+  bool responded = false;
+  sigc::connection sig_response = dlg.signal_response().connect(
+    [&response_id, &responded](int id) {
+      response_id = id;
+      responded = true;
+    });
+
+  Glib::RefPtr<Glib::MainContext> context = Glib::MainContext::get_default();
+  while (!responded) {
+    context->iteration(true);
+  }
+
+  sig_response.disconnect();
+
+  if (!was_modal) {
+    dlg.set_modal(false);
+  }
+  dlg.hide();
+
+  return response_id;
+}
+
+
 bool mdl::confirmation_dialog(const Glib::ustring& msg,
                               const Glib::ustring& txt_destructive,
                               const Glib::ustring& txt_safe)
@@ -60,7 +95,7 @@ bool mdl::confirmation_dialog(Gtk::MessageDialog&& dlg, const Glib::ustring& txt
   dlg.add_button(txt_destructive, Gtk::RESPONSE_YES);
   dlg.add_button(txt_safe, Gtk::RESPONSE_NO);
   dlg.set_default_response(Gtk::RESPONSE_NO);
-  return dlg.run() == Gtk::RESPONSE_YES;
+  return run_dialog_sync(dlg) == Gtk::RESPONSE_YES;
 }
 
 

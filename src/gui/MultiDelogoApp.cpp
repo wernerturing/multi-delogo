@@ -314,8 +314,7 @@ maybe_file MultiDelogoApp::select_file_for_open(const std::string& title,
   dlg.add_filter(filter);
   dlg.add_filter(filter_all);
 
-  int response = dlg.run();
-  dlg.hide();
+  int response = run_dialog_sync(dlg);
 
   if (response == Gtk::RESPONSE_OK) {
     return boost::make_optional(dlg.get_file());
@@ -331,7 +330,7 @@ void MultiDelogoApp::error_dialog(const Glib::ustring& message, Gtk::MessageType
   if (initial_window_) {
     dlg.set_transient_for(*initial_window_);
   }
-  dlg.run();
+  run_dialog_sync(dlg);
 }
 
 
