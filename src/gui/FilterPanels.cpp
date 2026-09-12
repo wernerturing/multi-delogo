@@ -156,7 +156,7 @@ FilterPanelWithParameters::FilterPanelWithParameters(int start_frame, int max_fr
 void FilterPanelWithParameters::add_widget(Gtk::Widget& widget,
                                            const Glib::ustring& label, int row)
 {
-  Gtk::Label* l = Gtk::manage(new Gtk::Label(label, true));
+  Gtk::Label* l = Gtk::make_managed<Gtk::Label>(label, true);
   l->set_mnemonic_widget(widget);
   l->set_halign(Gtk::ALIGN_END);
   attach(*l, 0, row, 1, 1);
