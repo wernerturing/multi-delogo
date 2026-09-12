@@ -335,8 +335,15 @@ void EncodeWindow::on_view_log()
 
 bool EncodeWindow::on_delete_event(GdkEventAny*)
 {
+  // Returning false calls the default handler (which closes the window)
+  return confirm_close() == false;
+}
+
+
+bool EncodeWindow::confirm_close()
+{
   if (!ffmpeg_.is_executing()) {
-    return false;
+    return true;
   }
 
   bool terminate = confirmation_dialog(*this,
@@ -347,7 +354,7 @@ bool EncodeWindow::on_delete_event(GdkEventAny*)
     ffmpeg_.terminate();
   }
 
-  return !terminate;
+  return terminate;
 }
 
 

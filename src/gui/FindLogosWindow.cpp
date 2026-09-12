@@ -216,9 +216,8 @@ void FindLogosWindow::on_close()
 
 bool FindLogosWindow::on_delete_event(GdkEventAny*)
 {
-  bool stop = confirm_stop();
   // Returning false calls the default handler (which closes the window)
-  return stop == false;
+  return confirm_stop() == false;
 }
 
 
