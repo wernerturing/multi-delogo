@@ -63,7 +63,12 @@ namespace mdl {
     void configure_toolbar(const Glib::RefPtr<Gtk::Builder>& builder,
                            Gtk::Application& app);
 
-    bool on_key_press(GdkEventKey* key_event);
+    static bool on_key_press_wrapper(GtkEventControllerKey* controller,
+                                     guint keyval,
+                                     guint keycode,
+                                     GdkModifierType* state,
+                                     MovieWindow* movie_window);
+    bool on_key_press(guint keyval, guint keycode);
 
     void on_save();
     void on_find_logos();
