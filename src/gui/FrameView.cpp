@@ -58,8 +58,13 @@ FrameView::FrameView(BaseObjectType* cobject,
     gesture_click_->signal_pressed().connect(sigc::mem_fun(*this, &FrameView::on_canvas_button_press));
     gesture_click_->signal_released().connect(sigc::mem_fun(*this, &FrameView::on_canvas_button_release));
 
-    canvas_.signal_motion_notify_event().connect(sigc::mem_fun(*this, &FrameView::on_canvas_motion_notify));
-    canvas_.signal_leave_notify_event().connect(sigc::mem_fun(*this, &FrameView::on_canvas_leave_notify));
+    // Can be simplified if migrated to gtkmm-4: There's a C++ wrapper,
+    // no need to use C objects directly
+    auto evt_motion = gtk_event_controller_motion_new(GTK_WIDGET(canvas_.gobj()));
+    g_signal_connect(evt_motion, "motion",
+                     G_CALLBACK(&FrameView::on_canvas_motion_notify_wrapper), this);
+    g_signal_connect(evt_motion, "leave",
+                     G_CALLBACK(&FrameView::on_canvas_leave_notify_wrapper), this);
   }
 
   update_canvas_size();
@@ -207,40 +212,6 @@ void FrameView::on_canvas_button_press(int n_press, double x, double y)
 }
 
 
-bool FrameView::on_canvas_motion_notify(GdkEventMotion* event)
-{
-  Point p = widget_to_image(event->x, event->y);
-
-  if (rect_->dragging()) {
-    rect_->update_drag(p);
-    canvas_.queue_draw();
-    return true;
-  }
-
-  if (drag_) {
-    double width = p.x - drag_start_.x;
-    double height = p.y - drag_start_.y;
-    if (std::abs(width) >= 5 || std::abs(height) >= 5) {
-      temp_rect_->set_coordinates({.x = drag_start_.x, .y = drag_start_.y,
-                                   .width = width, .height = height});
-      temp_rect_->set_visible(true);
-      canvas_.queue_draw();
-    }
-    return true;
-  }
-
-  auto window = canvas_.get_window();
-  if (window) {
-    if (rect_->is_visible() && rect_->contains(p)) {
-      window->set_cursor(rect_->cursor_for_point(p));
-    } else {
-      window->set_cursor();
-    }
-  }
-  return false;
-}
-
-
 void FrameView::on_canvas_button_release(int n_press, double x, double y)
 {
   if (rect_->dragging()) {
@@ -267,13 +238,61 @@ void FrameView::on_canvas_button_release(int n_press, double x, double y)
 }
 
 
-bool FrameView::on_canvas_leave_notify(GdkEventCrossing* event)
+void FrameView::on_canvas_motion_notify_wrapper(GtkEventControllerMotion* self,
+                                                double x,
+                                                double y,
+                                                FrameView* frameview)
+{
+  frameview->on_canvas_motion_notify(x, y);
+}
+
+
+void FrameView::on_canvas_motion_notify(double x, double y)
+{
+  Point p = widget_to_image(x, y);
+
+  if (rect_->dragging()) {
+    rect_->update_drag(p);
+    canvas_.queue_draw();
+    return;
+  }
+
+  if (drag_) {
+    double width = p.x - drag_start_.x;
+    double height = p.y - drag_start_.y;
+    if (std::abs(width) >= 5 || std::abs(height) >= 5) {
+      temp_rect_->set_coordinates({.x = drag_start_.x, .y = drag_start_.y,
+                                   .width = width, .height = height});
+      temp_rect_->set_visible(true);
+      canvas_.queue_draw();
+    }
+    return;
+  }
+
+  auto window = canvas_.get_window();
+  if (window) {
+    if (rect_->is_visible() && rect_->contains(p)) {
+      window->set_cursor(rect_->cursor_for_point(p));
+    } else {
+      window->set_cursor();
+    }
+  }
+}
+
+
+void FrameView::on_canvas_leave_notify_wrapper(GtkEventControllerMotion *self,
+                                               FrameView* frameview)
+{
+  frameview->on_canvas_leave_notify();
+}
+
+
+void FrameView::on_canvas_leave_notify()
 {
   auto window = canvas_.get_window();
   if (window) {
     window->set_cursor();
   }
-  return false;
 }
 
 

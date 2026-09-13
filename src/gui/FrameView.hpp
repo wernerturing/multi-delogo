@@ -48,6 +48,13 @@ namespace mdl {
     typedef sigc::signal<void, Rectangle> type_signal_rectangle_changed;
     type_signal_rectangle_changed signal_rectangle_changed();
 
+    static void on_canvas_motion_notify_wrapper(GtkEventControllerMotion* self,
+                                                double x,
+                                                double y,
+                                                FrameView* frameview);
+    static void on_canvas_leave_notify_wrapper(GtkEventControllerMotion *self,
+                                               FrameView* frameview);
+
   private:
     const int image_width_;
     const int image_height_;
@@ -77,9 +84,9 @@ namespace mdl {
     void draw_selection(const Cairo::RefPtr<Cairo::Context>& cr, SelectionRect& rect);
 
     void on_canvas_button_press(int n_press, double x, double y);
-    bool on_canvas_motion_notify(GdkEventMotion* event);
     void on_canvas_button_release(int n_press, double x, double y);
-    bool on_canvas_leave_notify(GdkEventCrossing* event);
+    void on_canvas_motion_notify(double x, double y);
+    void on_canvas_leave_notify();
   };
 
 
