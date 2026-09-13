@@ -53,6 +53,7 @@ namespace mdl {
     const int image_height_;
 
     Gtk::DrawingArea canvas_;
+    Glib::RefPtr<Gtk::GestureMultiPress> gesture_click_;
     Glib::RefPtr<Gdk::Pixbuf> pixbuf_;
     SelectionRect* rect_;
     SelectionRect* temp_rect_;
@@ -75,9 +76,9 @@ namespace mdl {
     bool render_canvas(const Cairo::RefPtr<Cairo::Context>& cr);
     void draw_selection(const Cairo::RefPtr<Cairo::Context>& cr, SelectionRect& rect);
 
-    bool on_canvas_button_press(GdkEventButton* event);
+    void on_canvas_button_press(int n_press, double x, double y);
     bool on_canvas_motion_notify(GdkEventMotion* event);
-    bool on_canvas_button_release(GdkEventButton* event);
+    void on_canvas_button_release(int n_press, double x, double y);
     bool on_canvas_leave_notify(GdkEventCrossing* event);
   };
 

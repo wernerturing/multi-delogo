@@ -49,13 +49,16 @@ FrameView::FrameView(BaseObjectType* cobject,
       sigc::mem_fun(signal_rectangle_changed_, &type_signal_rectangle_changed::emit));
   }
 
-  canvas_.add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK
-                     | Gdk::POINTER_MOTION_MASK | Gdk::LEAVE_NOTIFY_MASK);
+  canvas_.add_events(Gdk::POINTER_MOTION_MASK | Gdk::LEAVE_NOTIFY_MASK);
   canvas_.signal_draw().connect(sigc::mem_fun(*this, &FrameView::render_canvas));
   if (can_select_rectangle) {
-    canvas_.signal_button_press_event().connect(sigc::mem_fun(*this, &FrameView::on_canvas_button_press));
+    // In GTK 4 is replaced with GestureClick, same semantics
+    gesture_click_ = Gtk::GestureMultiPress::create(canvas_);
+    gesture_click_->set_button(GDK_BUTTON_PRIMARY);
+    gesture_click_->signal_pressed().connect(sigc::mem_fun(*this, &FrameView::on_canvas_button_press));
+    gesture_click_->signal_released().connect(sigc::mem_fun(*this, &FrameView::on_canvas_button_release));
+
     canvas_.signal_motion_notify_event().connect(sigc::mem_fun(*this, &FrameView::on_canvas_motion_notify));
-    canvas_.signal_button_release_event().connect(sigc::mem_fun(*this, &FrameView::on_canvas_button_release));
     canvas_.signal_leave_notify_event().connect(sigc::mem_fun(*this, &FrameView::on_canvas_leave_notify));
   }
 
@@ -190,22 +193,17 @@ void FrameView::draw_selection(const Cairo::RefPtr<Cairo::Context>& cr, Selectio
 }
 
 
-bool FrameView::on_canvas_button_press(GdkEventButton* event)
+void FrameView::on_canvas_button_press(int n_press, double x, double y)
 {
-  if (event->button != 1) {
-    return false;
-  }
-
-  Point p = widget_to_image(event->x, event->y);
+  Point p = widget_to_image(x, y);
 
   if (rect_->is_visible() && rect_->contains(p)) {
     rect_->begin_drag(p);
-    return true;
+    return;
   }
 
   drag_ = true;
   drag_start_ = p;
-  return true;
 }
 
 
@@ -243,20 +241,16 @@ bool FrameView::on_canvas_motion_notify(GdkEventMotion* event)
 }
 
 
-bool FrameView::on_canvas_button_release(GdkEventButton* event)
+void FrameView::on_canvas_button_release(int n_press, double x, double y)
 {
-  if (event->button != 1) {
-    return false;
-  }
-
   if (rect_->dragging()) {
     rect_->end_drag();
     canvas_.queue_draw();
-    return true;
+    return;
   }
 
   if (!drag_) {
-    return false;
+    return;
   }
 
   drag_ = false;
@@ -270,7 +264,6 @@ bool FrameView::on_canvas_button_release(GdkEventButton* event)
   }
 
   canvas_.queue_draw();
-  return true;
 }
 
 
