@@ -159,6 +159,19 @@ FrameView::type_signal_rectangle_changed FrameView::signal_rectangle_changed()
 }
 
 
+FrameView::type_signal_size_changed FrameView::signal_size_changed()
+{
+  return signal_size_changed_;
+}
+
+
+void FrameView::on_size_allocate(Gtk::Allocation& allocation)
+{
+  Gtk::ScrolledWindow::on_size_allocate(allocation);
+  signal_size_changed_.emit(allocation.get_width(), allocation.get_height());
+}
+
+
 bool FrameView::render_canvas(const Cairo::RefPtr<Cairo::Context>& cr)
 {
   Point offset = content_offset();

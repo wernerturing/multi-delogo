@@ -84,7 +84,7 @@ namespace mdl {
     type_signal_frame_changed signal_frame_changed_;
 
     PrevFrame prev_frame_setting_;
-    sigc::connection prev_frame_view_on_size_allocate_;
+    sigc::connection prev_frame_view_on_size_changed_;
 
 
     void configure_navigation_bar(const Glib::RefPtr<Gtk::Builder>& builder);

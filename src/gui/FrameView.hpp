@@ -48,6 +48,9 @@ namespace mdl {
     typedef sigc::signal<void, Rectangle> type_signal_rectangle_changed;
     type_signal_rectangle_changed signal_rectangle_changed();
 
+    typedef sigc::signal<void, int, int> type_signal_size_changed;
+    type_signal_size_changed signal_size_changed();
+
     static void on_canvas_motion_notify_wrapper(GtkEventControllerMotion* self,
                                                 double x,
                                                 double y,
@@ -71,6 +74,7 @@ namespace mdl {
     Point drag_start_;
 
     type_signal_rectangle_changed signal_rectangle_changed_;
+    type_signal_size_changed signal_size_changed_;
 
 
     void update_canvas_size();
@@ -82,6 +86,8 @@ namespace mdl {
 
     bool render_canvas(const Cairo::RefPtr<Cairo::Context>& cr);
     void draw_selection(const Cairo::RefPtr<Cairo::Context>& cr, SelectionRect& rect);
+
+    void on_size_allocate(Gtk::Allocation& allocation) override;
 
     void on_canvas_button_press(int n_press, double x, double y);
     void on_canvas_button_release(int n_press, double x, double y);

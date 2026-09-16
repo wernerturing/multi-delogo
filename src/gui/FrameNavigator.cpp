@@ -273,7 +273,7 @@ void FrameNavigator::set_jump_size(int jump_size)
 
 void FrameNavigator::set_show_prev_frame(PrevFrame setting)
 {
-  prev_frame_view_on_size_allocate_.disconnect();
+  prev_frame_view_on_size_changed_.disconnect();
 
   switch (setting) {
   case PrevFrame::NO:
@@ -282,10 +282,8 @@ void FrameNavigator::set_show_prev_frame(PrevFrame setting)
   case PrevFrame::FIT:
     prev_frame_view_->set_vadjustment(Gtk::Adjustment::create(0, 1, 1));
     prev_frame_view_->set_hadjustment(Gtk::Adjustment::create(0, 1, 1));
-    prev_frame_view_on_size_allocate_ = prev_frame_view_->signal_size_allocate().connect(
-      [this](Gtk::Allocation& allocation) {
-        set_prev_frame_zoom(allocation.get_width(), allocation.get_height());
-      });
+    prev_frame_view_on_size_changed_ = prev_frame_view_->signal_size_changed().connect(
+      sigc::mem_fun(*this, &FrameNavigator::set_prev_frame_zoom));
     break;
 
   case PrevFrame::SAME:
@@ -353,6 +351,6 @@ void FrameNavigator::set_zoom(gdouble zoom)
 void FrameNavigator::set_prev_frame_zoom(int width, int height)
 {
   gdouble ratio = get_zoom_to_fit_ratio(frame_provider_->get_frame_width(), frame_provider_->get_frame_height(),
-                                       width, height);
+                                        width, height);
   prev_frame_view_->set_zoom(ratio);
 }
