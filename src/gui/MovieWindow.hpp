@@ -52,6 +52,8 @@ namespace mdl {
   private:
     Gtk::Button* btn_undo_;
     Gtk::Button* btn_redo_;
+    Gtk::MenuButton* btn_prev_frame_;
+    Glib::RefPtr<Gio::SimpleAction> act_prev_frame_;
 
     std::string project_file_;
     std::unique_ptr<fg::FilterData> filter_data_;
@@ -75,7 +77,7 @@ namespace mdl {
     void on_encode();
 
     void on_scroll_filter_toggled(Gtk::ToggleButton* chk);
-    void on_set_prev_frame(Gtk::RadioMenuItem* radio, FrameNavigator::PrevFrame setting);
+    void on_set_prev_frame(const Glib::ustring& str_setting);
 
     void on_hide() override;
   };

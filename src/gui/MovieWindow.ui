@@ -24,6 +24,7 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
   <!-- interface-name multi-delogo -->
   <!-- interface-copyright 2018-2025 Werner Turing <werner.turing@protonmail.com> -->
   <!-- interface-license-id gpl_3_0 -->
+  <requires lib="gio" version="2.0"/>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkImage" id="img_btn_next_filter">
     <property name="can-focus">False</property>
@@ -129,7 +130,7 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
             </child>
             <child>
               <object class="GtkMenuButton" id="btn_prev_frame">
-                <property name="popup">mnu_prev_frame</property>
+                <property name="menu-model">mnu_prev_frame</property>
                 <property name="relief">none</property>
                 <child>
                   <object class="GtkBox">
@@ -722,43 +723,6 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
       </object>
     </child>
   </object>
-  <object class="GtkMenu" id="mnu_prev_frame">
-    <property name="can-focus">False</property>
-    <property name="visible">True</property>
-    <child>
-      <object class="GtkRadioMenuItem" id="chk_prev_frame_no">
-        <property name="active">True</property>
-        <property name="can-focus">False</property>
-        <property name="draw-as-radio">True</property>
-        <property name="label" translatable="yes">_Don't display</property>
-        <property name="tooltip-text" translatable="yes">Shows only the current frame</property>
-        <property name="use-underline">True</property>
-        <property name="visible">True</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkRadioMenuItem" id="chk_prev_frame_fit">
-        <property name="can-focus">False</property>
-        <property name="draw-as-radio">True</property>
-        <property name="group">chk_prev_frame_no</property>
-        <property name="label" translatable="yes">_Fit to window</property>
-        <property name="tooltip-text" translatable="yes">Displays the whole previous frame</property>
-        <property name="use-underline">True</property>
-        <property name="visible">True</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkRadioMenuItem" id="chk_prev_frame_same">
-        <property name="can-focus">False</property>
-        <property name="draw-as-radio">True</property>
-        <property name="group">chk_prev_frame_no</property>
-        <property name="label" translatable="yes">_Same view</property>
-        <property name="tooltip-text" translatable="yes">Displays the previous frame using the same zoom and showing the same region as the current frame</property>
-        <property name="use-underline">True</property>
-        <property name="visible">True</property>
-      </object>
-    </child>
-  </object>
   <object class="GtkImage" id="img_btn_new">
     <property name="icon-name">document-new</property>
     <property name="icon-size">3</property>
@@ -783,4 +747,23 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
     <property name="icon-name">edit-find</property>
     <property name="icon-size">3</property>
   </object>
+  <menu id="mnu_prev_frame">
+    <section id="mnu_prev_frame_section">
+      <item>
+        <attribute name="action">win.set-prev-frame</attribute>
+        <attribute name="label">_Don't display</attribute>
+        <attribute name="target">NO</attribute>
+      </item>
+      <item>
+        <attribute name="action">win.set-prev-frame</attribute>
+        <attribute name="label">_Fit to window</attribute>
+        <attribute name="target">FIT</attribute>
+      </item>
+      <item>
+        <attribute name="action">win.set-prev-frame</attribute>
+        <attribute name="label">_Same view</attribute>
+        <attribute name="target">SAME</attribute>
+      </item>
+    </section>
+  </menu>
 </interface>

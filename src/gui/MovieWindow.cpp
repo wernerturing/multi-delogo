@@ -107,23 +107,10 @@ void MovieWindow::configure_toolbar(const Glib::RefPtr<Gtk::Builder>& builder,
     sigc::bind(sigc::mem_fun(*this, &MovieWindow::on_scroll_filter_toggled),
                chk_scroll_filter));
 
-  Gtk::RadioMenuItem* chk_prev_frame_no = nullptr;
-  builder->get_widget("chk_prev_frame_no", chk_prev_frame_no);
-  chk_prev_frame_no->signal_toggled().connect(
-    sigc::bind(sigc::mem_fun(*this, &MovieWindow::on_set_prev_frame),
-               chk_prev_frame_no, FrameNavigator::PrevFrame::NO));
-
-  Gtk::RadioMenuItem* chk_prev_frame_fit = nullptr;
-  builder->get_widget("chk_prev_frame_fit", chk_prev_frame_fit);
-  chk_prev_frame_fit->signal_toggled().connect(
-    sigc::bind(sigc::mem_fun(*this, &MovieWindow::on_set_prev_frame),
-               chk_prev_frame_fit, FrameNavigator::PrevFrame::FIT));
-
-  Gtk::RadioMenuItem* chk_prev_frame_same = nullptr;
-  builder->get_widget("chk_prev_frame_same", chk_prev_frame_same);
-  chk_prev_frame_same->signal_toggled().connect(
-    sigc::bind(sigc::mem_fun(*this, &MovieWindow::on_set_prev_frame),
-               chk_prev_frame_same, FrameNavigator::PrevFrame::SAME));
+  builder->get_widget("btn_prev_frame", btn_prev_frame_);
+  act_prev_frame_ = add_action_radio_string("set-prev-frame",
+                      sigc::mem_fun(*this, &MovieWindow::on_set_prev_frame),
+                      "NO");
 
   add_action("find-logos", sigc::mem_fun(*this, &MovieWindow::on_find_logos));
 
@@ -232,13 +219,18 @@ void MovieWindow::on_scroll_filter_toggled(Gtk::ToggleButton* chk)
 }
 
 
-void MovieWindow::on_set_prev_frame(Gtk::RadioMenuItem* radio, FrameNavigator::PrevFrame setting)
+void MovieWindow::on_set_prev_frame(const Glib::ustring& str_setting)
 {
-  // The signal is emitted for the item that is unchecked and for the item that is checked, so we ignore unchecking signals
-  if (!radio->get_active()) {
-    return;
-  }
+  act_prev_frame_->change_state(str_setting);
+  // In GTK4 there's GtkMenuButton->popdown() to simplify
+  btn_prev_frame_->get_popover()->popdown();
 
+  FrameNavigator::PrevFrame setting = FrameNavigator::PrevFrame::NO;
+  if (str_setting == "FIT") {
+    setting = FrameNavigator::PrevFrame::FIT;
+  } else if (str_setting == "SAME") {
+    setting = FrameNavigator::PrevFrame::SAME;
+  }
   frame_navigator_->set_show_prev_frame(setting);
 }
 
