@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<!DOCTYPE cambalache-project SYSTEM "cambalache-project.dtd">
+<!-- Created with Cambalache 1.0.3 -->
+<cambalache-project version="1.0.0" target_tk="gtk+-3.0">
+  <ui filename="MovieWindow.ui" sha256="062f6feefbe72f8d961c93bd31b3e0609213a16c39c1ba04dcf6fee15fc73481"/>
+</cambalache-project>

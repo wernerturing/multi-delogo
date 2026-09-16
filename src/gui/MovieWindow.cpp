@@ -91,62 +91,31 @@ MovieWindow::MovieWindow(BaseObjectType* cobject,
 void MovieWindow::configure_toolbar(const Glib::RefPtr<Gtk::Builder>& builder,
                                     Gtk::Application& app)
 {
-  Gtk::ToolButton* btn_new = nullptr;
-  builder->get_widget("btn_new", btn_new);
-  gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_new->gobj()), MultiDelogoApp::ACTION_NEW.c_str());
-
-  Gtk::ToolButton* btn_open = nullptr;
-  builder->get_widget("btn_open", btn_open);
-  gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_open->gobj()), MultiDelogoApp::ACTION_OPEN.c_str());
-
   add_action("save", sigc::mem_fun(*this, &MovieWindow::on_save));
-  Gtk::ToolButton* btn_save = nullptr;
-  builder->get_widget("btn_save", btn_save);
-  gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_save->gobj()), "win.save");
+  app.set_accels_for_action("win.save", {"<Ctrl>s"});
 
   add_action("undo", sigc::mem_fun(coordinator_, &Coordinator::on_undo));
   app.set_accels_for_action("win.undo", {"<Ctrl>z"});
   builder->get_widget("btn_undo", btn_undo_);
-  gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_undo_->gobj()), "win.undo");
 
   add_action("redo", sigc::mem_fun(coordinator_, &Coordinator::on_redo));
   app.set_accels_for_action("win.redo", {"<Ctrl><Shift>z", "<Ctrl>y"});
   builder->get_widget("btn_redo", btn_redo_);
-  gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_redo_->gobj()), "win.redo");
 
-  Gtk::ToggleToolButton* chk_scroll_filter = nullptr;
+  Gtk::ToggleButton* chk_scroll_filter = nullptr;
   builder->get_widget("chk_scroll_filter", chk_scroll_filter);
   chk_scroll_filter->signal_toggled().connect(
     sigc::bind(sigc::mem_fun(*this, &MovieWindow::on_scroll_filter_toggled),
                chk_scroll_filter));
 
-  Gtk::RadioMenuItem* chk_prev_frame_no = nullptr;
-  builder->get_widget("chk_prev_frame_no", chk_prev_frame_no);
-  chk_prev_frame_no->signal_toggled().connect(
-    sigc::bind(sigc::mem_fun(*this, &MovieWindow::on_set_prev_frame),
-               chk_prev_frame_no, FrameNavigator::PrevFrame::NO));
-
-  Gtk::RadioMenuItem* chk_prev_frame_fit = nullptr;
-  builder->get_widget("chk_prev_frame_fit", chk_prev_frame_fit);
-  chk_prev_frame_fit->signal_toggled().connect(
-    sigc::bind(sigc::mem_fun(*this, &MovieWindow::on_set_prev_frame),
-               chk_prev_frame_fit, FrameNavigator::PrevFrame::FIT));
-
-  Gtk::RadioMenuItem* chk_prev_frame_same = nullptr;
-  builder->get_widget("chk_prev_frame_same", chk_prev_frame_same);
-  chk_prev_frame_same->signal_toggled().connect(
-    sigc::bind(sigc::mem_fun(*this, &MovieWindow::on_set_prev_frame),
-               chk_prev_frame_same, FrameNavigator::PrevFrame::SAME));
+  builder->get_widget("btn_prev_frame", btn_prev_frame_);
+  act_prev_frame_ = add_action_radio_string("set-prev-frame",
+                      sigc::mem_fun(*this, &MovieWindow::on_set_prev_frame),
+                      "NO");
 
   add_action("find-logos", sigc::mem_fun(*this, &MovieWindow::on_find_logos));
-  Gtk::ToolButton* btn_find_logos = nullptr;
-  builder->get_widget("btn_find_logos", btn_find_logos);
-  gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_find_logos->gobj()), "win.find-logos");
 
   add_action("encode", sigc::mem_fun(*this, &MovieWindow::on_encode));
-  Gtk::ToolButton* btn_encode = nullptr;
-  builder->get_widget("btn_encode", btn_encode);
-  gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_encode->gobj()), "win.encode");
 }
 
 
@@ -245,19 +214,24 @@ void MovieWindow::on_encode()
 }
 
 
-void MovieWindow::on_scroll_filter_toggled(Gtk::ToggleToolButton* chk)
+void MovieWindow::on_scroll_filter_toggled(Gtk::ToggleButton* chk)
 {
   coordinator_.set_scroll_filter(chk->get_active());
 }
 
 
-void MovieWindow::on_set_prev_frame(Gtk::RadioMenuItem* radio, FrameNavigator::PrevFrame setting)
+void MovieWindow::on_set_prev_frame(const Glib::ustring& str_setting)
 {
-  // The signal is emitted for the item that is unchecked and for the item that is checked, so we ignore unchecking signals
-  if (!radio->get_active()) {
-    return;
-  }
+  act_prev_frame_->change_state(str_setting);
+  // In GTK4 there's GtkMenuButton->popdown() to simplify
+  btn_prev_frame_->get_popover()->popdown();
 
+  FrameNavigator::PrevFrame setting = FrameNavigator::PrevFrame::NO;
+  if (str_setting == "FIT") {
+    setting = FrameNavigator::PrevFrame::FIT;
+  } else if (str_setting == "SAME") {
+    setting = FrameNavigator::PrevFrame::SAME;
+  }
   frame_navigator_->set_show_prev_frame(setting);
 }
 

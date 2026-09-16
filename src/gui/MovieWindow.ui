@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 1.0.3 -->
 <!-- Generated with glade 3.40.0 
 
 Copyright (C) 2018-2025 Werner Turing <werner.turing@protonmail.com>
@@ -20,283 +21,186 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
 
 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
-  <!-- interface-license-type gplv3 -->
   <!-- interface-name multi-delogo -->
   <!-- interface-copyright 2018-2025 Werner Turing <werner.turing@protonmail.com> -->
+  <!-- interface-license-id gpl_3_0 -->
+  <requires lib="gio" version="2.0"/>
+  <requires lib="gtk+" version="3.20"/>
   <object class="GtkImage" id="img_btn_next_filter">
-    <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="tooltip-text" translatable="yes">Jump to next filter (v)</property>
     <property name="icon-name">go-next</property>
+    <property name="tooltip-text" translatable="yes">Jump to next filter (v)</property>
+    <property name="visible">True</property>
   </object>
   <object class="GtkImage" id="img_btn_prev_filter">
-    <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="tooltip-text" translatable="yes">Jump to previous filter (c)</property>
     <property name="icon-name">go-previous</property>
+    <property name="tooltip-text" translatable="yes">Jump to previous filter (c)</property>
+    <property name="visible">True</property>
   </object>
   <object class="GtkImage" id="img_btn_remove_filter">
-    <property name="visible">True</property>
-    <property name="sensitive">False</property>
     <property name="can-focus">False</property>
-    <property name="tooltip-text" translatable="yes">Remove the selected filter</property>
     <property name="icon-name">list-remove</property>
+    <property name="sensitive">False</property>
+    <property name="tooltip-text" translatable="yes">Remove the selected filter</property>
+    <property name="visible">True</property>
   </object>
   <object class="GtkImage" id="img_btn_zoom_fit">
-    <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">zoom-fit-best</property>
+    <property name="visible">True</property>
   </object>
   <object class="GtkImage" id="img_btn_zoom_out">
-    <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">zoom-out</property>
+    <property name="visible">True</property>
   </object>
   <object class="GtkImage" id="img_button_zoom_100">
-    <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">zoom-original</property>
+    <property name="visible">True</property>
   </object>
   <object class="GtkImage" id="img_button_zoom_in">
-    <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">zoom-in</property>
+    <property name="visible">True</property>
   </object>
   <object class="GtkApplicationWindow" id="movie_window">
     <property name="can-focus">False</property>
-    <property name="default-width">1400</property>
     <property name="default-height">650</property>
+    <property name="default-width">1400</property>
     <child>
       <object class="GtkBox" id="box_main">
-        <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
+        <property name="visible">True</property>
         <child>
-          <object class="GtkToolbar" id="toolbar">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
+          <object class="GtkBox" id="toolbar">
+            <property name="margin-start">8</property>
+            <property name="spacing">16</property>
             <child>
-              <object class="GtkToolButton" id="btn_new">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Create a new project</property>
-                <property name="label" translatable="yes">New</property>
-                <property name="icon-name">document-new</property>
+              <object class="GtkButton" id="btn_new">
+                <property name="action-name">app.new</property>
+                <property name="image">img_btn_new</property>
+                <property name="relief">none</property>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="btn_open">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Open an existing project</property>
-                <property name="label" translatable="yes">Open</property>
-                <property name="icon-name">document-open</property>
+              <object class="GtkButton" id="btn_open">
+                <property name="action-name">app.open</property>
+                <property name="image">img_btn_open</property>
+                <property name="relief">none</property>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="btn_save">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Save current project</property>
-                <property name="label" translatable="yes">Save</property>
-                <property name="icon-name">document-save</property>
+              <object class="GtkButton" id="btn_save">
+                <property name="action-name">win.save</property>
+                <property name="image">img_btn_save</property>
+                <property name="relief">none</property>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
             </child>
             <child>
-              <object class="GtkSeparatorToolItem" id="sep1">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
+              <object class="GtkSeparator" id="sep1"/>
             </child>
             <child>
-              <object class="GtkToolButton" id="btn_undo">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="label" translatable="yes">Undo</property>
-                <property name="icon-name">edit-undo</property>
+              <object class="GtkButton" id="btn_undo">
+                <property name="action-name">win.undo</property>
+                <property name="image">img_btn_undo</property>
+                <property name="relief">none</property>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="btn_redo">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="label" translatable="yes">Redo</property>
-                <property name="icon-name">edit-redo</property>
+              <object class="GtkButton" id="btn_redo">
+                <property name="action-name">win.redo</property>
+                <property name="image">img_btn_redo</property>
+                <property name="relief">none</property>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
             </child>
             <child>
-              <object class="GtkSeparatorToolItem" id="sep2">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
+              <object class="GtkSeparator" id="sep2"/>
             </child>
             <child>
-              <object class="GtkToggleToolButton" id="chk_scroll_filter">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Check to make the rectangle where the filter is applied to be displayed (scrolling the frame image if necessary) when moving between filters</property>
-                <property name="label" translatable="yes">_Scroll to filter</property>
-                <property name="use-underline">True</property>
+              <object class="GtkToggleButton" id="chk_scroll_filter">
                 <property name="active">True</property>
+                <property name="label">_Scroll to filter</property>
+                <property name="margin-start">2</property>
+                <property name="relief">none</property>
+                <property name="use-underline">True</property>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
             </child>
             <child>
-              <object class="GtkMenuToolButton" id="mnu_prev_frame">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="label" translatable="yes">_Previous frame</property>
-                <property name="use-underline">True</property>
-                <child type="menu">
-                  <object class="GtkMenu">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
+              <object class="GtkMenuButton" id="btn_prev_frame">
+                <property name="menu-model">mnu_prev_frame</property>
+                <property name="relief">none</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="spacing">4</property>
                     <child>
-                      <object class="GtkRadioMenuItem" id="chk_prev_frame_no">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="tooltip-text" translatable="yes">Shows only the current frame</property>
-                        <property name="label" translatable="yes">_Don't display</property>
+                      <object class="GtkLabel">
+                        <property name="label">_Previous frame</property>
+                        <property name="mnemonic-widget">btn_prev_frame</property>
                         <property name="use-underline">True</property>
-                        <property name="active">True</property>
-                        <property name="draw-as-radio">True</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkRadioMenuItem" id="chk_prev_frame_fit">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="tooltip-text" translatable="yes">Displays the whole previous frame</property>
-                        <property name="label" translatable="yes">_Fit to window</property>
-                        <property name="use-underline">True</property>
-                        <property name="draw-as-radio">True</property>
-                        <property name="group">chk_prev_frame_no</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkRadioMenuItem" id="chk_prev_frame_same">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="tooltip-text" translatable="yes">Displays the previous frame using the same zoom and showing the same region as the current frame</property>
-                        <property name="label" translatable="yes">_Same view</property>
-                        <property name="use-underline">True</property>
-                        <property name="draw-as-radio">True</property>
-                        <property name="group">chk_prev_frame_no</property>
+                      <object class="GtkImage">
+                        <property name="icon-name">pan-down-symbolic</property>
                       </object>
                     </child>
                   </object>
                 </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
             </child>
             <child>
-              <object class="GtkSeparatorToolItem" id="sep3">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
+              <object class="GtkSeparator" id="sep3"/>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_find_logos">
+                <property name="action-name">win.find-logos</property>
+                <property name="image">img_btn_find_logos</property>
+                <property name="relief">none</property>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="btn_find_logos">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Try to automatically find logos in the video</property>
-                <property name="label" translatable="yes">Find logos</property>
-                <property name="icon-name">edit-find</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkToolButton" id="btn_encode">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Encode current project to a video with the filters applied</property>
-                <property name="label" translatable="yes">_Encode</property>
+              <object class="GtkButton" id="btn_encode">
+                <property name="action-name">win.encode</property>
+                <property name="label">_Encode</property>
+                <property name="relief">none</property>
                 <property name="use-underline">True</property>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
             </child>
+            <style>
+              <class name="toolbar"/>
+            </style>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkBox" id="box_content">
-            <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="margin-start">6</property>
-            <property name="margin-end">6</property>
-            <property name="margin-top">6</property>
             <property name="margin-bottom">6</property>
+            <property name="margin-end">6</property>
+            <property name="margin-start">6</property>
+            <property name="margin-top">6</property>
             <property name="spacing">8</property>
+            <property name="visible">True</property>
             <child>
               <object class="GtkBox" id="filter_list">
-                <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">8</property>
+                <property name="visible">True</property>
                 <child>
                   <object class="GtkScrolledWindow" id="scr_filter_view">
-                    <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="shadow-type">in</property>
-                    <property name="min-content-width">200</property>
                     <property name="min-content-height">225</property>
+                    <property name="min-content-width">200</property>
+                    <property name="shadow-type">in</property>
+                    <property name="visible">True</property>
                     <child>
                       <object class="GtkTreeView" id="filter_view">
-                        <property name="visible">True</property>
                         <property name="can-focus">True</property>
                         <property name="enable-search">False</property>
-                        <child internal-child="selection">
-                          <object class="GtkTreeSelection"/>
-                        </child>
+                        <property name="visible">True</property>
                       </object>
                     </child>
                   </object>
@@ -309,17 +213,17 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                 <child>
                   <!-- n-columns=3 n-rows=2 -->
                   <object class="GtkGrid" id="grid_filter_list_buttons">
-                    <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="row-spacing">4</property>
-                    <property name="column-spacing">4</property>
                     <property name="column-homogeneous">True</property>
+                    <property name="column-spacing">4</property>
+                    <property name="row-spacing">4</property>
+                    <property name="visible">True</property>
                     <child>
                       <object class="GtkButton" id="btn_prev_filter">
-                        <property name="visible">True</property>
                         <property name="can-focus">True</property>
-                        <property name="receives-default">True</property>
                         <property name="image">img_btn_prev_filter</property>
+                        <property name="receives-default">True</property>
+                        <property name="visible">True</property>
                       </object>
                       <packing>
                         <property name="left-attach">0</property>
@@ -328,10 +232,10 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                     </child>
                     <child>
                       <object class="GtkButton" id="btn_remove_filter">
-                        <property name="visible">True</property>
                         <property name="can-focus">True</property>
-                        <property name="receives-default">True</property>
                         <property name="image">img_btn_remove_filter</property>
+                        <property name="receives-default">True</property>
+                        <property name="visible">True</property>
                       </object>
                       <packing>
                         <property name="left-attach">1</property>
@@ -340,10 +244,10 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                     </child>
                     <child>
                       <object class="GtkButton" id="btn_next_filter">
-                        <property name="visible">True</property>
                         <property name="can-focus">True</property>
-                        <property name="receives-default">True</property>
                         <property name="image">img_btn_next_filter</property>
+                        <property name="receives-default">True</property>
+                        <property name="visible">True</property>
                       </object>
                       <packing>
                         <property name="left-attach">2</property>
@@ -352,11 +256,11 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                     </child>
                     <child>
                       <object class="GtkButton" id="btn_shift">
-                        <property name="label" translatable="yes">_Shift starting frames...</property>
-                        <property name="visible">True</property>
                         <property name="can-focus">True</property>
+                        <property name="label" translatable="yes">_Shift starting frames...</property>
                         <property name="receives-default">True</property>
                         <property name="use-underline">True</property>
+                        <property name="visible">True</property>
                       </object>
                       <packing>
                         <property name="left-attach">0</property>
@@ -374,15 +278,15 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                 <child>
                   <!-- n-columns=2 n-rows=6 -->
                   <object class="GtkGrid" id="filter_type">
-                    <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="margin-top">8</property>
                     <property name="column-spacing">4</property>
+                    <property name="margin-top">8</property>
+                    <property name="visible">True</property>
                     <child>
                       <object class="GtkLabel" id="lbl_filter_type">
-                        <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="label" translatable="yes">Filter:</property>
+                        <property name="visible">True</property>
                       </object>
                       <packing>
                         <property name="left-attach">0</property>
@@ -391,13 +295,13 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                     </child>
                     <child>
                       <object class="GtkRadioButton" id="rad_delogo">
-                        <property name="label">delogo</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">False</property>
-                        <property name="halign">start</property>
                         <property name="active">True</property>
+                        <property name="can-focus">True</property>
                         <property name="draw-indicator">True</property>
+                        <property name="halign">start</property>
+                        <property name="label">delogo</property>
+                        <property name="receives-default">False</property>
+                        <property name="visible">True</property>
                       </object>
                       <packing>
                         <property name="left-attach">1</property>
@@ -406,14 +310,14 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                     </child>
                     <child>
                       <object class="GtkRadioButton" id="rad_drawbox">
-                        <property name="label">drawbox</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">False</property>
-                        <property name="halign">start</property>
                         <property name="active">True</property>
+                        <property name="can-focus">True</property>
                         <property name="draw-indicator">True</property>
                         <property name="group">rad_delogo</property>
+                        <property name="halign">start</property>
+                        <property name="label">drawbox</property>
+                        <property name="receives-default">False</property>
+                        <property name="visible">True</property>
                       </object>
                       <packing>
                         <property name="left-attach">1</property>
@@ -422,13 +326,13 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                     </child>
                     <child>
                       <object class="GtkRadioButton" id="rad_cut">
-                        <property name="label">cut</property>
-                        <property name="visible">True</property>
                         <property name="can-focus">True</property>
-                        <property name="receives-default">False</property>
-                        <property name="halign">start</property>
                         <property name="draw-indicator">True</property>
                         <property name="group">rad_delogo</property>
+                        <property name="halign">start</property>
+                        <property name="label">cut</property>
+                        <property name="receives-default">False</property>
+                        <property name="visible">True</property>
                       </object>
                       <packing>
                         <property name="left-attach">1</property>
@@ -437,13 +341,13 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                     </child>
                     <child>
                       <object class="GtkRadioButton" id="rad_none">
-                        <property name="label">none</property>
-                        <property name="visible">True</property>
                         <property name="can-focus">True</property>
-                        <property name="receives-default">False</property>
-                        <property name="halign">start</property>
                         <property name="draw-indicator">True</property>
                         <property name="group">rad_delogo</property>
+                        <property name="halign">start</property>
+                        <property name="label">none</property>
+                        <property name="receives-default">False</property>
+                        <property name="visible">True</property>
                       </object>
                       <packing>
                         <property name="left-attach">1</property>
@@ -452,13 +356,13 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                     </child>
                     <child>
                       <object class="GtkRadioButton" id="rad_review">
-                        <property name="label">review</property>
-                        <property name="visible">True</property>
                         <property name="can-focus">True</property>
-                        <property name="receives-default">False</property>
-                        <property name="halign">start</property>
                         <property name="draw-indicator">True</property>
                         <property name="group">rad_delogo</property>
+                        <property name="halign">start</property>
+                        <property name="label">review</property>
+                        <property name="receives-default">False</property>
+                        <property name="visible">True</property>
                       </object>
                       <packing>
                         <property name="left-attach">1</property>
@@ -467,33 +371,18 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                     </child>
                     <child>
                       <object class="GtkRadioButton" id="rad_speed">
-                        <property name="label">speed</property>
-                        <property name="visible">True</property>
                         <property name="can-focus">True</property>
-                        <property name="receives-default">False</property>
-                        <property name="halign">start</property>
                         <property name="draw-indicator">True</property>
                         <property name="group">rad_delogo</property>
+                        <property name="halign">start</property>
+                        <property name="label">speed</property>
+                        <property name="receives-default">False</property>
+                        <property name="visible">True</property>
                       </object>
                       <packing>
                         <property name="left-attach">1</property>
                         <property name="top-attach">3</property>
                       </packing>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
                     </child>
                   </object>
                   <packing>
@@ -511,26 +400,23 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
             </child>
             <child>
               <object class="GtkBox" id="frame_navigator">
-                <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">4</property>
+                <property name="visible">True</property>
                 <child>
                   <!-- n-columns=2 n-rows=2 -->
                   <object class="GtkGrid" id="grid_frame_view">
-                    <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="column-spacing">4</property>
                     <property name="column-homogeneous">True</property>
+                    <property name="column-spacing">4</property>
+                    <property name="visible">True</property>
                     <child>
                       <object class="GtkScrolledWindow" id="frame_view">
-                        <property name="visible">True</property>
                         <property name="can-focus">True</property>
                         <property name="hexpand">True</property>
                         <property name="vexpand">True</property>
-                        <child>
-                          <placeholder/>
-                        </child>
+                        <property name="visible">True</property>
                       </object>
                       <packing>
                         <property name="left-attach">1</property>
@@ -539,13 +425,10 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                     </child>
                     <child>
                       <object class="GtkScrolledWindow" id="prev_frame_view">
-                        <property name="visible">True</property>
                         <property name="can-focus">True</property>
                         <property name="hexpand">True</property>
                         <property name="vexpand">True</property>
-                        <child>
-                          <placeholder/>
-                        </child>
+                        <property name="visible">True</property>
                       </object>
                       <packing>
                         <property name="left-attach">0</property>
@@ -554,17 +437,14 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                     </child>
                     <child>
                       <object class="GtkLabel" id="lbl_prev_frame">
-                        <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="label" translatable="yes">Previous frame:</property>
+                        <property name="visible">True</property>
                       </object>
                       <packing>
                         <property name="left-attach">0</property>
                         <property name="top-attach">0</property>
                       </packing>
-                    </child>
-                    <child>
-                      <placeholder/>
                     </child>
                   </object>
                   <packing>
@@ -575,21 +455,21 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                 </child>
                 <child>
                   <object class="GtkBox" id="box_frame_navigator_bottom">
-                    <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="spacing">8</property>
+                    <property name="visible">True</property>
                     <child>
                       <object class="GtkBox" id="box_frame_navigator_navigation">
-                        <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="spacing">8</property>
+                        <property name="visible">True</property>
                         <child>
                           <object class="GtkButton" id="btn_prev_jump">
-                            <property name="label">&lt;&lt;</property>
-                            <property name="visible">True</property>
                             <property name="can-focus">True</property>
+                            <property name="label">&lt;&lt;</property>
                             <property name="receives-default">True</property>
                             <property name="tooltip-text" translatable="yes">Jump back the number of frames specified in "jump size" (a)</property>
+                            <property name="visible">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -599,11 +479,11 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                         <child>
                           <object class="GtkButton" id="btn_prev">
-                            <property name="label">&lt;</property>
-                            <property name="visible">True</property>
                             <property name="can-focus">True</property>
+                            <property name="label">&lt;</property>
                             <property name="receives-default">True</property>
                             <property name="tooltip-text" translatable="yes">Move back one frame (s)</property>
+                            <property name="visible">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -613,9 +493,9 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                         <child>
                           <object class="GtkEntry" id="txt_frame_number">
-                            <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="tooltip-text" translatable="yes">Current frame number</property>
+                            <property name="visible">True</property>
                             <property name="width-chars">6</property>
                           </object>
                           <packing>
@@ -626,9 +506,9 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                         <child>
                           <object class="GtkLabel" id="lbl_number_of_frames">
-                            <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="label">/ 1</property>
+                            <property name="visible">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -638,11 +518,11 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                         <child>
                           <object class="GtkButton" id="btn_next">
-                            <property name="label">&gt;</property>
-                            <property name="visible">True</property>
                             <property name="can-focus">True</property>
+                            <property name="label">&gt;</property>
                             <property name="receives-default">True</property>
                             <property name="tooltip-text" translatable="yes">Move forward one frame (d)</property>
+                            <property name="visible">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -652,11 +532,11 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                         <child>
                           <object class="GtkButton" id="btn_next_jump">
-                            <property name="label">&gt;&gt;</property>
-                            <property name="visible">True</property>
                             <property name="can-focus">True</property>
+                            <property name="label">&gt;&gt;</property>
                             <property name="receives-default">True</property>
                             <property name="tooltip-text" translatable="yes">Jump forward the number of frames specified in "jump size" (f)</property>
+                            <property name="visible">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -666,12 +546,12 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                         <child>
                           <object class="GtkLabel" id="lbl_jump_size">
-                            <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="margin-start">32</property>
                             <property name="label" translatable="yes">_Jump size:</property>
-                            <property name="use-underline">True</property>
+                            <property name="margin-start">32</property>
                             <property name="mnemonic-widget">txt_jump_size</property>
+                            <property name="use-underline">True</property>
+                            <property name="visible">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -681,9 +561,9 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                         <child>
                           <object class="GtkEntry" id="txt_jump_size">
-                            <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="tooltip-text" translatable="yes">Number of frames to jump when using &lt;&lt; and &gt;&gt; buttons</property>
+                            <property name="visible">True</property>
                             <property name="width-chars">6</property>
                           </object>
                           <packing>
@@ -694,10 +574,10 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                         <child>
                           <object class="GtkLabel" id="lbl_time_pos">
-                            <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="margin-start">64</property>
                             <property name="label">00:00.000</property>
+                            <property name="margin-start">64</property>
+                            <property name="visible">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -707,9 +587,9 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                         <child>
                           <object class="GtkLabel" id="lbl_time_separator">
-                            <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="label">/</property>
+                            <property name="visible">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -719,9 +599,9 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                         <child>
                           <object class="GtkLabel" id="lbl_time_total">
-                            <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="label">10:00.000</property>
+                            <property name="visible">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -738,17 +618,17 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                     </child>
                     <child>
                       <object class="GtkBox" id="box_frame_navigator_zoom">
-                        <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="valign">start</property>
                         <property name="spacing">8</property>
+                        <property name="valign">start</property>
+                        <property name="visible">True</property>
                         <child>
                           <object class="GtkButton" id="btn_zoom_fit">
-                            <property name="visible">True</property>
                             <property name="can-focus">True</property>
+                            <property name="image">img_btn_zoom_fit</property>
                             <property name="receives-default">True</property>
                             <property name="tooltip-text" translatable="yes">Fit the image to the window</property>
-                            <property name="image">img_btn_zoom_fit</property>
+                            <property name="visible">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -758,11 +638,11 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                         <child>
                           <object class="GtkButton" id="btn_zoom_out">
-                            <property name="visible">True</property>
                             <property name="can-focus">True</property>
+                            <property name="image">img_btn_zoom_out</property>
                             <property name="receives-default">True</property>
                             <property name="tooltip-text" translatable="yes">Make image smaller</property>
-                            <property name="image">img_btn_zoom_out</property>
+                            <property name="visible">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -772,9 +652,9 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                         <child>
                           <object class="GtkLabel" id="lbl_zoom">
-                            <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="label">100%</property>
+                            <property name="visible">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -784,12 +664,12 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                         <child>
                           <object class="GtkButton" id="btn_zoom_in">
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
                             <property name="can-focus">True</property>
-                            <property name="receives-default">True</property>
-                            <property name="tooltip-text" translatable="yes">Make image larger</property>
                             <property name="image">img_button_zoom_in</property>
+                            <property name="receives-default">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="tooltip-text" translatable="yes">Make image larger</property>
+                            <property name="visible">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -799,12 +679,12 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                         <child>
                           <object class="GtkButton" id="btn_zoom_100">
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
                             <property name="can-focus">True</property>
-                            <property name="receives-default">True</property>
-                            <property name="tooltip-text" translatable="yes">Zoom to original size</property>
                             <property name="image">img_button_zoom_100</property>
+                            <property name="receives-default">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="tooltip-text" translatable="yes">Zoom to original size</property>
+                            <property name="visible">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -843,4 +723,47 @@ along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
       </object>
     </child>
   </object>
+  <object class="GtkImage" id="img_btn_new">
+    <property name="icon-name">document-new</property>
+    <property name="icon-size">3</property>
+  </object>
+  <object class="GtkImage" id="img_btn_open">
+    <property name="icon-name">document-open</property>
+    <property name="icon-size">3</property>
+  </object>
+  <object class="GtkImage" id="img_btn_save">
+    <property name="icon-name">document-save</property>
+    <property name="icon-size">3</property>
+  </object>
+  <object class="GtkImage" id="img_btn_undo">
+    <property name="icon-name">edit-undo</property>
+    <property name="icon-size">3</property>
+  </object>
+  <object class="GtkImage" id="img_btn_redo">
+    <property name="icon-name">edit-redo</property>
+    <property name="icon-size">3</property>
+  </object>
+  <object class="GtkImage" id="img_btn_find_logos">
+    <property name="icon-name">edit-find</property>
+    <property name="icon-size">3</property>
+  </object>
+  <menu id="mnu_prev_frame">
+    <section id="mnu_prev_frame_section">
+      <item>
+        <attribute name="action">win.set-prev-frame</attribute>
+        <attribute name="label">_Don't display</attribute>
+        <attribute name="target">NO</attribute>
+      </item>
+      <item>
+        <attribute name="action">win.set-prev-frame</attribute>
+        <attribute name="label">_Fit to window</attribute>
+        <attribute name="target">FIT</attribute>
+      </item>
+      <item>
+        <attribute name="action">win.set-prev-frame</attribute>
+        <attribute name="label">_Same view</attribute>
+        <attribute name="target">SAME</attribute>
+      </item>
+    </section>
+  </menu>
 </interface>

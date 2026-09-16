@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Ctrl-S added as a shortcut to save the project.
+
 * Removed the goocanvas dependency; the frame view is now drawn
   directly with Cairo.
 
