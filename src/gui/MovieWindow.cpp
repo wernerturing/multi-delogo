@@ -92,6 +92,7 @@ void MovieWindow::configure_toolbar(const Glib::RefPtr<Gtk::Builder>& builder,
                                     Gtk::Application& app)
 {
   add_action("save", sigc::mem_fun(*this, &MovieWindow::on_save));
+  app.set_accels_for_action("win.save", {"<Ctrl>s"});
 
   add_action("undo", sigc::mem_fun(coordinator_, &Coordinator::on_undo));
   app.set_accels_for_action("win.undo", {"<Ctrl>z"});
