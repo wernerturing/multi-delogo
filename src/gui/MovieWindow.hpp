@@ -50,8 +50,8 @@ namespace mdl {
                 Gtk::Application& app);
 
   private:
-    Gtk::ToolButton* btn_undo_;
-    Gtk::ToolButton* btn_redo_;
+    Gtk::Button* btn_undo_;
+    Gtk::Button* btn_redo_;
 
     std::string project_file_;
     std::unique_ptr<fg::FilterData> filter_data_;
@@ -74,7 +74,7 @@ namespace mdl {
     void on_find_logos();
     void on_encode();
 
-    void on_scroll_filter_toggled(Gtk::ToggleToolButton* chk);
+    void on_scroll_filter_toggled(Gtk::ToggleButton* chk);
     void on_set_prev_frame(Gtk::RadioMenuItem* radio, FrameNavigator::PrevFrame setting);
 
     void on_hide() override;
