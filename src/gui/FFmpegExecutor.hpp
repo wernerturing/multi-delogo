@@ -60,10 +60,10 @@ namespace mdl {
 
     const std::string& get_log() const;
 
-    typedef sigc::signal<void, Progress> type_signal_progress;
+    typedef sigc::signal<void(Progress)> type_signal_progress;
     type_signal_progress signal_progress();
 
-    typedef sigc::signal<void, bool, std::string> type_signal_finished;
+    typedef sigc::signal<void(bool, std::string)> type_signal_finished;
     type_signal_finished signal_finished();
 
   private:

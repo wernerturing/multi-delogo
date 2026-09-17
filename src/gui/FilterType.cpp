@@ -16,6 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <functional>
+
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
 
@@ -43,23 +45,23 @@ FilterType::FilterType(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
   builder->get_widget("rad_review", rad_review_);
 
   rad_delogo_->signal_toggled().connect(
-    sigc::bind<const Gtk::RadioButton&>(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
-                                        *rad_delogo_));
+    sigc::bind(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
+               std::ref(*rad_delogo_)));
   rad_drawbox_->signal_toggled().connect(
-    sigc::bind<const Gtk::RadioButton&>(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
-                                        *rad_drawbox_));
+    sigc::bind(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
+               std::ref(*rad_drawbox_)));
   rad_cut_->signal_toggled().connect(
-    sigc::bind<const Gtk::RadioButton&>(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
-                                        *rad_cut_));
+    sigc::bind(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
+               std::ref(*rad_cut_)));
   rad_speed_->signal_toggled().connect(
-    sigc::bind<const Gtk::RadioButton&>(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
-                                        *rad_speed_));
+    sigc::bind(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
+               std::ref(*rad_speed_)));
   rad_none_->signal_toggled().connect(
-    sigc::bind<const Gtk::RadioButton&>(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
-                                        *rad_none_));
+    sigc::bind(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
+               std::ref(*rad_none_)));
   rad_review_->signal_toggled().connect(
-    sigc::bind<const Gtk::RadioButton&>(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
-                                        *rad_review_));
+    sigc::bind(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
+               std::ref(*rad_review_)));
 }
 
 

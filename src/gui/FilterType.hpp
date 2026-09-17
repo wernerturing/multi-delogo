@@ -33,7 +33,7 @@ namespace mdl {
     void set(fg::FilterType type);
     fg::FilterType get() const;
 
-    typedef sigc::signal<void, fg::FilterType> type_signal_type_changed;
+    typedef sigc::signal<void(fg::FilterType)> type_signal_type_changed;
     type_signal_type_changed signal_type_changed();
 
   private:

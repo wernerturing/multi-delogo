@@ -51,10 +51,10 @@ namespace mdl {
     virtual Parameters get_parameters() const = 0;
     virtual void set_parameters(const Parameters& parameters) = 0;
 
-    typedef sigc::signal<void, int> type_signal_start_frame_changed;
+    typedef sigc::signal<void(int)> type_signal_start_frame_changed;
     virtual type_signal_start_frame_changed signal_start_frame_changed();
 
-    typedef sigc::signal<void, Parameters> type_signal_parameters_changed;
+    typedef sigc::signal<void(Parameters)> type_signal_parameters_changed;
     virtual type_signal_parameters_changed signal_parameters_changed();
 
   protected:

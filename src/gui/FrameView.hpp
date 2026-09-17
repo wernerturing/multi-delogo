@@ -45,10 +45,10 @@ namespace mdl {
     void hide_rectangle();
     void scroll_to_current_rectangle();
 
-    typedef sigc::signal<void, Rectangle> type_signal_rectangle_changed;
+    typedef sigc::signal<void(Rectangle)> type_signal_rectangle_changed;
     type_signal_rectangle_changed signal_rectangle_changed();
 
-    typedef sigc::signal<void, int, int> type_signal_size_changed;
+    typedef sigc::signal<void(int, int)> type_signal_size_changed;
     type_signal_size_changed signal_size_changed();
 
     static void on_canvas_motion_notify_wrapper(GtkEventControllerMotion* self,
@@ -124,7 +124,7 @@ namespace mdl {
     Rectangle get_coordinates() const;
     void set_coordinates(const Rectangle& coordinates);
 
-    typedef sigc::signal<void, Rectangle> type_signal_rectangle_changed;
+    typedef sigc::signal<void(Rectangle)> type_signal_rectangle_changed;
     type_signal_rectangle_changed signal_rectangle_changed();
 
     // Hit-testing and interactive move/resize. Every point is in

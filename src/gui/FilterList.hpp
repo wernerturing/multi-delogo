@@ -51,10 +51,10 @@ namespace mdl {
 
     void refresh_list();
 
-    typedef sigc::signal<void, int> type_signal_selection_changed;
+    typedef sigc::signal<void(int)> type_signal_selection_changed;
     type_signal_selection_changed signal_selection_changed();
 
-    typedef sigc::signal<void> type_signal_button;
+    typedef sigc::signal<void()> type_signal_button;
     type_signal_button signal_previous_filter();
     type_signal_button signal_next_filter();
     type_signal_button signal_remove_filter();
