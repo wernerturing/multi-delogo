@@ -1,4 +1,4 @@
-## Unreleased
+## 2.6.0
 
 * Ctrl-S added as a shortcut to save the project.
 
