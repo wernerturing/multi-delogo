@@ -37,16 +37,16 @@ namespace mdl {
     type_signal_type_changed signal_type_changed();
 
   private:
-    Gtk::RadioButton* rad_delogo_;
-    Gtk::RadioButton* rad_drawbox_;
-    Gtk::RadioButton* rad_cut_;
-    Gtk::RadioButton* rad_speed_;
-    Gtk::RadioButton* rad_none_;
-    Gtk::RadioButton* rad_review_;
+    Gtk::CheckButton* rad_delogo_;
+    Gtk::CheckButton* rad_drawbox_;
+    Gtk::CheckButton* rad_cut_;
+    Gtk::CheckButton* rad_speed_;
+    Gtk::CheckButton* rad_none_;
+    Gtk::CheckButton* rad_review_;
 
     type_signal_type_changed signal_type_changed_;
 
-    void on_radio_toggled(const Gtk::RadioButton& radio);
+    void on_radio_toggled(const Gtk::CheckButton& radio);
   };
 }
 

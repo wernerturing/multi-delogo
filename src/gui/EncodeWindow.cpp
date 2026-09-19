@@ -85,11 +85,11 @@ void EncodeWindow::configure_widgets(const Glib::RefPtr<Gtk::Builder>& builder)
   Gtk::Box* box_file_selection = builder->get_widget<Gtk::Box>("box_file_selection");
   widgets_to_disable_.push_back(box_file_selection);
 
-  Gtk::RadioButton* btn_h264 = builder->get_widget<Gtk::RadioButton>("btn_h264");
+  Gtk::CheckButton* btn_h264 = builder->get_widget<Gtk::CheckButton>("btn_h264");
   btn_h264->signal_toggled().connect(
     sigc::bind(sigc::mem_fun(*this, &EncodeWindow::on_codec),
                FFmpegExecutor::Codec::H264));
-  Gtk::RadioButton* btn_h265 = builder->get_widget<Gtk::RadioButton>("btn_h265");
+  Gtk::CheckButton* btn_h265 = builder->get_widget<Gtk::CheckButton>("btn_h265");
   btn_h265->signal_toggled().connect(
     sigc::bind(sigc::mem_fun(*this, &EncodeWindow::on_codec),
                FFmpegExecutor::Codec::H265));

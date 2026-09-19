@@ -37,12 +37,12 @@ FilterType::FilterType(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
   , rad_none_(nullptr)
   , rad_review_(nullptr)
 {
-  rad_delogo_ = builder->get_widget<Gtk::RadioButton>("rad_delogo");
-  rad_drawbox_ = builder->get_widget<Gtk::RadioButton>("rad_drawbox");
-  rad_cut_ = builder->get_widget<Gtk::RadioButton>("rad_cut");
-  rad_speed_ = builder->get_widget<Gtk::RadioButton>("rad_speed");
-  rad_none_ = builder->get_widget<Gtk::RadioButton>("rad_none");
-  rad_review_ = builder->get_widget<Gtk::RadioButton>("rad_review");
+  rad_delogo_ = builder->get_widget<Gtk::CheckButton>("rad_delogo");
+  rad_drawbox_ = builder->get_widget<Gtk::CheckButton>("rad_drawbox");
+  rad_cut_ = builder->get_widget<Gtk::CheckButton>("rad_cut");
+  rad_speed_ = builder->get_widget<Gtk::CheckButton>("rad_speed");
+  rad_none_ = builder->get_widget<Gtk::CheckButton>("rad_none");
+  rad_review_ = builder->get_widget<Gtk::CheckButton>("rad_review");
 
   rad_delogo_->signal_toggled().connect(
     sigc::bind(sigc::mem_fun(*this, &FilterType::on_radio_toggled),
@@ -120,7 +120,7 @@ FilterType::type_signal_type_changed FilterType::signal_type_changed()
 }
 
 
-void FilterType::on_radio_toggled(const Gtk::RadioButton& radio)
+void FilterType::on_radio_toggled(const Gtk::CheckButton& radio)
 {
   if (radio.get_active()) {
     signal_type_changed_.emit(get());
