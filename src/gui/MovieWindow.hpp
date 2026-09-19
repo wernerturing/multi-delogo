@@ -60,17 +60,13 @@ namespace mdl {
 
     FilterList* filter_list_;
     FrameNavigator* frame_navigator_;
+    Glib::RefPtr<Gtk::EventControllerKey> controller_key_;
     Coordinator coordinator_;
 
     void configure_toolbar(const Glib::RefPtr<Gtk::Builder>& builder,
                            Gtk::Application& app);
 
-    static bool on_key_press_wrapper(GtkEventControllerKey* controller,
-                                     guint keyval,
-                                     guint keycode,
-                                     GdkModifierType* state,
-                                     MovieWindow* movie_window);
-    bool on_key_press(guint keyval, guint keycode);
+    bool on_key_press(guint keyval, guint keycode, Gdk::ModifierType state);
 
     void on_save();
     void on_find_logos();

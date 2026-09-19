@@ -79,11 +79,10 @@ MovieWindow::MovieWindow(BaseObjectType* cobject,
   frame_navigator_->set_jump_size(filter_data_->jump_size());
   coordinator_.set_frame_navigator(frame_navigator_);
 
-  // Can be simplified if migrated to gtkmm-4: There's a C++ wrapper,
-  // no need to use C objects directly
-  auto evt_key_c = gtk_event_controller_key_new(GTK_WIDGET(gobj()));
-  g_signal_connect(evt_key_c, "key-pressed",
-                   G_CALLBACK(&MovieWindow::on_key_press_wrapper), this);
+  controller_key_ = Gtk::EventControllerKey::create();
+  controller_key_->signal_key_pressed().connect(
+    sigc::mem_fun(*this, &MovieWindow::on_key_press), false);
+  add_controller(controller_key_);
 }
 
 
@@ -117,17 +116,7 @@ void MovieWindow::configure_toolbar(const Glib::RefPtr<Gtk::Builder>& builder,
 }
 
 
-bool MovieWindow::on_key_press_wrapper(GtkEventControllerKey* controller,
-                                       guint keyval,
-                                       guint keycode,
-                                       GdkModifierType* state,
-                                       MovieWindow* movie_window)
-{
-  return movie_window->on_key_press(keyval, keycode);
-}
-
-
-bool MovieWindow::on_key_press(guint keyval, guint keycode)
+bool MovieWindow::on_key_press(guint keyval, guint keycode, Gdk::ModifierType state)
 {
   switch (keyval) {
   case GDK_KEY_A:

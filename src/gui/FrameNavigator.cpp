@@ -99,8 +99,10 @@ void FrameNavigator::configure_navigation_bar(const Glib::RefPtr<Gtk::Builder>& 
   txt_frame_number_ = Gtk::Builder::get_widget_derived<NumericEntry>(builder, "txt_frame_number");
   txt_frame_number_->signal_activate().connect(
     sigc::mem_fun(*this, &FrameNavigator::on_frame_number_activate));
-  txt_frame_number_->signal_focus_out_event().connect(
-    sigc::mem_fun(*this, &FrameNavigator::on_frame_number_input));
+  controller_focus_ = Gtk::EventControllerFocus::create();
+  controller_focus_->signal_leave().connect(
+    sigc::mem_fun(*this, &FrameNavigator::on_frame_number_activate));
+  txt_frame_number_->add_controller(controller_focus_);
 
   txt_jump_size_ = Gtk::Builder::get_widget_derived<NumericEntry>(builder, "txt_jump_size");
 
@@ -242,13 +244,6 @@ void FrameNavigator::jump_step_frame(int direction)
 void FrameNavigator::on_frame_number_activate()
 {
   change_displayed_frame(txt_frame_number_->get_value());
-}
-
-
-bool FrameNavigator::on_frame_number_input(GdkEventFocus*)
-{
-  change_displayed_frame(txt_frame_number_->get_value());
-  return false;
 }
 
 

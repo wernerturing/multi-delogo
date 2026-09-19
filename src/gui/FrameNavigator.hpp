@@ -83,6 +83,8 @@ namespace mdl {
 
     type_signal_frame_changed signal_frame_changed_;
 
+    Glib::RefPtr<Gtk::EventControllerFocus> controller_focus_;
+
     PrevFrame prev_frame_setting_;
     sigc::connection prev_frame_view_on_size_changed_;
 
@@ -97,7 +99,6 @@ namespace mdl {
     void fetch_and_show_prev_frame(int new_frame_number);
 
     void on_frame_number_activate();
-    bool on_frame_number_input(GdkEventFocus*);
 
     void on_step_zoom(gdouble increment);
     void on_zoom_100();
