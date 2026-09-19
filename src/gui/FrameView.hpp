@@ -51,19 +51,13 @@ namespace mdl {
     typedef sigc::signal<void(int, int)> type_signal_size_changed;
     type_signal_size_changed signal_size_changed();
 
-    static void on_canvas_motion_notify_wrapper(GtkEventControllerMotion* self,
-                                                double x,
-                                                double y,
-                                                FrameView* frameview);
-    static void on_canvas_leave_notify_wrapper(GtkEventControllerMotion *self,
-                                               FrameView* frameview);
-
   private:
     const int image_width_;
     const int image_height_;
 
     Gtk::DrawingArea canvas_;
-    Glib::RefPtr<Gtk::GestureMultiPress> gesture_click_;
+    Glib::RefPtr<Gtk::GestureClick> gesture_click_;
+    Glib::RefPtr<Gtk::EventControllerMotion> controller_motion_;
     Glib::RefPtr<Gdk::Pixbuf> pixbuf_;
     SelectionRect* rect_;
     SelectionRect* temp_rect_;
@@ -84,10 +78,10 @@ namespace mdl {
     // Maps a pointer position on the drawing area to image-space pixels.
     Point widget_to_image(double x, double y) const;
 
-    bool render_canvas(const Cairo::RefPtr<Cairo::Context>& cr);
+    void render_canvas(const Cairo::RefPtr<Cairo::Context>& cr, int width, int height);
     void draw_selection(const Cairo::RefPtr<Cairo::Context>& cr, SelectionRect& rect);
 
-    void on_size_allocate(Gtk::Allocation& allocation) override;
+    void size_allocate_vfunc(int width, int height, int baseline) override;
 
     void on_canvas_button_press(int n_press, double x, double y);
     void on_canvas_button_release(int n_press, double x, double y);

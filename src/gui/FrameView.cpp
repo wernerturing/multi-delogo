@@ -49,22 +49,18 @@ FrameView::FrameView(BaseObjectType* cobject,
       sigc::mem_fun(signal_rectangle_changed_, &type_signal_rectangle_changed::emit));
   }
 
-  canvas_.add_events(Gdk::POINTER_MOTION_MASK | Gdk::LEAVE_NOTIFY_MASK);
-  canvas_.signal_draw().connect(sigc::mem_fun(*this, &FrameView::render_canvas));
+  canvas_.set_draw_func(sigc::mem_fun(*this, &FrameView::render_canvas));
   if (can_select_rectangle) {
-    // In GTK 4 is replaced with GestureClick, same semantics
-    gesture_click_ = Gtk::GestureMultiPress::create(canvas_);
+    gesture_click_ = Gtk::GestureClick::create();
     gesture_click_->set_button(GDK_BUTTON_PRIMARY);
     gesture_click_->signal_pressed().connect(sigc::mem_fun(*this, &FrameView::on_canvas_button_press));
     gesture_click_->signal_released().connect(sigc::mem_fun(*this, &FrameView::on_canvas_button_release));
+    canvas_.add_controller(gesture_click_);
 
-    // Can be simplified if migrated to gtkmm-4: There's a C++ wrapper,
-    // no need to use C objects directly
-    auto evt_motion = gtk_event_controller_motion_new(GTK_WIDGET(canvas_.gobj()));
-    g_signal_connect(evt_motion, "motion",
-                     G_CALLBACK(&FrameView::on_canvas_motion_notify_wrapper), this);
-    g_signal_connect(evt_motion, "leave",
-                     G_CALLBACK(&FrameView::on_canvas_leave_notify_wrapper), this);
+    controller_motion_ = Gtk::EventControllerMotion::create();
+    controller_motion_->signal_motion().connect(sigc::mem_fun(*this, &FrameView::on_canvas_motion_notify));
+    controller_motion_->signal_leave().connect(sigc::mem_fun(*this, &FrameView::on_canvas_leave_notify));
+    canvas_.add_controller(controller_motion_);
   }
 
   update_canvas_size();
@@ -164,14 +160,14 @@ FrameView::type_signal_size_changed FrameView::signal_size_changed()
 }
 
 
-void FrameView::on_size_allocate(Gtk::Allocation& allocation)
+void FrameView::size_allocate_vfunc(int width, int height, int baseline)
 {
-  Gtk::ScrolledWindow::on_size_allocate(allocation);
-  signal_size_changed_.emit(allocation.get_width(), allocation.get_height());
+  Gtk::ScrolledWindow::size_allocate_vfunc(width, height, baseline);
+  signal_size_changed_.emit(width, height);
 }
 
 
-bool FrameView::render_canvas(const Cairo::RefPtr<Cairo::Context>& cr)
+void FrameView::render_canvas(const Cairo::RefPtr<Cairo::Context>& cr, int width, int height)
 {
   Point offset = content_offset();
   cr->translate(offset.x, offset.y);
@@ -184,8 +180,6 @@ bool FrameView::render_canvas(const Cairo::RefPtr<Cairo::Context>& cr)
 
   draw_selection(cr, *rect_);
   draw_selection(cr, *temp_rect_);
-
-  return false;
 }
 
 
@@ -250,15 +244,6 @@ void FrameView::on_canvas_button_release(int n_press, double x, double y)
 }
 
 
-void FrameView::on_canvas_motion_notify_wrapper(GtkEventControllerMotion* self,
-                                                double x,
-                                                double y,
-                                                FrameView* frameview)
-{
-  frameview->on_canvas_motion_notify(x, y);
-}
-
-
 void FrameView::on_canvas_motion_notify(double x, double y)
 {
   Point p = widget_to_image(x, y);
@@ -281,30 +266,17 @@ void FrameView::on_canvas_motion_notify(double x, double y)
     return;
   }
 
-  auto window = canvas_.get_window();
-  if (window) {
-    if (rect_->is_visible() && rect_->contains(p)) {
-      window->set_cursor(rect_->cursor_for_point(p));
-    } else {
-      window->set_cursor();
-    }
+  if (rect_->is_visible() && rect_->contains(p)) {
+    canvas_.set_cursor(rect_->cursor_for_point(p));
+  } else {
+    canvas_.set_cursor(Glib::RefPtr<Gdk::Cursor>());
   }
-}
-
-
-void FrameView::on_canvas_leave_notify_wrapper(GtkEventControllerMotion *self,
-                                               FrameView* frameview)
-{
-  frameview->on_canvas_leave_notify();
 }
 
 
 void FrameView::on_canvas_leave_notify()
 {
-  auto window = canvas_.get_window();
-  if (window) {
-    window->set_cursor();
-  }
+  canvas_.set_cursor(Glib::RefPtr<Gdk::Cursor>());
 }
 
 
@@ -330,15 +302,15 @@ bool SelectionRect::is_visible() const
 
 void SelectionRect::create_cursors()
 {
-  move_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "move");
-  resize_br_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "se-resize");
-  resize_bl_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "sw-resize");
-  resize_tl_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "nw-resize");
-  resize_tr_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "ne-resize");
-  resize_b_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "s-resize");
-  resize_l_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "w-resize");
-  resize_t_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "n-resize");
-  resize_r_cursor_ = Gdk::Cursor::create(Gdk::Display::get_default(), "e-resize");
+  move_cursor_ = Gdk::Cursor::create("move");
+  resize_br_cursor_ = Gdk::Cursor::create("se-resize");
+  resize_bl_cursor_ = Gdk::Cursor::create("sw-resize");
+  resize_tl_cursor_ = Gdk::Cursor::create("nw-resize");
+  resize_tr_cursor_ = Gdk::Cursor::create("ne-resize");
+  resize_b_cursor_ = Gdk::Cursor::create("s-resize");
+  resize_l_cursor_ = Gdk::Cursor::create("w-resize");
+  resize_t_cursor_ = Gdk::Cursor::create("n-resize");
+  resize_r_cursor_ = Gdk::Cursor::create("e-resize");
 }
 
 
