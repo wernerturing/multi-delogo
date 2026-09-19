@@ -67,7 +67,7 @@ FrameNavigator::FrameNavigator(BaseObjectType* cobject,
   configure_navigation_bar(builder);
   configure_zoom_bar(builder);
 
-  empty_pixbuf_ = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, false, 8, 1, 1);
+  empty_pixbuf_ = Gdk::Pixbuf::create(Gdk::Colorspace::RGB, false, 8, 1, 1);
 }
 
 
@@ -186,7 +186,7 @@ void FrameNavigator::change_displayed_frame(int new_frame_number)
     lbl_time_pos_->set_label(format_time_based_on_total(time_pos, duration_));
   } catch (const FrameNotAvailableException& e) {
     txt_frame_number_->set_value(frame_number_);
-    message_dialog(parent_window_, _("Could not get frame"), Gtk::MESSAGE_ERROR);
+    message_dialog(parent_window_, _("Could not get frame"), Gtk::MessageType::ERROR);
   }
 }
 

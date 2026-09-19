@@ -152,12 +152,12 @@ void EncodeWindow::configure_widgets(const Glib::RefPtr<Gtk::Builder>& builder)
 
 void EncodeWindow::on_select_file()
 {
-  Gtk::FileChooserDialog dlg(*this, _("Select output file"), Gtk::FILE_CHOOSER_ACTION_SAVE);
-  dlg.add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL);
-  dlg.add_button(_("_Save"), Gtk::RESPONSE_OK);
+  Gtk::FileChooserDialog dlg(*this, _("Select output file"), Gtk::FileChooser::Action::SAVE);
+  dlg.add_button(_("_Cancel"), Gtk::ResponseType::CANCEL);
+  dlg.add_button(_("_Save"), Gtk::ResponseType::OK);
   dlg.set_current_folder(Glib::path_get_dirname(filter_data_->movie_file()));
 
-  if (run_dialog_sync(dlg) == Gtk::RESPONSE_OK) {
+  if (run_dialog_sync(dlg) == Gtk::ResponseType::OK) {
     txt_file_->set_text(dlg.get_file()->get_path());
   }
 }
@@ -209,11 +209,11 @@ void EncodeWindow::on_encode()
   } catch (ScriptGenerationException& e) {
     message_dialog(*this,
                    Glib::ustring::compose(_("Error generating filter script for FFmpeg: %1"), e.what()),
-                   Gtk::MESSAGE_ERROR);
+                   Gtk::MessageType::ERROR);
   } catch (FFmpegStartException& e) {
     auto msg = Glib::ustring::compose(_("Could not execute FFmpeg: %1"),
                                       e.what());
-    message_dialog(*this, msg, Gtk::MESSAGE_ERROR);
+    message_dialog(*this, msg, Gtk::MessageType::ERROR);
   }
 }
 
@@ -231,11 +231,11 @@ void EncodeWindow::on_generate_script()
   try {
     ffmpeg_.generate_script(file);
 
-    message_dialog(*this, _("Filter script generated"), Gtk::MESSAGE_INFO);
+    message_dialog(*this, _("Filter script generated"), Gtk::MessageType::INFO);
   } catch (ScriptGenerationException& e) {
     auto msg = Glib::ustring::compose(_("Could not open file %1: %2"),
                                       file, e.what());
-    message_dialog(*this, msg, Gtk::MESSAGE_ERROR);
+    message_dialog(*this, msg, Gtk::MessageType::ERROR);
     return;
   }
 }
@@ -262,7 +262,7 @@ void EncodeWindow::on_show_cmd_line()
 bool EncodeWindow::check_file(const std::string& file)
 {
   if (file.empty()) {
-    message_dialog(*this, _("Please select the output file"), Gtk::MESSAGE_ERROR);
+    message_dialog(*this, _("Please select the output file"), Gtk::MessageType::ERROR);
     return false;
   }
 

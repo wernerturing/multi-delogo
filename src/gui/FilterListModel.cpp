@@ -184,9 +184,9 @@ std::pair<int, int> FilterListModel::shift_frames(int start, int end, int amount
 }
 
 
-Gtk::TreeModelFlags FilterListModel::get_flags_vfunc() const
+Gtk::TreeModel::Flags FilterListModel::get_flags_vfunc() const
 {
-  return Gtk::TREE_MODEL_LIST_ONLY;
+  return Gtk::TreeModel::Flags::LIST_ONLY;
 }
 
 

@@ -62,7 +62,7 @@ namespace mdl {
     static FilterListColumns columns;
 
   protected:
-    Gtk::TreeModelFlags get_flags_vfunc() const override;
+    Gtk::TreeModel::Flags get_flags_vfunc() const override;
 
     int get_n_columns_vfunc() const override;
     GType get_column_type_vfunc(int index) const override;

@@ -44,14 +44,14 @@ const std::string MultiDelogoApp::EXTENSION_ = "mdl";
 
 
 MultiDelogoApp::MultiDelogoApp()
-  : Gtk::Application("wt.multi-delogo", Gio::APPLICATION_HANDLES_OPEN)
+  : Gtk::Application("wt.multi-delogo", Gio::Application::Flags::HANDLES_OPEN)
   , initial_window_(nullptr)
 {
   add_action("new", sigc::mem_fun(*this, &MultiDelogoApp::on_new_project));
   add_action("open", sigc::mem_fun(*this, &MultiDelogoApp::on_open_project));
 
-  add_main_option_entry(OPTION_TYPE_BOOL, "version", '\0', _("Outputs application version and exits"));
-  add_main_option_entry(OPTION_TYPE_BOOL, "verbose", 'v', _("Outputs debugging information"));
+  add_main_option_entry(OptionType::BOOL, "version", '\0', _("Outputs application version and exits"));
+  add_main_option_entry(OptionType::BOOL, "verbose", 'v', _("Outputs debugging information"));
   signal_handle_local_options().connect(sigc::mem_fun(*this, &MultiDelogoApp::handle_options));
 }
 
@@ -200,7 +200,7 @@ bool MultiDelogoApp::select_new_movie_file_if_necessary(fg::FilterData& filter_d
   }
 
   auto msg = Glib::ustring::compose(_("Movie file %1 in project could not be opened. Please select the movie file."), filter_data.movie_file());
-  error_dialog(msg, Gtk::MESSAGE_WARNING);
+  error_dialog(msg, Gtk::MessageType::WARNING);
 
   maybe_file new_file = select_movie_file();
   if (!new_file) {
@@ -304,8 +304,8 @@ maybe_file MultiDelogoApp::select_file_for_open(const std::string& title,
   if (initial_window_) {
     dlg.set_transient_for(*initial_window_);
   }
-  dlg.add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL);
-  dlg.add_button(_("_Open"), Gtk::RESPONSE_OK);
+  dlg.add_button(_("_Cancel"), Gtk::ResponseType::CANCEL);
+  dlg.add_button(_("_Open"), Gtk::ResponseType::OK);
 
   auto filter_all = Gtk::FileFilter::create();
   filter_all->set_name(_("All files"));
@@ -316,7 +316,7 @@ maybe_file MultiDelogoApp::select_file_for_open(const std::string& title,
 
   int response = run_dialog_sync(dlg);
 
-  if (response == Gtk::RESPONSE_OK) {
+  if (response == Gtk::ResponseType::OK) {
     return boost::make_optional(dlg.get_file());
   } else {
     return boost::none;

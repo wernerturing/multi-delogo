@@ -28,7 +28,7 @@ using namespace mdl;
 
 FilterPanel::FilterPanel(int start_frame, int max_frame)
 {
-  set_orientation(Gtk::ORIENTATION_VERTICAL);
+  set_orientation(Gtk::Orientation::VERTICAL);
   set_row_spacing(6);
   set_column_spacing(4);
 
@@ -40,9 +40,9 @@ FilterPanel::FilterPanel(int start_frame, int max_frame)
   txt_start_frame_.signal_value_changed().connect(
     sigc::mem_fun(*this, &FilterPanel::on_start_frame_changed));
 
-  lbl_start_frame_.set_halign(Gtk::ALIGN_END);
+  lbl_start_frame_.set_halign(Gtk::Align::END);
   attach(lbl_start_frame_, 0, -1, 1, 1);
-  attach_next_to(txt_start_frame_, lbl_start_frame_, Gtk::POS_RIGHT, 1, 1);
+  attach_next_to(txt_start_frame_, lbl_start_frame_, Gtk::PositionType::RIGHT, 1, 1);
 }
 
 
@@ -158,9 +158,9 @@ void FilterPanelWithParameters::add_widget(Gtk::Widget& widget,
 {
   Gtk::Label* l = Gtk::make_managed<Gtk::Label>(label, true);
   l->set_mnemonic_widget(widget);
-  l->set_halign(Gtk::ALIGN_END);
+  l->set_halign(Gtk::Align::END);
   attach(*l, 0, row, 1, 1);
-  attach_next_to(widget, *l, Gtk::POS_RIGHT, 1, 1);
+  attach_next_to(widget, *l, Gtk::PositionType::RIGHT, 1, 1);
 }
 
 

@@ -85,7 +85,7 @@ namespace mdl {
     maybe_file select_file_for_open(const std::string& title,
                                     const Glib::RefPtr<Gtk::FileFilter>& filter);
 
-    void error_dialog(const Glib::ustring& message, Gtk::MessageType type=Gtk::MESSAGE_ERROR);
+    void error_dialog(const Glib::ustring& message, Gtk::MessageType type=Gtk::MessageType::ERROR);
 
     void on_hide_window(Gtk::ApplicationWindow* window);
   };

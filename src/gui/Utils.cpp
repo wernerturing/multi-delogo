@@ -32,7 +32,7 @@ namespace mdl {
 
 bool mdl::file_exists(const std::string& file)
 {
-  return Glib::file_test(file, Glib::FILE_TEST_EXISTS);
+  return Glib::file_test(file, Glib::FileTest::EXISTS);
 }
 
 
@@ -47,7 +47,7 @@ int mdl::run_dialog_sync(Gtk::Dialog& dlg)
     dlg.show();
   }
 
-  int response_id = Gtk::RESPONSE_NONE;
+  int response_id = Gtk::ResponseType::NONE;
   bool responded = false;
   sigc::connection sig_response = dlg.signal_response().connect(
     [&response_id, &responded](int id) {
@@ -89,7 +89,7 @@ bool mdl::confirmation_dialog(const Glib::ustring& msg,
                               const Glib::ustring& txt_destructive,
                               const Glib::ustring& txt_safe)
 {
-  Gtk::MessageDialog dlg(msg, false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE);
+  Gtk::MessageDialog dlg(msg, false, Gtk::MessageType::QUESTION, Gtk::ButtonsType::NONE);
   return confirmation_dialog(std::move(dlg), txt_destructive, txt_safe);
 }
 
@@ -99,17 +99,17 @@ bool mdl::confirmation_dialog(Gtk::Window& parent,
                               const Glib::ustring& txt_destructive,
                               const Glib::ustring& txt_safe)
 {
-  Gtk::MessageDialog dlg(parent, msg, false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE);
+  Gtk::MessageDialog dlg(parent, msg, false, Gtk::MessageType::QUESTION, Gtk::ButtonsType::NONE);
   return confirmation_dialog(std::move(dlg), txt_destructive, txt_safe);
 }
 
 
 bool mdl::confirmation_dialog(Gtk::MessageDialog&& dlg, const Glib::ustring& txt_destructive, const Glib::ustring& txt_safe)
 {
-  dlg.add_button(txt_destructive, Gtk::RESPONSE_YES);
-  dlg.add_button(txt_safe, Gtk::RESPONSE_NO);
-  dlg.set_default_response(Gtk::RESPONSE_NO);
-  return run_dialog_sync(dlg) == Gtk::RESPONSE_YES;
+  dlg.add_button(txt_destructive, Gtk::ResponseType::YES);
+  dlg.add_button(txt_safe, Gtk::ResponseType::NO);
+  dlg.set_default_response(Gtk::ResponseType::NO);
+  return run_dialog_sync(dlg) == Gtk::ResponseType::YES;
 }
 
 

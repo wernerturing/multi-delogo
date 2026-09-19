@@ -197,7 +197,7 @@ void FFmpegExecutor::start_ffmpeg(const std::vector<std::string>& cmd_line)
   try {
     Glib::spawn_async_with_pipes("",
                                  cmd_line,
-                                 Glib::SPAWN_SEARCH_PATH | Glib::SPAWN_DO_NOT_REAP_CHILD | Glib::SPAWN_STDOUT_TO_DEV_NULL,
+                                 Glib::SpawnFlags::SEARCH_PATH | Glib::SpawnFlags::DO_NOT_REAP_CHILD | Glib::SpawnFlags::STDOUT_TO_DEV_NULL,
                                  Glib::SlotSpawnChildSetup(),
                                  &ffmpeg_pid_,
                                  nullptr,
@@ -215,7 +215,7 @@ void FFmpegExecutor::start_ffmpeg(const std::vector<std::string>& cmd_line)
 
   ffmpeg_out_ = Glib::IOChannel::create_from_fd(ffmpeg_stderr_fd);
   const auto io_source = Glib::IOSource::create(ffmpeg_out_,
-                                                Glib::IO_IN | Glib::IO_HUP);
+                                                Glib::IOCondition::IO_IN | Glib::IOCondition::IO_HUP);
   io_source->set_priority(Glib::PRIORITY_LOW);
   ffmpeg_out_signal_ = io_source->connect(sigc::mem_fun(*this, &FFmpegExecutor::on_ffmpeg_output));
   io_source->attach(Glib::MainContext::get_default());
@@ -230,7 +230,7 @@ bool FFmpegExecutor::on_ffmpeg_output(Glib::IOCondition condition)
     return false;
   }
 
-  if (condition == Glib::IO_HUP) {
+  if (condition == Glib::IOCondition::IO_HUP) {
     ffmpeg_out_.reset();
     return false;
   }

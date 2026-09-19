@@ -54,7 +54,7 @@ Glib::RefPtr<Gdk::Pixbuf> OpenCVFrameProvider::get_frame(int frame_number)
 
   cv::cvtColor(bgr_frame, frame_, cv::COLOR_BGR2RGB);
   return Gdk::Pixbuf::create_from_data(frame_.data,
-                                       Gdk::COLORSPACE_RGB,
+                                       Gdk::Colorspace::RGB,
                                        false, 8,
                                        frame_.cols, frame_.rows,
                                        frame_.step)->copy();
