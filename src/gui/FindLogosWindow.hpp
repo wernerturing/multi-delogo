@@ -83,7 +83,7 @@ namespace mdl {
     bool confirm_search_with_existing_filters();
 
     void on_close();
-    bool on_delete_event(GdkEventAny*) override;
+    bool on_close_request() override;
     bool confirm_stop();
 
     void on_progress();

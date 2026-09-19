@@ -320,7 +320,7 @@ void EncodeWindow::on_view_log()
 }
 
 
-bool EncodeWindow::on_delete_event(GdkEventAny*)
+bool EncodeWindow::on_close_request()
 {
   // Returning false calls the default handler (which closes the window)
   return confirm_close() == false;

@@ -96,7 +96,7 @@ namespace mdl {
     void disable_widgets();
     void enable_widgets();
 
-    bool on_delete_event(GdkEventAny*) override;
+    bool on_close_request() override;
     bool confirm_close();
   };
 
