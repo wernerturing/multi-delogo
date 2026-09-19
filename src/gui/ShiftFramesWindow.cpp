@@ -29,9 +29,8 @@ ShiftFramesWindow* ShiftFramesWindow::create(const Glib::RefPtr<FilterListModel>
                                              int total_frames, int start_frame)
 {
   auto builder = Gtk::Builder::create_from_resource("/wt/multi-delogo/ShiftFramesWindow.ui");
-  ShiftFramesWindow* window = nullptr;
-  builder->get_widget_derived("shift_frames_window", window,
-                              filter_model, total_frames, start_frame);
+  ShiftFramesWindow* window = Gtk::Builder::get_widget_derived<ShiftFramesWindow>(builder, "shift_frames_window",
+                                                                                  filter_model, total_frames, start_frame);
   return window;
 }
 
@@ -46,15 +45,15 @@ ShiftFramesWindow::ShiftFramesWindow(BaseObjectType* cobject,
   , txt_final_frame_(nullptr)
   , txt_amount_(nullptr)
 {
-  builder->get_widget("txt_initial_frame", txt_initial_frame_);
+  txt_initial_frame_ = builder->get_widget<Gtk::SpinButton>("txt_initial_frame");
   configure_spin(*txt_initial_frame_, total_frames - 1);
   txt_initial_frame_->set_value(start_frame);
 
-  builder->get_widget("txt_final_frame", txt_final_frame_);
+  txt_final_frame_ = builder->get_widget<Gtk::SpinButton>("txt_final_frame");
   configure_spin(*txt_final_frame_, total_frames);
   txt_final_frame_->set_value(total_frames);
 
-  builder->get_widget("txt_amount", txt_amount_);
+  txt_amount_ = builder->get_widget<Gtk::SpinButton>("txt_amount");
   txt_amount_->set_range(-1000, 1000);
   txt_amount_->set_increments(1, 10);
   txt_amount_->set_value(1);

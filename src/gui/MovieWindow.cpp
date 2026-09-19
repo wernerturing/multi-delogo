@@ -43,10 +43,9 @@ MovieWindow* MovieWindow::create(const std::string& project_file,
                                  Gtk::Application& app)
 {
   auto builder = Gtk::Builder::create_from_resource("/wt/multi-delogo/MovieWindow.ui");
-  MovieWindow* window = nullptr;
-  builder->get_widget_derived("movie_window", window,
-                              project_file, std::move(filter_data),
-                              frame_provider, app);
+  MovieWindow* window = Gtk::Builder::get_widget_derived<MovieWindow>(builder, "movie_window",
+                                                                      project_file, std::move(filter_data),
+                                                                      frame_provider, app);
   return window;
 }
 
@@ -72,11 +71,11 @@ MovieWindow::MovieWindow(BaseObjectType* cobject,
   configure_toolbar(builder, app);
   coordinator_.set_undo_buttons(btn_undo_, btn_redo_);
 
-  builder->get_widget_derived("filter_list", filter_list_, filter_data_->filter_list());
+  filter_list_ = Gtk::Builder::get_widget_derived<FilterList>(builder, "filter_list", filter_data_->filter_list());
   coordinator_.set_filter_list(filter_list_);
 
-  builder->get_widget_derived("frame_navigator", frame_navigator_,
-                              *this, frame_provider);
+  frame_navigator_ = Gtk::Builder::get_widget_derived<FrameNavigator>(builder, "frame_navigator",
+                                                                      *this, frame_provider);
   frame_navigator_->set_jump_size(filter_data_->jump_size());
   coordinator_.set_frame_navigator(frame_navigator_);
 
@@ -96,19 +95,18 @@ void MovieWindow::configure_toolbar(const Glib::RefPtr<Gtk::Builder>& builder,
 
   add_action("undo", sigc::mem_fun(coordinator_, &Coordinator::on_undo));
   app.set_accels_for_action("win.undo", {"<Ctrl>z"});
-  builder->get_widget("btn_undo", btn_undo_);
+  btn_undo_ = builder->get_widget<Gtk::Button>("btn_undo");
 
   add_action("redo", sigc::mem_fun(coordinator_, &Coordinator::on_redo));
   app.set_accels_for_action("win.redo", {"<Ctrl><Shift>z", "<Ctrl>y"});
-  builder->get_widget("btn_redo", btn_redo_);
+  btn_redo_ = builder->get_widget<Gtk::Button>("btn_redo");
 
-  Gtk::ToggleButton* chk_scroll_filter = nullptr;
-  builder->get_widget("chk_scroll_filter", chk_scroll_filter);
+  Gtk::ToggleButton* chk_scroll_filter = builder->get_widget<Gtk::ToggleButton>("chk_scroll_filter");
   chk_scroll_filter->signal_toggled().connect(
     sigc::bind(sigc::mem_fun(*this, &MovieWindow::on_scroll_filter_toggled),
                chk_scroll_filter));
 
-  builder->get_widget("btn_prev_frame", btn_prev_frame_);
+  btn_prev_frame_ = builder->get_widget<Gtk::MenuButton>("btn_prev_frame");
   act_prev_frame_ = add_action_radio_string("set-prev-frame",
                       sigc::mem_fun(*this, &MovieWindow::on_set_prev_frame),
                       "NO");

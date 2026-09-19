@@ -42,9 +42,8 @@ EncodeWindow* EncodeWindow::create(std::unique_ptr<fg::FilterData> filter_data,
                                    int total_frames, double fps)
 {
   auto builder = Gtk::Builder::create_from_resource("/wt/multi-delogo/EncodeWindow.ui");
-  EncodeWindow* window = nullptr;
-  builder->get_widget_derived("encode_window", window, std::move(filter_data),
-                              frame_width, frame_height, total_frames, fps);
+  EncodeWindow* window = Gtk::Builder::get_widget_derived<EncodeWindow>(builder, "encode_window", std::move(filter_data),
+                                                                        frame_width, frame_height, total_frames, fps);
   return window;
 }
 
@@ -79,71 +78,60 @@ EncodeWindow::EncodeWindow(BaseObjectType* cobject,
 
 void EncodeWindow::configure_widgets(const Glib::RefPtr<Gtk::Builder>& builder)
 {
-  builder->get_widget("txt_file", txt_file_);
-  Gtk::Button* btn_select_file = nullptr;
-  builder->get_widget("btn_select_file", btn_select_file);
+  txt_file_ = builder->get_widget<Gtk::Entry>("txt_file");
+  Gtk::Button* btn_select_file = builder->get_widget<Gtk::Button>("btn_select_file");
   btn_select_file->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_select_file));
 
-  Gtk::Box* box_file_selection = nullptr;
-  builder->get_widget("box_file_selection", box_file_selection);
+  Gtk::Box* box_file_selection = builder->get_widget<Gtk::Box>("box_file_selection");
   widgets_to_disable_.push_back(box_file_selection);
 
-  Gtk::RadioButton* btn_h264 = nullptr;
-  builder->get_widget("btn_h264", btn_h264);
+  Gtk::RadioButton* btn_h264 = builder->get_widget<Gtk::RadioButton>("btn_h264");
   btn_h264->signal_toggled().connect(
     sigc::bind(sigc::mem_fun(*this, &EncodeWindow::on_codec),
                FFmpegExecutor::Codec::H264));
-  Gtk::RadioButton* btn_h265 = nullptr;
-  builder->get_widget("btn_h265", btn_h265);
+  Gtk::RadioButton* btn_h265 = builder->get_widget<Gtk::RadioButton>("btn_h265");
   btn_h265->signal_toggled().connect(
     sigc::bind(sigc::mem_fun(*this, &EncodeWindow::on_codec),
                FFmpegExecutor::Codec::H265));
 
-  Gtk::Box* box_codec = nullptr;
-  builder->get_widget("box_codec", box_codec);
+  Gtk::Box* box_codec = builder->get_widget<Gtk::Box>("box_codec");
   widgets_to_disable_.push_back(box_codec);
 
-  builder->get_widget("txt_quality", txt_quality_);
-  builder->get_widget("cmb_preset", cmb_preset_);
+  txt_quality_ = builder->get_widget<Gtk::SpinButton>("txt_quality");
+  cmb_preset_ = builder->get_widget<Gtk::ComboBoxText>("cmb_preset");
 
-  Gtk::Box* box_quality = nullptr;
-  builder->get_widget("box_quality", box_quality);
+  Gtk::Box* box_quality = builder->get_widget<Gtk::Box>("box_quality");
   widgets_to_disable_.push_back(box_quality);
 
-  builder->get_widget("chk_scale", chk_scale_);
+  chk_scale_ = builder->get_widget<Gtk::CheckButton>("chk_scale");
   chk_scale_->signal_toggled().connect(sigc::mem_fun(*this, &EncodeWindow::on_scale_toggled));
-  builder->get_widget("txt_scale_width", txt_scale_width_);
-  builder->get_widget("txt_scale_height", txt_scale_height_);
+  txt_scale_width_ = builder->get_widget<Gtk::SpinButton>("txt_scale_width");
+  txt_scale_height_ = builder->get_widget<Gtk::SpinButton>("txt_scale_height");
 
-  Gtk::Box* box_scale = nullptr;
-  builder->get_widget("box_scale", box_scale);
+  Gtk::Box* box_scale = builder->get_widget<Gtk::Box>("box_scale");
   widgets_to_disable_.push_back(box_scale);
 
-  builder->get_widget("chk_no_audio", chk_no_audio_);
+  chk_no_audio_ = builder->get_widget<Gtk::CheckButton>("chk_no_audio");
   widgets_to_disable_.push_back(chk_no_audio_);
 
-  Gtk::Button* btn_cmd_line = nullptr;
-  builder->get_widget("btn_cmd_line", btn_cmd_line);
+  Gtk::Button* btn_cmd_line = builder->get_widget<Gtk::Button>("btn_cmd_line");
   btn_cmd_line->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_show_cmd_line));
 
-  Gtk::Button* btn_script = nullptr;
-  builder->get_widget("btn_script", btn_script);
+  Gtk::Button* btn_script = builder->get_widget<Gtk::Button>("btn_script");
   btn_script->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_generate_script));
 
-  Gtk::Button* btn_encode = nullptr;
-  builder->get_widget("btn_encode", btn_encode);
+  Gtk::Button* btn_encode = builder->get_widget<Gtk::Button>("btn_encode");
   btn_encode->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_encode));
 
-  Gtk::Box* box_buttons = nullptr;
-  builder->get_widget("box_buttons", box_buttons);
+  Gtk::Box* box_buttons = builder->get_widget<Gtk::Box>("box_buttons");
   widgets_to_disable_.push_back(box_buttons);
 
-  builder->get_widget("lbl_status", lbl_status_);
-  builder->get_widget_derived("progress_bar", progress_bar_);
-  builder->get_widget("btn_log", btn_log_);
+  lbl_status_ = builder->get_widget<Gtk::Label>("lbl_status");
+  progress_bar_ = Gtk::Builder::get_widget_derived<ETRProgressBar>(builder, "progress_bar");
+  btn_log_ = builder->get_widget<Gtk::Button>("btn_log");
   btn_log_->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_view_log));
 
-  builder->get_widget("box_progress", box_progress_);
+  box_progress_ = builder->get_widget<Gtk::Box>("box_progress");
   box_progress_->hide();
 
   on_codec(FFmpegExecutor::Codec::H264);
@@ -361,9 +349,8 @@ bool EncodeWindow::confirm_close()
 LogWindow* LogWindow::create(Gtk::Window& parent, const std::string& log)
 {
   auto builder = Gtk::Builder::create_from_resource("/wt/multi-delogo/LogWindow.ui");
-  LogWindow* window = nullptr;
-  builder->get_widget_derived("log_window", window,
-                              parent, log);
+  LogWindow* window = Gtk::Builder::get_widget_derived<LogWindow>(builder, "log_window",
+                                                                  parent, log);
   return window;
 }
 
@@ -375,7 +362,6 @@ LogWindow::LogWindow(BaseObjectType* cobject,
 {
   set_transient_for(parent);
 
-  Gtk::TextView* txt = nullptr;
-  builder->get_widget("txt_log", txt);
+  Gtk::TextView* txt = builder->get_widget<Gtk::TextView>("txt_log");
   txt->get_buffer()->set_text(log);
 }

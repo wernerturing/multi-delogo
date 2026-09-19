@@ -53,11 +53,11 @@ FrameNavigator::FrameNavigator(BaseObjectType* cobject,
   , btn_zoom_in_(nullptr)
   , btn_zoom_100_(nullptr)
 {
-  builder->get_widget_derived("frame_view", frame_view_,
-                              frame_provider_->get_frame_width(), frame_provider_->get_frame_height());
-  builder->get_widget_derived("prev_frame_view", prev_frame_view_,
-                              frame_provider_->get_frame_width(), frame_provider_->get_frame_height(), false);
-  builder->get_widget("lbl_prev_frame", lbl_prev_frame_);
+  frame_view_ = Gtk::Builder::get_widget_derived<FrameView>(builder, "frame_view",
+                                                            frame_provider_->get_frame_width(), frame_provider_->get_frame_height());
+  prev_frame_view_ = Gtk::Builder::get_widget_derived<FrameView>(builder, "prev_frame_view",
+                                                                 frame_provider_->get_frame_width(), frame_provider_->get_frame_height(), false);
+  lbl_prev_frame_ = builder->get_widget<Gtk::Label>("lbl_prev_frame");
 
   Glib::signal_idle().connect([&] {
       set_show_prev_frame(PrevFrame::NO);
@@ -73,71 +73,64 @@ FrameNavigator::FrameNavigator(BaseObjectType* cobject,
 
 void FrameNavigator::configure_navigation_bar(const Glib::RefPtr<Gtk::Builder>& builder)
 {
-  Gtk::Button* btn_prev = nullptr;
-  builder->get_widget("btn_prev", btn_prev);
+  Gtk::Button* btn_prev = builder->get_widget<Gtk::Button>("btn_prev");
   btn_prev->signal_clicked().connect(
     sigc::bind(sigc::mem_fun(*this, &FrameNavigator::single_step_frame),
                -1));
 
-  Gtk::Button* btn_next = nullptr;
-  builder->get_widget("btn_next", btn_next);
+  Gtk::Button* btn_next = builder->get_widget<Gtk::Button>("btn_next");
   btn_next->signal_clicked().connect(
     sigc::bind(sigc::mem_fun(*this, &FrameNavigator::single_step_frame),
                1));
 
-  Gtk::Button* btn_prev_jump = nullptr;
-  builder->get_widget("btn_prev_jump", btn_prev_jump);
+  Gtk::Button* btn_prev_jump = builder->get_widget<Gtk::Button>("btn_prev_jump");
   btn_prev_jump->signal_clicked().connect(
     sigc::bind(sigc::mem_fun(*this, &FrameNavigator::jump_step_frame),
                -1));
 
-  Gtk::Button* btn_next_jump = nullptr;
-  builder->get_widget("btn_next_jump", btn_next_jump);
+  Gtk::Button* btn_next_jump = builder->get_widget<Gtk::Button>("btn_next_jump");
   btn_next_jump->signal_clicked().connect(
     sigc::bind(sigc::mem_fun(*this, &FrameNavigator::jump_step_frame),
                1));
 
-  Gtk::Label* lbl_number_of_frames = nullptr;
-  builder->get_widget("lbl_number_of_frames", lbl_number_of_frames);
+  Gtk::Label* lbl_number_of_frames = builder->get_widget<Gtk::Label>("lbl_number_of_frames");
   lbl_number_of_frames->set_text(Glib::ustring::compose("/ %1", number_of_frames_));
 
-  builder->get_widget_derived("txt_frame_number", txt_frame_number_);
+  txt_frame_number_ = Gtk::Builder::get_widget_derived<NumericEntry>(builder, "txt_frame_number");
   txt_frame_number_->signal_activate().connect(
     sigc::mem_fun(*this, &FrameNavigator::on_frame_number_activate));
   txt_frame_number_->signal_focus_out_event().connect(
     sigc::mem_fun(*this, &FrameNavigator::on_frame_number_input));
 
-  builder->get_widget_derived("txt_jump_size", txt_jump_size_);
+  txt_jump_size_ = Gtk::Builder::get_widget_derived<NumericEntry>(builder, "txt_jump_size");
 
-  builder->get_widget("lbl_time_pos", lbl_time_pos_);
-  Gtk::Label* lbl_time_total = nullptr;
-  builder->get_widget("lbl_time_total", lbl_time_total);
+  lbl_time_pos_ = builder->get_widget<Gtk::Label>("lbl_time_pos");
+  Gtk::Label* lbl_time_total = builder->get_widget<Gtk::Label>("lbl_time_total");
   lbl_time_total->set_text(format_time_based_on_total(duration_, duration_));
 }
 
 
 void FrameNavigator::configure_zoom_bar(const Glib::RefPtr<Gtk::Builder>& builder)
 {
-  Gtk::Button* btn_zoom_fit = nullptr;
-  builder->get_widget("btn_zoom_fit", btn_zoom_fit);
+  Gtk::Button* btn_zoom_fit = builder->get_widget<Gtk::Button>("btn_zoom_fit");
   btn_zoom_fit->signal_clicked().connect(
     sigc::mem_fun(*this, &FrameNavigator::on_zoom_fit));
 
-  builder->get_widget("btn_zoom_out", btn_zoom_out_);
+  btn_zoom_out_ = builder->get_widget<Gtk::Button>("btn_zoom_out");
   btn_zoom_out_->signal_clicked().connect(
     sigc::bind(sigc::mem_fun(*this, &FrameNavigator::on_step_zoom),
                -0.1));
 
-  builder->get_widget("btn_zoom_in", btn_zoom_in_);
+  btn_zoom_in_ = builder->get_widget<Gtk::Button>("btn_zoom_in");
   btn_zoom_in_->signal_clicked().connect(
     sigc::bind(sigc::mem_fun(*this, &FrameNavigator::on_step_zoom),
                0.1));
 
-  builder->get_widget("btn_zoom_100", btn_zoom_100_);
+  btn_zoom_100_ = builder->get_widget<Gtk::Button>("btn_zoom_100");
   btn_zoom_100_->signal_clicked().connect(
     sigc::mem_fun(*this, &FrameNavigator::on_zoom_100));
 
-  builder->get_widget("lbl_zoom", lbl_zoom_);
+  lbl_zoom_ = builder->get_widget<Gtk::Label>("lbl_zoom");
 }
 
 

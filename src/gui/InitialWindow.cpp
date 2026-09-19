@@ -28,8 +28,7 @@ using namespace mdl;
 InitialWindow* InitialWindow::create()
 {
   auto builder = Gtk::Builder::create_from_resource("/wt/multi-delogo/InitialWindow.ui");
-  InitialWindow* window = nullptr;
-  builder->get_widget_derived("initial_window", window);
+  InitialWindow* window = Gtk::Builder::get_widget_derived<InitialWindow>(builder, "initial_window");
   return window;
 }
 
@@ -37,11 +36,9 @@ InitialWindow* InitialWindow::create()
 InitialWindow::InitialWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
   : MultiDelogoAppWindow(cobject)
 {
-  Gtk::Button* btn_new = nullptr;
-  builder->get_widget("btn_new", btn_new);
+  Gtk::Button* btn_new = builder->get_widget<Gtk::Button>("btn_new");
   gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_new->gobj()), MultiDelogoApp::ACTION_NEW.c_str());
 
-  Gtk::Button* btn_open = nullptr;
-  builder->get_widget("btn_open", btn_open);
+  Gtk::Button* btn_open = builder->get_widget<Gtk::Button>("btn_open");
   gtk_actionable_set_action_name(GTK_ACTIONABLE(btn_open->gobj()), MultiDelogoApp::ACTION_OPEN.c_str());
 }

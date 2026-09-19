@@ -37,12 +37,12 @@ FilterType::FilterType(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
   , rad_none_(nullptr)
   , rad_review_(nullptr)
 {
-  builder->get_widget("rad_delogo", rad_delogo_);
-  builder->get_widget("rad_drawbox", rad_drawbox_);
-  builder->get_widget("rad_cut", rad_cut_);
-  builder->get_widget("rad_speed", rad_speed_);
-  builder->get_widget("rad_none", rad_none_);
-  builder->get_widget("rad_review", rad_review_);
+  rad_delogo_ = builder->get_widget<Gtk::RadioButton>("rad_delogo");
+  rad_drawbox_ = builder->get_widget<Gtk::RadioButton>("rad_drawbox");
+  rad_cut_ = builder->get_widget<Gtk::RadioButton>("rad_cut");
+  rad_speed_ = builder->get_widget<Gtk::RadioButton>("rad_speed");
+  rad_none_ = builder->get_widget<Gtk::RadioButton>("rad_none");
+  rad_review_ = builder->get_widget<Gtk::RadioButton>("rad_review");
 
   rad_delogo_->signal_toggled().connect(
     sigc::bind(sigc::mem_fun(*this, &FilterType::on_radio_toggled),

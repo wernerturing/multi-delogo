@@ -41,10 +41,9 @@ FindLogosWindow* FindLogosWindow::create(fg::FilterData& filter_data,
                                          bool verbose)
 {
   auto builder = Gtk::Builder::create_from_resource("/wt/multi-delogo/FindLogosWindow.ui");
-  FindLogosWindow* window = nullptr;
-  builder->get_widget_derived("find_logos_window", window,
-                              filter_data, total_frames, start_frame, jump_size,
-                              verbose);
+  FindLogosWindow* window = Gtk::Builder::get_widget_derived<FindLogosWindow>(builder, "find_logos_window",
+                                                                              filter_data, total_frames, start_frame, jump_size,
+                                                                              verbose);
   return window;
 }
 
@@ -89,45 +88,44 @@ FindLogosWindow::FindLogosWindow(BaseObjectType* cobject,
 void FindLogosWindow::configure_widgets(const Glib::RefPtr<Gtk::Builder>& builder,
                                         int total_frames, int start_frame, int jump_size)
 {
-  builder->get_widget("txt_initial_frame", txt_initial_frame_);
+  txt_initial_frame_ = builder->get_widget<Gtk::SpinButton>("txt_initial_frame");
   configure_spin(*txt_initial_frame_, total_frames - 1);
   txt_initial_frame_->set_value(start_frame);
 
-  builder->get_widget("txt_final_frame", txt_final_frame_);
+  txt_final_frame_ = builder->get_widget<Gtk::SpinButton>("txt_final_frame");
   configure_spin(*txt_final_frame_, total_frames);
   txt_final_frame_->set_value(std::min(start_frame + 36000, total_frames));
 
-  builder->get_widget("txt_min_frame_interval", txt_min_frame_interval_);
+  txt_min_frame_interval_ = builder->get_widget<Gtk::SpinButton>("txt_min_frame_interval");
   configure_spin(*txt_min_frame_interval_);
   txt_min_frame_interval_->set_value(jump_size);
 
-  builder->get_widget("txt_max_frame_interval", txt_max_frame_interval_);
+  txt_max_frame_interval_ = builder->get_widget<Gtk::SpinButton>("txt_max_frame_interval");
   configure_spin(*txt_max_frame_interval_);
   txt_max_frame_interval_->set_value(jump_size);
 
-  builder->get_widget("txt_min_logo_width", txt_min_logo_width_);
+  txt_min_logo_width_ = builder->get_widget<Gtk::SpinButton>("txt_min_logo_width");
   configure_spin(*txt_min_logo_width_);
   txt_min_logo_width_->set_value(logo_finder_->get_min_logo_width());
 
-  builder->get_widget("txt_max_logo_width", txt_max_logo_width_);
+  txt_max_logo_width_ = builder->get_widget<Gtk::SpinButton>("txt_max_logo_width");
   configure_spin(*txt_max_logo_width_);
   txt_max_logo_width_->set_value(logo_finder_->get_max_logo_width());
 
-  builder->get_widget("txt_min_logo_height", txt_min_logo_height_);
+  txt_min_logo_height_ = builder->get_widget<Gtk::SpinButton>("txt_min_logo_height");
   configure_spin(*txt_min_logo_height_);
   txt_min_logo_height_->set_value(logo_finder_->get_min_logo_height());
 
-  builder->get_widget("txt_max_logo_height", txt_max_logo_height_);
+  txt_max_logo_height_ = builder->get_widget<Gtk::SpinButton>("txt_max_logo_height");
   configure_spin(*txt_max_logo_height_);
   txt_max_logo_height_->set_value(logo_finder_->get_max_logo_height());
 
-  builder->get_widget_derived("progress_bar", progress_bar_);
+  progress_bar_ = Gtk::Builder::get_widget_derived<ETRProgressBar>(builder, "progress_bar");
 
-  Gtk::Button* btn_close = nullptr;
-  builder->get_widget("btn_close", btn_close);
+  Gtk::Button* btn_close = builder->get_widget<Gtk::Button>("btn_close");
   btn_close->signal_clicked().connect(sigc::mem_fun(*this, &FindLogosWindow::on_close));
 
-  builder->get_widget("btn_find_logos", btn_find_logos_);
+  btn_find_logos_ = builder->get_widget<Gtk::Button>("btn_find_logos");
   btn_find_logos_->signal_clicked().connect(sigc::mem_fun(*this, &FindLogosWindow::on_find_logos));
 }
 

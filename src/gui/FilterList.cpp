@@ -38,14 +38,14 @@ FilterList::FilterList(BaseObjectType* cobject,
   , filter_type_(nullptr)
   , current_panel_(nullptr)
 {
-  builder->get_widget("filter_view", view_);
+  view_ = builder->get_widget<Gtk::TreeView>("filter_view");
   view_->set_model(model_);
   view_->append_column(_("Start frame"), model_->columns.start_frame);
   view_->append_column(_("Filter"), model_->columns.filter_name);
 
   configure_buttons(builder);
 
-  builder->get_widget_derived("filter_type", filter_type_);
+  filter_type_ = Gtk::Builder::get_widget_derived<FilterType>(builder, "filter_type");
 
   selection_ = view_->get_selection();
   selection_->signal_changed().connect(sigc::mem_fun(*this, &FilterList::on_selection_changed));
@@ -57,22 +57,19 @@ FilterList::FilterList(BaseObjectType* cobject,
 
 void FilterList::configure_buttons(const Glib::RefPtr<Gtk::Builder>& builder)
 {
-  Gtk::Button* btn_prev_filter = nullptr;
-  builder->get_widget("btn_prev_filter", btn_prev_filter);
+  Gtk::Button* btn_prev_filter = builder->get_widget<Gtk::Button>("btn_prev_filter");
   btn_prev_filter->signal_clicked().connect(
     sigc::mem_fun(signal_previous_filter_, &type_signal_button::emit));
 
-  builder->get_widget("btn_remove_filter", btn_remove_filter_);
+  btn_remove_filter_ = builder->get_widget<Gtk::Button>("btn_remove_filter");
   btn_remove_filter_->signal_clicked().connect(
     sigc::mem_fun(signal_remove_filter_, &type_signal_button::emit));
 
-  Gtk::Button* btn_next_filter = nullptr;
-  builder->get_widget("btn_next_filter", btn_next_filter);
+  Gtk::Button* btn_next_filter = builder->get_widget<Gtk::Button>("btn_next_filter");
   btn_next_filter->signal_clicked().connect(
     sigc::mem_fun(signal_next_filter_, &type_signal_button::emit));
 
-  Gtk::Button* btn_shift = nullptr;
-  builder->get_widget("btn_shift", btn_shift);
+  Gtk::Button* btn_shift = builder->get_widget<Gtk::Button>("btn_shift");
   btn_shift->signal_clicked().connect(
     sigc::mem_fun(signal_shift_, &type_signal_button::emit));
 }
