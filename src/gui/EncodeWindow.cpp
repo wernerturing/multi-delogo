@@ -143,7 +143,8 @@ void EncodeWindow::on_select_file()
   Gtk::FileChooserDialog dlg(*this, _("Select output file"), Gtk::FileChooser::Action::SAVE);
   dlg.add_button(_("_Cancel"), Gtk::ResponseType::CANCEL);
   dlg.add_button(_("_Save"), Gtk::ResponseType::OK);
-  dlg.set_current_folder(Glib::path_get_dirname(filter_data_->movie_file()));
+  auto folder = Gio::File::create_for_path(Glib::path_get_dirname(filter_data_->movie_file()));
+  dlg.set_current_folder(folder);
 
   if (run_dialog_sync(dlg) == Gtk::ResponseType::OK) {
     txt_file_->set_text(dlg.get_file()->get_path());
