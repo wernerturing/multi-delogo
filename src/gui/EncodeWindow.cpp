@@ -99,6 +99,7 @@ void EncodeWindow::configure_widgets(const Glib::RefPtr<Gtk::Builder>& builder)
 
   txt_quality_ = builder->get_widget<Gtk::SpinButton>("txt_quality");
   cmb_preset_ = builder->get_widget<Gtk::ComboBoxText>("cmb_preset");
+  cmb_preset_->set_active_text("medium");
 
   Gtk::Box* box_quality = builder->get_widget<Gtk::Box>("box_quality");
   widgets_to_disable_.push_back(box_quality);

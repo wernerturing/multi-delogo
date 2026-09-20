@@ -1,6 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <!DOCTYPE cambalache-project SYSTEM "cambalache-project.dtd">
 <!-- Created with Cambalache 1.0.3 -->
-<cambalache-project version="1.0.0" target_tk="gtk+-3.0">
-  <ui filename="MovieWindow.ui" sha256="062f6feefbe72f8d961c93bd31b3e0609213a16c39c1ba04dcf6fee15fc73481"/>
+<cambalache-project version="1.0.0" target_tk="gtk-4.0">
+  <ui filename="EncodeWindow.ui" sha256="dcd378cdbac4a6b4090d58400c96df0c08b8658e9ea246a86b6a4d99fd8b2c07"/>
+  <ui filename="FindLogosWindow.ui" sha256="1fa8aaa63e1c04811567c01769af622119b5046f564935e67bd14ba646621885"/>
+  <ui filename="InitialWindow.ui" sha256="6f4e7865dc130396a9f7969f5e2a6aa80f86e07450e2db22921c0fd68a5ae4b5"/>
+  <ui filename="LogWindow.ui" sha256="6b45e8759288164c78bc48a5e9c07cc7249d72d908855f20eb795cdf8065ecbd"/>
+  <ui filename="MovieWindow.ui" sha256="82d89008da3629a6cdab7e81e78fd4100007b6343f31f9923dbfe153c4acc811"/>
+  <ui filename="ShiftFramesWindow.ui" sha256="ff1a733a8a9d45f7d51aa4b2f348d37ff5201773558aaf451f04af2cde039c73"/>
 </cambalache-project>

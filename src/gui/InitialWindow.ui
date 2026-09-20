@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.40.0 
-
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 1.0.3 -->
+<!--
 Copyright (C) 2018-2026 Werner Turing <werner.turing@protonmail.com>
 
 This file is part of multi-delogo.
@@ -17,79 +17,81 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
-
 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
-  <!-- interface-license-type gplv3 -->
   <!-- interface-name multi-delogo -->
   <!-- interface-copyright 2018-2026 Werner Turing <werner.turing@protonmail.com> -->
-  <object class="GtkImage" id="img_btn_new">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">document-new</property>
-  </object>
-  <object class="GtkImage" id="img_btn_open">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">document-open</property>
-  </object>
+  <!-- interface-license-id gpl_3_0 -->
+  <requires lib="gtk" version="4.0"/>
   <object class="GtkApplicationWindow" id="initial_window">
-    <property name="can-focus">False</property>
-    <property name="border-width">16</property>
     <property name="title" translatable="yes">multi-delogo</property>
     <child>
       <object class="GtkBox" id="box_main">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
+        <property name="margin-bottom">16</property>
+        <property name="margin-end">16</property>
+        <property name="margin-start">16</property>
+        <property name="margin-top">16</property>
         <property name="orientation">vertical</property>
         <property name="spacing">16</property>
         <child>
           <object class="GtkLabel" id="lbl_what">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
             <property name="halign">start</property>
             <property name="label" translatable="yes">What would you like to do?</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkButton" id="btn_new">
-            <property name="label" translatable="yes">Start a _new project</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
+            <property name="focusable">1</property>
             <property name="halign">start</property>
-            <property name="image">img_btn_new</property>
-            <property name="relief">none</property>
-            <property name="use-underline">True</property>
+            <property name="has-frame">False</property>
+            <property name="label" translatable="yes">Start a _new project</property>
+            <property name="receives-default">1</property>
+            <property name="use-underline">1</property>
+            <property name="vexpand">1</property>
+            <child>
+              <object class="GtkBox" id="btn_new_int">
+                <property name="spacing">4</property>
+                <child>
+                  <object class="GtkImage" id="btn_new_int_img">
+                    <property name="icon-name">document-new</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="btn_new_int_lbl">
+                    <property name="label">Start a _new project</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
         <child>
           <object class="GtkButton" id="btn_open">
-            <property name="label" translatable="yes">_Open an existing project</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
+            <property name="focusable">1</property>
             <property name="halign">start</property>
-            <property name="image">img_btn_open</property>
-            <property name="relief">none</property>
-            <property name="use-underline">True</property>
+            <property name="has-frame">False</property>
+            <property name="label" translatable="yes">_Open an existing project</property>
+            <property name="receives-default">1</property>
+            <property name="use-underline">1</property>
+            <property name="vexpand">1</property>
+            <child>
+              <object class="GtkBox" id="btn_open_int">
+                <property name="spacing">4</property>
+                <child>
+                  <object class="GtkImage" id="btn_open_int_img">
+                    <property name="icon-name">document-open</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="btn_open_int_lbl">
+                    <property name="label">_Open an existing project</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
         </child>
       </object>
     </child>
