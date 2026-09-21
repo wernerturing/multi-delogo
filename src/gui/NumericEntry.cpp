@@ -27,6 +27,10 @@ NumericEntry::NumericEntry(BaseObjectType* cobject,
                            const Glib::RefPtr<Gtk::Builder>& builder)
   : Gtk::Entry(cobject)
 {
+  auto* d = gtk_editable_get_delegate(GTK_EDITABLE(gobj()));
+  delegate_ = dynamic_cast<Gtk::Text*>(Glib::wrap(GTK_WIDGET(d)));
+  delegate_->signal_insert_text().connect(
+    sigc::mem_fun(*this, &NumericEntry::on_delegate_insert_text), false);
 }
 
 
@@ -42,10 +46,10 @@ int NumericEntry::get_value() const
 }
 
 
-void NumericEntry::on_insert_text(const Glib::ustring& text, int* position)
+void NumericEntry::on_delegate_insert_text(const Glib::ustring& text, int*)
 {
-  if (contains_only_numbers(text)) {
-    Gtk::Entry::on_insert_text(text, position);
+  if (!contains_only_numbers(text)) {
+    g_signal_stop_emission_by_name(delegate_->gobj(), "insert-text");
   }
 }
 

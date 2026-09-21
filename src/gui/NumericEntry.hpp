@@ -32,10 +32,10 @@ namespace mdl {
     void set_value(int text);
     int get_value() const;
 
-  protected:
-    void on_insert_text(const Glib::ustring& text, int* position) override;
-
   private:
+    Gtk::Text* delegate_;
+
+    void on_delegate_insert_text(const Glib::ustring& text, int*);
     bool contains_only_numbers(const Glib::ustring& text) const;
   };
 }
