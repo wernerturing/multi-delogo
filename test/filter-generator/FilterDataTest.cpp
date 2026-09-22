@@ -181,11 +181,13 @@ BOOST_AUTO_TEST_CASE(should_fail_if_some_filter_is_invalid)
 
 BOOST_AUTO_TEST_CASE(test_save)
 {
+  auto previous_locale = std::locale::global(std::locale("pt_BR.UTF-8"));
+
   FilterData filters;
   filters.set_movie_file("/home/user/videos/test.mp4");
-  filters.set_jump_size(360);
+  filters.set_jump_size(3600);
   filters.filter_list().insert(1, filter_ptr(new DelogoFilter(1, 2, 3, 4)));
-  filters.filter_list().insert(251, filter_ptr(new DelogoFilter(9, 8, 7, 6)));
+  filters.filter_list().insert(25100, filter_ptr(new DelogoFilter(9, 8, 7, 6)));
 
   std::ostringstream out;
   filters.save(out);
@@ -193,8 +195,10 @@ BOOST_AUTO_TEST_CASE(test_save)
   std::string expected =
     "MDLV1\n"
     "/home/user/videos/test.mp4\n"
-    "360\n"
+    "3600\n"
     "1;delogo;1;2;3;4\n"
-    "251;delogo;9;8;7;6\n";
+    "25100;delogo;9;8;7;6\n";
   BOOST_CHECK_EQUAL(out.str(), expected);
+
+  std::locale::global(previous_locale);
 }

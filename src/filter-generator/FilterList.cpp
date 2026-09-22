@@ -188,6 +188,6 @@ void FilterList::load_line(const std::string& line)
 void FilterList::save(std::ostream& out) const
 {
   for (auto& entry: filters_) {
-    out << entry.first << ';' << entry.second->save_str() << '\n';
+    out << std::to_string(entry.first) << ';' << entry.second->save_str() << '\n';
   }
 }

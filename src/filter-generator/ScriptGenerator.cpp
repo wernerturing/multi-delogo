@@ -17,7 +17,9 @@
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <string>
-#include <clocale>
+#include <iostream>
+#include <sstream>
+#include <iomanip>
 
 #include "ScriptGenerator.hpp"
 
@@ -34,11 +36,12 @@ ScriptGenerator::ScriptGenerator(double fps, bool no_audio)
 
 std::string ScriptGenerator::make_fps_str(double fps)
 {
-  char* original_locale = setlocale(LC_NUMERIC, nullptr);
-  setlocale(LC_NUMERIC, "C");
-  std::string result = std::to_string(fps);
-  setlocale(LC_NUMERIC, original_locale);
-  return result;
+  std::ostringstream ss;
+  ss.imbue(std::locale::classic());
+  ss << std::fixed << std::setprecision(6);
+  ss << fps;
+
+  return ss.str();
 }
 
 

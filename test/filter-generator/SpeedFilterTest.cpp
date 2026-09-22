@@ -18,6 +18,7 @@
  */
 #include <memory>
 #include <string>
+#include <locale>
 
 #include "Filters.hpp"
 #include "Exceptions.hpp"
@@ -76,6 +77,26 @@ BOOST_AUTO_TEST_CASE(test_load_with_invalid_parameter)
 }
 
 
+BOOST_AUTO_TEST_CASE(test_load_with_trailing_string)
+{
+  BOOST_CHECK_THROW(fg::SpeedFilter::load("1.5abc"),
+                    fg::InvalidParametersException);
+}
+
+
+BOOST_AUTO_TEST_CASE(test_load_with_different_locale)
+{
+  auto previous_locale = std::locale::global(std::locale("pt_BR.UTF-8"));
+
+  std::shared_ptr<fg::SpeedFilter> filter = fg::SpeedFilter::load("1.6");
+
+  BOOST_CHECK_EQUAL(filter->type(), fg::FilterType::SPEED);
+  BOOST_CHECK_EQUAL(filter->factor(), 1.6);
+
+  std::locale::global(previous_locale);
+}
+
+
 BOOST_AUTO_TEST_CASE(test_save_str)
 {
   fg::SpeedFilter filter(1.5);
@@ -88,8 +109,7 @@ BOOST_AUTO_TEST_CASE(test_save_str)
 
 BOOST_AUTO_TEST_CASE(save_str_should_use_dot_regardless_of_locale)
 {
-  char* previous_locale = setlocale(LC_NUMERIC, nullptr);
-  setlocale(LC_NUMERIC, "pt_BR.UTF-8");
+  auto previous_locale = std::locale::global(std::locale("pt_BR.UTF-8"));
 
   fg::SpeedFilter filter(1.33);
 
@@ -97,7 +117,7 @@ BOOST_AUTO_TEST_CASE(save_str_should_use_dot_regardless_of_locale)
 
   BOOST_CHECK_EQUAL(serialized, "speed;1.330000");
 
-  setlocale(LC_NUMERIC, previous_locale);
+  std::locale::global(previous_locale);
 }
 
 
@@ -113,8 +133,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_str)
 
 BOOST_AUTO_TEST_CASE(ffmpeg_str_should_use_dot_regardless_of_locale)
 {
-  char* previous_locale = setlocale(LC_NUMERIC, nullptr);
-  setlocale(LC_NUMERIC, "pt_BR.UTF-8");
+  auto previous_locale = std::locale::global(std::locale("pt_BR.UTF-8"));
 
   fg::SpeedFilter filter(1.5);
 
@@ -122,7 +141,7 @@ BOOST_AUTO_TEST_CASE(ffmpeg_str_should_use_dot_regardless_of_locale)
 
   BOOST_CHECK_EQUAL(ffmpeg, "setpts=0.666667*PTS");
 
-  setlocale(LC_NUMERIC, previous_locale);
+  std::locale::global(previous_locale);
 }
 
 
@@ -138,8 +157,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_audio_str)
 
 BOOST_AUTO_TEST_CASE(ffmpeg_audio_str_should_use_dot_regardless_of_locale)
 {
-  char* previous_locale = setlocale(LC_NUMERIC, nullptr);
-  setlocale(LC_NUMERIC, "pt_BR.UTF-8");
+  auto previous_locale = std::locale::global(std::locale("pt_BR.UTF-8"));
 
   fg::SpeedFilter filter(1.75);
 
@@ -147,5 +165,5 @@ BOOST_AUTO_TEST_CASE(ffmpeg_audio_str_should_use_dot_regardless_of_locale)
 
   BOOST_CHECK_EQUAL(ffmpeg, "atempo=1.750000");
 
-  setlocale(LC_NUMERIC, previous_locale);
+  std::locale::global(previous_locale);
 }

@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <clocale>
 #include <memory>
 #include <string>
 #include <sstream>
+#include <locale>
 
 #include "FilterList.hpp"
 #include "Filters.hpp"
@@ -37,6 +37,8 @@ using namespace fg;
 
 BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
 {
+  auto previous_locale = std::locale::global(std::locale("pt_BR.UTF-8"));
+
   FilterList list;
   list.insert(1, filter_ptr(new DelogoFilter(10, 11, 12, 13)));
   list.insert(501, filter_ptr(new DrawboxFilter(20, 21, 22, 23)));
@@ -64,6 +66,8 @@ BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
     "[0:a]atrim=start=100.000,asetpts=PTS-STARTPTS,atempo=1.500000[as5];\n"
     "[vs0][as0][vs1][as1][vs2][as2][vs3][as3][vs4][as4][vs5][as5]concat=n=6:v=1:a=1[out_v][out_a]";
   BOOST_CHECK_EQUAL(out.str(), expected);
+
+  std::locale::global(previous_locale);
 }
 
 
@@ -177,8 +181,7 @@ BOOST_AUTO_TEST_CASE(should_work_for_a_one_filter_list)
 
 BOOST_AUTO_TEST_CASE(fps_should_use_dot_as_decimal_separator_regardless_of_locale)
 {
-  char* previous_locale = setlocale(LC_NUMERIC, nullptr);
-  setlocale(LC_NUMERIC, "pt_BR.UTF-8");
+  auto previous_locale = std::locale::global(std::locale("pt_BR.UTF-8"));
 
   FilterList list;
   list.insert(1, filter_ptr(new DelogoFilter(10, 11, 12, 13)));
@@ -193,7 +196,7 @@ BOOST_AUTO_TEST_CASE(fps_should_use_dot_as_decimal_separator_regardless_of_local
     "[vs0][as0]concat=n=1:v=1:a=1[out_v][out_a]";
   BOOST_CHECK_EQUAL(out.str(), expected);
 
-  setlocale(LC_NUMERIC, previous_locale);
+  std::locale::global(previous_locale);
 }
 
 

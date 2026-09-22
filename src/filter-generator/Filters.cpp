@@ -18,10 +18,12 @@
  */
 #include <memory>
 #include <string>
+#include <iostream>
+#include <sstream>
+#include <iomanip>
+#include <locale>
 #include <stdexcept>
 #include <algorithm>
-#include <cstdio>
-#include <clocale>
 
 #include <boost/algorithm/string.hpp>
 
@@ -306,13 +308,16 @@ std::shared_ptr<SpeedFilter> SpeedFilter::load(const std::string& parameters)
     throw InvalidParametersException();
   }
 
-  try {
-    double factor = std::stod(factorstr[0]);
-    return std::shared_ptr<SpeedFilter>(new SpeedFilter(factor));
-  } catch (std::invalid_argument& e) {
-    throw InvalidParametersException();
-  }
+  double factor;
+  std::istringstream ss(factorstr[0]);
+  ss.imbue(std::locale::classic());
+  ss >> factor;
 
+  if (ss.fail() || !ss.eof()) {
+    throw InvalidParametersException();
+  } else {
+    return std::shared_ptr<SpeedFilter>(new SpeedFilter(factor));
+  }
 }
 
 
@@ -336,41 +341,36 @@ std::string SpeedFilter::name() const
 
 std::string SpeedFilter::save_str() const
 {
-  char* previous_locale = setlocale(LC_NUMERIC, nullptr);
-  setlocale(LC_NUMERIC, "C");
+  std::ostringstream ss;
+  ss.imbue(std::locale::classic());
+  ss << std::fixed << std::setprecision(6);
+  ss << "speed;" << factor_;
 
-  char buffer[30];
-  snprintf(buffer, 30, "speed;%f", factor_);
-  return buffer;
-
-  setlocale(LC_NUMERIC, previous_locale);
+  return ss.str();
 }
 
 
 std::string SpeedFilter::ffmpeg_str(int frame_width, int frame_height) const
 {
-  char* previous_locale = setlocale(LC_NUMERIC, nullptr);
-  setlocale(LC_NUMERIC, "C");
-
   double ptsmultiplier = 1/factor_;
-  char buffer[30];
-  snprintf(buffer, 30, "setpts=%f*PTS", ptsmultiplier);
-  return buffer;
 
-  setlocale(LC_NUMERIC, previous_locale);
+  std::ostringstream ss;
+  ss.imbue(std::locale::classic());
+  ss << std::fixed << std::setprecision(6);
+  ss << "setpts=" << ptsmultiplier << "*PTS";
+
+  return ss.str();
 }
 
 
 std::string SpeedFilter::ffmpeg_audio_str() const
 {
-  char* previous_locale = setlocale(LC_NUMERIC, nullptr);
-  setlocale(LC_NUMERIC, "C");
+  std::ostringstream ss;
+  ss.imbue(std::locale::classic());
+  ss << std::fixed << std::setprecision(6);
+  ss << "atempo=" << factor_;
 
-  char buffer[30];
-  snprintf(buffer, 30, "atempo=%f", factor_);
-  return buffer;
-
-  setlocale(LC_NUMERIC, previous_locale);
+  return ss.str();
 }
 
 

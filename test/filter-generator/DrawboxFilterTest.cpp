@@ -84,21 +84,29 @@ BOOST_AUTO_TEST_CASE(test_load_with_invalid_parameter)
 
 BOOST_AUTO_TEST_CASE(test_save_str)
 {
-  fg::DrawboxFilter filter(10, 15, 100, 20);
+  auto previous_locale = std::locale::global(std::locale("pt_BR.UTF-8"));
+
+  fg::DrawboxFilter filter(10, 15, 1000, 20);
 
   std::string serialized(filter.save_str());
 
-  BOOST_CHECK_EQUAL(serialized, "drawbox;10;15;100;20");
+  BOOST_CHECK_EQUAL(serialized, "drawbox;10;15;1000;20");
+
+  std::locale::global(previous_locale);
 }
 
 
 BOOST_AUTO_TEST_CASE(test_ffmpeg_str)
 {
-  fg::DrawboxFilter filter(50, 60, 150, 30);
+  auto previous_locale = std::locale::global(std::locale("pt_BR.UTF-8"));
+
+  fg::DrawboxFilter filter(50, 60, 1500, 30);
 
   std::string ffmpeg(filter.ffmpeg_str(1920, 1080));
 
-  BOOST_CHECK_EQUAL(ffmpeg, "drawbox=x=50:y=60:w=150:h=30:c=black:t=fill");
+  BOOST_CHECK_EQUAL(ffmpeg, "drawbox=x=50:y=60:w=1500:h=30:c=black:t=fill");
+
+  std::locale::global(previous_locale);
 }
 
 

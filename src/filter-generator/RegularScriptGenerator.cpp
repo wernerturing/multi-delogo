@@ -154,6 +154,7 @@ std::string RegularScriptGenerator::generate_trim(int start_frame, maybe_int nex
 std::string RegularScriptGenerator::generate_atrim(int start_frame, maybe_int next_start_frame) const
 {
   std::stringstream out;
+  out.imbue(std::locale::classic());
   out << std::fixed << std::setprecision(3);
   double start_time = start_frame/fps_;
   if (next_start_frame) {

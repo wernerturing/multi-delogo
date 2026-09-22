@@ -84,21 +84,29 @@ BOOST_AUTO_TEST_CASE(test_load_with_invalid_parameter)
 
 BOOST_AUTO_TEST_CASE(test_save_str)
 {
-  fg::DelogoFilter filter(10, 15, 100, 20);
+  auto previous_locale = std::locale::global(std::locale("pt_BR.UTF-8"));
+
+  fg::DelogoFilter filter(10, 15, 1000, 20);
 
   std::string serialized(filter.save_str());
 
-  BOOST_CHECK_EQUAL(serialized, "delogo;10;15;100;20");
+  BOOST_CHECK_EQUAL(serialized, "delogo;10;15;1000;20");
+
+  std::locale::global(previous_locale);
 }
 
 
 BOOST_AUTO_TEST_CASE(test_ffmpeg_str)
 {
-  fg::DelogoFilter filter(50, 60, 150, 30);
+  auto previous_locale = std::locale::global(std::locale("pt_BR.UTF-8"));
 
-  std::string ffmpeg(filter.ffmpeg_str(1280, 720));
+  fg::DelogoFilter filter(50, 6000, 150, 30);
 
-  BOOST_CHECK_EQUAL(ffmpeg, "delogo=x=50:y=60:w=150:h=30");
+  std::string ffmpeg(filter.ffmpeg_str(12800, 7200));
+
+  BOOST_CHECK_EQUAL(ffmpeg, "delogo=x=50:y=6000:w=150:h=30");
+
+  std::locale::global(previous_locale);
 }
 
 

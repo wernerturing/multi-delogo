@@ -427,11 +427,13 @@ BOOST_AUTO_TEST_CASE(should_fail_for_invalid_filter)
 
 BOOST_AUTO_TEST_CASE(should_save_the_list)
 {
+  auto previous_locale = std::locale::global(std::locale("pt_BR.UTF-8"));
+
   FilterList list;
   list.insert(1, filter_ptr(new DelogoFilter(1, 2, 3, 4)));
   list.insert(501, filter_ptr(new DrawboxFilter(11, 22, 33, 44)));
   list.insert(1501, filter_ptr(new NullFilter()));
-  list.insert(1001, filter_ptr(new DrawboxFilter(111, 222, 333, 444)));
+  list.insert(1001, filter_ptr(new DrawboxFilter(1110, 2220, 3330, 4440)));
 
   std::ostringstream out;
   list.save(out);
@@ -439,7 +441,9 @@ BOOST_AUTO_TEST_CASE(should_save_the_list)
   std::string expected =
     "1;delogo;1;2;3;4\n"
     "501;drawbox;11;22;33;44\n"
-    "1001;drawbox;111;222;333;444\n"
+    "1001;drawbox;1110;2220;3330;4440\n"
     "1501;none;\n";
   BOOST_CHECK_EQUAL(out.str(), expected);
+
+  std::locale::global(previous_locale);
 }
