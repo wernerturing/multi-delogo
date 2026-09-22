@@ -223,10 +223,11 @@ void MovieWindow::on_set_prev_frame(const Glib::ustring& str_setting)
 }
 
 
-void MovieWindow::on_hide()
+bool MovieWindow::on_close_request()
 {
   // When this is called because of on_encode there is no filter_data_ anymore
   if (filter_data_) {
     on_save();
   }
+  return false;
 }

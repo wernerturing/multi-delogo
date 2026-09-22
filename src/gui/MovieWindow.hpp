@@ -75,7 +75,7 @@ namespace mdl {
     void on_scroll_filter_toggled(Gtk::ToggleButton* chk);
     void on_set_prev_frame(const Glib::ustring& str_setting);
 
-    void on_hide() override;
+    bool on_close_request() override;
   };
 }
 
