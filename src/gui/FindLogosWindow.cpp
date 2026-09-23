@@ -123,7 +123,7 @@ void FindLogosWindow::configure_widgets(const Glib::RefPtr<Gtk::Builder>& builde
   progress_bar_ = Gtk::Builder::get_widget_derived<ETRProgressBar>(builder, "progress_bar");
 
   Gtk::Button* btn_close = builder->get_widget<Gtk::Button>("btn_close");
-  btn_close->signal_clicked().connect(sigc::mem_fun(*this, &FindLogosWindow::on_close));
+  btn_close->signal_clicked().connect(sigc::mem_fun(*this, &Gtk::Window::close));
 
   btn_find_logos_ = builder->get_widget<Gtk::Button>("btn_find_logos");
   btn_find_logos_->signal_clicked().connect(sigc::mem_fun(*this, &FindLogosWindow::on_find_logos));
@@ -204,18 +204,15 @@ bool FindLogosWindow::confirm_search_with_existing_filters()
 }
 
 
-void FindLogosWindow::on_close()
-{
-  if (confirm_stop()) {
-    hide();
-  }
-}
-
-
 bool FindLogosWindow::on_close_request()
 {
   // Returning false calls the default handler (which closes the window)
-  return confirm_stop() == false;
+  if (confirm_stop()) {
+    signal_dismissed_.emit();
+    return false;
+  } else {
+    return true;
+  }
 }
 
 
@@ -261,6 +258,12 @@ FindLogosWindow::~FindLogosWindow()
     }
     delete worker_thread_;
   }
+}
+
+
+FindLogosWindow::type_signal_dismissed FindLogosWindow::signal_dismissed()
+{
+  return signal_dismissed_;
 }
 
 

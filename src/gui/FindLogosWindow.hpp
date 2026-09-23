@@ -48,6 +48,9 @@ namespace mdl {
                     bool verbose);
     ~FindLogosWindow();
 
+    typedef sigc::signal<void()> type_signal_dismissed;
+    type_signal_dismissed signal_dismissed();
+
   private:
     fg::FilterData& filter_data_;
     std::shared_ptr<LogoFinder> logo_finder_;
@@ -72,6 +75,8 @@ namespace mdl {
     Glib::Dispatcher finder_progress_dispatcher_;
     Glib::Dispatcher finder_finished_dispatcher_;
 
+    type_signal_dismissed signal_dismissed_;
+
 
     void configure_widgets(const Glib::RefPtr<Gtk::Builder>& builder,
                            int total_frames, int start_frame, int jump_size);
@@ -82,7 +87,6 @@ namespace mdl {
     bool already_has_filters();
     bool confirm_search_with_existing_filters();
 
-    void on_close();
     bool on_close_request() override;
     bool confirm_stop();
 

@@ -171,7 +171,7 @@ void MovieWindow::on_find_logos()
                               get_application()->is_verbose());
   window->set_transient_for(*this);
   window->set_modal();
-  window->signal_hide().connect(sigc::mem_fun(*filter_list_, &FilterList::refresh_list));
+  window->signal_dismissed().connect(sigc::mem_fun(*filter_list_, &FilterList::refresh_list));
 
   get_application()->register_window(window);
 }
@@ -197,7 +197,7 @@ void MovieWindow::on_encode()
                                               frame_navigator_->get_fps());
   get_application()->register_window(window);
 
-  hide();
+  close();
 }
 
 

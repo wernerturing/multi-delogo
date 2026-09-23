@@ -86,8 +86,6 @@ namespace mdl {
                                     const Glib::RefPtr<Gtk::FileFilter>& filter);
 
     void error_dialog(const Glib::ustring& message, Gtk::MessageType type=Gtk::MessageType::ERROR);
-
-    void on_hide_window(Gtk::ApplicationWindow* window);
   };
 }
 

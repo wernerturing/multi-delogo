@@ -65,7 +65,7 @@ int mdl::run_dialog_sync(Gtk::Dialog& dlg)
   if (!was_modal) {
     dlg.set_modal(false);
   }
-  dlg.hide();
+  dlg.close();
 
   return response_id;
 }

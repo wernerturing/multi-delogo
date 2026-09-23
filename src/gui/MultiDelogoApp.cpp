@@ -215,22 +215,13 @@ bool MultiDelogoApp::select_new_movie_file_if_necessary(fg::FilterData& filter_d
 void MultiDelogoApp::register_window(Gtk::ApplicationWindow* window)
 {
   if (window != initial_window_ && initial_window_) {
-    initial_window_->hide();
-    initial_window_ = nullptr; // Will be deleted in on_hide_window
+    initial_window_->close();
+    delete initial_window_;
+    initial_window_ = nullptr;
   }
-
-  window->signal_hide().connect(
-    sigc::bind(sigc::mem_fun(*this, &MultiDelogoApp::on_hide_window),
-               window));
 
   add_window(*window);
   window->present();
-}
-
-
-void MultiDelogoApp::on_hide_window(Gtk::ApplicationWindow* window)
-{
-  delete window;
 }
 
 
