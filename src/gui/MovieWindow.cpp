@@ -210,8 +210,6 @@ void MovieWindow::on_scroll_filter_toggled(Gtk::ToggleButton* chk)
 void MovieWindow::on_set_prev_frame(const Glib::ustring& str_setting)
 {
   act_prev_frame_->change_state(str_setting);
-  // In GTK4 there's GtkMenuButton->popdown() to simplify
-  btn_prev_frame_->get_popover()->popdown();
 
   FrameNavigator::PrevFrame setting = FrameNavigator::PrevFrame::NO;
   if (str_setting == "FIT") {
