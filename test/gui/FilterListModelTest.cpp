@@ -35,13 +35,23 @@
 
 #include "../TestHelpers.hpp"
 
+BOOST_TEST_DONT_PRINT_LOG_VALUE(Gtk::TreeModel::Flags)
+BOOST_TEST_DONT_PRINT_LOG_VALUE(Gtk::TreeIter<Gtk::TreeRow>)
+
+namespace Gtk {
+  std::ostream& boost_test_print_type(std::ostream& ostr, const TreeModel::Path& path)
+  {
+    return ostr << path.to_string();
+  }
+}
+
 
 class GtkInitialization
 {
 public:
   GtkInitialization()
   {
-    Gtk::Main();
+    Glib::init();
   }
 };
 BOOST_GLOBAL_FIXTURE(GtkInitialization);
@@ -87,7 +97,7 @@ BOOST_FIXTURE_TEST_SUITE(filterlist_model, FilterModelFixture)
 
 BOOST_AUTO_TEST_CASE(test_get_flags)
 {
-  BOOST_CHECK_EQUAL(model->get_flags(), Gtk::TREE_MODEL_LIST_ONLY);
+  BOOST_CHECK_EQUAL(model->get_flags(), Gtk::TreeModel::Flags::LIST_ONLY);
 }
 
 
@@ -281,7 +291,7 @@ BOOST_AUTO_TEST_CASE(test_insert_for_row_that_already_exists)
 
 BOOST_AUTO_TEST_CASE(test_delete_row)
 {
-  auto iter_before = model->children()[1];
+  auto iter_before = model->children()[1].get_iter();
   auto path_before = model->get_path(iter_before);
   model->remove(iter_before);
   auto iter_after = model->children().begin();
@@ -299,12 +309,12 @@ BOOST_AUTO_TEST_CASE(test_delete_row)
 
 BOOST_AUTO_TEST_CASE(should_change_start_frame)
 {
-  auto iter_before = model->children()[1];
+  auto iter_before = model->children()[1].get_iter();
   auto path_before = model->get_path(iter_before);
 
   auto row = *iter_before;
   row[model->columns.start_frame] = 301;
-  auto iter_after = model->children()[1];
+  auto iter_after = model->children()[1].get_iter();
 
   BOOST_TEST(list.size() == 3);
   BOOST_TEST(list.get_by_start_frame(301)->second->type() == fg::FilterType::NO_OP);
@@ -319,13 +329,13 @@ BOOST_AUTO_TEST_CASE(should_change_start_frame)
 
 BOOST_AUTO_TEST_CASE(should_change_start_frame_overwriting_existing_filter)
 {
-  auto iter_before = model->children()[1];
+  auto iter_before = model->children()[1].get_iter();
   auto path_before = model->get_path(iter_before);
-  auto path_overwritten = model->get_path(model->children()[2]);
+  auto path_overwritten = model->get_path(model->children()[2].get_iter());
 
   auto row = *iter_before;
   row[model->columns.start_frame] = 201;
-  auto iter_after = model->children()[1];
+  auto iter_after = model->children()[1].get_iter();
 
   BOOST_TEST(list.size() == 2);
   BOOST_TEST(list.get_by_start_frame(201)->second->type() == fg::FilterType::NO_OP);
@@ -341,8 +351,7 @@ BOOST_AUTO_TEST_CASE(should_change_start_frame_overwriting_existing_filter)
 
 BOOST_AUTO_TEST_CASE(should_not_allow_changing_name)
 {
-  auto iter = model->children()[1];
-  auto row = *iter;
+  auto row = model->children()[1];
 
   BOOST_CHECK_THROW(row[model->columns.filter_name] = "a", std::invalid_argument);
 }
@@ -350,12 +359,12 @@ BOOST_AUTO_TEST_CASE(should_not_allow_changing_name)
 
 BOOST_AUTO_TEST_CASE(should_allow_changing_the_filter)
 {
-  auto iter_before = model->children()[1];
-  auto row = *iter_before;
+  auto row = model->children()[1];
+  auto iter_before = row.get_iter();
 
   auto new_filter = fg::filter_ptr(new fg::DrawboxFilter(10, 10, 10, 10));
   row[model->columns.filter] = new_filter;
-  auto iter_after = model->children()[1];
+  auto iter_after = model->children()[1].get_iter();
 
   BOOST_CHECK_EQUAL(list.size(), 3);
   BOOST_CHECK_EQUAL(list.get_by_start_frame(101)->second->type(), fg::FilterType::DRAWBOX);
