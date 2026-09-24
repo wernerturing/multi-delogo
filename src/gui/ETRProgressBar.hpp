@@ -49,8 +49,8 @@ namespace mdl {
     void set_finished();
 
   private:
-    std::string get_progress_str(const Progress& progress);
-    std::string get_time_remaining(const Progress& progress);
+    static std::string get_progress_str(const Progress& progress);
+    static std::string get_time_remaining(const Progress& progress);
 
 
     friend class ETRProgressBarTestFixture;

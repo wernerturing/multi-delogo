@@ -28,43 +28,30 @@ using namespace mdl;
 #include <boost/test/unit_test.hpp>
 
 
-class GtkInitialization
-{
-public:
-  GtkInitialization()
-  {
-    Gtk::Main();
-  }
-};
-BOOST_GLOBAL_FIXTURE(GtkInitialization);
-
-
 namespace mdl {
 class ETRProgressBarTestFixture
 {
 public:
   std::string get_time_remaining(int hours, int minutes, int seconds)
   {
-    return progress.get_time_remaining({.percentage = 0,
-                                        .seconds_elapsed = 0,
-                                        .total_seconds_remaining = get_total(hours, minutes, seconds),
-                                        .hours_remaining = hours,
-                                        .minutes_remaining = minutes,
-                                        .seconds_remaining = seconds});
+    return ETRProgressBar::get_time_remaining({.percentage = 0,
+                                               .seconds_elapsed = 0,
+                                               .total_seconds_remaining = get_total(hours, minutes, seconds),
+                                               .hours_remaining = hours,
+                                               .minutes_remaining = minutes,
+                                               .seconds_remaining = seconds});
   }
 
 
   std::string get_progress_str(double percentage, int hours, int minutes, int seconds)
   {
-    return progress.get_progress_str({.percentage = percentage,
-                                      .seconds_elapsed = 0,
-                                      .total_seconds_remaining = get_total(hours, minutes, seconds),
-                                      .hours_remaining = hours,
-                                      .minutes_remaining = minutes,
-                                      .seconds_remaining = seconds});
+    return ETRProgressBar::get_progress_str({.percentage = percentage,
+                                             .seconds_elapsed = 0,
+                                             .total_seconds_remaining = get_total(hours, minutes, seconds),
+                                             .hours_remaining = hours,
+                                             .minutes_remaining = minutes,
+                                             .seconds_remaining = seconds});
   }
-
-  ETRProgressBar progress;
 
 private:
   int get_total(int hours, int minutes, int seconds)

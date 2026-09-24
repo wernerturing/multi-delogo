@@ -32,17 +32,6 @@ using namespace mdl;
 BOOST_TEST_DONT_PRINT_LOG_VALUE(DragMode)
 
 
-class GtkInitialization
-{
-public:
-  GtkInitialization()
-  {
-    Gtk::Main();
-  }
-};
-BOOST_GLOBAL_FIXTURE(GtkInitialization);
-
-
 namespace mdl {
 class SelectionRectTestFixture
 {
