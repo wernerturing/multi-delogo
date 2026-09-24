@@ -38,7 +38,7 @@ class GtkInitialization
 public:
   GtkInitialization()
   {
-    Gtk::Main();
+    Gtk::Application::create("wt.multi-delogo.test");
   }
 };
 BOOST_GLOBAL_FIXTURE(GtkInitialization);
