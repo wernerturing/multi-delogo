@@ -36,5 +36,5 @@ Glib::RefPtr<mdl::FrameProvider> mdl::create_frame_provider(const std::string& m
     throw mdl::VideoNotOpenedException();
   }
 
-  return Glib::RefPtr<mdl::FrameProvider>(new mdl::opencv::OpenCVFrameProvider(std::move(video)));
+  return Glib::make_refptr_for_instance<mdl::FrameProvider>(new mdl::opencv::OpenCVFrameProvider(std::move(video)));
 }

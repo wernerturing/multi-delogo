@@ -61,7 +61,7 @@ FilterListModel::~FilterListModel()
 
 Glib::RefPtr<FilterListModel> FilterListModel::create(fg::FilterList& filter_list)
 {
-  return Glib::RefPtr<FilterListModel>(new FilterListModel(filter_list));
+  return Glib::make_refptr_for_instance<FilterListModel>(new FilterListModel(filter_list));
 }
 
 

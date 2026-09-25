@@ -58,7 +58,7 @@ MultiDelogoApp::MultiDelogoApp()
 
 Glib::RefPtr<MultiDelogoApp> MultiDelogoApp::create()
 {
-  return Glib::RefPtr<MultiDelogoApp>(new MultiDelogoApp());
+  return Glib::make_refptr_for_instance<MultiDelogoApp>(new MultiDelogoApp());
 }
 
 
