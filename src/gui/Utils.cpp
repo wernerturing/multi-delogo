@@ -44,7 +44,7 @@ int mdl::run_dialog_sync(Gtk::Dialog& dlg)
   }
 
   if (!dlg.get_visible()) {
-    dlg.show();
+    dlg.set_visible();
   }
 
   int response_id = Gtk::ResponseType::NONE;

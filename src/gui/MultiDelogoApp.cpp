@@ -224,7 +224,6 @@ void MultiDelogoApp::register_window(Gtk::ApplicationWindow* window)
                window));
 
   add_window(*window);
-  window->show_all();
   window->present();
 }
 

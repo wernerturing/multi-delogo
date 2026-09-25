@@ -68,7 +68,6 @@ FrameView::FrameView(BaseObjectType* cobject,
   }
 
   update_canvas_size();
-  canvas_.show();
   add(canvas_);
 }
 

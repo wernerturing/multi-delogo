@@ -114,7 +114,6 @@ void FilterList::set_filter(fg::FilterType filter_type, Gtk::Widget* panel)
   }
 
   add(*panel);
-  show_all();
   current_panel_ = panel;
 }
 

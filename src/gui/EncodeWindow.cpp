@@ -132,7 +132,7 @@ void EncodeWindow::configure_widgets(const Glib::RefPtr<Gtk::Builder>& builder)
   btn_log_->signal_clicked().connect(sigc::mem_fun(*this, &EncodeWindow::on_view_log));
 
   box_progress_ = builder->get_widget<Gtk::Box>("box_progress");
-  box_progress_->hide();
+  box_progress_->set_visible(false);
 
   on_codec(FFmpegExecutor::Codec::H264);
 }
@@ -189,11 +189,10 @@ void EncodeWindow::on_encode()
 
     lbl_status_->set_text(_("Encoding in progress"));
     progress_bar_->reset();
-    box_progress_->set_no_show_all(false);
-    box_progress_->show_all();
+    box_progress_->set_visible();
 
     disable_widgets();
-    btn_log_->hide();
+    btn_log_->set_visible(false);
   } catch (ScriptGenerationException& e) {
     message_dialog(*this,
                    Glib::ustring::compose(_("Error generating filter script for FFmpeg: %1"), e.what()),
@@ -286,7 +285,7 @@ EncodeWindow::Generator EncodeWindow::get_generator()
 void EncodeWindow::on_ffmpeg_finished(bool success, const std::string& error)
 {
   enable_widgets();
-  btn_log_->show();
+  btn_log_->set_visible();
 
   progress_bar_->set_finished();
 
