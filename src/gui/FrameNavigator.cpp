@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with multi-delogo.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <boost/algorithm/clamp.hpp>
+#include <algorithm>
 
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
@@ -163,7 +163,7 @@ double FrameNavigator::get_fps() const
 void FrameNavigator::change_displayed_frame(int new_frame_number)
 {
   try {
-    new_frame_number = boost::algorithm::clamp(new_frame_number, 1, number_of_frames_);
+    new_frame_number = std::clamp(new_frame_number, 1, number_of_frames_);
 
     if (new_frame_number == frame_number_ + 1) {
       show_next_frame(new_frame_number);
@@ -302,7 +302,7 @@ FrameNavigator::type_signal_frame_changed FrameNavigator::signal_frame_changed()
 
 void FrameNavigator::on_step_zoom(gdouble increment)
 {
-  set_zoom(boost::algorithm::clamp(zoom_ + increment, 0.1, 1.0));
+  set_zoom(std::clamp(zoom_ + increment, 0.1, 1.0));
 }
 
 
