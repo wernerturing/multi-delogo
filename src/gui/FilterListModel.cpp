@@ -74,7 +74,7 @@ FilterListModel::iterator FilterListModel::get_for_frame(int frame)
   }
 
   int pos = filter_list_.get_position(filter->first);
-  return my_children[pos];
+  return my_children[pos].get_iter();
 }
 
 
@@ -86,7 +86,7 @@ FilterListModel::iterator FilterListModel::get_by_start_frame(int start_frame)
     return children_col.end();
   }
 
-  return children_col[pos];
+  return children_col[pos].get_iter();
 }
 
 
@@ -137,7 +137,7 @@ std::pair<int, int> FilterListModel::shift_frames(int start, int end, int amount
   } else {
     iter = get_for_frame(start);
     if (!iter) {
-      iter = children()[0];
+      iter = children().begin();
     }
 
     if (iter && (*iter)[columns.start_frame] < start) {
@@ -394,13 +394,13 @@ void FilterListModel::set_value_filter(const iterator& iter, const Glib::ValueBa
 }
 
 
-int FilterListModel::get_position(const iterator& iter) const
+int FilterListModel::get_position(const const_iterator& iter) const
 {
   return GPOINTER_TO_INT(iter.gobj()->user_data);
 }
 
 
-fg::FilterList::maybe_type FilterListModel::get_filter_by_iter(const iterator& iter) const
+fg::FilterList::maybe_type FilterListModel::get_filter_by_iter(const const_iterator& iter) const
 {
   int pos = get_position(iter);
   return filter_list_.get_by_position(pos);
