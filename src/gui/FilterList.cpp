@@ -113,7 +113,7 @@ void FilterList::set_filter(fg::FilterType filter_type, Gtk::Widget* panel)
     remove(*current_panel_);
   }
 
-  add(*panel);
+  append(*panel);
   current_panel_ = panel;
 }
 
