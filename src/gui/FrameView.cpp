@@ -87,8 +87,8 @@ Point FrameView::content_offset() const
   double scaled_width = image_width_ * zoom_;
   double scaled_height = image_height_ * zoom_;
   return {
-    std::round(std::max(0.0, (canvas_.get_allocated_width() - scaled_width) / 2.0)),
-    std::round(std::max(0.0, (canvas_.get_allocated_height() - scaled_height) / 2.0))
+    std::round(std::max(0.0, (canvas_.get_width() - scaled_width) / 2.0)),
+    std::round(std::max(0.0, (canvas_.get_height() - scaled_height) / 2.0))
   };
 }
 
