@@ -52,7 +52,7 @@ MultiDelogoApp::MultiDelogoApp()
 
   add_main_option_entry(OptionType::BOOL, "version", '\0', _("Outputs application version and exits"));
   add_main_option_entry(OptionType::BOOL, "verbose", 'v', _("Outputs debugging information"));
-  signal_handle_local_options().connect(sigc::mem_fun(*this, &MultiDelogoApp::handle_options));
+  signal_handle_local_options().connect(sigc::mem_fun(*this, &MultiDelogoApp::handle_options), true);
 }
 
 
