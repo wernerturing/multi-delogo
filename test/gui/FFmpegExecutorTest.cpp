@@ -18,6 +18,7 @@
  */
 #include <string>
 #include <vector>
+#include <optional>
 
 #include <gtkmm.h>
 
@@ -43,7 +44,7 @@ class FFmpegExecutorTestFixture
 public:
   FFmpegExecutorTestFixture()
   {
-    ffmpeg.set_generator(fg::RegularScriptGenerator::create(filters, 1920, 1080, 25, boost::none, boost::none, false));
+    ffmpeg.set_generator(fg::RegularScriptGenerator::create(filters, 1920, 1080, 25, std::nullopt, std::nullopt, false));
     ffmpeg.set_input_file("input.mp4");
     ffmpeg.set_output_file("output.mkv");
   }
@@ -144,7 +145,7 @@ BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_mp4_output)
 
 BOOST_AUTO_TEST_CASE(test_ffmpeg_command_line_h265_without_audio)
 {
-  ffmpeg.set_generator(fg::RegularScriptGenerator::create(filters, 1920, 1080, 25, boost::none, boost::none, true));
+  ffmpeg.set_generator(fg::RegularScriptGenerator::create(filters, 1920, 1080, 25, std::nullopt, std::nullopt, true));
   ffmpeg.set_codec(FFmpegExecutor::Codec::H265);
   ffmpeg.set_quality(25);
   ffmpeg.set_preset("fast");
@@ -171,7 +172,7 @@ BOOST_AUTO_TEST_CASE(fps_should_use_dot_as_decimal_separator_regardless_of_local
   ffmpeg.set_codec(FFmpegExecutor::Codec::H264);
   ffmpeg.set_quality(28);
   ffmpeg.set_preset("medium");
-  ffmpeg.set_generator(fg::RegularScriptGenerator::create(filters, 1920, 1080, 29.97, boost::none, boost::none, false));
+  ffmpeg.set_generator(fg::RegularScriptGenerator::create(filters, 1920, 1080, 29.97, std::nullopt, std::nullopt, false));
 
   std::vector<std::string> expected{
     "ffmpeg",

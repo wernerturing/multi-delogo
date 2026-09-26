@@ -23,15 +23,14 @@
 #include <string>
 #include <utility>
 #include <ostream>
-
-#include <boost/optional.hpp>
+#include <optional>
 
 #include "ScriptGenerator.hpp"
 #include "FilterList.hpp"
 
 
 namespace fg {
-  typedef boost::optional<int> maybe_int;
+  typedef std::optional<int> maybe_int;
 
   class RegularScriptGenerator : public ScriptGenerator
   {

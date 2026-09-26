@@ -20,6 +20,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <optional>
 
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
@@ -127,7 +128,7 @@ MultiDelogoApp::maybe_Project MultiDelogoApp::open_or_create_project(const std::
     auto msg = Glib::ustring::compose(_("Could not open file %1: %2"),
                                       file, Glib::strerror(errno));
     error_dialog(msg);
-    return boost::none;
+    return std::nullopt;
   }
 
   if (fg::FilterData::is_filter_data(file_stream)) {
@@ -147,7 +148,7 @@ MultiDelogoApp::maybe_Project MultiDelogoApp::open_project(const std::string& pr
   } catch (fg::Exception& e) {
     auto msg = Glib::ustring::compose(_("Invalid data in file %1"), project_file);
     error_dialog(msg);
-    return boost::none;
+    return std::nullopt;
   }
 
   Project pr{.file = project_file, .filter_data = std::move(filter_data)};
@@ -163,7 +164,7 @@ MultiDelogoApp::maybe_Project MultiDelogoApp::create_project(const std::string& 
                               _("Start a _new project"),
                               _("_Continue existing project"))) {
     open_file(project_file);
-    return boost::none;
+    return std::nullopt;
   }
 
   std::unique_ptr<fg::FilterData> filter_data(new fg::FilterData());
@@ -207,7 +208,7 @@ bool MultiDelogoApp::select_new_movie_file_if_necessary(fg::FilterData& filter_d
     return false;
   }
 
-  filter_data.set_movie_file(new_file.get()->get_path());
+  filter_data.set_movie_file((*new_file)->get_path());
   return true;
 }
 
@@ -307,9 +308,9 @@ maybe_file MultiDelogoApp::select_file_for_open(const std::string& title,
   int response = run_dialog_sync(dlg);
 
   if (response == Gtk::ResponseType::OK) {
-    return boost::make_optional(dlg.get_file());
+    return std::make_optional(dlg.get_file());
   } else {
-    return boost::none;
+    return std::nullopt;
   }
 }
 

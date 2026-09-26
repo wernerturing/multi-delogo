@@ -19,9 +19,9 @@
 #ifndef MDL_MULTI_DELOGO_APP_H
 #define MDL_MULTI_DELOGO_APP_H
 
-#include <gtkmm.h>
+#include <optional>
 
-#include <boost/optional.hpp>
+#include <gtkmm.h>
 
 #include "filter-generator/FilterData.hpp"
 
@@ -29,7 +29,7 @@
 
 
 namespace mdl {
-  typedef boost::optional<Glib::RefPtr<Gio::File>> maybe_file;
+  typedef std::optional<Glib::RefPtr<Gio::File>> maybe_file;
 
   class MultiDelogoApp : public Gtk::Application
   {
@@ -59,7 +59,7 @@ namespace mdl {
       std::string file;
       std::unique_ptr<fg::FilterData> filter_data;
     };
-    typedef boost::optional<Project> maybe_Project;
+    typedef std::optional<Project> maybe_Project;
 
     Gtk::ApplicationWindow* initial_window_;
 

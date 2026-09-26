@@ -22,8 +22,7 @@
 #include <ostream>
 #include <limits>
 #include <algorithm>
-
-#include <boost/optional.hpp>
+#include <optional>
 
 #include "Exceptions.hpp"
 #include "IOUtils.hpp"
@@ -91,10 +90,10 @@ FilterList::maybe_type FilterList::get_by_start_frame(int start_frame) const
 {
   auto iter = filters_.find(start_frame);
   if (iter == end()) {
-    return boost::none;
+    return std::nullopt;
   }
 
-  return boost::make_optional(*iter);
+  return std::make_optional(*iter);
 }
 
 
@@ -106,9 +105,9 @@ FilterList::maybe_type FilterList::get_by_position(size_type position) const
   }
 
   if (i != end()) {
-    return boost::make_optional(*i);
+    return std::make_optional(*i);
   } else {
-    return boost::none;
+    return std::nullopt;
   }
 }
 
@@ -142,11 +141,11 @@ FilterList::maybe_type FilterList::get_filter_for_frame(int frame) const
     }
 
     if (frame >= current_start && frame < next_start) {
-      return boost::make_optional(current);
+      return std::make_optional(current);
     }
   }
 
-  return boost::none;
+  return std::nullopt;
 }
 
 

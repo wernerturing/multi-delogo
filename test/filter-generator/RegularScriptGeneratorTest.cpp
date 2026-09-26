@@ -20,6 +20,7 @@
 #include <string>
 #include <sstream>
 #include <locale>
+#include <optional>
 
 #include "FilterList.hpp"
 #include "Filters.hpp"
@@ -46,7 +47,7 @@ BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
   list.insert(1301, filter_ptr(new DrawboxFilter(30, 31, 32, 33)));
   list.insert(2001, filter_ptr(new DrawboxFilter(40, 41, 42, 43)));
   list.insert(2501, filter_ptr(new SpeedFilter(1.5)));
-  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 1920, 1080, 25, boost::none, boost::none, false);
+  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 1920, 1080, 25, std::nullopt, std::nullopt, false);
 
   std::ostringstream out;
   g->generate_ffmpeg_script(out);
@@ -100,7 +101,7 @@ BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script_without_audio)
   list.insert(1301, filter_ptr(new DrawboxFilter(30, 31, 32, 33)));
   list.insert(2001, filter_ptr(new DrawboxFilter(40, 41, 42, 43)));
   list.insert(2501, filter_ptr(new SpeedFilter(1.5)));
-  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 1920, 1080, 25, boost::none, boost::none, true);
+  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 1920, 1080, 25, std::nullopt, std::nullopt, true);
 
   std::ostringstream out;
   g->generate_ffmpeg_script(out);
@@ -124,7 +125,7 @@ BOOST_AUTO_TEST_CASE(cut_filters_simply_skip_that_segment)
   list.insert(201, filter_ptr(new NullFilter()));
   list.insert(501, filter_ptr(new CutFilter()));
   list.insert(1001, filter_ptr(new NullFilter()));
-  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 1280, 720, 24, boost::none, boost::none, false);
+  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 1280, 720, 24, std::nullopt, std::nullopt, false);
 
   std::ostringstream out;
   g->generate_ffmpeg_script(out);
@@ -145,7 +146,7 @@ BOOST_AUTO_TEST_CASE(should_copy_first_segment_unchanged_if_first_filter_does_no
   list.insert(101, filter_ptr(new CutFilter()));
   list.insert(201, filter_ptr(new NullFilter()));
   list.insert(501, filter_ptr(new DelogoFilter(10, 11, 12, 13)));
-  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 1280, 720, 24, boost::none, boost::none, false);
+  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 1280, 720, 24, std::nullopt, std::nullopt, false);
 
   std::ostringstream out;
   g->generate_ffmpeg_script(out);
@@ -166,7 +167,7 @@ BOOST_AUTO_TEST_CASE(should_work_for_a_one_filter_list)
 {
   FilterList list;
   list.insert(1, filter_ptr(new DelogoFilter(10, 11, 12, 13)));
-  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 1920, 1080, 24, boost::none, boost::none, false);
+  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 1920, 1080, 24, std::nullopt, std::nullopt, false);
 
   std::ostringstream out;
   g->generate_ffmpeg_script(out);
@@ -185,7 +186,7 @@ BOOST_AUTO_TEST_CASE(fps_should_use_dot_as_decimal_separator_regardless_of_local
 
   FilterList list;
   list.insert(1, filter_ptr(new DelogoFilter(10, 11, 12, 13)));
-  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 1920, 1080, 24, boost::none, boost::none, false);
+  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 1920, 1080, 24, std::nullopt, std::nullopt, false);
 
   std::ostringstream out;
   g->generate_ffmpeg_script(out);
@@ -207,7 +208,7 @@ BOOST_AUTO_TEST_CASE(should_calculate_number_of_frames_in_result)
   list.insert(601, filter_ptr(new CutFilter()));
   list.insert(1001, filter_ptr(new DrawboxFilter(20, 21, 22, 23)));
   list.insert(2001, filter_ptr(new CutFilter()));
-  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 1280, 720, 25, boost::none, boost::none, false);
+  std::shared_ptr<ScriptGenerator> g = RegularScriptGenerator::create(list, 1280, 720, 25, std::nullopt, std::nullopt, false);
 
   // Only works after the script has been generated
   std::ostringstream out;

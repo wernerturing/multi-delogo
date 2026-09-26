@@ -24,8 +24,7 @@
 #include <map>
 #include <istream>
 #include <ostream>
-
-#include <boost/optional.hpp>
+#include <optional>
 
 #include "Filters.hpp"
 
@@ -35,7 +34,7 @@ namespace fg {
   {
   public:
     typedef std::map<int, filter_ptr>::value_type value_type;
-    typedef boost::optional<value_type> maybe_type;
+    typedef std::optional<value_type> maybe_type;
     typedef std::map<int, filter_ptr>::size_type size_type;
     typedef std::map<int, filter_ptr>::const_iterator const_iterator;
 

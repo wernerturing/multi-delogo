@@ -18,6 +18,7 @@
  */
 #include <memory>
 #include <string>
+#include <optional>
 
 #include <boost/algorithm/string/join.hpp>
 
@@ -269,11 +270,11 @@ EncodeWindow::Generator EncodeWindow::get_generator()
 {
   bool scale = chk_scale_->get_active();
   fg::maybe_int scale_width  = scale
-    ? boost::make_optional(txt_scale_width_->get_value_as_int())
-    : boost::none;
+    ? std::make_optional(txt_scale_width_->get_value_as_int())
+    : std::nullopt;
   fg::maybe_int scale_height = scale
-    ? boost::make_optional(txt_scale_height_->get_value_as_int())
-    : boost::none;
+    ? std::make_optional(txt_scale_height_->get_value_as_int())
+    : std::nullopt;
 
   bool no_audio = chk_no_audio_->get_active();
 

@@ -21,7 +21,6 @@
 
 #include <gtkmm.h>
 
-#include <boost/optional.hpp>
 #include <boost/variant2.hpp>
 
 #include "filter-generator/Filters.hpp"

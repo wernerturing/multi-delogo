@@ -24,9 +24,9 @@
 #include <iomanip>
 #include <algorithm>
 #include <numeric>
+#include <optional>
 
 #include <boost/algorithm/string/join.hpp>
-#include <boost/optional.hpp>
 
 #include "RegularScriptGenerator.hpp"
 #include "Filters.hpp"
@@ -80,7 +80,7 @@ int RegularScriptGenerator::generate_filter_segments(std::ostream& out) const
     maybe_int next_start_frame;
     if (i != filter_list_.end()) {
       auto& next = *i;
-      next_start_frame = boost::make_optional(next.first - 1);
+      next_start_frame = std::make_optional(next.first - 1);
     }
 
     if (first_filter_does_not_start_at_first_frame(start_frame)) {
