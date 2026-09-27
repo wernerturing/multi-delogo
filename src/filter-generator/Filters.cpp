@@ -335,7 +335,10 @@ FilterType SpeedFilter::type() const
 
 std::string SpeedFilter::name() const
 {
-  return "speed";
+  std::ostringstream ss;
+  ss << std::fixed << std::setprecision(1);
+  ss << "speed (" << factor_ << ")";
+  return ss.str();
 }
 
 

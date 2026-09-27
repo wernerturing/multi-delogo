@@ -32,9 +32,13 @@
 
 BOOST_AUTO_TEST_CASE(test_name)
 {
+  auto previous_locale = std::locale::global(std::locale::classic());
+
   fg::SpeedFilter filter(2);
 
-  BOOST_CHECK_EQUAL(filter.name(), "speed");
+  BOOST_CHECK_EQUAL(filter.name(), "speed (2.0)");
+
+  std::locale::global(previous_locale);
 }
 
 
