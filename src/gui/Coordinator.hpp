@@ -68,6 +68,7 @@ namespace mdl {
 
     FilterPanelFactory panel_factory_;
     FilterPanel* current_filter_panel_;
+    fg::FilterType current_filter_panel_type_;
     int current_filter_start_frame_;
     fg::filter_ptr current_filter_;
     bool scroll_filter_;
@@ -83,6 +84,7 @@ namespace mdl {
 
     void change_displayed_filter(const FilterListModel::iterator& iter);
     void update_displayed_panel(fg::FilterType type, FilterPanel* panel);
+    void update_displayed_panel_values(int start_frame, fg::filter_ptr filter);
     sigc::connection pending_panel_swap_;
     bool swap_displayed_panel(fg::FilterType type);
     void discard_pending_panel();

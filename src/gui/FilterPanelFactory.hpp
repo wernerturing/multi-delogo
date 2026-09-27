@@ -76,6 +76,8 @@ namespace mdl {
     FilterPanel* create(int start_frame, fg::filter_ptr filter);
     FilterPanel* create(int start_frame, fg::FilterType type);
 
+    static FilterPanel::Parameters parameters_for(fg::filter_ptr filter);
+
   private:
     int max_frame_;
     int frame_width_;

@@ -319,3 +319,95 @@ BOOST_AUTO_TEST_CASE(filter_panel_review_should_return_no_parameters)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_FIXTURE_TEST_SUITE(Parameters_for_filter, Fixture)
+
+BOOST_AUTO_TEST_CASE(should_return_the_factor_for_a_speed_filter)
+{
+  fg::filter_ptr filter(new fg::SpeedFilter(1.25));
+
+  auto parms = FilterPanelFactory::parameters_for(filter);
+
+  BOOST_REQUIRE(boost::variant2::holds_alternative<double>(parms));
+  BOOST_CHECK_EQUAL(boost::variant2::get<double>(parms), 1.25);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_return_the_rectangle_for_a_delogo_filter)
+{
+  fg::filter_ptr filter(new fg::DelogoFilter(15, 20, 80, 40));
+
+  auto parms = FilterPanelFactory::parameters_for(filter);
+
+  BOOST_REQUIRE(boost::variant2::holds_alternative<Rectangle>(parms));
+  auto rect = boost::variant2::get<Rectangle>(parms);
+  BOOST_CHECK_EQUAL(rect.x, 15);
+  BOOST_CHECK_EQUAL(rect.y, 20);
+  BOOST_CHECK_EQUAL(rect.width, 80);
+  BOOST_CHECK_EQUAL(rect.height, 40);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_return_the_rectangle_for_a_drawbox_filter)
+{
+  fg::filter_ptr filter(new fg::DrawboxFilter(11, 22, 33, 44));
+
+  auto parms = FilterPanelFactory::parameters_for(filter);
+
+  BOOST_REQUIRE(boost::variant2::holds_alternative<Rectangle>(parms));
+  auto rect = boost::variant2::get<Rectangle>(parms);
+  BOOST_CHECK_EQUAL(rect.x, 11);
+  BOOST_CHECK_EQUAL(rect.y, 22);
+  BOOST_CHECK_EQUAL(rect.width, 33);
+  BOOST_CHECK_EQUAL(rect.height, 44);
+}
+
+
+BOOST_AUTO_TEST_CASE(should_return_no_parameters_for_a_null_filter)
+{
+  fg::filter_ptr filter(new fg::NullFilter());
+
+  auto parms = FilterPanelFactory::parameters_for(filter);
+
+  BOOST_CHECK(boost::variant2::holds_alternative<FilterPanel::NoParameters>(parms));
+}
+
+
+BOOST_AUTO_TEST_CASE(should_return_no_parameters_for_a_cut_filter)
+{
+  fg::filter_ptr filter(new fg::CutFilter());
+
+  auto parms = FilterPanelFactory::parameters_for(filter);
+
+  BOOST_CHECK(boost::variant2::holds_alternative<FilterPanel::NoParameters>(parms));
+}
+
+
+BOOST_AUTO_TEST_CASE(should_return_no_parameters_for_a_review_filter)
+{
+  fg::filter_ptr filter(new fg::ReviewFilter());
+
+  auto parms = FilterPanelFactory::parameters_for(filter);
+
+  BOOST_CHECK(boost::variant2::holds_alternative<FilterPanel::NoParameters>(parms));
+}
+
+
+BOOST_AUTO_TEST_CASE(should_be_accepted_by_an_existing_panel_of_the_same_type)
+{
+  fg::filter_ptr previous_filter(new fg::DelogoFilter(1, 2, 3, 4));
+  FilterPanel* panel = factory.create(1, previous_filter);
+  fg::filter_ptr new_filter(new fg::DelogoFilter(15, 20, 80, 40));
+
+  panel->set_parameters(FilterPanelFactory::parameters_for(new_filter));
+
+  fg::filter_ptr updated_filter = panel->get_filter();
+  BOOST_REQUIRE_EQUAL(updated_filter->type(), fg::FilterType::DELOGO);
+  fg::DelogoFilter* updated_delogo = dynamic_cast<fg::DelogoFilter*>(updated_filter.get());
+  BOOST_CHECK_EQUAL(updated_delogo->x(), 15);
+  BOOST_CHECK_EQUAL(updated_delogo->y(), 20);
+  BOOST_CHECK_EQUAL(updated_delogo->width(), 80);
+  BOOST_CHECK_EQUAL(updated_delogo->height(), 40);
+}
+
+BOOST_AUTO_TEST_SUITE_END()

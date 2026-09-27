@@ -45,6 +45,7 @@ Coordinator::Coordinator(Gtk::Window& parent_window,
   , number_of_frames_(number_of_frames)
   , panel_factory_(number_of_frames, frame_width, frame_height)
   , current_filter_panel_(nullptr)
+  , current_filter_panel_type_(fg::FilterType::NO_OP)
   , current_filter_(nullptr)
   , scroll_filter_(false) // Will be changed in set_frame_navigator
 {
@@ -222,7 +223,11 @@ void Coordinator::change_displayed_filter(const FilterListModel::iterator& iter)
   current_filter_ = filter;
   current_filter_start_frame_ = start_frame;
 
-  update_displayed_panel(filter->type(), panel_factory_.create(start_frame, filter));
+  if (current_filter_panel_ && filter->type() == current_filter_panel_type_) {
+    update_displayed_panel_values(start_frame, filter);
+  } else {
+    update_displayed_panel(filter->type(), panel_factory_.create(start_frame, filter));
+  }
 
   auto parameters = current_filter_panel_->get_parameters();
   if (boost::variant2::holds_alternative<Rectangle>(parameters)) {
@@ -242,6 +247,7 @@ void Coordinator::update_displayed_panel(fg::FilterType type, FilterPanel* panel
   discard_pending_panel();
 
   current_filter_panel_ = panel;
+  current_filter_panel_type_ = type;
 
   on_panel_parameters_changed_ = current_filter_panel_->signal_parameters_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_panel_parameters_changed));
@@ -267,6 +273,16 @@ void Coordinator::discard_pending_panel()
     pending_panel_swap_.disconnect();
     delete current_filter_panel_;
   }
+}
+
+
+void Coordinator::update_displayed_panel_values(int start_frame, fg::filter_ptr filter)
+{
+  on_panel_parameters_changed_.block();
+  current_filter_panel_->set_parameters(FilterPanelFactory::parameters_for(filter));
+  on_panel_parameters_changed_.block(false);
+
+  set_start_frame_in_filter_panel(start_frame);
 }
 
 

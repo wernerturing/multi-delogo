@@ -96,3 +96,24 @@ FilterPanel* FilterPanelFactory::create(int start_frame, fg::FilterType type)
     return nullptr;
   }
 }
+
+
+FilterPanel::Parameters FilterPanelFactory::parameters_for(fg::filter_ptr filter)
+{
+  switch (filter->type()) {
+  case fg::FilterType::SPEED:
+    return std::dynamic_pointer_cast<fg::SpeedFilter>(filter)->factor();
+
+  case fg::FilterType::DELOGO:
+  case fg::FilterType::DRAWBOX: {
+    auto rectangular = std::dynamic_pointer_cast<fg::RectangularFilter>(filter);
+    return Rectangle{.x = (gdouble) rectangular->x(),
+                     .y = (gdouble) rectangular->y(),
+                     .width = (gdouble) rectangular->width(),
+                     .height = (gdouble) rectangular->height()};
+  }
+
+  default:
+    return FilterPanel::NoParameters();
+  }
+}
