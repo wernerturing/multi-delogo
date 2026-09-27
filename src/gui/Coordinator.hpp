@@ -37,6 +37,7 @@ namespace mdl {
   public:
     Coordinator(Gtk::Window& parent_window,
                 int number_of_frames, int frame_width, int frame_height);
+    ~Coordinator();
 
     void set_undo_buttons(Gtk::Widget* btn_undo, Gtk::Widget* btn_redo);
     void set_filter_list(FilterList* filter_list);
@@ -82,6 +83,9 @@ namespace mdl {
 
     void change_displayed_filter(const FilterListModel::iterator& iter);
     void update_displayed_panel(fg::FilterType type, FilterPanel* panel);
+    sigc::connection pending_panel_swap_;
+    bool swap_displayed_panel(fg::FilterType type);
+    void discard_pending_panel();
     bool displaying_filter_start_frame();
 
     sigc::connection on_filter_type_changed_;

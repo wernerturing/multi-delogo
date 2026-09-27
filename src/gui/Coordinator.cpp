@@ -51,6 +51,14 @@ Coordinator::Coordinator(Gtk::Window& parent_window,
 }
 
 
+Coordinator::~Coordinator()
+{
+  // Prevent the idle callback (pending_panel_swap_) from firing
+  // after this Coordinator is gone
+  discard_pending_panel();
+}
+
+
 void Coordinator::set_undo_buttons(Gtk::Widget* btn_undo, Gtk::Widget* btn_redo)
 {
   undo_manager_.set_undo_buttons(btn_undo, btn_redo);
@@ -231,16 +239,46 @@ void Coordinator::change_displayed_filter(const FilterListModel::iterator& iter)
 
 void Coordinator::update_displayed_panel(fg::FilterType type, FilterPanel* panel)
 {
-  current_filter_panel_ = Gtk::manage(panel);
+  discard_pending_panel();
 
-  on_filter_type_changed_.block();
-  filter_list_->set_filter(type, current_filter_panel_);
-  on_filter_type_changed_.block(false);
+  current_filter_panel_ = panel;
 
   on_panel_parameters_changed_ = current_filter_panel_->signal_parameters_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_panel_parameters_changed));
   on_start_frame_changed_ = current_filter_panel_->signal_start_frame_changed().connect(
     sigc::mem_fun(*this, &Coordinator::on_start_frame_changed));
+
+  // Putting the panel in place is left to an idle callback. This function is
+  // reached from a panel's own signal handler, and a spin button commits the
+  // text that was typed into it when it loses the focus, so this can happen
+  // while GTK is moving the focus out of the panel that is about to be
+  // removed. Removing it there leaves GTK dereferencing a widget that no
+  // longer exists for the rest of the focus change.
+  pending_panel_swap_ = Glib::signal_idle().connect(
+    sigc::bind(sigc::mem_fun(*this, &Coordinator::swap_displayed_panel), type));
+}
+
+
+// A swap queued earlier may not have run yet. Such a panel was never given
+// to the filter list, so nothing else will ever delete it.
+void Coordinator::discard_pending_panel()
+{
+  if (pending_panel_swap_.connected()) {
+    pending_panel_swap_.disconnect();
+    delete current_filter_panel_;
+  }
+}
+
+
+bool Coordinator::swap_displayed_panel(fg::FilterType type)
+{
+  on_filter_type_changed_.block();
+  // Only now is the panel owned by the filter list, and only then may it be
+  // managed: a managed widget with no parent would never be deleted.
+  filter_list_->set_filter(type, Gtk::manage(current_filter_panel_));
+  on_filter_type_changed_.block(false);
+
+  return false;
 }
 
 
