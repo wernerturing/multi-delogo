@@ -36,6 +36,20 @@ AX_PTHREAD
 PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.70.0])
 
 PKG_CHECK_MODULES([GTKMM], [gtkmm-4.0 >= 4.10])
+
+dnl Hides the deprecated APIs from the headers, so that any use of them
+dnl becomes a compilation error. Added to GTKMM_CFLAGS because every
+dnl directory that compiles against gtkmm uses it.
+AC_ARG_ENABLE([no-deprecated],
+  AS_HELP_STRING([--enable-no-deprecated],
+                 [Make the use of deprecated gtkmm APIs a compilation error]),
+  [],
+  [enable_no_deprecated=no])
+AS_IF([test "x$enable_no_deprecated" = xyes],
+  [
+    GTKMM_CFLAGS="$GTKMM_CFLAGS -DGTKMM_DISABLE_DEPRECATED -DGDKMM_DISABLE_DEPRECATED -DPANGOMM_DISABLE_DEPRECATED -DGIOMM_DISABLE_DEPRECATED -DGLIBMM_DISABLE_DEPRECATED"
+  ])
+
 AC_SUBST([GTKMM_CFLAGS])
 AC_SUBST([GTKMM_LIBS])
 
