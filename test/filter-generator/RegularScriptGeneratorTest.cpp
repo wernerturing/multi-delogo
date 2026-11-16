@@ -74,6 +74,8 @@ BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script)
 
 BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script_with_scaling)
 {
+  auto previous_locale = std::locale::global(std::locale("pt_BR.UTF-8"));
+
   FilterList list;
   list.insert(1, filter_ptr(new DelogoFilter(10, 11, 12, 13)));
   list.insert(501, filter_ptr(new DrawboxFilter(20, 21, 22, 23)));
@@ -89,6 +91,8 @@ BOOST_AUTO_TEST_CASE(should_generate_ffmpeg_script_with_scaling)
     "[0:a]atrim=start=20.000,asetpts=PTS-STARTPTS[as1];\n"
     "[vs0][as0][vs1][as1]concat=n=2:v=1:a=1[out_v][out_a]";
   BOOST_CHECK_EQUAL(out.str(), expected);
+
+  std::locale::global(previous_locale);
 }
 
 

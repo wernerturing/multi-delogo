@@ -63,6 +63,8 @@ void RegularScriptGenerator::generate_ffmpeg_script(std::ostream& out) const
     return;
   }
 
+  out.imbue(std::locale::classic());
+
   int n_segments = generate_filter_segments(out);
   generate_final_concat(out, n_segments);
 }
